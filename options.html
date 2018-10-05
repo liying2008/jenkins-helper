@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Options</title>
+  <script src="js/storage.js"></script>
+  <script src="js/services.js"></script>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+</head>
+<body class="container-fluid">
+<div id="app">
+  <!--全局设置-->
+  <div id="global-settings" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{strings.globalOptionTitle}}</h3>
+    </div>
+    <div class="panel-body">
+      <div>
+        <div>{{strings.defaultTab}}</div>
+        <select class="form-control" style="margin-top: 8px" v-model="defaultTab">
+          <option v-for="tab in defaultTabs" :name="tab.value" :value="tab.value">
+            {{tab.text}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <!--智能搜索设置-->
+  <div id="omnibox-settings" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{strings.omniboxOptionTitle}}</h3>
+    </div>
+    <div class="panel-body">
+      <div>
+        <div>{{strings.searchFromJenkins}}</div>
+        <textarea style="margin-top: 8px" class="form-control" rows="4" v-model="omniboxJenkinsUrl"
+                  :placeholder="strings.searchFromJenkinsPlaceholder">
+        </textarea>
+        <div style="font-size: smaller; margin-top: 8px" v-html="strings.searchFromJenkinsTips">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--监视器设置-->
+  <div id="monitor-settings" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{strings.monitorOptionTitle}}</h3>
+    </div>
+    <div class="panel-body">
+      <div>
+        <div>{{strings.showNotification}}</div>
+        <select class="form-control" style="margin-top: 8px" v-model="showNotificationOption">
+          <option v-for="option in showNotificationOptions" :name="option.value" :value="option.value">
+            {{option.text}}
+          </option>
+        </select>
+      </div>
+      <div class="info-block">
+        <div>{{strings.refreshTime}}</div>
+        <input style="width: 100%;" min="5" max="120" step="5" type="range" v-model="refreshTime">
+        <i v-html="refreshTimeTip"></i>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-default" style="width: 100%" @click="saveOptions">{{strings.saveOptions}}
+  </button>
+  <!--显示保存成功的信息-->
+  <div ref="showSavedMsg" class="alert alert-success" role="alert"
+       style="margin-top: 10px;padding: 6px;visibility:hidden;text-align: center;">{{strings.optionsSaved}}
+  </div>
+</div>
+</body>
+<script src="js/vue.js"></script>
+<script src="js/options.js"></script>
+</html>

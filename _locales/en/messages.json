@@ -1,0 +1,80 @@
+{
+  "pluginDesc": {
+    "message": "Monitor Jenkins execution results and provide other convenient services."
+  },
+  "globalOptionTitle": {
+    "message": "Global Settings"
+  },
+  "defaultTab": {
+    "message": "Default Tab:"
+  },
+  "omniboxOptionTitle": {
+    "message": "Omnibox Intelligent Search"
+  },
+  "searchFromJenkins": {
+    "message": "Search from the following Jenkins"
+  },
+  "searchFromJenkinsPlaceholder": {
+    "message": "Enter the Jenkins URLs and enter one in a line, such as: http://127.0.0.1:8080"
+  },
+  "searchFromJenkinsTips": {
+    "message": "Tips: Type <b>jk</b> in the omnibox, press the space key or Tab to enter the Jenkins Job search mode, and enter the job name to quickly match the corresponding Jenkins Job link."
+  },
+  "saveOptions": {
+    "message": "Save Settings"
+  },
+  "monitorOptionTitle": {
+    "message": "Monitor Settings"
+  },
+  "showNotification": {
+    "message": "Show Popup Notifications:"
+  },
+  "refreshTime": {
+    "message": "Refresh Time:"
+  },
+  "optionsSaved": {
+    "message": "Options Saved."
+  },
+  "showNotificationOption_all": {
+    "message": "On every build"
+  },
+  "showNotificationOption_unstable": {
+    "message": "On every unstable build"
+  },
+  "showNotificationOption_none": {
+    "message": "Never"
+  },
+  "refreshTimeTip_1": {
+    "message": "Check server for changes every  <b>"
+  },
+  "refreshTimeTip_2": {
+    "message": " seconds</b>"
+  },
+  "url": {
+    "message": "URL"
+  },
+  "inputUrlPlaceholder": {
+    "message": "Please input Jenkins/View/Job URL"
+  },
+  "monitor": {
+    "message": "Monitor"
+  },
+  "params": {
+    "message": "Parameters"
+  },
+  "buildStatus_": {
+    "message": "Result:"
+  },
+  "runLabel_": {
+    "message": "BuiltOn："
+  },
+  "copied": {
+    "message": "Copied"
+  },
+  "paramsList": {
+    "message": "Parameters"
+  },
+  "noData": {
+    "message": "No data."
+  }
+}

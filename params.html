@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <title>Jenkins Parameters</title>
+</head>
+<body class="container-fluid">
+<div id="app">
+  <ul class="nav nav-tabs">
+    <li role="presentation"><a href="monitor.html">{{strings.monitor}}</a></li>
+    <li role="presentation" class="active"><a href="params.html">{{strings.params}}</a></li>
+    <li role="presentation"><a href="#" @click="openOptions"><span class="glyphicon glyphicon-cog"></span></a></li>
+  </ul>
+  <ul class="list-group info-block" v-show="fullDisplayName">
+    <li class="list-group-item">
+      <div>
+        <div class="row">
+          <div class="col-xs-6"><i class="glyphicon glyphicon-tag"></i>
+            <a :href="url" target="_blank" style="margin-left: 10px">{{fullDisplayName}}</a>
+          </div>
+          <div class="col-xs-6">{{strings.buildStatus_}}<span v-bind:class="[
+          'label',
+          'label-default',
+          {'label-success':result === 'SUCCESS'},
+          {'label-danger':result === 'FAILURE'},
+          {'label-warning':result === 'UNSTABLE'},
+          {'label-default':result === 'ABORTED'},
+          ]">{{result}}</span></div>
+        </div>
+
+        <div class="row" style="margin-top: 10px">
+          <div class="col-xs-6"><i class="glyphicon glyphicon-time"></i>
+            <span style="margin-left: 10px">{{buildTime}}</span></div>
+          <div class="col-xs-6" v-show="builtOn">{{strings.runLabel_}}<span ref="builtOnSpan">{{builtOn}}</span>
+            <a style="margin-left: 10px;cursor: pointer" class="glyphicon glyphicon-duplicate" @click="copyBuiltOn"></a>
+            <span ref="copiedSpan"
+                  style="color: #3c763d;font-size:smaller;margin-left: 10px;visibility: hidden">{{strings.copied}}</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="info-block" v-show="parameters.length > 0">
+    <p>{{strings.paramsList}}</p>
+    <table class="table table-condensed table-striped table-bordered">
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+      <tr v-for="parameter in parameters">
+        <td>{{parameter.name}}</td>
+        <td>{{parameter.value}}</td>
+      </tr>
+    </table>
+  </div>
+  <!--Rebuild Button-->
+  <p class="text-right" v-show="fullDisplayName">
+    <button type="button" class="btn btn-default" @click="rebuild">Rebuild</button>
+  </p>
+
+  <!--Empty Page-->
+  <h3 class="text-center" v-show="!fullDisplayName" style="margin: 64px">
+    {{strings.noData}}
+  </h3>
+</div>
+</body>
+<script src="js/vue.js"></script>
+<script src="js/params.js"></script>
+</html>

@@ -1,0 +1,43 @@
+{
+  "manifest_version": 2,
+  "name": "Jenkins Helper",
+  "description": "__MSG_pluginDesc__",
+  "author": "LiYing",
+  "homepage_url": "https://github.com/liying2008/jenkins-helper",
+  "version": "1.0.0",
+  "minimum_chrome_version": "45",
+  "default_locale": "en",
+  "omnibox": {
+    "keyword": "jk"
+  },
+  "browser_action": {
+    "browser_style": false,
+    "default_icon": "img/icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Jenkins Helper"
+  },
+  "icons": {
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
+  },
+  "background": {
+    "scripts": [
+      "js/storage.js",
+      "js/omnibox.js",
+      "js/services.js",
+      "js/background.js"
+    ]
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "permissions": [
+    "<all_urls>",
+    "storage",
+    "notifications",
+    "tabs"
+  ]
+}

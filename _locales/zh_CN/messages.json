@@ -1,0 +1,80 @@
+{
+  "pluginDesc": {
+    "message": "监控 Jenkins Job 构建状态并提供其他一些便利功能。"
+  },
+  "globalOptionTitle": {
+    "message": "全局设置"
+  },
+  "defaultTab": {
+    "message": "默认标签页"
+  },
+  "omniboxOptionTitle": {
+    "message": "地址栏智能搜索"
+  },
+  "searchFromJenkins": {
+    "message": "从以下 Jenkins 中搜索"
+  },
+  "searchFromJenkinsPlaceholder": {
+    "message": "输入Jenkins URL，一行一个，如：http://127.0.0.1:8080"
+  },
+  "searchFromJenkinsTips": {
+    "message": "Tips: 在地址栏输入 <b>jk</b>，按空格键或 Tab 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
+  },
+  "saveOptions": {
+    "message": "保存设置"
+  },
+  "monitorOptionTitle": {
+    "message": "监视器设置"
+  },
+  "showNotification": {
+    "message": "显示通知"
+  },
+  "refreshTime": {
+    "message": "刷新时间间隔"
+  },
+  "optionsSaved": {
+    "message": "设置已保存"
+  },
+  "showNotificationOption_all": {
+    "message": "每次构建"
+  },
+  "showNotificationOption_unstable": {
+    "message": "每次不稳定构建"
+  },
+  "showNotificationOption_none": {
+    "message": "从不"
+  },
+  "refreshTimeTip_1": {
+    "message": "每隔  <b>"
+  },
+  "refreshTimeTip_2": {
+    "message": " 秒</b> 获取一次最新状态"
+  },
+  "url": {
+    "message": "URL"
+  },
+  "inputUrlPlaceholder": {
+    "message": "请输入 Jenkins/View/Job URL"
+  },
+  "monitor": {
+    "message": "监视器"
+  },
+  "params": {
+    "message": "参数"
+  },
+  "buildStatus_": {
+    "message": "构建状态："
+  },
+  "runLabel_": {
+    "message": "运行节点："
+  },
+  "copied": {
+    "message": "已复制"
+  },
+  "paramsList": {
+    "message": "参数列表"
+  },
+  "noData": {
+    "message": "无数据"
+  }
+}

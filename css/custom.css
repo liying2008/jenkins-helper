@@ -1,0 +1,28 @@
+body {
+  width: 600px;
+  min-height: 200px;
+  margin: 10px 6px;
+}
+
+.info-block {
+  margin-top: 20px;
+}
+
+.building {
+  animation-name: building;
+  animation-duration: 1.4s;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+@keyframes building {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
