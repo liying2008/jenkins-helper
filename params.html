@@ -58,10 +58,21 @@
       </tr>
     </table>
   </div>
-  <!--Rebuild Button-->
-  <p class="text-right" v-show="fullDisplayName">
-    <button type="button" class="btn btn-default" @click="rebuild">Rebuild</button>
-  </p>
+
+  <!--Prev/Next/Rebuild Button-->
+  <div class="row" v-show="fullDisplayName">
+    <div class="btn-group col-xs-6 " role="group" aria-label="prevOrNext">
+      <button type="button" class="btn btn-default" @click="prevBuild"><i class="glyphicon glyphicon-menu-left"></i>
+      </button>
+      <button type="button" class="btn btn-default" @click="nextBuild"><i class="glyphicon glyphicon-menu-right"></i>
+      </button>
+    </div>
+    <div class="col-xs-6">
+      <p class="text-right">
+        <button type="button" class="btn btn-default" @click="rebuild">Rebuild</button>
+      </p>
+    </div>
+  </div>
 
   <!--Empty Page-->
   <h3 class="text-center" v-show="!fullDisplayName" style="margin: 64px">

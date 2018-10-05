@@ -10,6 +10,7 @@ new Vue({
       paramsList: chrome.i18n.getMessage("paramsList"),
       noData: chrome.i18n.getMessage("noData"),
     },
+    number: 0,
     fullDisplayName: '',
     url: '',
     result: '',
@@ -33,35 +34,43 @@ new Vue({
           // 没有匹配到
           return
         }
-        var jsonUrl = m[0] + '/api/json';
-        fetch(jsonUrl).then(function (res) {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return Promise.reject(res);
-          }
-        }).then(function (data) {
-          _self.fullDisplayName = data.fullDisplayName;
-          _self.url = data.url;
-          _self.result = data.result;
-          _self.buildTime = new Date(data.timestamp).toLocaleString();
-          _self.builtOn = data.builtOn;
-          var actions = data.actions;
-          for (var i = 0; i < actions.length; i++) {
-            if (actions[i].hasOwnProperty('parameters')) {
-              var parameters = actions[i].parameters;
-              for (var pIndex = 0; pIndex < parameters.length; pIndex++) {
-                _self.parameters.push({
-                  name: parameters[pIndex].name,
-                  value: parameters[pIndex].value,
-                })
-              }
+        _self.getParametersByUrl(m[0]);
+      })
+    },
+
+    getParametersByUrl(url) {
+      var _self = this;
+      var jsonUrl = url + '/api/json';
+      fetch(jsonUrl).then(function (res) {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return Promise.reject(res);
+        }
+      }).then(function (data) {
+        _self.number = data.number;
+        _self.fullDisplayName = data.fullDisplayName;
+        _self.url = data.url;
+        _self.result = data.result;
+        _self.buildTime = new Date(data.timestamp).toLocaleString();
+        _self.builtOn = data.builtOn;
+        _self.parameters = [];
+        var actions = data.actions;
+        for (var i = 0; i < actions.length; i++) {
+          if (actions[i].hasOwnProperty('parameters')) {
+            var parameters = actions[i].parameters;
+            for (var pIndex = 0; pIndex < parameters.length; pIndex++) {
+              _self.parameters.push({
+                name: parameters[pIndex].name,
+                value: parameters[pIndex].value,
+              })
             }
           }
-        }).catch(function (e) {
-          console.error("获取参数失败", e);
-        });
-      })
+        }
+      }).catch(function (e) {
+        console.error("获取参数失败", e);
+        alert(_self.strings.noData)
+      });
     },
     getCurrentTab(callback) {
       chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
@@ -92,6 +101,25 @@ new Vue({
     },
     rebuild() {
       chrome.tabs.create({'url': this.url + 'rebuild'});
+    },
+    // 显示前一次构建信息
+    prevBuild() {
+      // url: http://127.0.0.1:8080/jenkins/job/Test1/21/
+      var url = this.url.substring(0, this.url.length - 1);
+      url = url.substring(0, url.lastIndexOf('/'));
+      if (this.number > 1) {
+        url = url + '/' + (this.number - 1);
+        this.getParametersByUrl(url)
+      } else {
+        alert(chrome.i18n.getMessage("noPrevBuild"))
+      }
+    },
+    // 显示后一次构建信息
+    nextBuild() {
+      var url = this.url.substring(0, this.url.length - 1);
+      url = url.substring(0, url.lastIndexOf('/'));
+      url = url + '/' + (this.number + 1);
+      this.getParametersByUrl(url)
     },
   }
 });
