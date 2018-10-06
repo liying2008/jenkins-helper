@@ -102,12 +102,12 @@
     "message": "Data from:"
   },
   "jobStatisticsShowSettings_": {
-    "message": "Display Settings:"
+    "message": "Display settings:"
   },
   "jobStatisticsShowEnabledJobOnly": {
-    "message": "Display enabled jobs only"
+    "message": "Display enabled jobs only."
   },
   "jobStatisticsShowCronTableJobOnly": {
-    "message": "Display only jobs with cron table"
+    "message": "Display only jobs with cron table."
   }
 }

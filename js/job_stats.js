@@ -34,8 +34,12 @@ new Vue({
       _self.xmlParser = new DOMParser();
       StorageService.addStorageListener(this.jobStatsChange);
       StorageService.getOptions(function (result) {
-        _self.jenkinsUrls = result.jobStatsJenkinsUrl.trim().split('\n');
-        _self.nodeParams = result.nodeParam.trim().split(',');
+        if (result.jobStatsJenkinsUrl.trim() !== '') {
+          _self.jenkinsUrls = result.jobStatsJenkinsUrl.trim().split('\n');
+        }
+        if (result.nodeParam.trim() !== '') {
+          _self.nodeParams = result.nodeParam.trim().split(',');
+        }
         _self.getJobStats();
       })
     },
@@ -51,8 +55,17 @@ new Vue({
           return
         }
         // 设置改变了，重新请求数据
-        this.jenkinsUrls = newJobStatsJenkinsUrl.trim().split('\n');
-        this.nodeParams = newNodeParam.trim().split(',');
+        if (newJobStatsJenkinsUrl.trim() !== '') {
+          this.jenkinsUrls = newJobStatsJenkinsUrl.trim().split('\n');
+        } else {
+          this.jenkinsUrls = []
+        }
+        if (newNodeParam.trim() !== '') {
+          this.nodeParams = newNodeParam.trim().split(',');
+        } else {
+          this.nodeParams = []
+        }
+
         this.getJobStats();
       }
     },
