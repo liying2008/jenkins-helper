@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <script src="js/storage.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <title>Jenkins Job Statistics</title>
+</head>
+<body class="container-fluid" style="width: 1000px;">
+<div id="app">
+  <div class="page-header">
+    <h1 style="text-align: center">{{strings.title}}</h1>
+  </div>
+  <div class="info-block" v-show="jobs.length>0">
+    <table class="table table-striped table-bordered">
+      <tr>
+        <th>Job URL</th>
+        <th width="12%">Cron Table</th>
+        <th width="12%">Node</th>
+        <th width="8%">Disabled?</th>
+        <th width="8%">Concurrent?</th>
+      </tr>
+      <tr v-for="job in jobs">
+        <td>{{job.url}}</td>
+        <td>{{job.timerTrigger}}</td>
+        <td>{{job.node}}</td>
+        <td>{{job.disabled}}</td>
+        <td>{{job.concurrentBuild}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="info-block">
+    <div class="row">
+      <div class="col-xs-6">
+        <p>{{strings.jobStatisticsDataFrom_}}</p>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <p v-for="url in jenkinsUrls">{{url}}</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="js/vue.js"></script>
+<script src="js/job_stats.js"></script>
+</html>

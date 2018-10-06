@@ -15,10 +15,25 @@
     "message": "从以下 Jenkins 中搜索"
   },
   "searchFromJenkinsPlaceholder": {
-    "message": "输入Jenkins URL，一行一个，如：http://127.0.0.1:8080"
+    "message": "输入 Jenkins URL，一行一个，如：http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
     "message": "Tips: 在地址栏输入 <b>jk</b>，按空格键或 Tab 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
+  },
+  "jobStatsTitle": {
+    "message": "Job统计设置"
+  },
+  "jobStatsTitleTip": {
+    "message": "统计以下 Jenkins URL 中的 Job 信息"
+  },
+  "jobStatsJenkinsPlaceholder": {
+    "message": "输入 Jenkins/View/Job URL，一行一个，如：http://127.0.0.1:8080/view/My/"
+  },
+  "jobStatsNodeParamTip": {
+    "message": "如果Job节点数据为空，则从以下参数中获取"
+  },
+  "jobStatsNodeParamPlaceholder": {
+    "message": "可填写多个参数名称，以英文逗号(,)分割"
   },
   "saveOptions": {
     "message": "保存设置"
@@ -79,5 +94,11 @@
   },
   "noPrevBuild": {
     "message": "没有前一次构建了。"
+  },
+  "jobStatisticsTitle": {
+    "message": "Jenkins Job 统计"
+  },
+  "jobStatisticsDataFrom_": {
+    "message": "数据来自："
   }
 }

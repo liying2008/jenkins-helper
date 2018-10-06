@@ -51,7 +51,9 @@ var StorageService = (function () {
         defaultTab: 'monitor',
         refreshTime: 60,
         showNotificationOption: 'all',
-        omniboxJenkinsUrl: ''
+        omniboxJenkinsUrl: '',
+        nodeParam: '',
+        jobStatsJenkinsUrl: '',
       })
     })
   }

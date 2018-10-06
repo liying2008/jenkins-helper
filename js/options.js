@@ -14,6 +14,11 @@ new Vue({
       searchFromJenkinsPlaceholder: chrome.i18n.getMessage("searchFromJenkinsPlaceholder"),
       searchFromJenkinsTips: chrome.i18n.getMessage("searchFromJenkinsTips"),
       saveOptions: chrome.i18n.getMessage("saveOptions"),
+      jobStatsTitle: chrome.i18n.getMessage("jobStatsTitle"),
+      jobStatsTitleTip: chrome.i18n.getMessage("jobStatsTitleTip"),
+      jobStatsJenkinsPlaceholder: chrome.i18n.getMessage("jobStatsJenkinsPlaceholder"),
+      jobStatsNodeParamTip: chrome.i18n.getMessage("jobStatsNodeParamTip"),
+      jobStatsNodeParamPlaceholder: chrome.i18n.getMessage("jobStatsNodeParamPlaceholder"),
     },
     defaultTab: 'monitor',
     defaultTabs: [
@@ -41,7 +46,9 @@ new Vue({
         value: 'none'
       },
     ],
-    omniboxJenkinsUrl:''
+    omniboxJenkinsUrl: '',
+    nodeParam: '',
+    jobStatsJenkinsUrl: '',
   },
   computed: {
     refreshTimeTip() {
@@ -58,6 +65,8 @@ new Vue({
       _self.showNotificationOption = result.showNotificationOption;
       _self.defaultTab = result.defaultTab;
       _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
+      _self.nodeParam = result.nodeParam;
+      _self.jobStatsJenkinsUrl = result.jobStatsJenkinsUrl;
     })
   },
   methods: {
@@ -68,7 +77,9 @@ new Vue({
         defaultTab: this.defaultTab,
         refreshTime: this.refreshTime,
         showNotificationOption: this.showNotificationOption,
-        omniboxJenkinsUrl: this.omniboxJenkinsUrl
+        omniboxJenkinsUrl: this.omniboxJenkinsUrl,
+        nodeParam: this.nodeParam,
+        jobStatsJenkinsUrl: this.jobStatsJenkinsUrl,
       }, function () {
         _self.$refs.showSavedMsg.style.visibility = "";
         setTimeout(function () {

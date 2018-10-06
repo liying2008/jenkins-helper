@@ -64,6 +64,26 @@
       </div>
     </div>
   </div>
+  <!--Job统计设置-->
+  <div id="job-stats-settings" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{strings.jobStatsTitle}}</h3>
+    </div>
+    <div class="panel-body">
+      <div>
+        <div>{{strings.jobStatsNodeParamTip}}</div>
+        <input id="nodeParam" type="text" class="form-control" v-model="nodeParam"
+               :placeholder="strings.jobStatsNodeParamPlaceholder" style="margin-top: 8px">
+      </div>
+      <div class="info-block">
+        <div>{{strings.jobStatsTitleTip}}</div>
+        <textarea class="form-control" rows="4" v-model="jobStatsJenkinsUrl"
+                  :placeholder="strings.jobStatsJenkinsPlaceholder" style="margin-top: 8px">
+        </textarea>
+      </div>
+    </div>
+  </div>
+  <!--保存按钮-->
   <button type="button" class="btn btn-default" style="width: 100%" @click="saveOptions">{{strings.saveOptions}}
   </button>
   <!--显示保存成功的信息-->

@@ -20,6 +20,21 @@
   "searchFromJenkinsTips": {
     "message": "Tips: Type <b>jk</b> in the omnibox, press the space key or Tab to enter the Jenkins Job search mode, and enter the job name to quickly match the corresponding Jenkins Job link."
   },
+  "jobStatsTitle": {
+    "message": "Job Statistics Settings"
+  },
+  "jobStatsTitleTip": {
+    "message": "Statistics Job information from the following Jenkins."
+  },
+  "jobStatsJenkinsPlaceholder": {
+    "message": "Enter the Jenkins/View/Job URLs and enter one in a line, such as: http://127.0.0.1:8080/view/My/"
+  },
+  "jobStatsNodeParamTip": {
+    "message": "If the Job node is null, it will obtain from the following parameters"
+  },
+  "jobStatsNodeParamPlaceholder": {
+    "message": "Multiple parameters can be entered, separated by comma (,)"
+  },
   "saveOptions": {
     "message": "Save Settings"
   },
@@ -79,5 +94,11 @@
   },
   "noPrevBuild": {
     "message": "There is no previous build."
+  },
+  "jobStatisticsTitle": {
+    "message": "Jenkins Job Statistics"
+  },
+  "jobStatisticsDataFrom_": {
+    "message": "Data from:"
   }
 }

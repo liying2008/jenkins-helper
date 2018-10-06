@@ -82,5 +82,15 @@ new Vue({
         chrome.tabs.create({'url': chrome.runtime.getURL('options.html')});
       }
     },
+    openJobList() {
+      chrome.windows.create({
+        url: 'job_stats.html',
+        type: 'popup',
+        width: 1200,
+        height: 800,
+      }, function (window) {
+        console.log('window', window)
+      })
+    },
   }
 });
