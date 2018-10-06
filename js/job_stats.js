@@ -4,12 +4,26 @@ new Vue({
     strings: {
       title: chrome.i18n.getMessage("jobStatisticsTitle"),
       jobStatisticsDataFrom_: chrome.i18n.getMessage("jobStatisticsDataFrom_"),
+      jobStatisticsShowSettings_: chrome.i18n.getMessage("jobStatisticsShowSettings_"),
+      jobStatisticsShowEnabledJobOnly: chrome.i18n.getMessage("jobStatisticsShowEnabledJobOnly"),
+      jobStatisticsShowCronTableJobOnly: chrome.i18n.getMessage("jobStatisticsShowCronTableJobOnly"),
     },
     jenkinsUrls: [],
     nodeParams: [],
     jobUrlVisited: [],
     jobs: [],
+    originJobs: [],
     xmlParser: undefined,
+    showEnabledJobOnly: false,
+    showCronTableJobOnly: false,
+  },
+  watch: {
+    showEnabledJobOnly: function (newValue, oldValue) {
+      this.updateJobsFromOrigin()
+    },
+    showCronTableJobOnly: function (newValue, oldValue) {
+      this.updateJobsFromOrigin()
+    },
   },
   mounted() {
     this.init();
@@ -18,11 +32,39 @@ new Vue({
     init() {
       var _self = this;
       _self.xmlParser = new DOMParser();
+      StorageService.addStorageListener(this.jobStatsChange);
       StorageService.getOptions(function (result) {
         _self.jenkinsUrls = result.jobStatsJenkinsUrl.trim().split('\n');
         _self.nodeParams = result.nodeParam.trim().split(',');
         _self.getJobStats();
       })
+    },
+    jobStatsChange(changes) {
+      if (StorageService.keyForOptions in changes) {
+        // 设置改变
+        var newNodeParam = changes[StorageService.keyForOptions].newValue.nodeParam;
+        var newJobStatsJenkinsUrl = changes[StorageService.keyForOptions].newValue.jobStatsJenkinsUrl;
+        if (changes[StorageService.keyForOptions].oldValue !== undefined
+          && newNodeParam === changes[StorageService.keyForOptions].oldValue.nodeParam
+          && newJobStatsJenkinsUrl === changes[StorageService.keyForOptions].oldValue.jobStatsJenkinsUrl) {
+          // Job 统计相关设置没有改变
+          return
+        }
+        // 设置改变了，重新请求数据
+        this.jenkinsUrls = newJobStatsJenkinsUrl.trim().split('\n');
+        this.nodeParams = newNodeParam.trim().split(',');
+        this.getJobStats();
+      }
+    },
+    updateJobsFromOrigin() {
+      this.jobs = [];
+      var jobLen = this.originJobs.length;
+      for (var i = 0; i < jobLen; i++) {
+        var job = this.originJobs[i];
+        if (this.showEnabledJobOnly && job.disabled === 'true') continue;
+        if (this.showCronTableJobOnly && (job.timerTrigger === '' || job.timerTrigger.trim().indexOf('#') === 0)) continue;
+        this.jobs.push(job);
+      }
     },
     getJobStats() {
       var _self = this;
@@ -90,7 +132,8 @@ new Vue({
         // console.log('job', job)
         if (job) {
           job.url = decodeURIComponent(url);
-          _self.jobs.push(job)
+          _self.jobs.push(job);
+          _self.originJobs.push(job);
         }
       })
     },

@@ -99,6 +99,15 @@
     "message": "Jenkins Job 统计"
   },
   "jobStatisticsDataFrom_": {
-    "message": "数据来自："
+    "message": "数据来源："
+  },
+  "jobStatisticsShowSettings_": {
+    "message": "显示设置："
+  },
+  "jobStatisticsShowEnabledJobOnly": {
+    "message": "不显示 disabled job"
+  },
+  "jobStatisticsShowCronTableJobOnly": {
+    "message": "不显示无 cron table 的 job"
   }
 }

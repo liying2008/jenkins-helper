@@ -25,7 +25,9 @@
       </tr>
       <tr v-for="job in jobs">
         <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
-        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.url}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">
+          <a :href="job.url" target="_blank">{{job.url}}</a>
+        </td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.timerTrigger}}</td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.node}}</td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.disabled}}</td>
@@ -35,6 +37,23 @@
   </div>
   <div class="info-block">
     <div class="row">
+      <div class="col-xs-6" v-show="jobs.length>0">
+        <p>{{strings.jobStatisticsShowSettings_}}</p>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" v-model="showEnabledJobOnly">{{strings.jobStatisticsShowEnabledJobOnly}}
+              </label>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" v-model="showCronTableJobOnly">{{strings.jobStatisticsShowCronTableJobOnly}}
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
       <div class="col-xs-6">
         <p>{{strings.jobStatisticsDataFrom_}}</p>
         <ul class="list-group">
