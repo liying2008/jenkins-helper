@@ -71,16 +71,9 @@
           <th>Job Name</th>
           <th width="12%">Result</th>
         </tr>
-        <tr v-for="(job, jobUrl, index) in jenkins.jobs" v-bind:class="{'info':job.building}">
+        <tr v-for="(job, jobUrl, index) in jenkins.jobs"
+            v-bind:class="{'building-row':job.building,'disabled-row':job.color === 'disabled'}">
           <td><a target="_blank" :href="jobUrl" v-bind:class="{'building':job.building}">{{job.name}}</a></td>
-          <!--<td>-->
-          <!--<div class="progress" style="margin-bottom: 0;">-->
-          <!--<div class="progress-bar progress-bar-gray progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0"-->
-          <!--aria-valuemax="100" style="width: 100%;">-->
-          <!--<b>{{job.status}}</b>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--</td>-->
           <td><span v-bind:class="[
           'label',
           'label-default',

@@ -24,11 +24,12 @@
         <th width="8%">Concurrent?</th>
       </tr>
       <tr v-for="job in jobs">
-        <td>{{job.url}}</td>
-        <td>{{job.timerTrigger}}</td>
-        <td>{{job.node}}</td>
-        <td>{{job.disabled}}</td>
-        <td>{{job.concurrentBuild}}</td>
+        <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.url}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.timerTrigger}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.node}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.disabled}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.concurrentBuild}}</td>
       </tr>
     </table>
   </div>

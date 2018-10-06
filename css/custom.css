@@ -18,6 +18,14 @@ body {
   animation-play-state: running;
 }
 
+.building-row {
+  background-color: powderblue;
+}
+
+.disabled-row {
+  background-color: lightgray;
+}
+
 @keyframes building {
   0% {
     opacity: 1;
