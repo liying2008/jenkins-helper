@@ -22,14 +22,24 @@
           <div class="col-xs-6"><i class="glyphicon glyphicon-tag"></i>
             <a :href="url" target="_blank" style="margin-left: 10px">{{fullDisplayName}}</a>
           </div>
-          <div class="col-xs-6">{{strings.buildStatus_}}<span v-bind:class="[
+          <div class="col-xs-6">{{strings.buildStatus_}}
+            <!--构建中-->
+            <span v-if="building" v-bind:class="[
+          'label',
+          'label-info',
+          'building',
+          ]">{{strings.building}}</span>
+            <!--构建已完成-->
+            <span v-else v-bind:class="[
           'label',
           'label-default',
           {'label-success':result === 'SUCCESS'},
           {'label-danger':result === 'FAILURE'},
           {'label-warning':result === 'UNSTABLE'},
           {'label-default':result === 'ABORTED'},
-          ]">{{result}}</span></div>
+          ]">{{result}}</span>
+
+          </div>
         </div>
 
         <div class="row" style="margin-top: 10px">

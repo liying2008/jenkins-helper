@@ -70,7 +70,7 @@
           <th>Job Name</th>
           <th width="12%">Result</th>
         </tr>
-        <tr v-for="(job, jobUrl, index) in jenkins.jobs">
+        <tr v-for="(job, jobUrl, index) in jenkins.jobs" v-bind:class="{'info':job.building}">
           <td><a target="_blank" :href="jobUrl" v-bind:class="{'building':job.building}">{{job.name}}</a></td>
           <!--<td>-->
           <!--<div class="progress" style="margin-bottom: 0;">-->

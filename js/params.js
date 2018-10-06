@@ -9,10 +9,12 @@ new Vue({
       copied: chrome.i18n.getMessage("copied"),
       paramsList: chrome.i18n.getMessage("paramsList"),
       noData: chrome.i18n.getMessage("noData"),
+      building: 'BUILDING',
     },
     number: 0,
     fullDisplayName: '',
     url: '',
+    building: false,
     result: '',
     buildTime: '',
     builtOn: '',
@@ -29,12 +31,30 @@ new Vue({
         var title = tab.title;
         var url = tab.url;
         var urlRegExp = /^https*:\/\/.+\/job\/.+\/\d+/;
+        var urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/(.+\/\d+)\//;
+        var urlRegExpPipelineLog = /^(https*:\/\/.+\/)blue\/rest\/organizations\/jenkins\/pipelines\/(.+)\/runs\/(\d+)\//;
         var m = url.match(urlRegExp);
+        var buildUrl = '';
         if (m == null) {
-          // 没有匹配到
-          return
+          // 普通Jenkins URL 没有匹配到
+          m = url.match(urlRegExpPipeline);
+          if (m == null) {
+            // Jenkins Pipeline URL 没有匹配到
+            m = url.match(urlRegExpPipelineLog);
+            if (m == null) {
+              // Jenkins Pipeline Log URL 没有匹配到
+              return
+            } else {
+              buildUrl = m[1] + 'job/' + m[2] + '/' + m[3];
+            }
+          } else {
+            buildUrl = m[1] + 'job/' + m[2];
+          }
+        } else {
+          buildUrl = m[0];
         }
-        _self.getParametersByUrl(m[0]);
+        console.log('buildUrl', buildUrl);
+        _self.getParametersByUrl(buildUrl);
       })
     },
 
@@ -51,6 +71,7 @@ new Vue({
         _self.number = data.number;
         _self.fullDisplayName = data.fullDisplayName;
         _self.url = data.url;
+        _self.building = data.building;
         _self.result = data.result;
         _self.buildTime = new Date(data.timestamp).toLocaleString();
         _self.builtOn = data.builtOn;
