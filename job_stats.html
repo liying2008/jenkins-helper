@@ -29,7 +29,7 @@
           <a :href="job.url" target="_blank">{{job.url}}</a>
         </td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.timerTrigger}}</td>
-        <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.node}}</td>
+        <td v-bind:class="{'disabled-row':job.disabled === 'true'}" :title="job.param">{{job.node}}</td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.disabled}}</td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.concurrentBuild}}</td>
       </tr>

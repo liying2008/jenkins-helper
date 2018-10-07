@@ -6,25 +6,38 @@
 
 该扩展程序可以：
 
-1. **Job 监控**:监控 Jenkins Job 的构建状态，构建完毕后显示通知。
+1. **Job 监控**: 监控 Jenkins Job 的构建状态，构建完毕后显示通知。
 
 ![Monitor](screenshots/monitor.png)
 
-2. **构建参数查看**：在 每一个 Build 页面及其子页面下可方便快速查看构建信息以及构建参数。
+> 注意：状态更新的频率以及通知频率可以在设置页更改。默认是60s更新一次状态，每次构建结束显示通知。
+
+
+2. **构建参数查看**： 在 每一个 Build 页面及其子页面下可方便快速查看构建信息以及构建参数。
 
 ![Parameters](screenshots/params.png)
 
-3. **地址栏智能搜索**：在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
+> 注意：只有在构建页面及其子页面下才有数据，如：`http://127.0.0.1:8080/jenkins/job/Pipeline2/4/` 是构建页面，`http://127.0.0.1:8080/jenkins/job/Pipeline2/4/console` 是子页面。  
+> 支持 Pipeline 的 Blue Ocean 页面。
+
+
+3. **地址栏智能搜索**： 在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
 
 ![Omnibox](screenshots/omnibox.png)
 
-4. **Job 统计**：统计Job的 **运行节点** / **定时构建时间表** / **是否禁用** / **是否允许并发** 等信息。
+> 注意：使用此功能需要提前在设置页配置好 **地址栏智能搜索（Omnibox Intelligent Search）** 。
+
+4. **Job 统计**： 统计Job的 **运行节点** / **定时构建时间表** / **是否禁用** / **是否允许并发** 等信息。
 
 ![Job Statistics](screenshots/job_statistics.png)
 
-5. **自定义设置**：可以针对自己的独特需求进行一些个性化的设置。
+> 注意：使用此功能需要提前在设置页配置好 **Job 统计设置（Job Statistics Settings）** 。
+
+5. **自定义设置**： 可以针对自己的独特需求进行一些个性化的设置。
 
 ![Settings](screenshots/settings.png)
+
+> 注意：更改设置之后，记得点击页面底部的 **保存设置（Save Settings）** 以应用更改。
 
 
 ## Thanks

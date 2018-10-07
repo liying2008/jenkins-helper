@@ -120,6 +120,11 @@ new Vue({
         _self.$refs.copiedSpan.style.visibility = "hidden";
       }, 2000);
     },
+    goToConfigure() {
+      var url = this.url.substring(0, this.url.length - 1);
+      var configureUrl = url.substring(0, url.lastIndexOf('/')) + '/configure';
+      chrome.tabs.create({'url': configureUrl});
+    },
     rebuild() {
       chrome.tabs.create({'url': this.url + 'rebuild'});
     },

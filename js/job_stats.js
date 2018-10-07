@@ -147,12 +147,29 @@ new Vue({
           job.url = decodeURIComponent(url);
           _self.jobs.push(job);
           _self.originJobs.push(job);
+          // 默认按 Node 排序
+          _self.jobs.sort(compare);
+          _self.originJobs.sort(compare);
+        }
+
+        // 对象数组排序函数
+        function compare(job1, job2) {
+          var node1 = job1.node;
+          var node2 = job2.node;
+          if (node1 < node2) {
+            return -1;
+          } else if (node1 > node2) {
+            return 1;
+          } else {
+            return 0;
+          }
         }
       })
     },
     parseFreeStyleJobFromXml(projectNode) {
       var _self = this;
       var node = '';
+      var param = '[N]';
       var disabled = '';
       var timerTrigger = '';
       var concurrentBuild = '';
@@ -163,7 +180,7 @@ new Vue({
       } else {
         // 没有 assignedNode，查找参数
         if (_self.nodeParams.length > 0) {
-          node = _self.getParamsNode(projectNode);
+          [node, param] = _self.getParamsNode(projectNode);
         }
       }
       // disabled
@@ -183,6 +200,7 @@ new Vue({
       }
       return {
         node,
+        param,
         disabled,
         timerTrigger,
         concurrentBuild,
@@ -191,6 +209,7 @@ new Vue({
     parsePipelineJobFromXml(flowNode) {
       var _self = this;
       var node = '';
+      var param = '';
       var disabled = '';
       var timerTrigger = '';
       var concurrentBuild = '';
@@ -219,12 +238,13 @@ new Vue({
       } else {
         // 没有 assignedNode，查找参数
         if (_self.nodeParams.length > 0) {
-          node = _self.getParamsNode(flowNode);
+          [node, param] = _self.getParamsNode(flowNode);
         }
       }
 
       return {
         node,
+        param,
         disabled,
         timerTrigger,
         concurrentBuild,
@@ -233,6 +253,7 @@ new Vue({
     getParamsNode(rootNode) {
       var _self = this;
       var node = '';
+      var param = '';
       var parameterDefinitionsNodes = rootNode.getElementsByTagName('parameterDefinitions');
       if (parameterDefinitionsNodes.length > 0) {
         parameterDefinitionsNodes = parameterDefinitionsNodes[0].childNodes;
@@ -269,12 +290,13 @@ new Vue({
         }
         for (var nodeParamsIndex = 0; nodeParamsIndex < _self.nodeParams.length; nodeParamsIndex++) {
           if (params.hasOwnProperty(_self.nodeParams[nodeParamsIndex])) {
-            node = params[_self.nodeParams[nodeParamsIndex]];
+            param = _self.nodeParams[nodeParamsIndex];
+            node = params[param];
             break;
           }
         }
       }
-      return node;
+      return [node, param];
     }
   }
 });

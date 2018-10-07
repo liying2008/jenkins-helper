@@ -21,7 +21,7 @@
     "message": "Tips: 在地址栏输入 <b>jk</b>，按空格键或 Tab 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
   },
   "jobStatsTitle": {
-    "message": "Job统计设置"
+    "message": "Job 统计设置"
   },
   "jobStatsTitleTip": {
     "message": "统计以下 Jenkins URL 中的 Job 信息"

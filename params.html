@@ -72,7 +72,7 @@
 
   <!--Prev/Next/Rebuild Button-->
   <div class="row" v-show="fullDisplayName">
-    <div class="btn-group col-xs-6 " role="group" aria-label="prevOrNext">
+    <div class="btn-group col-xs-6" role="group" aria-label="prevOrNext">
       <button type="button" class="btn btn-default" @click="prevBuild"><i class="glyphicon glyphicon-menu-left"></i>
       </button>
       <button type="button" class="btn btn-default" @click="nextBuild"><i class="glyphicon glyphicon-menu-right"></i>
@@ -80,6 +80,7 @@
     </div>
     <div class="col-xs-6">
       <p class="text-right">
+        <button type="button" class="btn btn-default" @click="goToConfigure">Configure</button>
         <button type="button" class="btn btn-default" @click="rebuild">Rebuild</button>
       </p>
     </div>

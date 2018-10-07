@@ -110,7 +110,7 @@ var Services = (function () {
               parseJobData(url, data, {});
             }
           }).catch(function (e) {
-            console.error("Oops, error", e);
+            console.error("获取Job状态失败", e);
             var jenkinsObj = {};
             jenkinsObj.name = url;
             jenkinsObj.status = 'error';
