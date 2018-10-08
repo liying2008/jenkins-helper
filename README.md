@@ -1,6 +1,14 @@
-# Jenkins Helper
+# Jenkins Helper   [![GitHub release](https://img.shields.io/github/release/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/releases)  [![license](https://img.shields.io/github/license/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/blob/master/LICENSE)
+
+
 
 一款能够极大地提高使用 **Jenkins** 的工作效率的 **Chrome浏览器扩展程序** 。
+
+## 下载地址
+
+在 Chrome Web Store 中搜索 **Jenkins Helper** 或 直接点击下面的链接：  
+https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh
+
 
 ## 功能介绍
 

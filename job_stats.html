@@ -58,7 +58,7 @@
         <p>{{strings.jobStatisticsDataFrom_}}</p>
         <ul class="list-group">
           <li class="list-group-item">
-            <p v-for="url in jenkinsUrls">{{url}}</p>
+            <p v-for="url in jenkinsUrls">{{decodeURIComponent(url)}}</p>
           </li>
         </ul>
       </div>

@@ -8,6 +8,22 @@ body {
   margin-top: 20px;
 }
 
+.building-row {
+  background-color: powderblue;
+}
+
+.disabled-row {
+  background-color: lightgray;
+}
+
+.no-wrap {
+  white-space: nowrap;
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .building {
   animation-name: building;
   animation-duration: 1.4s;
@@ -16,14 +32,6 @@ body {
   animation-iteration-count: infinite;
   animation-fill-mode: none;
   animation-play-state: running;
-}
-
-.building-row {
-  background-color: powderblue;
-}
-
-.disabled-row {
-  background-color: lightgray;
 }
 
 @keyframes building {
