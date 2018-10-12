@@ -159,6 +159,7 @@ var Services = (function () {
       for (var jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
         var job = jobs[jobIndex];
         var jobColor = job.color;
+        if (jobColor === undefined) continue;
         var building = false;
         if (jobColor.endsWith('_anime')) {
           // 正在构建中
