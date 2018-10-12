@@ -14,11 +14,11 @@
   <div class="page-header">
     <h1 style="text-align: center">{{strings.title}}</h1>
   </div>
-  <div class="info-block" v-show="jobs.length>0">
+  <div class="info-block" v-show="originJobs.length>0">
     <table class="table table-striped table-bordered">
       <tr>
         <th>Job URL</th>
-        <th width="12%">Cron Table</th>
+        <th width="12%">CronTable</th>
         <th width="12%">Node</th>
         <th width="8%">Disabled?</th>
         <th width="8%">Concurrent?</th>
@@ -37,7 +37,7 @@
   </div>
   <div class="info-block">
     <div class="row">
-      <div class="col-xs-6" v-show="jobs.length>0">
+      <div class="col-xs-6" v-show="originJobs.length>0">
         <p>{{strings.jobStatisticsShowSettings_}}</p>
         <ul class="list-group">
           <li class="list-group-item">

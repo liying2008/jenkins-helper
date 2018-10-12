@@ -90,28 +90,25 @@ new Vue({
           continue
         }
         url = url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
-        if (url.indexOf('/job/') > 0) {
-          // Job URL
-          this.getJobStatsByUrl(url + '/')
-        } else {
-          // Jenkins Or View URL
-          fetch(url + '/api/json').then(function (res) {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return Promise.reject(res);
+        fetch(url + '/api/json').then(function (res) {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          if (data.hasOwnProperty('jobs')) {
+            var jobLen = data.jobs.length;
+            for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
+              _self.getJobStatsByUrl(data.jobs[jobIndex].url)
             }
-          }).then(function (data) {
-            if (data.hasOwnProperty('jobs')) {
-              var jobLen = data.jobs.length;
-              for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
-                _self.getJobStatsByUrl(data.jobs[jobIndex].url)
-              }
-            }
-          }).catch(function (e) {
-            console.error("获取Job URL失败", e);
-          });
-        }
+          } else {
+            // Job Url
+            _self.getJobStatsByUrl(url + '/')
+          }
+        }).catch(function (e) {
+          console.error("获取Job URL失败", e);
+        });
       }
     },
 
