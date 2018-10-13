@@ -1,4 +1,8 @@
-# Jenkins Helper   [![GitHub release](https://img.shields.io/github/release/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/releases)  [![license](https://img.shields.io/github/license/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/blob/master/LICENSE)
+# Jenkins Helper   
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/lkjoiakaidioklnfdejmnoebfbjcbemh.svg)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lkjoiakaidioklnfdejmnoebfbjcbemh.svg)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
+[![license](https://img.shields.io/github/license/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/blob/master/LICENSE)
 
 
 
