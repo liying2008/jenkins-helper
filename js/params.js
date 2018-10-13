@@ -120,6 +120,16 @@ new Vue({
         _self.$refs.copiedSpan.style.visibility = "hidden";
       }, 2000);
     },
+    downloadConsoleLog() {
+      // 下载日志
+      chrome.downloads.download({
+        url: this.url + 'logText/progressiveText?start=0',
+        filename: this.fullDisplayName + ' Console Log.log',
+        saveAs: true
+      }, function (downloadId) {
+        console.log('downloadId', downloadId)
+      })
+    },
     goToConfigure() {
       var url = this.url.substring(0, this.url.length - 1);
       var configureUrl = url.substring(0, url.lastIndexOf('/')) + '/configure';

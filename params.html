@@ -80,8 +80,15 @@
     </div>
     <div class="col-xs-6">
       <p class="text-right">
-        <button type="button" class="btn btn-default" @click="goToConfigure">Configure</button>
-        <button type="button" class="btn btn-default" @click="rebuild">Rebuild</button>
+        <button type="button" class="btn btn-default" @click="downloadConsoleLog" title="Download Console Log">
+          <i class="glyphicon glyphicon-cloud-download"></i>
+        </button>
+        <button type="button" class="btn btn-default" @click="goToConfigure" title="Configure">
+          <i class="glyphicon glyphicon-cog"></i>
+        </button>
+        <button type="button" class="btn btn-default" @click="rebuild" title="Rebuild">
+          <i class="glyphicon glyphicon-play"></i>
+        </button>
       </p>
     </div>
   </div>
