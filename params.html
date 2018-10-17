@@ -21,7 +21,7 @@
       <div>
         <div class="row">
           <div class="col-xs-6"><i class="glyphicon glyphicon-tag"></i>
-            <a :href="url" target="_blank" style="margin-left: 10px">{{fullDisplayName}}</a>
+            <a :href="url" target="_blank" style="margin-left: 8px">{{fullDisplayName}}</a>
           </div>
           <div class="col-xs-6">{{strings.buildStatus_}}
             <!--构建中-->
@@ -45,9 +45,9 @@
 
         <div class="row" style="margin-top: 10px">
           <div class="col-xs-6"><i class="glyphicon glyphicon-time"></i>
-            <span style="margin-left: 10px">{{buildTime}}</span></div>
+            <span style="margin-left: 8px">{{buildTime}}</span></div>
           <div class="col-xs-6" v-show="builtOn">{{strings.runLabel_}}<span ref="builtOnSpan">{{builtOn}}</span>
-            <a style="margin-left: 10px;cursor: pointer" class="glyphicon glyphicon-duplicate" @click="copyBuiltOn"></a>
+            <a style="margin-left: 8px;cursor: pointer" class="glyphicon glyphicon-duplicate" @click="copyBuiltOn"></a>
             <span ref="copiedSpan"
                   style="color: #3c763d;font-size:smaller;margin-left: 10px;visibility: hidden">{{strings.copied}}</span>
           </div>
@@ -58,7 +58,7 @@
 
   <div class="info-block" v-show="parameters.length > 0">
     <p>{{strings.paramsList}}</p>
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-striped table-bordered" style="word-break: break-all">
       <tr>
         <th>Name</th>
         <th>Value</th>
