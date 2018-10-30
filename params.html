@@ -58,16 +58,18 @@
 
   <div class="info-block" v-show="parameters.length > 0">
     <p>{{strings.paramsList}}</p>
-    <table class="table table-condensed table-striped table-bordered" style="word-break: break-all">
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-      </tr>
-      <tr v-for="parameter in parameters">
-        <td>{{parameter.name}}</td>
-        <td>{{parameter.value}}</td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-condensed table-striped table-bordered">
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+        </tr>
+        <tr v-for="parameter in parameters">
+          <td>{{parameter.name}}</td>
+          <td>{{parameter.value}}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 
   <!--Prev/Next/Rebuild Button-->
@@ -99,6 +101,6 @@
   </h3>
 </div>
 </body>
-<script src="js/vue.js"></script>
+<script src="js/libs/vue.js"></script>
 <script src="js/params.js"></script>
 </html>

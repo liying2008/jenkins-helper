@@ -63,8 +63,9 @@ new Vue({
       var isFormInvalid = !this.$refs.formUrl.checkValidity();
       var isUrlInvalid = !this.$refs.inputUrl.validity.typeMismatch;
 
-      this.btnAddDisable = isFormInvalid;
-      this.$refs.formUrl.classList.toggle('has-error', isFormInvalid && this.$refs.inputUrl.value);
+      this.btnAddDisable = isFormInvalid || this.inputUrlValue === '';
+
+      this.$refs.formUrl.classList.toggle('has-error', isFormInvalid && this.inputUrlValue);
       this.$refs.msgError.classList.toggle('hidden', isUrlInvalid);
       this.$refs.msgError.innerText = this.$refs.inputUrl.validationMessage;
     },

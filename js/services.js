@@ -29,6 +29,8 @@ var Services = (function () {
     notbuilt: 'label-primary',
     disabled: 'label-primary',
   };
+  // 通知ID和URL的对照
+  var notificationUrlMap = {};
 
   function start() {
     xmlParser = new DOMParser();
@@ -40,6 +42,13 @@ var Services = (function () {
         refreshJobStatus(options.refreshTime)
       })
     });
+    // 点击通知
+    chrome.notifications.onClicked.addListener(function (notificationId) {
+      // 打开构建页面
+      if (notificationId in notificationUrlMap) {
+        chrome.tabs.create({'url': notificationUrlMap[notificationId]});
+      }
+    })
   }
 
   function refreshJobStatus(refreshTime) {
@@ -238,30 +247,27 @@ var Services = (function () {
   // 显示通知
   function showNotification(color, jobName, url) {
     if (showNotificationOption === 'all') {
-      show();
+      show(color, jobName, url);
     } else if (showNotificationOption === 'unstable') {
       if (color !== 'blue') {
-        show();
+        show(color, jobName, url);
       }
     }
+  }
 
-    function show() {
-      var statusIcon = color;
-      if (color === 'blue') statusIcon = 'green';
-      if (color === 'aborted') statusIcon = 'gray';
-      chrome.notifications.create(null, {
-        type: 'basic',
-        iconUrl: 'img/logo-' + statusIcon + '.svg',
-        title: 'Build ' + status[color] + '! - ' + jobName,
-        message: url,
-      }, function (notificationId) {
-        // no op
-      });
-      chrome.notifications.onClicked.addListener(function (notificationId) {
-        // 打开构建页面
-        chrome.tabs.create({'url': url});
-      })
-    }
+
+  function show(color, jobName, url) {
+    var statusIcon = color;
+    if (color === 'blue') statusIcon = 'green';
+    if (color === 'aborted') statusIcon = 'gray';
+    chrome.notifications.create(null, {
+      type: 'basic',
+      iconUrl: 'img/logo-' + statusIcon + '.svg',
+      title: 'Build ' + status[color] + '! - ' + jobName,
+      message: url,
+    }, function (notificationId) {
+      notificationUrlMap[notificationId] = url
+    });
   }
 
   return {
