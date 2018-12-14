@@ -264,7 +264,7 @@ var Services = (function () {
       type: 'basic',
       iconUrl: 'img/logo-' + statusIcon + '.svg',
       title: 'Build ' + status[color] + '! - ' + jobName,
-      message: url,
+      message: decodeURIComponent(url),
     }, function (notificationId) {
       notificationUrlMap[notificationId] = url
     });
