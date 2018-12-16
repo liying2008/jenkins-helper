@@ -4,9 +4,14 @@ var Services = (function () {
   var jenkinsUrls = [];
   var lastInterval = undefined;
   var showNotificationOption = undefined;
+  // 失败Job数量
   var failureJobCount = 0;
+  // 不稳定Job数量
   var unstableJobCount = 0;
+  // 成功Job数量
   var successJobCount = 0;
+  // 是否Jenkins URL无法访问
+  var errorOnFetch = false;
   var xmlParser;
   var fetchOptions = {
     credentials: 'include'
@@ -88,12 +93,14 @@ var Services = (function () {
     failureJobCount = 0;
     unstableJobCount = 0;
     successJobCount = 0;
+    errorOnFetch = false;
   }
 
   function countBadgeJobCount(color) {
     if (color === 'blue') successJobCount++;
-    if (color === 'red') failureJobCount++;
-    if (color === 'yellow') unstableJobCount++;
+    else if (color === 'red') failureJobCount++;
+    else if (color === 'yellow') unstableJobCount++;
+    else if (color === undefined) errorOnFetch = true;
   }
 
   function queryJobStatus() {
@@ -125,6 +132,8 @@ var Services = (function () {
             jenkinsObj.status = 'error';
             jenkinsObj.error = e.message || 'Unreachable';
             console.log(jenkinsObj);
+            countBadgeJobCount();
+            changeBadge();
             StorageService.saveJobStatus(url, jenkinsObj, function () {
               console.log('saveJobStatus error ok')
             })
@@ -238,10 +247,15 @@ var Services = (function () {
   }
 
   function changeBadge() {
-    var count = failureJobCount || unstableJobCount || successJobCount || 0;
-    var color = failureJobCount ? '#c9302c' : unstableJobCount ? '#f0ad4e' : '#5cb85c';
-    chrome.browserAction.setBadgeText({text: count.toString()});
-    chrome.browserAction.setBadgeBackgroundColor({color: color});
+    if (errorOnFetch) {
+      chrome.browserAction.setBadgeText({text: 'ERR'});
+      chrome.browserAction.setBadgeBackgroundColor({color: '#df2b38'});
+    } else {
+      var count = failureJobCount || unstableJobCount || successJobCount || 0;
+      var color = failureJobCount ? '#c9302c' : unstableJobCount ? '#f0ad4e' : '#5cb85c';
+      chrome.browserAction.setBadgeText({text: count.toString()});
+      chrome.browserAction.setBadgeBackgroundColor({color: color});
+    }
   }
 
   // 显示通知
