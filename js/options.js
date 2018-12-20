@@ -29,7 +29,11 @@ new Vue({
       {
         text: chrome.i18n.getMessage("params"),
         value: 'params',
-      }
+      },
+      {
+        text: chrome.i18n.getMessage("computer"),
+        value: 'computer',
+      },
     ],
     showNotificationOption: 'all',
     showNotificationOptions: [

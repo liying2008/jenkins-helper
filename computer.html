@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="js/storage.js"></script>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <title>Jenkins Computer</title>
+</head>
+<body class="container-fluid">
+<div id="app">
+  <ul class="nav nav-tabs">
+    <li role="presentation"><a href="monitor.html">{{strings.monitor}}</a></li>
+    <li role="presentation"><a href="params.html">{{strings.params}}</a></li>
+    <li role="presentation" class="active"><a href="computer.html">{{strings.computer}}</a></li>
+    <li role="presentation"><a href="#" @click="openJobList"><span class="glyphicon glyphicon-list"></span></a></li>
+    <li role="presentation"><a href="#" @click="openOptions"><span class="glyphicon glyphicon-cog"></span></a></li>
+  </ul>
+
+  <div>
+    <button type="button" class="btn btn-link" @click="openNodesManager">管理监控节点</button>
+  </div>
+
+</div>
+
+</body>
+<script src="js/libs/vue.js"></script>
+<script src="js/computer.js"></script>
+</html>

@@ -77,6 +77,9 @@
   "params": {
     "message": "Parameters"
   },
+  "computer": {
+    "message": "Nodes"
+  },
   "buildStatus_": {
     "message": "Result:"
   },

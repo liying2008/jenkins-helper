@@ -41,6 +41,16 @@ var StorageService = (function () {
     });
   }
 
+  function saveNodeStatus(nodesStatus, callback) {
+    chrome.storage.local.set({'nodes': nodesStatus}, callback);
+  }
+
+  function getNodeStatus(callback) {
+    chrome.storage.local.get('nodes', function (result) {
+      callback(result['nodes'] || {})
+    });
+  }
+
   function addStorageListener(listener) {
     chrome.storage.onChanged.addListener(listener);
   }
@@ -65,6 +75,7 @@ var StorageService = (function () {
   return {
     keyForJenkinsUrl: 'jenkins-url',
     keyForOptions: 'options',
+    keyForNodes: 'nodes',
     saveJenkinsUrls,
     getJenkinsUrls,
     removeJenkinsUrls,
@@ -72,6 +83,8 @@ var StorageService = (function () {
     getJobStatus,
     getOptions,
     saveOptions,
+    saveNodeStatus,
+    getNodeStatus,
     addStorageListener,
   }
 })();

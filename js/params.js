@@ -4,6 +4,7 @@ new Vue({
     strings: {
       monitor: chrome.i18n.getMessage("monitor"),
       params: chrome.i18n.getMessage("params"),
+      computer: chrome.i18n.getMessage("computer"),
       buildStatus_: chrome.i18n.getMessage("buildStatus_"),
       runLabel_: chrome.i18n.getMessage("runLabel_"),
       copied: chrome.i18n.getMessage("copied"),

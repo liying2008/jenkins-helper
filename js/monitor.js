@@ -6,6 +6,7 @@ new Vue({
       inputUrlPlaceholder: chrome.i18n.getMessage("inputUrlPlaceholder"),
       monitor: chrome.i18n.getMessage("monitor"),
       params: chrome.i18n.getMessage("params"),
+      computer: chrome.i18n.getMessage("computer"),
     },
     inputUrlValue: '',
     btnAddDisable: true,
@@ -22,6 +23,7 @@ new Vue({
     jobStatusChange(changes) {
       delete changes[StorageService.keyForJenkinsUrl];
       delete changes[StorageService.keyForOptions];
+      delete changes[StorageService.keyForNodes];
       if (Object.getOwnPropertyNames(changes).length > 0) {
         // Job Status 有变动
         // 刷新页面
