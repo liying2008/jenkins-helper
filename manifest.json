@@ -26,6 +26,7 @@
       "js/storage.js",
       "js/omnibox.js",
       "js/services.js",
+      "js/node_services.js",
       "js/background.js"
     ]
   },

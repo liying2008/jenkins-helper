@@ -41,6 +41,9 @@ new Vue({
     },
     // 磁盘空间是否未达阈值
     isSafe: function (node) {
+      if (node.offline) {
+        return false
+      }
       var remainingDiskSpace = parseInt(node.remainingDiskSpace.replace('GB', '').trim());
       var threshold = node.diskSpaceThreshold;
       return remainingDiskSpace > threshold;
