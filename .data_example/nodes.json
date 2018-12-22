@@ -1,0 +1,27 @@
+{
+  "nodes": {
+    "127.0.0.1": {
+      "status": "ok",
+      "monitoredNodes": {
+        "master": {
+          "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/127.0.0.1/",
+          "workingDirectory": "/home/liying",
+          "remainingDiskSpace": "423.94 GB",
+          "responseTime": "401ms",
+          "monitoring": true,
+          "diskSpaceThreshold": 2,
+          "offline": false
+        },
+        "192.168.2.108": {
+          "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
+          "workingDirectory": "/home/liying",
+          "remainingDiskSpace": "423.94 GB",
+          "responseTime": "401ms",
+          "monitoring": true,
+          "diskSpaceThreshold": 2,
+          "offline": false
+        }
+      }
+    }
+  }
+}

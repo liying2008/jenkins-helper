@@ -20,9 +20,60 @@
   </ul>
 
   <div>
-    <button type="button" class="btn btn-link" @click="openNodesManager">管理监控节点</button>
+    <button type="button" class="btn btn-link" @click="openNodesManager('')">管理监控节点</button>
   </div>
-
+  <ol class="list-group info-block">
+    <li class="list-group-item" v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes">
+      <div style="height: 60px">
+        <div class="col-xs-2">
+          <img class="img-rounded avatar" alt="Computer" src="img/computer48.png">
+        </div>
+        <div class="col-xs-8">
+          <div class="no-margin inline-block">
+            <h4>
+              <span class="no-wrap">{{decodeURIComponent(jenkinsUrl)}}</span>
+              <br>
+              <button type="button" class="small btn btn-link" style="padding: unset" @click="openNodesManager(jenkinsUrl)">
+                <span class="no-wrap">打开管理页面</span>
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="col-xs-2">
+          <div class="pull-right">
+            <button type="button" class="close" aria-label="Close" @click="removeJenkins(jenkinsUrl)">
+              <span aria-hidden="true">&times;</span></button>
+            <!--Jenkins错误-->
+            <a v-bind:class="['label', 'label-danger', {'hidden':jenkinsNodes.status=='ok'}]" target="_blank"
+               :href="jenkinsUrl" title="Error">
+              <span class="glyphicon glyphicon-exclamation-sign"></span>
+              Error
+            </a>
+          </div>
+        </div>
+      </div>
+      <table class="table table-condensed table-striped table-bordered"
+             v-show="true"
+             style="margin-bottom: 0">
+        <tr>
+          <th>DisplayName</th>
+          <th>RemainingDiskSpace</th>
+          <th>DiskSpaceThreshold</th>
+        </tr>
+        <tr v-for="(node, displayName, index) in jenkinsNodes.monitoredNodes" :title="node.offline?'Offline':''">
+          <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
+          <td v-bind:class="[node.offline?'disabled-row':'', isSafe(node)?'text-success':'text-danger']">
+            <a :href="node.nodeUrl" target="_blank">{{displayName}}</a></td>
+          <td v-bind:class="[node.offline?'disabled-row':'', isSafe(node)?'text-success':'text-danger']">
+            {{node.remainingDiskSpace}}
+          </td>
+          <td v-bind:class="[node.offline?'disabled-row':'', isSafe(node)?'text-success':'text-danger']">
+            {{node.diskSpaceThreshold}} GB
+          </td>
+        </tr>
+      </table>
+    </li>
+  </ol>
 </div>
 
 </body>

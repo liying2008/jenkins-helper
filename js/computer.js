@@ -6,19 +6,33 @@ new Vue({
       params: chrome.i18n.getMessage("params"),
       computer: chrome.i18n.getMessage("computer"),
     },
-
+    monitoredNodes: {},
   },
   mounted() {
+    this.queryMonitoredNodes();
     StorageService.addStorageListener(this.nodeStatusChange);
   },
+  computed: {},
   methods: {
     nodeStatusChange(changes) {
 
     },
-
-    openNodesManager() {
+    queryMonitoredNodes() {
+      var _self = this;
+      StorageService.getNodeStatus(function (result) {
+        console.log('monitoredNodes', result);
+        _self.monitoredNodes = result;
+      });
+    },
+    // 磁盘空间是否未达阈值
+    isSafe: function (node) {
+      var remainingDiskSpace = parseInt(node.remainingDiskSpace.replace('GB', '').trim());
+      var threshold = node.diskSpaceThreshold;
+      return remainingDiskSpace > threshold;
+    },
+    openNodesManager(jenkinsUrl) {
       chrome.windows.create({
-        url: 'computers_manager.html',
+        url: 'computers_manager.html?jenkins=' + jenkinsUrl,
         type: 'popup',
         width: 1200,
         height: 800,

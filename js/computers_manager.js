@@ -11,10 +11,19 @@ new Vue({
   },
 
   mounted() {
-    // var length2 = Object.keys(this.nodes).length;
-    // console.log('length2', length2)
+    this.getInitJenkinsUrl()
   },
   methods: {
+    getInitJenkinsUrl() {
+      var url = document.location.toString();
+      console.log('getInitJenkinsUrl', url);
+      var param = url.split("?")[1];
+      var jenkinsUrl = param.replace('jenkins=', '');
+      if (jenkinsUrl) {
+        this.inputUrlValue = jenkinsUrl;
+        this.startQuery();
+      }
+    },
     startQuery() {
       var _self = this;
       StorageService.getNodeStatus(function (result) {
@@ -59,9 +68,11 @@ new Vue({
           var monitoring = false;
           var diskSpaceThreshold = 0;
           if (_self.monitoredNodes.hasOwnProperty(url)) {
-            monitoring = _self.monitoredNodes[url].hasOwnProperty(displayName);
-            if (monitoring) {
-              diskSpaceThreshold = _self.monitoredNodes[url][displayName].diskSpaceThreshold;
+            if (_self.monitoredNodes[url].hasOwnProperty('monitoredNodes')) {
+              monitoring = _self.monitoredNodes[url]['monitoredNodes'].hasOwnProperty(displayName);
+              if (monitoring) {
+                diskSpaceThreshold = _self.monitoredNodes[url]['monitoredNodes'][displayName].diskSpaceThreshold;
+              }
             }
           }
           Vue.set(_self.nodes, displayName, {
@@ -91,23 +102,25 @@ new Vue({
       var node = this.nodes[displayName];
       if (node.monitoring) {
         // 之前已监控，需要取消监控
-        delete this.monitoredNodes[this.url][displayName]
+        delete this.monitoredNodes[this.url]['monitoredNodes'][displayName]
       } else {
         // 之前未监控，需要监控
         if (!this.monitoredNodes.hasOwnProperty(this.url)) {
-          this.monitoredNodes[this.url] = {}
-        }
-        if (!this.monitoredNodes[this.url].hasOwnProperty(displayName)) {
-          this.monitoredNodes[this.url][displayName] = {
-            nodeUrl: node.nodeUrl,
-            workingDirectory: node.workingDirectory,
-            remainingDiskSpace: node.remainingDiskSpace,
-            responseTime: node.responseTime,
-            monitoring: true,
-            diskSpaceThreshold: diskSpaceThreshold,
-            offline: node.offline
+          this.monitoredNodes[this.url] = {
+            "status": 'ok',
+            "monitoredNodes": {},
           }
         }
+        this.monitoredNodes[this.url]['monitoredNodes'][displayName] = {
+          nodeUrl: node.nodeUrl,
+          workingDirectory: node.workingDirectory,
+          remainingDiskSpace: node.remainingDiskSpace,
+          responseTime: node.responseTime,
+          monitoring: true,
+          diskSpaceThreshold: diskSpaceThreshold,
+          offline: node.offline
+        }
+
       }
       StorageService.saveNodeStatus(this.monitoredNodes, function () {
         _self.queryJenkinsNodes(_self.url)

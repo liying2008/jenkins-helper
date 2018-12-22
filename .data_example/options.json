@@ -1,0 +1,10 @@
+{
+  "options": {
+    "defaultTab": "computer",
+    "jobStatsJenkinsUrl": "http://127.0.0.1:8080/jenkins",
+    "nodeParam": "Node",
+    "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",
+    "refreshTime": "10",
+    "showNotificationOption": "all"
+  }
+}

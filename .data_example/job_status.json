@@ -1,0 +1,24 @@
+{
+  "http://127.0.0.1:8080/jenkins/": {
+    "jobs": {
+      "http://127.0.0.1:8080/jenkins/job/LongBuild/": {
+        "building": false,
+        "color": "blue",
+        "labelClass": "label-success",
+        "lastBuildNumber": 15,
+        "name": "LongBuild",
+        "status": "Success"
+      },
+      "http://127.0.0.1:8080/jenkins/job/Pipeline2/": {
+        "building": false,
+        "color": "red",
+        "labelClass": "label-danger",
+        "lastBuildNumber": 5,
+        "name": "Pipeline2",
+        "status": "Failure"
+      }
+    },
+    "name": "All Jobs",
+    "status": "ok"
+  }
+}
