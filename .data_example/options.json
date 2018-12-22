@@ -5,6 +5,7 @@
     "nodeParam": "Node",
     "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",
     "refreshTime": "10",
+    "nodeRefreshTime": "2",
     "showNotificationOption": "all"
   }
 }

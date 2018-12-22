@@ -60,6 +60,7 @@ var StorageService = (function () {
       callback(result['options'] || {
         defaultTab: 'monitor',
         refreshTime: 60,
+        nodeRefreshTime: 2,
         showNotificationOption: 'all',
         omniboxJenkinsUrl: '',
         nodeParam: '',

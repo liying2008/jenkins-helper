@@ -2,10 +2,13 @@ new Vue({
   el: '#app',
   data: {
     refreshTime: '60',
+    nodeRefreshTime: '2',
     strings: {
       monitorOptionTitle: chrome.i18n.getMessage("monitorOptionTitle"),
       showNotification: chrome.i18n.getMessage("showNotification"),
       refreshTime: chrome.i18n.getMessage("refreshTime"),
+      nodeOptionTitle: chrome.i18n.getMessage("nodeOptionTitle"),
+      nodeRefreshTime: chrome.i18n.getMessage("nodeRefreshTime"),
       optionsSaved: chrome.i18n.getMessage("optionsSaved"),
       globalOptionTitle: chrome.i18n.getMessage("globalOptionTitle"),
       defaultTab: chrome.i18n.getMessage("defaultTab"),
@@ -60,12 +63,19 @@ new Vue({
         chrome.i18n.getMessage("refreshTimeTip_2"));
       return chrome.i18n.getMessage("refreshTimeTip_1") + this.refreshTime +
         chrome.i18n.getMessage("refreshTimeTip_2");
+    },
+    nodeRefreshTimeTip() {
+      console.log(chrome.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
+        chrome.i18n.getMessage("nodeRefreshTimeTip_2"));
+      return chrome.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
+        chrome.i18n.getMessage("nodeRefreshTimeTip_2");
     }
   },
   mounted() {
     var _self = this;
     StorageService.getOptions(function (result) {
       _self.refreshTime = result.refreshTime;
+      _self.nodeRefreshTime = result.nodeRefreshTime || 2;
       _self.showNotificationOption = result.showNotificationOption;
       _self.defaultTab = result.defaultTab;
       _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
@@ -80,6 +90,7 @@ new Vue({
       StorageService.saveOptions({
         defaultTab: this.defaultTab,
         refreshTime: this.refreshTime,
+        nodeRefreshTime: this.nodeRefreshTime,
         showNotificationOption: this.showNotificationOption,
         omniboxJenkinsUrl: this.omniboxJenkinsUrl,
         nodeParam: this.nodeParam,

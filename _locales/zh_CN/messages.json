@@ -47,6 +47,9 @@
   "refreshTime": {
     "message": "刷新时间间隔"
   },
+  "nodeRefreshTime": {
+    "message": "刷新时间间隔"
+  },
   "optionsSaved": {
     "message": "设置已保存"
   },
@@ -64,6 +67,15 @@
   },
   "refreshTimeTip_2": {
     "message": " 秒</b> 获取一次最新状态"
+  },
+  "nodeOptionTitle": {
+    "message": "节点监控设置"
+  },
+  "nodeRefreshTimeTip_1": {
+    "message": "每隔  <b>"
+  },
+  "nodeRefreshTimeTip_2": {
+    "message": " 小时</b> 获取一次最新状态"
   },
   "url": {
     "message": "URL"

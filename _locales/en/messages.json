@@ -47,6 +47,9 @@
   "refreshTime": {
     "message": "Refresh Time:"
   },
+  "nodeRefreshTime": {
+    "message": "Refresh Time:"
+  },
   "optionsSaved": {
     "message": "Options Saved."
   },
@@ -64,6 +67,15 @@
   },
   "refreshTimeTip_2": {
     "message": " seconds</b>"
+  },
+  "nodeOptionTitle": {
+    "message": "Node Settings"
+  },
+  "nodeRefreshTimeTip_1": {
+    "message": "Check server for changes every  <b>"
+  },
+  "nodeRefreshTimeTip_2": {
+    "message": " hours</b>"
   },
   "url": {
     "message": "URL"
