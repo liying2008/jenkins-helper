@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "newValue": {
+      "http://127.0.0.1:8080/jenkins/": {
+        "monitoredNodes": {
+          "192.168.2.108": {
+            "diskSpaceThreshold": 430,
+            "monitoring": true,
+            "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
+            "offline": false,
+            "remainingDiskSpace": "423.98 GB",
+            "responseTime": "22ms",
+            "workingDirectory": "/home/liying"
+          }
+        },
+        "status": "ok"
+      }
+    },
+    "oldValue": {
+      "http://127.0.0.1:8080/jenkins/": {
+        "monitoredNodes": {
+          "192.168.2.108": {
+            "diskSpaceThreshold": 430,
+            "monitoring": true,
+            "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
+            "offline": false,
+            "remainingDiskSpace": "423.98 GB",
+            "responseTime": "22ms",
+            "workingDirectory": "/home/liying"
+          },
+          "master": {
+            "diskSpaceThreshold": 5,
+            "monitoring": true,
+            "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/(master)/",
+            "offline": false,
+            "remainingDiskSpace": "357.95 GB",
+            "responseTime": "0ms",
+            "workingDirectory": "/root/jenkins"
+          }
+        },
+        "status": "ok"
+      }
+    }
+  }
+}

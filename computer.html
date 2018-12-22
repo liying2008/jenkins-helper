@@ -41,7 +41,7 @@
         </div>
         <div class="col-xs-2">
           <div class="pull-right">
-            <button type="button" class="close" aria-label="Close" @click="removeJenkins(jenkinsUrl)">
+            <button type="button" class="close" aria-label="Close" @click="removeMonitor(jenkinsUrl)">
               <span aria-hidden="true">&times;</span></button>
             <!--Jenkins错误-->
             <a v-bind:class="['label', 'label-danger', {'hidden':jenkinsNodes.status=='ok'}]" target="_blank"

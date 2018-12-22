@@ -4,7 +4,7 @@
       "status": "ok",
       "monitoredNodes": {
         "master": {
-          "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/127.0.0.1/",
+          "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/(master)/",
           "workingDirectory": "/home/liying",
           "remainingDiskSpace": "423.94 GB",
           "responseTime": "401ms",

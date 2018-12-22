@@ -55,6 +55,9 @@ new Vue({
         for (var i = 0; i < computers.length; i++) {
           var displayName = computers[i].displayName;
           var nodeUrl = url + 'computer/' + displayName + '/';
+          if (displayName === 'master') {
+            nodeUrl = url + 'computer/(master)/';
+          }
           var workingDirectory = 'N/A';
           var remainingDiskSpace = 'N/A';
           var responseTime = 'N/A';

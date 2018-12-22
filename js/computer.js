@@ -15,7 +15,11 @@ new Vue({
   computed: {},
   methods: {
     nodeStatusChange(changes) {
-
+      // console.log(changes)
+      if (StorageService.keyForNodes in changes) {
+        // nodes 数据改变
+        this.queryMonitoredNodes()
+      }
     },
     queryMonitoredNodes() {
       var _self = this;
@@ -23,6 +27,17 @@ new Vue({
         console.log('monitoredNodes', result);
         _self.monitoredNodes = result;
       });
+    },
+    removeMonitor(jenkinsUrl) {
+      var _self = this;
+      StorageService.getNodeStatus(function (result) {
+        if (result.hasOwnProperty(jenkinsUrl)) {
+          delete result[jenkinsUrl];
+          StorageService.saveNodeStatus(result, function () {
+            console.log(jenkinsUrl + ' 已删除')
+          })
+        }
+      })
     },
     // 磁盘空间是否未达阈值
     isSafe: function (node) {
