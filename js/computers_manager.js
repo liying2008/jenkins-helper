@@ -65,10 +65,21 @@ new Vue({
           var responseTime = 'N/A';
           var offline = computers[i].offline;
           if (!offline) {
-            workingDirectory = computers[i].monitorData['hudson.node_monitors.DiskSpaceMonitor'].path;
-            var size = computers[i].monitorData['hudson.node_monitors.DiskSpaceMonitor'].size;
-            remainingDiskSpace = (size / 1024.0 / 1024.0 / 1024.0).toFixed(2) + ' GB';
-            responseTime = computers[i].monitorData['hudson.node_monitors.ResponseTimeMonitor'].average + 'ms';
+            var diskSpaceMonitor = computers[i].monitorData['hudson.node_monitors.DiskSpaceMonitor'];
+            if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('path')) {
+              workingDirectory = diskSpaceMonitor.path;
+            }
+            var size = undefined;
+            if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('size')) {
+              size = diskSpaceMonitor.size;
+            }
+            if (size) {
+              remainingDiskSpace = (size / 1024.0 / 1024.0 / 1024.0).toFixed(2) + ' GB';
+            }
+            var responseTimeMonitor = computers[i].monitorData['hudson.node_monitors.ResponseTimeMonitor'];
+            if (responseTimeMonitor && responseTimeMonitor.hasOwnProperty('average')) {
+              responseTime = responseTimeMonitor.average + 'ms';
+            }
           }
           var monitoring = false;
           var diskSpaceThreshold = 0;
