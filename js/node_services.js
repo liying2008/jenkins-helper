@@ -1,6 +1,9 @@
 var NodeServices = (function () {
   "use strict";
 
+  var fetchOptions = {
+    credentials: 'include'
+  };
   var lastInterval = undefined;
 
   function start() {
@@ -47,7 +50,7 @@ var NodeServices = (function () {
         (function (url) {
           // console.log('queryNodeStatus - url', url);
           var jsonUrl = url + 'computer/api/json';
-          fetch(jsonUrl).then(function (res) {
+          fetch(jsonUrl, fetchOptions).then(function (res) {
             if (res.ok) {
               return res.json();
             } else {

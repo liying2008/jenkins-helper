@@ -33,19 +33,26 @@ https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoe
 > 支持 Pipeline 的 Blue Ocean 页面。
 
 
-3. **地址栏智能搜索**： 在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
+3. **节点磁盘空间监控**: 监控 Jenkins 节点的磁盘空间大小，如果节点剩余空间大小小于或等于给定的阈值，则弹框告警。
+
+![Node Monitor](screenshots/node_monitor.png)
+
+> 注意：状态更新的频率可以在设置页更改。默认是2小时更新一次状态，每次浏览器启动后会自动检查最新的状态。
+
+
+4. **地址栏智能搜索**： 在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
 
 ![Omnibox](screenshots/omnibox.png)
 
 > 注意：使用此功能需要提前在设置页配置好 **地址栏智能搜索（Omnibox Intelligent Search）** 。
 
-4. **Job 统计**： 统计Job的 **运行节点** / **定时构建时间表** / **是否禁用** / **是否允许并发** 等信息。
+5. **Job 统计**： 统计Job的 **运行节点** / **定时构建时间表** / **是否禁用** / **是否允许并发** 等信息。
 
 ![Job Statistics](screenshots/job_statistics.png)
 
 > 注意：使用此功能需要提前在设置页配置好 **Job 统计设置（Job Statistics Settings）** 。
 
-5. **自定义设置**： 可以针对自己的独特需求进行一些个性化的设置。
+6. **自定义设置**： 可以针对自己的独特需求进行一些个性化的设置。
 
 ![Settings](screenshots/settings.png)
 

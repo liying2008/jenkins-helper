@@ -138,7 +138,7 @@
     "message": "请输入Jenkins URL"
   },
   "inputDiskSpaceThreshold": {
-    "message": "请输入磁盘剩余空间报警阈值（GB）"
+    "message": "请输入磁盘剩余空间告警阈值（GB）"
   },
   "showDisabledJobs": {
     "message": "显示禁用的Job"

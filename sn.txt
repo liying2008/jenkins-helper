@@ -1,0 +1,3 @@
+Google Chrome 以英文启动：
+
+LANGUAGE=en google-chrome
