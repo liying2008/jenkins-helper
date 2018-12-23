@@ -2,7 +2,9 @@ new Vue({
   el: '#app',
   data: {
     strings: {
-      noData: '获取数据失败！'
+      fetchNodesDataFailure: chrome.i18n.getMessage("fetchNodesDataFailure"),
+      inputJenkinsUrl: chrome.i18n.getMessage("inputJenkinsUrl"),
+      inputDiskSpaceThreshold: chrome.i18n.getMessage("inputDiskSpaceThreshold"),
     },
     inputUrlValue: '',
     nodes: {},
@@ -91,7 +93,7 @@ new Vue({
         console.log('nodes', _self.nodes)
       }).catch(function (e) {
         console.error("获取数据失败", e);
-        alert(_self.strings.noData)
+        alert(_self.strings.fetchNodesDataFailure)
       });
     },
     // 添加监控节点或取消监控节点
@@ -99,6 +101,10 @@ new Vue({
       var _self = this;
       // console.log('index', index);
       var thisInput = this.$refs.diskSpaceThreshold[index];
+      if (!thisInput.value) {
+        alert('The disk space threshold is illegal!');
+        return
+      }
       var diskSpaceThreshold = parseInt(thisInput.value);
       console.log(displayName);
       console.log(diskSpaceThreshold);

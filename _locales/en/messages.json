@@ -124,5 +124,20 @@
   },
   "jobStatisticsShowCronTableJobOnly": {
     "message": "Display only jobs with cron table."
+  },
+  "manageMonitoredNodes": {
+    "message": "Nodes Management"
+  },
+  "openManagerPage": {
+    "message": "Open the management page"
+  },
+  "fetchNodesDataFailure": {
+    "message": "Failed to fetch node data!"
+  },
+  "inputJenkinsUrl": {
+    "message": "Please enter Jenkins URL"
+  },
+  "inputDiskSpaceThreshold": {
+    "message": "Please enter the disk space threshold (GB)"
   }
 }

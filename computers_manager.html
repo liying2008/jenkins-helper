@@ -16,7 +16,7 @@
       <div class="input-group">
         <label class="input-group-addon" for="url">URL</label>
         <input id="url" autofocus type="url" class="form-control"
-               placeholder="请输入Jenkins URL"
+               :placeholder="strings.inputJenkinsUrl"
                v-model="inputUrlValue">
         <span class="input-group-btn">
           <button type="submit" class="btn btn-primary">
@@ -37,16 +37,16 @@
       </tr>
       <tr v-for="(node, displayName, index) in nodes" :title="node.offline?'Offline':''">
         <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
-        <td v-bind:class="{'disabled-row':node.offline, 'text-success': node.monitoring}">
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
           <a :href="node.nodeUrl" target="_blank">{{displayName}}</a></td>
-        <td v-bind:class="{'disabled-row':node.offline, 'text-success': node.monitoring}">{{node.workingDirectory}}</td>
-        <td v-bind:class="{'disabled-row':node.offline, 'text-success': node.monitoring}">{{node.remainingDiskSpace}}</td>
-        <td v-bind:class="{'disabled-row':node.offline, 'text-success': node.monitoring}">{{node.responseTime}}</td>
-        <td v-bind:class="{'disabled-row':node.offline, 'text-success': node.monitoring}">
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.workingDirectory}}</td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.remainingDiskSpace}}</td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.responseTime}}</td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
           <form v-bind:class="{'has-success':node.monitoring}" name="url-form" @submit.prevent="addOrDelMonitorNode(index, displayName)">
             <div class="input-group">
               <input name="diskSpaceThreshold" autofocus type="number" class="form-control"
-                     placeholder="请输入磁盘剩余空间报警阈值（GB）"
+                     :placeholder="strings.inputDiskSpaceThreshold"
                      :value="node.diskSpaceThreshold"
                      ref="diskSpaceThreshold"
                      min="1">

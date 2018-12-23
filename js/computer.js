@@ -5,6 +5,8 @@ new Vue({
       monitor: chrome.i18n.getMessage("monitor"),
       params: chrome.i18n.getMessage("params"),
       computer: chrome.i18n.getMessage("computer"),
+      manageMonitoredNodes: chrome.i18n.getMessage("manageMonitoredNodes"),
+      openManagerPage: chrome.i18n.getMessage("openManagerPage"),
     },
     monitoredNodes: {},
   },

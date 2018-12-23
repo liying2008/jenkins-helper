@@ -4,6 +4,8 @@ var NodeServices = (function () {
   var lastInterval = undefined;
 
   function start() {
+    // 开启浏览器后先执行一遍
+    queryNodeStatus();
     StorageService.addStorageListener(storageChange);
     StorageService.getOptions(function (options) {
       refreshNodeStatus(options.nodeRefreshTime)
@@ -25,6 +27,7 @@ var NodeServices = (function () {
       // refreshTime 变更
       if (changes[StorageService.keyForOptions].oldValue === undefined
         || newRefreshTime !== changes[StorageService.keyForOptions].oldValue.nodeRefreshTime) {
+        console.log('refreshNodeStatus', newRefreshTime);
         refreshNodeStatus(newRefreshTime)
       }
     }
@@ -35,11 +38,14 @@ var NodeServices = (function () {
     StorageService.getNodeStatus(function (result) {
       for (var jenkinsUrl in result) {
         // console.log('node', result[jenkinsUrl]);
+        if (!result.hasOwnProperty(jenkinsUrl)) {
+          continue
+        }
         if (!result[jenkinsUrl].hasOwnProperty('monitoredNodes')) {
           continue
         }
         (function (url) {
-          // console.log('url', url);
+          // console.log('queryNodeStatus - url', url);
           var jsonUrl = url + 'computer/api/json';
           fetch(jsonUrl).then(function (res) {
             if (res.ok) {
@@ -69,7 +75,7 @@ var NodeServices = (function () {
                 responseTime = computers[i].monitorData['hudson.node_monitors.ResponseTimeMonitor'].average + 'ms';
               }
               var diskSpaceThreshold = result[url]['monitoredNodes'][displayName]['diskSpaceThreshold'];
-              checkDiskSpace(displayName, remainingDiskSpace, diskSpaceThreshold);
+              checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold);
 
               result[url]['monitoredNodes'][displayName] = {
                 nodeUrl,
@@ -95,13 +101,13 @@ var NodeServices = (function () {
     })
   }
 
-  function checkDiskSpace(displayName, remainingDiskSpace, diskSpaceThreshold) {
+  function checkDiskSpace(jenkinsUrl, displayName, remainingDiskSpace, diskSpaceThreshold) {
     if (remainingDiskSpace === 'N/A') {
       chrome.notifications.create(null, {
         type: 'basic',
         iconUrl: 'img/computer48.png',
-        title: displayName,
-        message: 'Node offline',
+        title: displayName + ' - ' + jenkinsUrl,
+        message: 'Node offline!',
       }, function (notificationId) {
         console.log('checkDiskSpace notifications', notificationId)
       });
@@ -111,8 +117,8 @@ var NodeServices = (function () {
         chrome.notifications.create(null, {
           type: 'basic',
           iconUrl: 'img/computer48.png',
-          title: displayName,
-          message: 'Insufficient disk space, please clean up in time',
+          title: displayName + ' - ' + jenkinsUrl,
+          message: 'Insufficient disk space, please clean up in time.',
         }, function (notificationId) {
           console.log('checkDiskSpace notifications', notificationId)
         });

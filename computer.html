@@ -19,8 +19,9 @@
     <li role="presentation"><a href="#" @click="openOptions"><span class="glyphicon glyphicon-cog"></span></a></li>
   </ul>
 
-  <div>
-    <button type="button" class="btn btn-link" @click="openNodesManager('')">管理监控节点</button>
+  <div class="info-block">
+    <button type="button" class="btn btn-default" @click="openNodesManager('')">{{strings.manageMonitoredNodes}}
+    </button>
   </div>
   <ol class="list-group info-block">
     <li class="list-group-item" v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes">
@@ -33,8 +34,9 @@
             <h4>
               <span class="no-wrap">{{decodeURIComponent(jenkinsUrl)}}</span>
               <br>
-              <button type="button" class="small btn btn-link" style="padding: unset" @click="openNodesManager(jenkinsUrl)">
-                <span class="no-wrap">打开管理页面</span>
+              <button type="button" class="small btn btn-link" style="padding: unset"
+                      @click="openNodesManager(jenkinsUrl)">
+                <span class="no-wrap">{{strings.openManagerPage}}</span>
               </button>
             </h4>
           </div>
@@ -53,7 +55,7 @@
         </div>
       </div>
       <table class="table table-condensed table-striped table-bordered"
-             v-show="true"
+             v-show="jenkinsNodes.status=='ok'"
              style="margin-bottom: 0">
         <tr>
           <th>DisplayName</th>

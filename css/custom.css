@@ -16,6 +16,10 @@ body {
   background-color: lightgray;
 }
 
+.monitored-row {
+  background-color: #dff0d8;
+}
+
 .no-wrap {
   white-space: nowrap;
   display: inline-block;

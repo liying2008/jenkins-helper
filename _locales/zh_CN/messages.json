@@ -124,5 +124,20 @@
   },
   "jobStatisticsShowCronTableJobOnly": {
     "message": "不显示无 cron table 的 job"
+  },
+  "manageMonitoredNodes": {
+    "message": "管理监控节点"
+  },
+  "openManagerPage": {
+    "message": "打开管理页面"
+  },
+  "fetchNodesDataFailure": {
+    "message": "获取节点数据失败！"
+  },
+  "inputJenkinsUrl": {
+    "message": "请输入Jenkins URL"
+  },
+  "inputDiskSpaceThreshold": {
+    "message": "请输入磁盘剩余空间报警阈值（GB）"
   }
 }
