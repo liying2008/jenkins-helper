@@ -44,7 +44,7 @@ var Services = (function () {
       jenkinsUrls = result;
       StorageService.getOptions(function (options) {
         showNotificationOption = options.showNotificationOption;
-        refreshJobStatus(options.refreshTime)
+        refreshJobStatus(options.refreshTime || 60)
       })
     });
     // 点击通知

@@ -11,7 +11,7 @@ var NodeServices = (function () {
     queryNodeStatus();
     StorageService.addStorageListener(storageChange);
     StorageService.getOptions(function (options) {
-      refreshNodeStatus(options.nodeRefreshTime)
+      refreshNodeStatus(options.nodeRefreshTime || 2)
     });
   }
 
