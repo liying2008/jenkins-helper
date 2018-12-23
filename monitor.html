@@ -73,7 +73,7 @@
           <th>Job Name</th>
           <th width="12%">Result</th>
         </tr>
-        <tr v-for="(job, jobUrl, index) in jenkins.jobs">
+        <tr v-for="(job, jobUrl, index) in jenkins.jobs" v-show="showDisabledJobs || (job.color !== 'disabled')">
           <!--记录：如果给row设置background-color，有较大概率会被 bootstrap table-striped 样式覆盖-->
           <td v-bind:class="{'building-row':job.building,'disabled-row':job.color === 'disabled'}">
             <a target="_blank" :href="jobUrl" v-bind:class="{'building':job.building}">{{job.name}}</a>
@@ -95,6 +95,13 @@
       </table>
     </li>
   </ol>
+
+  <!--是否显示禁用的Job-->
+  <div class="checkbox info-block">
+    <label>
+      <input type="checkbox" v-model="showDisabledJobs">{{strings.showDisabledJobs}}
+    </label>
+  </div>
 </div>
 
 </body>

@@ -7,9 +7,11 @@ new Vue({
       monitor: chrome.i18n.getMessage("monitor"),
       params: chrome.i18n.getMessage("params"),
       computer: chrome.i18n.getMessage("computer"),
+      showDisabledJobs: chrome.i18n.getMessage("showDisabledJobs"),
     },
     inputUrlValue: '',
     btnAddDisable: true,
+    showDisabledJobs: true,
     jenkinsData: {
       jenkinsUrls: [],
       jobStatus: {}
@@ -18,6 +20,14 @@ new Vue({
   mounted() {
     this.getAllJobStatus();
     StorageService.addStorageListener(this.jobStatusChange);
+  },
+  watch: {
+    showDisabledJobs: function (newVal) {
+      StorageService.getOptions(function (options) {
+        options.showDisabledJobs = newVal;
+        StorageService.saveOptions(options)
+      })
+    }
   },
   methods: {
     jobStatusChange(changes) {
@@ -33,6 +43,13 @@ new Vue({
 
     getAllJobStatus() {
       var _self = this;
+      StorageService.getOptions(function (options) {
+        if (options.showDisabledJobs === undefined) {
+          _self.showDisabledJobs = true
+        } else {
+          _self.showDisabledJobs = options.showDisabledJobs
+        }
+      });
       StorageService.getJenkinsUrls(function (result) {
         _self.jenkinsData.jenkinsUrls = result;
         console.log('result', result);

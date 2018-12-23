@@ -139,5 +139,8 @@
   },
   "inputDiskSpaceThreshold": {
     "message": "请输入磁盘剩余空间报警阈值（GB）"
+  },
+  "showDisabledJobs": {
+    "message": "显示禁用的Job"
   }
 }

@@ -24,7 +24,8 @@
     </button>
   </div>
   <ol class="list-group info-block">
-    <li class="list-group-item" v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes">
+    <li class="list-group-item" v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes"
+        v-show="'monitoredNodes' in jenkinsNodes && Object.keys(jenkinsNodes.monitoredNodes).length>0">
       <div style="height: 60px">
         <div class="col-xs-2">
           <img class="img-rounded avatar" alt="Computer" src="img/computer48.png">

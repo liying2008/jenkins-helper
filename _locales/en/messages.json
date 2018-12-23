@@ -139,5 +139,8 @@
   },
   "inputDiskSpaceThreshold": {
     "message": "Please enter the disk space threshold (GB)"
+  },
+  "showDisabledJobs": {
+    "message": "Show disabled jobs"
   }
 }
