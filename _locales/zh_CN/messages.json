@@ -142,5 +142,8 @@
   },
   "showDisabledJobs": {
     "message": "显示禁用的Job"
+  },
+  "insufficientDiskSpaceNotifications": {
+    "message": "磁盘空间不足，请及时清理。"
   }
 }

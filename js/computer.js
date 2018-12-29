@@ -54,7 +54,7 @@ new Vue({
       chrome.windows.create({
         url: 'computers_manager.html?jenkins=' + jenkinsUrl,
         type: 'popup',
-        width: 1200,
+        width: 1000,
         height: 800,
       }, function (window) {
         console.log('window', window)
@@ -71,7 +71,7 @@ new Vue({
       chrome.windows.create({
         url: 'job_stats.html',
         type: 'popup',
-        width: 1000,
+        width: 1200,
         height: 800,
       }, function (window) {
         console.log('window', window)

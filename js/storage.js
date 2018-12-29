@@ -65,6 +65,7 @@ var StorageService = (function () {
         omniboxJenkinsUrl: '',
         nodeParam: '',
         jobStatsJenkinsUrl: '',
+        showDisabledJobs: true,
       })
     })
   }

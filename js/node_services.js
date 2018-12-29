@@ -132,7 +132,7 @@ var NodeServices = (function () {
           type: 'basic',
           iconUrl: 'img/computer48.png',
           title: displayName + ' - ' + jenkinsUrl,
-          message: 'Insufficient disk space, please clean up in time.',
+          message: chrome.i18n.getMessage("insufficientDiskSpaceNotifications"),
         }, function (notificationId) {
           console.log('checkDiskSpace notifications', notificationId)
         });

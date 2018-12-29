@@ -142,5 +142,8 @@
   },
   "showDisabledJobs": {
     "message": "Show disabled jobs"
+  },
+  "insufficientDiskSpaceNotifications": {
+    "message": "Insufficient disk space, please clean up in time."
   }
 }
