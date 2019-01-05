@@ -144,6 +144,12 @@
     "message": "显示禁用的Job"
   },
   "insufficientDiskSpaceNotifications": {
-    "message": "磁盘空间不足，请及时清理。"
+    "message": "磁盘空间不足，请及时清理！"
+  },
+  "nodeOfflineNotifications": {
+    "message": "节点离线！"
+  },
+  "fetchNodeInfoFailedNotifications": {
+    "message": "获取节点信息失败！"
   }
 }

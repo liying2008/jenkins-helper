@@ -145,5 +145,11 @@
   },
   "insufficientDiskSpaceNotifications": {
     "message": "Insufficient disk space, please clean up in time."
+  },
+  "nodeOfflineNotifications": {
+    "message": "Node offline!"
+  },
+  "fetchNodeInfoFailedNotifications": {
+    "message": "Fetch node information failed!"
   }
 }

@@ -89,7 +89,7 @@ var NodeServices = (function () {
                 }
               }
               var diskSpaceThreshold = result[url]['monitoredNodes'][displayName]['diskSpaceThreshold'];
-              checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold);
+              checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline);
 
               result[url]['monitoredNodes'][displayName] = {
                 nodeUrl,
@@ -115,28 +115,29 @@ var NodeServices = (function () {
     })
   }
 
-  function checkDiskSpace(jenkinsUrl, displayName, remainingDiskSpace, diskSpaceThreshold) {
-    if (remainingDiskSpace === 'N/A') {
+  function checkDiskSpace(jenkinsUrl, displayName, remainingDiskSpace, diskSpaceThreshold, offline) {
+    var message = '';
+    if (offline) {
+      message = chrome.i18n.getMessage("nodeOfflineNotifications")
+    } else if (remainingDiskSpace === 'N/A') {
+      message = chrome.i18n.getMessage("fetchNodeInfoFailedNotifications")
+    } else {
+      remainingDiskSpace = parseInt(remainingDiskSpace.replace('GB', '').trim());
+      if (remainingDiskSpace <= diskSpaceThreshold) {
+        message = chrome.i18n.getMessage("insufficientDiskSpaceNotifications")
+      }
+    }
+
+    if (message) {
+      // 显示通知
       chrome.notifications.create(null, {
         type: 'basic',
         iconUrl: 'img/computer48.png',
         title: displayName + ' - ' + jenkinsUrl,
-        message: 'Node offline!',
+        message: message,
       }, function (notificationId) {
         console.log('checkDiskSpace notifications', notificationId)
       });
-    } else {
-      remainingDiskSpace = parseInt(remainingDiskSpace.replace('GB', '').trim());
-      if (remainingDiskSpace <= diskSpaceThreshold) {
-        chrome.notifications.create(null, {
-          type: 'basic',
-          iconUrl: 'img/computer48.png',
-          title: displayName + ' - ' + jenkinsUrl,
-          message: chrome.i18n.getMessage("insufficientDiskSpaceNotifications"),
-        }, function (notificationId) {
-          console.log('checkDiskSpace notifications', notificationId)
-        });
-      }
     }
   }
 
