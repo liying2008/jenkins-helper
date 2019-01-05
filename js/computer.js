@@ -8,6 +8,7 @@ new Vue({
       manageMonitoredNodes: chrome.i18n.getMessage("manageMonitoredNodes"),
       openManagerPage: chrome.i18n.getMessage("openManagerPage"),
     },
+    refreshIconNormal: true,
     monitoredNodes: {},
   },
   mounted() {
@@ -49,6 +50,15 @@ new Vue({
       var remainingDiskSpace = parseInt(node.remainingDiskSpace.replace('GB', '').trim());
       var threshold = node.diskSpaceThreshold;
       return remainingDiskSpace > threshold;
+    },
+    // 刷新节点信息
+    refreshNodesInfo() {
+      var _self = this;
+      NodeServices.queryNodeStatus();
+      _self.refreshIconNormal = false;
+      setTimeout(function () {
+        _self.refreshIconNormal = true;
+      }, 2000);
     },
     openNodesManager(jenkinsUrl) {
       chrome.windows.create({

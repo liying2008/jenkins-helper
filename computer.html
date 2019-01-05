@@ -20,7 +20,12 @@
   </ul>
 
   <div class="info-block">
+    <!--管理监控节点按钮-->
     <button type="button" class="btn btn-default" @click="openNodesManager('')">{{strings.manageMonitoredNodes}}
+    </button>
+    <!--刷新节点信息按钮-->
+    <button type="button" class="btn btn-default" @click="refreshNodesInfo" title="Refresh nodes information">
+      <i v-bind:class="[refreshIconNormal?'glyphicon glyphicon-refresh':'glyphicon glyphicon-ok text-success']"></i>
     </button>
   </div>
   <ol class="list-group info-block">
@@ -82,4 +87,5 @@
 </body>
 <script src="js/libs/vue.js"></script>
 <script src="js/computer.js"></script>
+<script src="js/node_services.js"></script>
 </html>
