@@ -20,6 +20,10 @@ body {
   background-color: #dff0d8;
 }
 
+.pre-line {
+  white-space: pre-line;
+}
+
 .no-wrap {
   white-space: nowrap;
   display: inline-block;
