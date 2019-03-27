@@ -75,9 +75,23 @@ new Vue({
       for (var i = 0; i < jobLen; i++) {
         var job = this.originJobs[i];
         if (this.showEnabledJobOnly && job.disabled === 'true') continue;
-        if (this.showCronTableJobOnly && (job.timerTrigger === '' || job.timerTrigger.trim().indexOf('#') === 0)) continue;
+        if (this.showCronTableJobOnly && this.isCronTableComment(job.timerTrigger)) continue;
         this.jobs.push(job);
       }
+    },
+    // 判断一个crontable是否被注释掉了，需要判断是否每行都被注释了
+    isCronTableComment(cronTableStr) {
+      if (!cronTableStr) return true;
+      var comment = true;
+      cronTableStr = cronTableStr.trim();
+      var cronTables = cronTableStr.split("\n");
+      for (var i = 0; i < cronTables.length; i++) {
+        if (cronTables[i].trim().indexOf('#') !== 0) {
+          comment = false;
+          break
+        }
+      }
+      return comment
     },
     getJobStats() {
       var _self = this;
