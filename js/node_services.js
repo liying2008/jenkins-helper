@@ -1,9 +1,6 @@
 var NodeServices = (function () {
   "use strict";
 
-  var fetchOptions = {
-    credentials: 'include'
-  };
   var lastInterval = undefined;
 
   function start() {
@@ -11,6 +8,7 @@ var NodeServices = (function () {
     queryNodeStatus();
     StorageService.addStorageListener(storageChange);
     StorageService.getOptions(function (options) {
+      Tools.setJenkinsTokens(options.jenkinsTokens || []);
       refreshNodeStatus(options.nodeRefreshTime || 2)
     });
   }
@@ -26,10 +24,12 @@ var NodeServices = (function () {
     if (StorageService.keyForOptions in changes) {
       // 设置改变
       console.log('changes', changes);
-      var newRefreshTime = changes[StorageService.keyForOptions].newValue.nodeRefreshTime;
+      var newOptions = changes[StorageService.keyForOptions].newValue;
+      var oldOptions = changes[StorageService.keyForOptions].oldValue;
+      var newRefreshTime = newOptions.nodeRefreshTime;
+      Tools.setJenkinsTokens(newOptions.jenkinsTokens || []);
       // refreshTime 变更
-      if (changes[StorageService.keyForOptions].oldValue === undefined
-        || newRefreshTime !== changes[StorageService.keyForOptions].oldValue.nodeRefreshTime) {
+      if (oldOptions === undefined || newRefreshTime !== oldOptions.nodeRefreshTime) {
         console.log('refreshNodeStatus', newRefreshTime);
         refreshNodeStatus(newRefreshTime)
       }
@@ -50,7 +50,7 @@ var NodeServices = (function () {
         (function (url) {
           // console.log('queryNodeStatus - url', url);
           var jsonUrl = url + 'computer/api/json';
-          fetch(jsonUrl, fetchOptions).then(function (res) {
+          fetch(jsonUrl, Tools.getFetchOption(url)).then(function (res) {
             if (res.ok) {
               return res.json();
             } else {

@@ -13,9 +13,6 @@ var Services = (function () {
   // 是否Jenkins URL无法访问
   var errorOnFetch = false;
   var xmlParser;
-  var fetchOptions = {
-    credentials: 'include'
-  };
   var status = {
     blue: 'Success',
     yellow: 'Unstable',
@@ -44,6 +41,7 @@ var Services = (function () {
       jenkinsUrls = result;
       StorageService.getOptions(function (options) {
         showNotificationOption = options.showNotificationOption;
+        Tools.setJenkinsTokens(options.jenkinsTokens || []);
         refreshJobStatus(options.refreshTime || 60)
       })
     });
@@ -67,17 +65,18 @@ var Services = (function () {
     if (StorageService.keyForOptions in changes) {
       // 设置改变
       console.log('changes', changes);
-      showNotificationOption = changes[StorageService.keyForOptions].newValue.showNotificationOption;
-      var newRefreshTime = changes[StorageService.keyForOptions].newValue.refreshTime;
+      var oldOptions = changes[StorageService.keyForOptions].oldValue;
+      var newOptions = changes[StorageService.keyForOptions].newValue;
+      showNotificationOption = newOptions.showNotificationOption;
+      Tools.setJenkinsTokens(newOptions.jenkinsTokens || []);
+      var newRefreshTime = newOptions.refreshTime;
       // refreshTime 变更
-      if (changes[StorageService.keyForOptions].oldValue === undefined
-        || newRefreshTime !== changes[StorageService.keyForOptions].oldValue.refreshTime) {
+      if (oldOptions === undefined || newRefreshTime !== oldOptions.refreshTime) {
         refreshJobStatus(newRefreshTime)
       }
-      var newOmniboxJenkinsUrl = changes[StorageService.keyForOptions].newValue.omniboxJenkinsUrl;
+      var newOmniboxJenkinsUrl = newOptions.omniboxJenkinsUrl;
       // omniboxJenkinsUrl 变更
-      if (changes[StorageService.keyForOptions].oldValue === undefined
-        || newOmniboxJenkinsUrl !== changes[StorageService.keyForOptions].oldValue.omniboxJenkinsUrl) {
+      if (oldOptions === undefined || newOmniboxJenkinsUrl !== oldOptions.omniboxJenkinsUrl) {
         Omnibox.getAllJobs();
       }
     } else if (StorageService.keyForJenkinsUrl in changes) {
@@ -87,7 +86,6 @@ var Services = (function () {
       queryJobStatus()
     }
   }
-
 
   function resetBadgeJobCount() {
     failureJobCount = 0;
@@ -113,7 +111,8 @@ var Services = (function () {
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
           var jsonUrl = url + 'api/json/';
-          fetch(jsonUrl, fetchOptions).then(function (res) {
+          // console.log('getFetchOption', Tools.getFetchOption(url));
+          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
             if (res.ok) {
               return res.json();
             } else {
@@ -155,7 +154,7 @@ var Services = (function () {
   }
 
   function parseJenkinsOrViewData(url, data, oldStatus) {
-    fetch(url + 'cc.xml', fetchOptions).then(function (res) {
+    fetch(url + 'cc.xml', Tools.getFetchOption(url + 'cc.xml')).then(function (res) {
       return res.ok ? res.text() : Promise.reject(res);
     }).then(function (text) {
       var projects = xmlParser.parseFromString(text, 'text/xml').getElementsByTagName('Project');

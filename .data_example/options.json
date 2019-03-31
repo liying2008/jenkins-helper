@@ -1,6 +1,13 @@
 {
   "options": {
     "defaultTab": "computer",
+    "jenkinsTokens": [
+      {
+        "token": "1180a64ac6896a03553fbec6e54b9edf01",
+        "url": "http://127.0.0.1:8080/jenkins/",
+        "username": "admin"
+      }
+    ],
     "jobStatsJenkinsUrl": "http://127.0.0.1:8080/jenkins",
     "nodeParam": "Node",
     "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",

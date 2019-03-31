@@ -12,6 +12,8 @@ new Vue({
       optionsSaved: chrome.i18n.getMessage("optionsSaved"),
       globalOptionTitle: chrome.i18n.getMessage("globalOptionTitle"),
       defaultTab: chrome.i18n.getMessage("defaultTab"),
+      jenkinsToken: chrome.i18n.getMessage("jenkinsToken"),
+      addNewTokenBtn: chrome.i18n.getMessage("addNewTokenBtn"),
       omniboxOptionTitle: chrome.i18n.getMessage("omniboxOptionTitle"),
       searchFromJenkins: chrome.i18n.getMessage("searchFromJenkins"),
       searchFromJenkinsPlaceholder: chrome.i18n.getMessage("searchFromJenkinsPlaceholder"),
@@ -56,6 +58,7 @@ new Vue({
     omniboxJenkinsUrl: '',
     nodeParam: '',
     jobStatsJenkinsUrl: '',
+    jenkinsTokens: [],
   },
   computed: {
     refreshTimeTip() {
@@ -74,21 +77,37 @@ new Vue({
   mounted() {
     var _self = this;
     StorageService.getOptions(function (result) {
+      // console.log('result', result);
       _self.refreshTime = result.refreshTime;
       _self.nodeRefreshTime = result.nodeRefreshTime || 2;
       _self.showNotificationOption = result.showNotificationOption;
       _self.defaultTab = result.defaultTab;
+      _self.jenkinsTokens = result.jenkinsTokens;
       _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
       _self.nodeParam = result.nodeParam;
       _self.jobStatsJenkinsUrl = result.jobStatsJenkinsUrl;
     })
   },
   methods: {
+    addNewToken() {
+      this.jenkinsTokens.push({})
+    },
+    arrangeJenkinsTokens() {
+      var arrangedJenkinsTokens = [];
+      for (var i = 0; i < this.jenkinsTokens.length; i++) {
+        var token = this.jenkinsTokens[i];
+        if (token.hasOwnProperty('url') && token.url) {
+          arrangedJenkinsTokens.push(token)
+        }
+      }
+      return arrangedJenkinsTokens
+    },
     saveOptions() {
       console.log('saveOptions');
       var _self = this;
       StorageService.saveOptions({
         defaultTab: this.defaultTab,
+        jenkinsTokens: this.arrangeJenkinsTokens(),
         refreshTime: this.refreshTime,
         nodeRefreshTime: this.nodeRefreshTime,
         showNotificationOption: this.showNotificationOption,

@@ -31,7 +31,10 @@ new Vue({
       StorageService.getNodeStatus(function (result) {
         console.log('monitoredNodes', result);
         _self.monitoredNodes = result;
-        _self.queryJenkinsNodes()
+        StorageService.getOptions(function (options) {
+          Tools.setJenkinsTokens(options.jenkinsTokens || []);
+          _self.queryJenkinsNodes()
+        })
       });
     },
     queryJenkinsNodes(jenkinsUrl) {
@@ -45,7 +48,7 @@ new Vue({
         url = jenkinsUrl
       }
       var jsonUrl = url + 'computer/api/json';
-      fetch(jsonUrl).then(function (res) {
+      fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
         if (res.ok) {
           return res.json();
         } else {

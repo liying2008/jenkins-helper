@@ -8,6 +8,12 @@
   "defaultTab": {
     "message": "Default Tab:"
   },
+  "jenkinsToken": {
+    "message": "Jenkins Tokens:"
+  },
+  "addNewTokenBtn": {
+    "message": "Add New"
+  },
   "omniboxOptionTitle": {
     "message": "Omnibox Intelligent Search"
   },

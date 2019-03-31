@@ -34,6 +34,7 @@ new Vue({
       _self.xmlParser = new DOMParser();
       StorageService.addStorageListener(this.jobStatsChange);
       StorageService.getOptions(function (result) {
+        Tools.setJenkinsTokens(result.jenkinsTokens || []);
         if (result.jobStatsJenkinsUrl.trim() !== '') {
           _self.jenkinsUrls = result.jobStatsJenkinsUrl.trim().split('\n');
         }
@@ -104,7 +105,7 @@ new Vue({
           continue
         }
         url = url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
-        fetch(url + '/api/json').then(function (res) {
+        fetch(url + '/api/json', Tools.getFetchOption(url + '/api/json')).then(function (res) {
           if (res.ok) {
             return res.json();
           } else {
@@ -133,7 +134,7 @@ new Vue({
       } else {
         _self.jobUrlVisited.push(url)
       }
-      fetch(url + 'config.xml').then(function (res) {
+      fetch(url + 'config.xml', Tools.getFetchOption(url + 'config.xml')).then(function (res) {
         return res.ok ? res.text() : Promise.reject(res);
       }).then(function (text) {
         var documentNode = _self.xmlParser.parseFromString(text, 'text/xml');

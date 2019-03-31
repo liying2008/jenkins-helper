@@ -59,6 +59,7 @@ var StorageService = (function () {
     chrome.storage.local.get('options', function (result) {
       callback(result['options'] || {
         defaultTab: 'monitor',
+        jenkinsTokens: [],
         refreshTime: 60,
         nodeRefreshTime: 2,
         showNotificationOption: 'all',

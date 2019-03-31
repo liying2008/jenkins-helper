@@ -33,6 +33,7 @@ var Omnibox = (function () {
   function getAllJobs() {
     allJobs = [];
     StorageService.getOptions(function (result) {
+      Tools.setJenkinsTokens(result.jenkinsTokens || []);
       var jenkinsUrls = result.omniboxJenkinsUrl.split('\n');
       for (var i = 0; i < jenkinsUrls.length; i++) {
         var url = jenkinsUrls[i].trim();
@@ -46,7 +47,7 @@ var Omnibox = (function () {
             description: url + 'job/%s/'
           });
         }
-        fetch(url + 'api/json').then(function (res) {
+        fetch(url + 'api/json', Tools.getFetchOption(url + 'api/json')).then(function (res) {
           if (res.ok) {
             return res.json();
           } else {

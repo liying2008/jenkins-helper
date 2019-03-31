@@ -8,6 +8,12 @@
   "defaultTab": {
     "message": "默认标签页"
   },
+  "jenkinsToken": {
+    "message": "Jenkins Token 设置"
+  },
+  "addNewTokenBtn": {
+    "message": "增加"
+  },
   "omniboxOptionTitle": {
     "message": "地址栏智能搜索"
   },
