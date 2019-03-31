@@ -82,7 +82,7 @@ new Vue({
       _self.nodeRefreshTime = result.nodeRefreshTime || 2;
       _self.showNotificationOption = result.showNotificationOption;
       _self.defaultTab = result.defaultTab;
-      _self.jenkinsTokens = result.jenkinsTokens;
+      _self.jenkinsTokens = result.jenkinsTokens || [];
       _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
       _self.nodeParam = result.nodeParam;
       _self.jobStatsJenkinsUrl = result.jobStatsJenkinsUrl;
