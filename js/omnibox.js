@@ -7,7 +7,7 @@ var Omnibox = (function () {
 
   // 当用户输入时触发
   chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
-    console.log('text', text);
+    // console.log('text', text);
     if (!text) return;
     var suggestContent = filterJobs(text);
     // console.log('suggestContent', suggestContent);
@@ -16,7 +16,7 @@ var Omnibox = (function () {
 
   // 当用户接收关键字建议时触发
   chrome.omnibox.onInputEntered.addListener(function (text) {
-    console.log('inputEntered', text);
+    // console.log('inputEntered', text);
     if (!text) return;
     if (text.indexOf('http') !== 0) {
       text = defaultSuggestionUrl + 'job/' + text + '/'

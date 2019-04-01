@@ -50,7 +50,7 @@ var NodeServices = (function () {
         (function (url) {
           // console.log('queryNodeStatus - url', url);
           var jsonUrl = url + 'computer/api/json';
-          fetch(jsonUrl, Tools.getFetchOption(url)).then(function (res) {
+          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
             if (res.ok) {
               return res.json();
             } else {

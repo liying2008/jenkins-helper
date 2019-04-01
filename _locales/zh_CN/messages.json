@@ -1,6 +1,6 @@
 {
   "pluginDesc": {
-    "message": "监控 Jenkins Job 构建状态并提供其他一些便利功能。"
+    "message": "监控 Jenkins 构建状态和节点状态，同时也提供一些便利功能。"
   },
   "globalOptionTitle": {
     "message": "全局设置"

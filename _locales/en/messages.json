@@ -1,6 +1,6 @@
 {
   "pluginDesc": {
-    "message": "Monitor Jenkins execution results and provide other convenient services."
+    "message": "Monitor Jenkins build state and node state, and provide some convenient services."
   },
   "globalOptionTitle": {
     "message": "Global Settings"
