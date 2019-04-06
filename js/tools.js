@@ -5,6 +5,15 @@ var Tools = (function () {
     jenkinsTokens = tokens
   }
 
+  function getDefaultFetchOption(method = 'GET') {
+    return {
+      method: method,
+      credentials: 'include',
+      mode: 'cors',
+      redirect: 'follow',
+    }
+  }
+
   function getFetchOption(url, method = 'GET') {
     // console.log('jenkinsTokens', jenkinsTokens);
     var token = undefined;
@@ -25,17 +34,13 @@ var Tools = (function () {
         })
       }
     } else {
-      return {
-        method: method,
-        credentials: 'include',
-        mode: 'cors',
-        redirect: 'follow',
-      }
+      return getDefaultFetchOption(method)
     }
   }
 
   return {
     setJenkinsTokens,
+    getDefaultFetchOption,
     getFetchOption
   }
 })();

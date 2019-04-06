@@ -62,7 +62,8 @@ new Vue({
     getParametersByUrl(url) {
       var _self = this;
       var jsonUrl = url + '/api/json';
-      fetch(jsonUrl).then(function (res) {
+      // console.log("jsonUrl", jsonUrl);
+      fetch(jsonUrl, Tools.getDefaultFetchOption()).then(function (res) {
         if (res.ok) {
           return res.json();
         } else {
