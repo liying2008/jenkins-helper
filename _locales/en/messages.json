@@ -137,6 +137,24 @@
   "openManagerPage": {
     "message": "Open the management page"
   },
+  "displayName": {
+    "message": "DisplayName"
+  },
+  "remainingDiskSpace": {
+    "message": "RemainingDiskSpace"
+  },
+  "diskSpaceThreshold": {
+    "message": "DiskSpaceThreshold"
+  },
+  "workingDirectory": {
+    "message": "WorkingDirectory"
+  },
+  "responseTime": {
+    "message": "ResponseTime"
+  },
+  "isMonitoring": {
+    "message": "Monitoring?"
+  },
   "fetchNodesDataFailure": {
     "message": "Failed to fetch node data!"
   },

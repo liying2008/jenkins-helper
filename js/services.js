@@ -246,12 +246,16 @@ var Services = (function () {
   }
 
   function changeBadge() {
+    var _failureJobCount = failureJobCount;
+    var _unstableJobCount = unstableJobCount;
+    var _successJobCount = successJobCount;
+
     if (errorOnFetch) {
       chrome.browserAction.setBadgeText({text: 'ERR'});
       chrome.browserAction.setBadgeBackgroundColor({color: '#df2b38'});
     } else {
-      var count = failureJobCount || unstableJobCount || successJobCount || 0;
-      var color = failureJobCount ? '#c9302c' : unstableJobCount ? '#f0ad4e' : '#5cb85c';
+      var count = _failureJobCount || _unstableJobCount || _successJobCount || 0;
+      var color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c';
       chrome.browserAction.setBadgeText({text: count.toString()});
       chrome.browserAction.setBadgeBackgroundColor({color: color});
     }

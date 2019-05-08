@@ -64,9 +64,9 @@
              v-show="jenkinsNodes.status=='ok'"
              style="margin-bottom: 0">
         <tr>
-          <th>DisplayName</th>
-          <th>RemainingDiskSpace</th>
-          <th>DiskSpaceThreshold</th>
+          <th>{{strings.displayName}}</th>
+          <th>{{strings.remainingDiskSpace}}</th>
+          <th>{{strings.diskSpaceThreshold}}</th>
         </tr>
         <tr v-for="(node, displayName, index) in jenkinsNodes.monitoredNodes" :title="node.offline?'Offline':''">
           <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
