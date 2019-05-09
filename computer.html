@@ -15,8 +15,8 @@
     <li role="presentation"><a href="monitor.html">{{strings.monitor}}</a></li>
     <li role="presentation"><a href="params.html">{{strings.params}}</a></li>
     <li role="presentation" class="active"><a href="computer.html">{{strings.computer}}</a></li>
-    <li role="presentation"><a href="#" @click="openJobList"><span class="glyphicon glyphicon-list"></span></a></li>
-    <li role="presentation"><a href="#" @click="openOptions"><span class="glyphicon glyphicon-cog"></span></a></li>
+    <li role="presentation"><a href="#" @click="openJobList"><i class="glyphicon glyphicon-list"></i></a></li>
+    <li role="presentation"><a href="#" @click="openOptions"><i class="glyphicon glyphicon-cog"></i></a></li>
   </ul>
 
   <div class="info-block">
@@ -54,7 +54,7 @@
             <!--Jenkins错误-->
             <a v-bind:class="['label', 'label-danger', {'hidden':jenkinsNodes.status=='ok'}]" target="_blank"
                :href="jenkinsUrl" title="Error">
-              <span class="glyphicon glyphicon-exclamation-sign"></span>
+              <i class="glyphicon glyphicon-exclamation-sign"></i>
               Error
             </a>
           </div>

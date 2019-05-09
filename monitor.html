@@ -15,19 +15,19 @@
     <li role="presentation" class="active"><a href="monitor.html">{{strings.monitor}}</a></li>
     <li role="presentation"><a href="params.html">{{strings.params}}</a></li>
     <li role="presentation"><a href="computer.html">{{strings.computer}}</a></li>
-    <li role="presentation"><a href="#" @click="openJobList"><span class="glyphicon glyphicon-list"></span></a></li>
-    <li role="presentation"><a href="#" @click="openOptions"><span class="glyphicon glyphicon-cog"></span></a></li>
+    <li role="presentation"><a href="#" @click="openJobList"><i class="glyphicon glyphicon-list"></i></a></li>
+    <li role="presentation"><a href="#" @click="openOptions"><i class="glyphicon glyphicon-cog"></i></a></li>
   </ul>
 
   <form id="url-form" class="info-block" ref="formUrl" name="url-form" @submit.prevent="addJenkinsUrl">
     <div class="input-group">
-      <label class="input-group-addon" id="sizing-addon2" for="url">{{strings.url}}</label>
+      <label class="input-group-addon" for="url">{{strings.url}}</label>
       <input id="url" ref="inputUrl" @input="validateForm" autofocus type="url" class="form-control"
-             :placeholder="strings.inputUrlPlaceholder"
-             aria-describedby="sizing-addon2" v-model="inputUrlValue">
+             :placeholder="strings.inputUrlPlaceholder" v-model="inputUrlValue">
       <span class="input-group-btn">
-        <button id="add-url" class="btn btn-default" type="submit" :disabled="btnAddDisable">
-          <span class="glyphicon glyphicon-plus"></span></button>
+        <button id="add-url" class="btn btn-info" type="submit" :disabled="btnAddDisable">
+          <i class="glyphicon glyphicon-plus"></i>
+        </button>
       </span>
     </div>
   </form>
@@ -60,7 +60,7 @@
             <!--Jenkins错误-->
             <a v-bind:class="['label', 'label-danger', {'hidden':jenkins.status=='ok'}]" target="_blank"
                :href="jenkinsUrl" :title="jenkins.error">
-              <span class="glyphicon glyphicon-exclamation-sign"></span>
+              <i class="glyphicon glyphicon-exclamation-sign"></i>
               Error
             </a>
           </div>
