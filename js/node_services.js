@@ -122,9 +122,9 @@ var NodeServices = (function () {
     } else if (remainingDiskSpace === 'N/A') {
       message = chrome.i18n.getMessage("fetchNodeInfoFailedNotifications")
     } else {
-      remainingDiskSpace = parseInt(remainingDiskSpace.replace('GB', '').trim());
-      if (remainingDiskSpace <= diskSpaceThreshold) {
-        message = chrome.i18n.getMessage("insufficientDiskSpaceNotifications")
+      var remainingDiskSpaceInt = parseInt(remainingDiskSpace.replace('GB', '').trim());
+      if (remainingDiskSpaceInt <= diskSpaceThreshold) {
+        message = chrome.i18n.getMessage("insufficientDiskSpaceNotifications", [remainingDiskSpace])
       }
     }
 
@@ -133,7 +133,7 @@ var NodeServices = (function () {
       chrome.notifications.create(null, {
         type: 'basic',
         iconUrl: 'img/computer48.png',
-        title: displayName + ' - ' + jenkinsUrl,
+        title: displayName,
         message: message,
       }, function (notificationId) {
         console.log('checkDiskSpace notifications', notificationId)

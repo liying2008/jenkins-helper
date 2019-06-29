@@ -168,7 +168,12 @@
     "message": "显示禁用的Job"
   },
   "insufficientDiskSpaceNotifications": {
-    "message": "磁盘空间不足，请及时清理！"
+    "message": "磁盘空间仅剩 $num$ ，请及时清理！",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
   },
   "nodeOfflineNotifications": {
     "message": "节点离线！"

@@ -168,7 +168,12 @@
     "message": "Show disabled jobs"
   },
   "insufficientDiskSpaceNotifications": {
-    "message": "Insufficient disk space, please clean up in time."
+    "message": "The disk space is only $num$, please clean it in time!",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
   },
   "nodeOfflineNotifications": {
     "message": "Node offline!"
