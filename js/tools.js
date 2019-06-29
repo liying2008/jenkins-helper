@@ -24,6 +24,7 @@ var Tools = (function () {
         break
       }
     }
+    // console.log('Tool.getFetchOption token', token);
     if (token) {
       return {
         method: method,

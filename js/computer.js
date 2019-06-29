@@ -57,7 +57,10 @@ new Vue({
     // 刷新节点信息
     refreshNodesInfo() {
       var _self = this;
-      NodeServices.queryNodeStatus();
+      StorageService.getOptions(function (options) {
+        Tools.setJenkinsTokens(options.jenkinsTokens || []);
+        NodeServices.queryNodeStatus();
+      });
       _self.refreshIconNormal = false;
       setTimeout(function () {
         _self.refreshIconNormal = true;
