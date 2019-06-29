@@ -16,8 +16,12 @@
     <li role="presentation"><a href="monitor.html">{{strings.monitor}}</a></li>
     <li role="presentation"><a href="params.html">{{strings.params}}</a></li>
     <li role="presentation" class="active"><a href="computer.html">{{strings.computer}}</a></li>
-    <li role="presentation"><a href="#" @click="openJobList"><i class="glyphicon glyphicon-list"></i></a></li>
-    <li role="presentation"><a href="#" @click="openOptions"><i class="glyphicon glyphicon-cog"></i></a></li>
+    <li role="presentation" title="Open Job Statistics">
+      <a href="#" @click="openJobList"><i class="glyphicon glyphicon-list"></i></a>
+    </li>
+    <li role="presentation" title="Open Options"><a href="#" @click="openOptions">
+      <i class="glyphicon glyphicon-cog"></i></a>
+    </li>
   </ul>
 
   <div class="info-block">
@@ -41,7 +45,7 @@
             <h4>
               <span class="no-wrap">{{decodeURIComponent(jenkinsUrl)}}</span>
               <br>
-              <button type="button" class="small btn btn-link" style="padding: unset"
+              <button type="button" class="small btn btn-link" style="padding: unset; line-height: 1.1"
                       @click="openNodesManager(jenkinsUrl)">
                 <span class="no-wrap">{{strings.openManagerPage}}</span>
               </button>
