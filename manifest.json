@@ -42,5 +42,21 @@
     "notifications",
     "tabs",
     "downloads"
+  ],
+  "web_accessible_resources": [
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "css": [],
+      "js": [
+        "js/libs/jquery.slim.js",
+        "js/content_script.js"
+      ],
+      "run_at": "document_end"
+    }
   ]
 }
