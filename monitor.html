@@ -65,7 +65,8 @@
             <a v-bind:class="['label', 'label-danger', {'hidden':jenkins.status=='ok'}]" target="_blank"
                :href="jenkinsUrl" :title="jenkins.error">
               <i class="glyphicon glyphicon-exclamation-sign"></i>
-              Error
+              <span v-if="jenkins.status=='cctray'">CCtray Error</span>
+              <span v-else>Error</span>
             </a>
           </div>
         </div>

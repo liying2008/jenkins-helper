@@ -110,6 +110,7 @@ var Services = (function () {
 
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
+          // console.log('queryJobStatus::result', result);
           var jsonUrl = url + 'api/json/';
           // console.log('getFetchOption', Tools.getFetchOption(url));
           fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
@@ -125,7 +126,7 @@ var Services = (function () {
               parseJobData(url, data, {});
             }
           }).catch(function (e) {
-            console.error("获取Job状态失败", e);
+            console.error("queryJobStatus: 获取Job状态失败", e);
             var jenkinsObj = {};
             jenkinsObj.name = url;
             jenkinsObj.status = 'error';
@@ -204,6 +205,18 @@ var Services = (function () {
       // console.log(jenkinsObj);
       StorageService.saveJobStatus(url, jenkinsObj, function () {
         console.log('saveJobStatus ok')
+      })
+    }).catch(function (e) {
+      console.error('CCtray XML (cc.xml) Plugin is required.', e);
+      var jenkinsObj = {};
+      jenkinsObj.name = url;
+      jenkinsObj.status = 'cctray';
+      jenkinsObj.error = 'CCtray XML (cc.xml) Plugin is required.';
+      console.log(jenkinsObj);
+      countBadgeJobCount();
+      changeBadge();
+      StorageService.saveJobStatus(url, jenkinsObj, function () {
+        console.log('saveJobStatus error ok')
       })
     })
   }

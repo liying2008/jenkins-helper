@@ -20,5 +20,19 @@
     },
     "name": "All Jobs",
     "status": "ok"
+  },
+  "http://127.0.0.1:8080/jenkins/view/Test/job/Test1/": {
+    "jobs": {
+      "http: //127.0.0.1:8080/jenkins/view/Test/job/Test1/": {
+        "building": false,
+        "color": "blue",
+        "labelClass": "label-success",
+        "lastBuildNumber": 55,
+        "name": "Test1",
+        "status": "Success"
+      }
+    },
+    "name": "Test1",
+    "status": "ok"
   }
 }
