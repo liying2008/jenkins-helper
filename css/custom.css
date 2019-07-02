@@ -24,6 +24,12 @@ body {
   white-space: pre-line;
 }
 
+.hidden-param {
+  font-size: 0.8em;
+  color: #8c8c8c;
+  font-style: italic;
+}
+
 .no-wrap {
   white-space: nowrap;
   display: inline-block;

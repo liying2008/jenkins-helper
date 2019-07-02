@@ -116,6 +116,15 @@
   "noPrevBuild": {
     "message": "没有前一次构建了。"
   },
+  "passwordParameter": {
+    "message": "密码参数"
+  },
+  "fileParameter": {
+    "message": "文件参数"
+  },
+  "credentialsParameter": {
+    "message": "凭据参数"
+  },
   "jobStatisticsTitle": {
     "message": "Jenkins Job 统计"
   },

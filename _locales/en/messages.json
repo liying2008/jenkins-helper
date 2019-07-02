@@ -116,6 +116,15 @@
   "noPrevBuild": {
     "message": "There is no previous build."
   },
+  "passwordParameter": {
+    "message": "Password"
+  },
+  "fileParameter": {
+    "message": "File"
+  },
+  "credentialsParameter": {
+    "message": "Credentials"
+  },
   "jobStatisticsTitle": {
     "message": "Jenkins Job Statistics"
   },

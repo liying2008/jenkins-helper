@@ -73,7 +73,10 @@
         </tr>
         <tr v-for="parameter in parameters">
           <td><span>{{parameter.name}}</span></td>
-          <td><span class="pre-line">{{parameter.value}}</span></td>
+          <td><span v-bind:class="[
+          'pre-line',
+          {'hidden-param':parameter.hidden},
+          ]">{{parameter.value}}</span></td>
         </tr>
       </table>
     </div>

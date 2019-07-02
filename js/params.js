@@ -10,6 +10,9 @@ new Vue({
       copied: chrome.i18n.getMessage("copied"),
       paramsList: chrome.i18n.getMessage("paramsList"),
       noData: chrome.i18n.getMessage("noData"),
+      passwordParameter: chrome.i18n.getMessage("passwordParameter"),
+      fileParameter: chrome.i18n.getMessage("fileParameter"),
+      credentialsParameter: chrome.i18n.getMessage("credentialsParameter"),
       building: 'BUILDING',
     },
     number: 0,
@@ -83,10 +86,30 @@ new Vue({
           if (actions[i].hasOwnProperty('parameters')) {
             var parameters = actions[i].parameters;
             for (var pIndex = 0; pIndex < parameters.length; pIndex++) {
-              _self.parameters.push({
+              var _class = parameters[pIndex]._class;
+              param = {
+                hidden: false,
                 name: parameters[pIndex].name,
                 value: parameters[pIndex].value,
-              })
+              };
+              // 额外处理几个特殊类型的参数
+              if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
+                // 密码参数
+                param.hidden = true;
+                param.value = '<' + _self.strings.passwordParameter + '>'
+              } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
+                // 凭据参数
+                param.hidden = true;
+                param.value = '<' + _self.strings.credentialsParameter + '>'
+              } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
+                // 文件参数
+                param.hidden = true;
+                param.value = '<' + _self.strings.fileParameter + '>'
+              } else if (_class === 'hudson.model.RunParameterValue') {
+                // 运行时参数
+                param.value = parameters[pIndex].jobName + ' #' + parameters[pIndex].number
+              }
+              _self.parameters.push(param)
             }
           }
         }
@@ -122,8 +145,8 @@ new Vue({
         _self.$refs.copiedSpan.style.visibility = "hidden";
       }, 2000);
     },
+    // 下载日志
     downloadConsoleLog() {
-      // 下载日志
       chrome.downloads.download({
         url: this.url + 'logText/progressiveText?start=0',
         filename: this.fullDisplayName + ' Console Log.log',
@@ -132,6 +155,7 @@ new Vue({
         console.log('downloadId', downloadId)
       })
     },
+    // 去“配置”页
     goToConfigure() {
       var url = this.url.substring(0, this.url.length - 1);
       var configureUrl = url.substring(0, url.lastIndexOf('/')) + '/configure';
