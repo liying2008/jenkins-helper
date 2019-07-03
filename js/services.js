@@ -295,6 +295,7 @@ var Services = (function () {
       iconUrl: 'img/logo-' + statusIcon + '.svg',
       title: 'Build ' + status[color] + '! - ' + jobName,
       message: decodeURIComponent(url),
+      priority: 2,
     }, function (notificationId) {
       notificationUrlMap[notificationId] = url
     });

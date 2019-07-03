@@ -135,6 +135,7 @@ var NodeServices = (function () {
         iconUrl: 'img/computer48.png',
         title: displayName,
         message: message,
+        priority: 2,
       }, function (notificationId) {
         console.log('checkDiskSpace notifications', notificationId)
       });
