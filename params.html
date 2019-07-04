@@ -21,7 +21,7 @@
       <i class="glyphicon glyphicon-cog"></i></a>
     </li>
   </ul>
-  <ul class="list-group info-block" v-show="fullDisplayName">
+  <ul class="list-group info-block" v-show="status === 2">
     <li class="list-group-item">
       <div>
         <div class="row">
@@ -63,7 +63,7 @@
     </li>
   </ul>
 
-  <div class="info-block" v-show="parameters.length > 0">
+  <div class="info-block" v-show="status === 2 && parameters.length > 0">
     <p>{{strings.paramsList}}</p>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-bordered">
@@ -83,7 +83,7 @@
   </div>
 
   <!--Prev/Next/Rebuild Button-->
-  <div class="row" v-show="fullDisplayName">
+  <div class="row" v-show="status === 2">
     <div class="btn-group col-xs-6" role="group" aria-label="prevOrNext">
       <button type="button" class="btn btn-default" @click="prevBuild" title="Previous Build">
         <i class="glyphicon glyphicon-menu-left"></i>
@@ -107,9 +107,13 @@
     </div>
   </div>
 
-  <!--Empty Page-->
-  <h3 class="text-center" v-show="!fullDisplayName" style="margin: 64px">
+  <!-- No Data -->
+  <h3 class="text-center" v-show="status === 0" style="margin: 64px">
     {{strings.noData}}
+  </h3>
+  <!-- Fetching -->
+  <h3 class="text-center" v-show="status === 1" style="margin: 64px">
+    {{strings.fetching}}
   </h3>
 </div>
 </body>

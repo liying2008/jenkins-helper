@@ -10,11 +10,20 @@ new Vue({
       copied: chrome.i18n.getMessage("copied"),
       paramsList: chrome.i18n.getMessage("paramsList"),
       noData: chrome.i18n.getMessage("noData"),
+      fetching: chrome.i18n.getMessage("fetching"),
       passwordParameter: chrome.i18n.getMessage("passwordParameter"),
       fileParameter: chrome.i18n.getMessage("fileParameter"),
       credentialsParameter: chrome.i18n.getMessage("credentialsParameter"),
       building: 'BUILDING',
     },
+    // status 的状态说明：
+    // 0：无数据
+    // 1：正在请求数据
+    // 2：请求完成（有数据）
+    // -1：请求失败
+    status: 0,
+    // 之前的状态（上一次的状态）
+    preStatus: 0,
     number: 0,
     fullDisplayName: '',
     url: '',
@@ -64,6 +73,7 @@ new Vue({
 
     getParametersByUrl(url) {
       var _self = this;
+      _self.status = 1;
       var jsonUrl = url + '/api/json';
       // console.log("jsonUrl", jsonUrl);
       fetch(jsonUrl, Tools.getDefaultFetchOption()).then(function (res) {
@@ -73,6 +83,8 @@ new Vue({
           return Promise.reject(res);
         }
       }).then(function (data) {
+        _self.status = 2;
+        _self.preStatus = 2;
         _self.number = data.number;
         _self.fullDisplayName = data.fullDisplayName;
         _self.url = data.url;
@@ -115,6 +127,7 @@ new Vue({
         }
       }).catch(function (e) {
         console.error("获取参数失败", e);
+        _self.status = _self.preStatus;
         alert(_self.strings.noData)
       });
     },

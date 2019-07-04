@@ -113,6 +113,9 @@
   "noData": {
     "message": "No data."
   },
+  "fetching": {
+    "message": "Fetching..."
+  },
   "noPrevBuild": {
     "message": "There is no previous build."
   },

@@ -113,6 +113,9 @@
   "noData": {
     "message": "无数据"
   },
+  "fetching": {
+    "message": "正在获取..."
+  },
   "noPrevBuild": {
     "message": "没有前一次构建了。"
   },
