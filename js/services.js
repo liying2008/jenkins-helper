@@ -12,7 +12,6 @@ var Services = (function () {
   var successJobCount = 0;
   // 是否Jenkins URL无法访问
   var errorOnFetch = false;
-  var xmlParser;
   var status = {
     blue: 'Success',
     yellow: 'Unstable',
@@ -35,7 +34,6 @@ var Services = (function () {
   var notificationUrlMap = {};
 
   function start() {
-    xmlParser = new DOMParser();
     StorageService.addStorageListener(storageChange);
     StorageService.getJenkinsUrls(function (result) {
       jenkinsUrls = result;
@@ -120,10 +118,12 @@ var Services = (function () {
               return Promise.reject(res);
             }
           }).then(function (data) {
-            if (result.hasOwnProperty(url)) {
-              parseJobData(url, data, result[url].jobs || {});
+            if (data.hasOwnProperty('jobs')) {
+              // Jenkins or view data
+              parseJenkinsOrViewData(url, result || {})
             } else {
-              parseJobData(url, data, {});
+              // Single job data
+              parseSingleJobData(url, data, result || {})
             }
           }).catch(function (e) {
             console.error("queryJobStatus: 获取Job状态失败", e);
@@ -143,36 +143,28 @@ var Services = (function () {
     }
   }
 
-  function parseJobData(url, data, oldStatus) {
-    // console.log('data', data);
-    if (data.hasOwnProperty('jobs')) {
-      // Jenkins Url 或 View Url
-      parseJenkinsOrViewData(url, data, oldStatus)
-    } else {
-      // Job Url
-      parseSingleJobData(url, data, oldStatus)
-    }
-  }
-
-  function parseJenkinsOrViewData(url, data, oldStatus) {
-    fetch(url + 'cc.xml', Tools.getFetchOption(url + 'cc.xml')).then(function (res) {
-      return res.ok ? res.text() : Promise.reject(res);
-    }).then(function (text) {
-      var projects = xmlParser.parseFromString(text, 'text/xml').getElementsByTagName('Project');
-      var jobExtraInfo = {};
-      for (var i = 0; i < projects.length; i++) {
-        var lastBuildNumber = parseInt(projects[i].attributes['lastBuildLabel'].value);
-        var name = projects[i].attributes['name'].value;
-        var lastBuildUrl = projects[i].attributes['webUrl'].value + lastBuildNumber + '/';
-        jobExtraInfo[name] = {
-          lastBuildNumber: lastBuildNumber,
-          lastBuildUrl: lastBuildUrl,
+  function parseJenkinsOrViewData(url, oldStatus) {
+    var jsonUrl = url + 'api/json?tree=name,jobs[_class,name,url,color,lastCompletedBuild[number,url]]';
+    // console.log('parseJenkinsOrViewData jsonUrl', jsonUrl);
+    // console.log('parseJenkinsOrViewData encodeJsonUrl', encodeURI(jsonUrl));
+    fetch(encodeURI(jsonUrl), Tools.getFetchOption(jsonUrl)).then(function (res) {
+      return res.ok ? res.json() : Promise.reject(res);
+    }).then(function (data) {
+      var jobs = data.jobs;
+      // console.log('jobs 1', jobs);
+      for (var i = 0; i < jobs.length; i++) {
+        var lastBuildNumber = 0;
+        var lastBuildUrl = '';
+        if (jobs[i].lastCompletedBuild !== undefined && jobs[i].lastCompletedBuild !== null) {
+          lastBuildNumber = jobs[i].lastCompletedBuild.number;
+          lastBuildUrl = jobs[i].lastCompletedBuild.url
         }
+        jobs[i].lastBuildNumber = lastBuildNumber;
+        jobs[i].lastBuildUrl = lastBuildUrl;
       }
       var jenkinsObj = {};
       jenkinsObj.name = data.name || 'All Jobs';
       jenkinsObj.status = 'ok';
-      var jobs = data.jobs;
       jenkinsObj.jobs = {};
       for (var jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
         var job = jobs[jobIndex];
@@ -186,10 +178,13 @@ var Services = (function () {
         }
         countBadgeJobCount(jobColor);
         var buildStatus = status[jobColor];
-        if (oldStatus[job.url] && job.name in jobExtraInfo
-          && jobExtraInfo[job.name].lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
+
+        if (oldStatus[url] && oldStatus[url].jobs) {
+          oldStatus = oldStatus[url].jobs
+        }
+        if (oldStatus[job.url] && job.lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
           // 新的一次构建
-          showNotification(jobColor, job.name, jobExtraInfo[job.name].lastBuildUrl);
+          showNotification(jobColor, job.name, job.lastBuildUrl);
         }
 
         jenkinsObj.jobs[job.url] = {
@@ -198,7 +193,7 @@ var Services = (function () {
           status: buildStatus,
           building: building,
           labelClass: labelClass[jobColor],
-          lastBuildNumber: job.name in jobExtraInfo ? jobExtraInfo[job.name].lastBuildNumber : 0,
+          lastBuildNumber: job.lastBuildNumber,
         }
       }
       changeBadge();
@@ -207,11 +202,11 @@ var Services = (function () {
         console.log('saveJobStatus ok')
       })
     }).catch(function (e) {
-      console.error('CCtray XML (cc.xml) Plugin is required.', e);
+      console.error('fetch ' + jsonUrl + ' error!', e);
       var jenkinsObj = {};
       jenkinsObj.name = url;
-      jenkinsObj.status = 'cctray';
-      jenkinsObj.error = 'CCtray XML (cc.xml) Plugin is required.';
+      jenkinsObj.status = 'error';
+      jenkinsObj.error = e.message || 'Unreachable';
       console.log(jenkinsObj);
       countBadgeJobCount();
       changeBadge();
@@ -238,6 +233,10 @@ var Services = (function () {
     var lastBuild = data.lastCompletedBuild || {};
     var lastBuildNumber = lastBuild.number || 0;
     var lastBuildUrl = lastBuild.url || '';
+
+    if (oldStatus[url] && oldStatus[url].jobs) {
+      oldStatus = oldStatus[url].jobs
+    }
     if (oldStatus[data.url] && lastBuildNumber > oldStatus[data.url].lastBuildNumber) {
       // 新的一次构建
       showNotification(jobColor, jenkinsObj.name, lastBuildUrl);
@@ -289,7 +288,7 @@ var Services = (function () {
   function show(color, jobName, url) {
     var statusIcon = color;
     if (color === 'blue') statusIcon = 'green';
-    if (color === 'aborted') statusIcon = 'gray';
+    if (color === 'aborted' || color === 'disabled') statusIcon = 'gray';
     chrome.notifications.create(null, {
       type: 'basic',
       iconUrl: 'img/logo-' + statusIcon + '.svg',

@@ -59,9 +59,7 @@ https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoe
 > 注意：更改设置之后，记得点击页面底部的 **保存设置（Save Settings）** 以应用更改。
 
 
-## 使用须知
-
-1. 由于 **Jenkins 2.173** 版本移除了 `cc.xml` 接口，所以 Jenkins 2.173 及之后的版本需要额外安装 [CCtray XML (cc.xml) Plugin](https://wiki.jenkins.io/display/JENKINS/CCtray+XML+Plugin) 插件。
+## Tips
 
 1. 为了让该扩展可以顺利访问 Jenkins API 而不依赖用户登录，建议在设置界面配置 Jenkins 的 API Token ，如下图所示：
 
