@@ -44,6 +44,7 @@
     "downloads"
   ],
   "web_accessible_resources": [
+    "js/contents/params_stash_apply_btn.html"
   ],
   "content_scripts": [
     {
@@ -53,7 +54,7 @@
       ],
       "css": [],
       "js": [
-        "js/libs/jquery.slim.js",
+        "js/libs/jquery.js",
         "js/contents/params_stash.js"
       ],
       "run_at": "document_end"
