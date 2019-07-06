@@ -23,12 +23,12 @@
   },
   "background": {
     "scripts": [
-      "js/tools.js",
-      "js/storage.js",
-      "js/omnibox.js",
-      "js/services.js",
-      "js/node_services.js",
-      "js/background.js"
+      "js/backgrounds/tools.js",
+      "js/backgrounds/storage.js",
+      "js/backgrounds/omnibox.js",
+      "js/backgrounds/services.js",
+      "js/backgrounds/node_services.js",
+      "js/backgrounds/background.js"
     ]
   },
   "options_ui": {
@@ -54,7 +54,7 @@
       "css": [],
       "js": [
         "js/libs/jquery.slim.js",
-        "js/content_script.js"
+        "js/contents/params_stash.js"
       ],
       "run_at": "document_end"
     }

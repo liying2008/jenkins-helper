@@ -109,8 +109,10 @@ var Services = (function () {
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
           // console.log('queryJobStatus::result', result);
-          var jsonUrl = url + 'api/json/';
-          // console.log('getFetchOption', Tools.getFetchOption(url));
+          var encodeParam = encodeURI('*,lastCompletedBuild[number,result,url],jobs[name,url,color,lastCompletedBuild[number,result,url]]');
+          var jsonUrl = url + 'api/json?tree=' + encodeParam;
+          // console.log('queryJobStatus jsonUrl', jsonUrl);
+          // console.log('getFetchOption', Tools.getFetchOption(jsonUrl));
           fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
             if (res.ok) {
               return res.json();
@@ -120,7 +122,7 @@ var Services = (function () {
           }).then(function (data) {
             if (data.hasOwnProperty('jobs')) {
               // Jenkins or view data
-              parseJenkinsOrViewData(url, result || {})
+              parseJenkinsOrViewData(url, data, result || {})
             } else {
               // Single job data
               parseSingleJobData(url, data, result || {})
@@ -143,76 +145,57 @@ var Services = (function () {
     }
   }
 
-  function parseJenkinsOrViewData(url, oldStatus) {
-    var jsonUrl = url + 'api/json?tree=name,jobs[_class,name,url,color,lastCompletedBuild[number,url]]';
-    // console.log('parseJenkinsOrViewData jsonUrl', jsonUrl);
-    // console.log('parseJenkinsOrViewData encodeJsonUrl', encodeURI(jsonUrl));
-    fetch(encodeURI(jsonUrl), Tools.getFetchOption(jsonUrl)).then(function (res) {
-      return res.ok ? res.json() : Promise.reject(res);
-    }).then(function (data) {
-      var jobs = data.jobs;
-      // console.log('jobs 1', jobs);
-      for (var i = 0; i < jobs.length; i++) {
-        var lastBuildNumber = 0;
-        var lastBuildUrl = '';
-        if (jobs[i].lastCompletedBuild !== undefined && jobs[i].lastCompletedBuild !== null) {
-          lastBuildNumber = jobs[i].lastCompletedBuild.number;
-          lastBuildUrl = jobs[i].lastCompletedBuild.url
-        }
-        jobs[i].lastBuildNumber = lastBuildNumber;
-        jobs[i].lastBuildUrl = lastBuildUrl;
+  function parseJenkinsOrViewData(url, data, oldStatus) {
+    var jobs = data.jobs;
+    // console.log('jobs 1', jobs);
+    for (var i = 0; i < jobs.length; i++) {
+      jobs[i].lastBuildNumber = 0;
+      jobs[i].lastBuildUrl = '';
+      jobs[i].lastBuildResult = '';
+      if (jobs[i].lastCompletedBuild !== undefined && jobs[i].lastCompletedBuild !== null) {
+        jobs[i].lastBuildNumber = jobs[i].lastCompletedBuild.number;
+        jobs[i].lastBuildUrl = jobs[i].lastCompletedBuild.url;
+        jobs[i].lastBuildResult = jobs[i].lastCompletedBuild.result;
       }
-      var jenkinsObj = {};
-      jenkinsObj.name = data.name || 'All Jobs';
-      jenkinsObj.status = 'ok';
-      jenkinsObj.jobs = {};
-      for (var jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
-        var job = jobs[jobIndex];
-        var jobColor = job.color;
-        if (jobColor === undefined) continue;
-        var building = false;
-        if (jobColor.endsWith('_anime')) {
-          // 正在构建中
-          building = true;
-          jobColor = jobColor.replace(/_anime$/, '');
-        }
-        countBadgeJobCount(jobColor);
-        var buildStatus = status[jobColor];
-
-        if (oldStatus[url] && oldStatus[url].jobs) {
-          oldStatus = oldStatus[url].jobs
-        }
-        if (oldStatus[job.url] && job.lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
-          // 新的一次构建
-          showNotification(jobColor, job.name, job.lastBuildUrl);
-        }
-
-        jenkinsObj.jobs[job.url] = {
-          name: job.name,
-          color: jobColor,
-          status: buildStatus,
-          building: building,
-          labelClass: labelClass[jobColor],
-          lastBuildNumber: job.lastBuildNumber,
-        }
+    }
+    var jenkinsObj = {};
+    jenkinsObj.name = data.name || 'All Jobs';
+    jenkinsObj.status = 'ok';
+    jenkinsObj.jobs = {};
+    for (var jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
+      var job = jobs[jobIndex];
+      var jobColor = job.color;
+      if (jobColor === undefined) continue;
+      var building = false;
+      if (jobColor.endsWith('_anime')) {
+        // 正在构建中
+        building = true;
+        jobColor = jobColor.replace(/_anime$/, '');
       }
-      changeBadge();
-      // console.log(jenkinsObj);
-      StorageService.saveJobStatus(url, jenkinsObj, function () {
-        console.log('saveJobStatus ok')
-      })
-    }).catch(function (e) {
-      console.error('fetch ' + jsonUrl + ' error!', e);
-      var jenkinsObj = {};
-      jenkinsObj.name = url;
-      jenkinsObj.status = 'error';
-      jenkinsObj.error = e.message || 'Unreachable';
-      console.log(jenkinsObj);
-      countBadgeJobCount();
-      changeBadge();
-      StorageService.saveJobStatus(url, jenkinsObj, function () {
-        console.log('saveJobStatus error ok')
-      })
+      countBadgeJobCount(jobColor);
+      var buildStatus = status[jobColor];
+
+      if (oldStatus[url] && oldStatus[url].jobs) {
+        oldStatus = oldStatus[url].jobs
+      }
+      if (oldStatus[job.url] && job.lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
+        // 新的一次构建
+        showNotification(job.lastBuildResult, job.name, job.lastBuildUrl);
+      }
+
+      jenkinsObj.jobs[job.url] = {
+        name: job.name,
+        color: jobColor,
+        status: buildStatus,
+        building: building,
+        labelClass: labelClass[jobColor],
+        lastBuildNumber: job.lastBuildNumber,
+      }
+    }
+    changeBadge();
+    // console.log(jenkinsObj);
+    StorageService.saveJobStatus(url, jenkinsObj, function () {
+      console.log('saveJobStatus ok')
     })
   }
 
@@ -233,13 +216,14 @@ var Services = (function () {
     var lastBuild = data.lastCompletedBuild || {};
     var lastBuildNumber = lastBuild.number || 0;
     var lastBuildUrl = lastBuild.url || '';
+    var lastBuildResult = lastBuild.result || '';
 
     if (oldStatus[url] && oldStatus[url].jobs) {
       oldStatus = oldStatus[url].jobs
     }
     if (oldStatus[data.url] && lastBuildNumber > oldStatus[data.url].lastBuildNumber) {
       // 新的一次构建
-      showNotification(jobColor, jenkinsObj.name, lastBuildUrl);
+      showNotification(lastBuildResult, jenkinsObj.name, lastBuildUrl);
     }
     jenkinsObj.jobs[data.url] = {
       name: data.name,
@@ -274,25 +258,27 @@ var Services = (function () {
   }
 
   // 显示通知
-  function showNotification(color, jobName, url) {
+  function showNotification(result, jobName, url) {
     if (showNotificationOption === 'all') {
-      show(color, jobName, url);
+      show(result, jobName, url);
     } else if (showNotificationOption === 'unstable') {
-      if (color !== 'blue') {
-        show(color, jobName, url);
+      if (result !== 'SUCCESS') {
+        show(result, jobName, url);
       }
     }
   }
 
 
-  function show(color, jobName, url) {
-    var statusIcon = color;
-    if (color === 'blue') statusIcon = 'green';
-    if (color === 'aborted' || color === 'disabled') statusIcon = 'gray';
+  function show(result, jobName, url) {
+    var statusIcon = 'gray';
+    if (result === 'SUCCESS') statusIcon = 'green';
+    else if (result === 'FAILURE') statusIcon = 'red';
+    else if (result === 'UNSTABLE') statusIcon = 'yellow';
+
     chrome.notifications.create(null, {
       type: 'basic',
       iconUrl: 'img/logo-' + statusIcon + '.svg',
-      title: 'Build ' + status[color] + '! - ' + jobName,
+      title: 'Build ' + result + ' ! - ' + jobName,
       message: decodeURIComponent(url),
       priority: 2,
     }, function (notificationId) {
