@@ -2,7 +2,7 @@
   "use strict";
 
   var CMD_STASH_PARAMS = "stash_params";
-  var CMD_APPLY_PARAMS = "apply_params";
+  var CMD_RECOVER_PARAMS = "recover_params";
 
   var PAGE_BUILD = 'build';
   var PAGE_PARAMETERS = 'parameters';
@@ -104,8 +104,68 @@
 
   }
 
-  function applyParameters() {
+  function recoverParameters() {
+    var message = {
+      "cmd": CMD_RECOVER_PARAMS
+    };
+    chrome.runtime.sendMessage(message, function (resp) {
+      if (resp.code !== 0) {
+        console.log('recoverParameters: 读取参数失败！');
+        alert('Parameters read failed!');
+        return
+      }
+      var params = resp.data;
+      var cannotRecovered = {};
 
+      var tBodies = $('tbody', table);
+      var size = tBodies.length;
+      for (var i = 0; i < size; i++) {
+        var parameter = $("tr td.setting-main div[name='parameter']", tBodies[i]);
+        var children = parameter.children();
+        if (children.length < 1) {
+          continue
+        } else if (children.length < 2) {
+          var c0 = children[0];
+          if (c0.name !== 'name') {
+            continue
+          }
+          // <input name="name" type="hidden" value="PARAM1">
+          console.log('recoverParameters', c0.value + ' failed to recovered!');
+          cannotRecovered[c0.value] = params[c0.value]
+        } else {
+          c0 = children[0];
+          var c1 = children[1];
+          if (c0.name !== 'name') {
+            continue
+          } else if (!params.hasOwnProperty(c0.value)) {
+            console.log('没有暂存该参数: ' + c0.value);
+            cannotRecovered[c0.value] = '';
+            continue
+          }
+
+          var pname = c0.value;
+          var type = c1.type;
+          var name = c1.name;
+          var value = params[pname].value;
+          // console.log('stashed value', value);
+
+          if (type === 'file' || type === 'hidden' || name === 'credentialType') {
+            // 无法应用的参数类型
+            console.log('recoverParameters', pname + ' failed to recovered!');
+            cannotRecovered[pname] = '';
+            continue
+          } else if (type === 'checkbox') {
+            // checkbox 特殊处理
+            c1.checked = value
+          } else {
+            c1.value = value
+          }
+        } // end if
+      } // end for
+      if (cannotRecovered) {
+        alert('The following parameters failed to recover:\n\n' + getReadableParams(cannotRecovered))
+      }
+    })
   }
 
   function getReadableParams(params) {
@@ -133,7 +193,7 @@
     });
   }
 
-  function addStashAndApplyButtons() {
+  function addStashAndRecoverButtons() {
     var tBodies = $('tbody', table);
     var size = tBodies.length;
     if (size === 0) {
@@ -144,7 +204,7 @@
     if (btnTd.length !== 1) {
       return;
     }
-    var htmlFile = "js/contents/params_stash_apply_btn.html";
+    var htmlFile = "js/contents/params_stash_recover_btn.html";
     readHtml(htmlFile, function (text) {
       // add two buttons
       btnTd.append(text);
@@ -177,8 +237,8 @@
         alert('Unsupported parameters: \n\n' + cannotStashed.join('\n'))
       }
     });
-    $("#jenkins-helper-apply-parameters").on("click", function () {
-      applyParameters()
+    $("#jenkins-helper-recover-parameters").on("click", function () {
+      recoverParameters()
     });
   }
 
@@ -186,12 +246,12 @@
   var table = isBuildPage();
   if (table != null) {
     currentPage = PAGE_BUILD;
-    addStashAndApplyButtons();
+    addStashAndRecoverButtons();
   } else {
     table = isParametersPage();
     if (table != null) {
       currentPage = PAGE_PARAMETERS;
-      addStashAndApplyButtons();
+      addStashAndRecoverButtons();
     }
   }
 

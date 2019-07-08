@@ -39,11 +39,18 @@
         <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
         <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
           <a :href="node.nodeUrl" target="_blank">{{displayName}}</a></td>
-        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.workingDirectory}}</td>
-        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.remainingDiskSpace}}</td>
-        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">{{node.responseTime}}</td>
         <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
-          <form v-bind:class="{'has-success':node.monitoring}" name="url-form" @submit.prevent="addOrDelMonitorNode(index, displayName)">
+          {{node.workingDirectory}}
+        </td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
+          {{node.remainingDiskSpace}}
+        </td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
+          {{node.responseTime}}
+        </td>
+        <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
+          <form v-bind:class="{'has-success':node.monitoring}" name="url-form"
+                @submit.prevent="addOrDelMonitorNode(index, displayName)">
             <div class="input-group">
               <input name="diskSpaceThreshold" autofocus type="number" class="form-control"
                      :placeholder="strings.inputDiskSpaceThreshold"

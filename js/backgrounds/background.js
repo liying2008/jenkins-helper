@@ -2,7 +2,7 @@
   "use strict";
 
   var CMD_STASH_PARAMS = "stash_params";
-  var CMD_APPLY_PARAMS = "apply_params";
+  var CMD_RECOVER_PARAMS = "recover_params";
   var KEY_STASHED_PARAMS = "stashed_params";
 
 
@@ -24,6 +24,9 @@
       // 保存参数
       localStorage.setItem(KEY_STASHED_PARAMS, JSON.stringify(request.data));
       sendResponse({"code": 0});
+    } else if (request.cmd === CMD_RECOVER_PARAMS) {
+      var params = JSON.parse(localStorage.getItem(KEY_STASHED_PARAMS));
+      sendResponse({"code": 0, "data": params});
     }
   });
 })();
