@@ -44,7 +44,8 @@
     "downloads"
   ],
   "web_accessible_resources": [
-    "js/contents/params_stash_recover_btn.html"
+    "js/contents/params_stash_recover_btn_for_build.html",
+    "js/contents/params_stash_recover_btn_for_param.html"
   ],
   "content_scripts": [
     {

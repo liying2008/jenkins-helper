@@ -102,6 +102,7 @@ var Services = (function () {
   function queryJobStatus() {
     // console.log('jenkinsUrls', jenkinsUrls);
     resetBadgeJobCount();
+    changeBadge();
     for (var jenkinsIndex = 0; jenkinsIndex < jenkinsUrls.length; jenkinsIndex++) {
       var url = jenkinsUrls[jenkinsIndex];
 

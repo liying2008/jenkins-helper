@@ -20,7 +20,10 @@
     }).then(result).catch(error)
   }
 
-  // Build 页面 或 Rebuild页面
+  /**
+   * 当前页面是否是 Build 页面 或 Rebuild页面
+   * @returns {null|*}
+   */
   function isBuildPage() {
     // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/table[@class='parameters']
     var selector = "body#jenkins div#main-panel form table.parameters";
@@ -33,7 +36,10 @@
     }
   }
 
-  // 参数页面
+  /**
+   * 当前页面是否是参数页面
+   * @returns {null|*}
+   */
   function isParametersPage() {
     // XPATH: //body[@id='jenkins']//div[@id='main-panel']//table[@class='pane']
     var selector = "body#jenkins div#main-panel table.pane";
@@ -46,17 +52,20 @@
     }
   }
 
-
+  /**
+   * 从构建页面或Rebuild页面获取当前填写的参数
+   * @returns {*[]}
+   */
   function getBuildPageParameters() {
     // 暂存的参数
     var stashedParams = {};
     // 不能被暂存的参数
     var cannotStashed = [];
-    var tBodies = $('tbody', table);
-    var size = tBodies.length;
+    var parameters = $("tbody tr td.setting-main div[name='parameter']", table);
+    var size = parameters.length;
     for (var i = 0; i < size; i++) {
-      var parameter = $("tr td.setting-main div[name='parameter']", tBodies[i]);
-      var children = parameter.children();
+      var parameter = parameters[i];
+      var children = $(parameter).children();
       if (children.length < 1) {
         continue
       } else if (children.length < 2) {
@@ -100,10 +109,64 @@
     return [stashedParams, cannotStashed]
   }
 
+  /**
+   * 从参数页面获取当前填写的参数
+   *
+   * @returns {*[]}
+   */
   function getParametersPageParameters() {
-
+    // 暂存的参数
+    var stashedParams = {};
+    // 不能被暂存的参数
+    var cannotStashed = [];
+    var settingMains = $("tbody tr td.setting-main", table);
+    var size = settingMains.length;
+    for (var i = 0; i < size; i++) {
+      var settingMain = settingMains[i];
+      var settingName = $(settingMain).prev();
+      if (settingName && settingName.hasClass('setting-name')) {
+        var pname = settingName.text()
+      } else {
+        continue
+      }
+      console.log('pname', pname);
+      var children = $(settingMain).children();
+      // console.log('children', children);
+      if (children.length === 0) {
+        console.log('getParametersPageParameters0', pname + ' can not be stashed!');
+        cannotStashed.push(pname);
+        continue
+      } else {
+        var param = children[0];
+        var type = param.type;
+        var name = param.name;
+        if (param.tagName !== 'INPUT' && param.tagName !== 'TEXTAREA') {
+          console.log('getParametersPageParameters1', pname + ' can not be stashed!');
+          cannotStashed.push(pname);
+          continue
+        } else if (param.type === 'password') {
+          console.log('getParametersPageParameters2', pname + ' can not be stashed!');
+          cannotStashed.push(pname);
+          continue
+        }
+        var value = param.value;
+        if (param.type === 'checkbox') {
+          value = param.checked
+        }
+        console.log('param', 'PNAME=' + pname + ', tagName=' + param.tagName + ', type=' + type + ', name=' + name + ', value=' + value);
+        stashedParams[pname] = {
+          'type': type,
+          'name': name,
+          'value': value,
+        }
+      }
+    } // end for
+    return [stashedParams, cannotStashed]
   }
 
+  /**
+   * 从上次暂存中恢复参数
+   */
   function recoverParameters() {
     var message = {
       "cmd": CMD_RECOVER_PARAMS
@@ -117,11 +180,11 @@
       var params = resp.data;
       var cannotRecovered = {};
 
-      var tBodies = $('tbody', table);
-      var size = tBodies.length;
+      var parameters = $("tbody tr td.setting-main div[name='parameter']", table);
+      var size = parameters.length;
       for (var i = 0; i < size; i++) {
-        var parameter = $("tr td.setting-main div[name='parameter']", tBodies[i]);
-        var children = parameter.children();
+        var parameter = parameters[i];
+        var children = $(parameter).children();
         if (children.length < 1) {
           continue
         } else if (children.length < 2) {
@@ -150,7 +213,7 @@
           // console.log('stashed value', value);
 
           if (type === 'file' || type === 'hidden' || name === 'credentialType') {
-            // 无法应用的参数类型
+            // 无法恢复的参数类型
             console.log('recoverParameters', pname + ' failed to recovered!');
             cannotRecovered[pname] = '';
             continue
@@ -168,6 +231,11 @@
     })
   }
 
+  /**
+   * 获取可读性较好的参数列表
+   * @param params
+   * @returns {string}
+   */
   function getReadableParams(params) {
     var str = '';
     Object.keys(params).forEach(function (key) {
@@ -176,6 +244,10 @@
     return str
   }
 
+  /**
+   * 暂存参数
+   * @param params
+   */
   function saveParameters(params) {
     var message = {
       "cmd": CMD_STASH_PARAMS,
@@ -193,6 +265,9 @@
     });
   }
 
+  /**
+   * 添加 暂存参数 和 恢复参数 的按钮
+   */
   function addStashAndRecoverButtons() {
     var tBodies = $('tbody', table);
     var size = tBodies.length;
@@ -200,19 +275,34 @@
       return;
     }
     var lastTBody = tBodies[size - 1];
-    var btnTd = $('tr td', lastTBody);
-    if (btnTd.length !== 1) {
-      return;
+    if (currentPage === PAGE_BUILD) {
+      // 构建页面 或 Rebuild 页面
+      var btnTd = $('tr td', lastTBody);
+      if (btnTd.length !== 1) {
+        return;
+      }
+      var htmlFile = "js/contents/params_stash_recover_btn_for_build.html";
+      readHtml(htmlFile, function (text) {
+        // add two buttons
+        btnTd.append(text);
+        // bind onClick listeners
+        bindEvent();
+      })
+    } else if (currentPage === PAGE_PARAMETERS) {
+      // 参数页面
+      htmlFile = "js/contents/params_stash_recover_btn_for_param.html";
+      readHtml(htmlFile, function (text) {
+        // add stash buttons
+        $(text).insertAfter(lastTBody);
+        // bind onClick listeners
+        bindEvent();
+      })
     }
-    var htmlFile = "js/contents/params_stash_recover_btn.html";
-    readHtml(htmlFile, function (text) {
-      // add two buttons
-      btnTd.append(text);
-      // bind onClick listeners
-      bindEvent(table);
-    })
   }
 
+  /**
+   * 绑定事件
+   */
   function bindEvent() {
     $("#jenkins-helper-stash-parameters").on("click", function () {
       var params = undefined;
