@@ -102,7 +102,9 @@ var Services = (function () {
   function queryJobStatus() {
     // console.log('jenkinsUrls', jenkinsUrls);
     resetBadgeJobCount();
-    changeBadge();
+    if (jenkinsUrls.length === 0) {
+      changeBadge();
+    }
     for (var jenkinsIndex = 0; jenkinsIndex < jenkinsUrls.length; jenkinsIndex++) {
       var url = jenkinsUrls[jenkinsIndex];
 
@@ -251,10 +253,14 @@ var Services = (function () {
       chrome.browserAction.setBadgeText({text: 'ERR'});
       chrome.browserAction.setBadgeBackgroundColor({color: '#df2b38'});
     } else {
-      var count = _failureJobCount || _unstableJobCount || _successJobCount || 0;
-      var color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c';
-      chrome.browserAction.setBadgeText({text: count.toString()});
-      chrome.browserAction.setBadgeBackgroundColor({color: color});
+      if (_failureJobCount === 0 && _unstableJobCount === 0 && _successJobCount === 0) {
+        chrome.browserAction.setBadgeText({text: ''});
+      } else {
+        var count = _failureJobCount || _unstableJobCount || _successJobCount || 0;
+        var color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c';
+        chrome.browserAction.setBadgeText({text: count.toString()});
+        chrome.browserAction.setBadgeBackgroundColor({color: color});
+      }
     }
   }
 
