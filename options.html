@@ -13,7 +13,7 @@
   <!--全局设置-->
   <div id="global-settings" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{strings.globalOptionTitle}}</h3>
+      <h3 class="panel-title"><b>{{strings.globalOptionTitle}}</b></h3>
     </div>
     <div class="panel-body">
       <div>
@@ -52,7 +52,7 @@
   <!--智能搜索设置-->
   <div id="omnibox-settings" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{strings.omniboxOptionTitle}}</h3>
+      <h3 class="panel-title"><b>{{strings.omniboxOptionTitle}}</b></h3>
     </div>
     <div class="panel-body">
       <div>
@@ -68,7 +68,7 @@
   <!--监视器设置-->
   <div id="monitor-settings" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{strings.monitorOptionTitle}}</h3>
+      <h3 class="panel-title"><b>{{strings.monitorOptionTitle}}</b></h3>
     </div>
     <div class="panel-body">
       <div>
@@ -81,7 +81,7 @@
       </div>
       <div class="info-block">
         <div>{{strings.refreshTime}}</div>
-        <input style="width: 100%;" min="5" max="120" step="5" type="range" v-model="refreshTime">
+        <input style="width: 100%;" min="5" max="300" step="5" type="range" v-model="refreshTime">
         <i v-html="refreshTimeTip"></i>
       </div>
     </div>
@@ -89,7 +89,7 @@
   <!--节点监控设置-->
   <div id="node-settings" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{strings.nodeOptionTitle}}</h3>
+      <h3 class="panel-title"><b>{{strings.nodeOptionTitle}}</b></h3>
     </div>
     <div class="panel-body">
       <div>
@@ -102,7 +102,7 @@
   <!--Job统计设置-->
   <div id="job-stats-settings" class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">{{strings.jobStatsTitle}}</h3>
+      <h3 class="panel-title"><b>{{strings.jobStatsTitle}}</b></h3>
     </div>
     <div class="panel-body">
       <div>
@@ -115,6 +115,20 @@
         <textarea class="form-control" rows="4" v-model="jobStatsJenkinsUrl"
                   :placeholder="strings.jobStatsJenkinsPlaceholder" style="margin-top: 8px">
         </textarea>
+      </div>
+    </div>
+  </div>
+  <!--其他设置-->
+  <div id="other-settings" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><b>{{strings.otherTitle}}</b></h3>
+    </div>
+    <div class="panel-body">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" v-model="enableParamsStashAndRecover"> {{strings.enableParamsStashAndRecover}}
+        </label>
+        <div style="font-size: smaller; color: grey" v-html="strings.paramsStashAndRecoverTips"></div>
       </div>
     </div>
   </div>

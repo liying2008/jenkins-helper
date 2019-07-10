@@ -38,6 +38,14 @@ body {
   text-overflow: ellipsis;
 }
 
+.checkbox {
+  margin: 0;
+}
+
+.checkbox label {
+  align-items: baseline;
+}
+
 .building {
   animation-name: building;
   animation-duration: 1.4s;

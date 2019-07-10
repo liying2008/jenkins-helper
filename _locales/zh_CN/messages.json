@@ -41,6 +41,15 @@
   "jobStatsNodeParamPlaceholder": {
     "message": "可填写多个参数名称，以英文逗号(,)分割"
   },
+  "otherTitle": {
+    "message": "其他设置"
+  },
+  "enableParamsStashAndRecover": {
+    "message": "启用参数暂存&恢复功能"
+  },
+  "paramsStashAndRecoverTips": {
+    "message": "启用此功能后，该扩展会在Build页面参数列表下方加入两个按钮，用于暂存参数和恢复参数。"
+  },
   "saveOptions": {
     "message": "保存设置"
   },

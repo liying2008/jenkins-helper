@@ -41,6 +41,15 @@
   "jobStatsNodeParamPlaceholder": {
     "message": "Multiple parameters can be entered, separated by comma (,)"
   },
+  "otherTitle": {
+    "message": "Other Settings"
+  },
+  "enableParamsStashAndRecover": {
+    "message": "Enable parameters Stash & Recover function"
+  },
+  "paramsStashAndRecoverTips": {
+    "message": "When enabled, this extension adds two buttons at the bottom of the Build page parameter list for stashing parameters and recovering parameters."
+  },
   "saveOptions": {
     "message": "Save Settings"
   },

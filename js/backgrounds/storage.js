@@ -67,6 +67,7 @@ var StorageService = (function () {
         nodeParam: '',
         jobStatsJenkinsUrl: '',
         showDisabledJobs: true,
+        enableParamsStashAndRecover: true,
       })
     })
   }

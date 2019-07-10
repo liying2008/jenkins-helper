@@ -24,6 +24,9 @@ new Vue({
       jobStatsJenkinsPlaceholder: chrome.i18n.getMessage("jobStatsJenkinsPlaceholder"),
       jobStatsNodeParamTip: chrome.i18n.getMessage("jobStatsNodeParamTip"),
       jobStatsNodeParamPlaceholder: chrome.i18n.getMessage("jobStatsNodeParamPlaceholder"),
+      otherTitle: chrome.i18n.getMessage("otherTitle"),
+      enableParamsStashAndRecover: chrome.i18n.getMessage("enableParamsStashAndRecover"),
+      paramsStashAndRecoverTips: chrome.i18n.getMessage("paramsStashAndRecoverTips"),
     },
     defaultTab: 'monitor',
     defaultTabs: [
@@ -59,6 +62,7 @@ new Vue({
     nodeParam: '',
     jobStatsJenkinsUrl: '',
     jenkinsTokens: [],
+    enableParamsStashAndRecover: true,
   },
   computed: {
     refreshTimeTip() {
@@ -86,6 +90,11 @@ new Vue({
       _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
       _self.nodeParam = result.nodeParam;
       _self.jobStatsJenkinsUrl = result.jobStatsJenkinsUrl;
+      if (result.enableParamsStashAndRecover === undefined) {
+        _self.enableParamsStashAndRecover = true;
+      } else {
+        _self.enableParamsStashAndRecover = result.enableParamsStashAndRecover;
+      }
     })
   },
   methods: {
@@ -114,6 +123,7 @@ new Vue({
         omniboxJenkinsUrl: this.omniboxJenkinsUrl,
         nodeParam: this.nodeParam,
         jobStatsJenkinsUrl: this.jobStatsJenkinsUrl,
+        enableParamsStashAndRecover: this.enableParamsStashAndRecover,
       }, function () {
         _self.$refs.showSavedMsg.style.visibility = "";
         setTimeout(function () {
