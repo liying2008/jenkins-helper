@@ -1,4 +1,4 @@
-(function () {
+var ParamsStashRecover = (function () {
   "use strict";
 
   var CMD_STASH_PARAMS = "stash_params";
@@ -56,7 +56,7 @@
    * 从构建页面或Rebuild页面获取当前填写的参数
    * @returns {*[]}
    */
-  function getBuildPageParameters() {
+  function getBuildPageParameters(table) {
     // 暂存的参数
     var stashedParams = {};
     // 不能被暂存的参数
@@ -114,7 +114,7 @@
    *
    * @returns {*[]}
    */
-  function getParametersPageParameters() {
+  function getParametersPageParameters(table) {
     // 暂存的参数
     var stashedParams = {};
     // 不能被暂存的参数
@@ -167,7 +167,7 @@
   /**
    * 从上次暂存中恢复参数
    */
-  function recoverParameters() {
+  function recoverParameters(table) {
     var message = {
       "cmd": CMD_RECOVER_PARAMS
     };
@@ -268,7 +268,7 @@
   /**
    * 添加 暂存参数 和 恢复参数 的按钮
    */
-  function addStashAndRecoverButtons() {
+  function addStashAndRecoverButtons(table) {
     var tBodies = $('tbody', table);
     var size = tBodies.length;
     if (size === 0) {
@@ -286,7 +286,7 @@
         // add two buttons
         btnTd.append(text);
         // bind onClick listeners
-        bindEvent();
+        bindEvent(table);
       })
     } else if (currentPage === PAGE_PARAMETERS) {
       // 参数页面
@@ -295,7 +295,7 @@
         // add stash buttons
         $(text).insertAfter(lastTBody);
         // bind onClick listeners
-        bindEvent();
+        bindEvent(table);
       })
     }
   }
@@ -303,13 +303,13 @@
   /**
    * 绑定事件
    */
-  function bindEvent() {
+  function bindEvent(table) {
     $("#jenkins-helper-stash-parameters").on("click", function () {
       var params = undefined;
       if (currentPage === PAGE_BUILD) {
-        params = getBuildPageParameters()
+        params = getBuildPageParameters(table)
       } else if (currentPage === PAGE_PARAMETERS) {
-        params = getParametersPageParameters()
+        params = getParametersPageParameters(table)
       }
       if (!params) {
         console.log('获取参数失败');
@@ -328,21 +328,34 @@
       }
     });
     $("#jenkins-helper-recover-parameters").on("click", function () {
-      recoverParameters()
+      recoverParameters(table)
     });
   }
 
+  /**
+   * 当前所在页面
+   * @type {string}
+   */
   var currentPage = PAGE_BUILD;
-  var table = isBuildPage();
-  if (table != null) {
-    currentPage = PAGE_BUILD;
-    addStashAndRecoverButtons();
-  } else {
-    table = isParametersPage();
+
+  /**
+   * 启用参数暂存和参数恢复功能
+   */
+  function enable() {
+    var table = isBuildPage();
     if (table != null) {
-      currentPage = PAGE_PARAMETERS;
-      addStashAndRecoverButtons();
+      currentPage = PAGE_BUILD;
+      addStashAndRecoverButtons(table);
+    } else {
+      table = isParametersPage();
+      if (table != null) {
+        currentPage = PAGE_PARAMETERS;
+        addStashAndRecoverButtons(table);
+      }
     }
   }
 
+  return {
+    enable,
+  }
 })();

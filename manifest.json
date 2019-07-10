@@ -26,8 +26,9 @@
       "js/backgrounds/tools.js",
       "js/backgrounds/storage.js",
       "js/backgrounds/omnibox.js",
-      "js/backgrounds/services.js",
+      "js/backgrounds/job_services.js",
       "js/backgrounds/node_services.js",
+      "js/backgrounds/content_services.js",
       "js/backgrounds/background.js"
     ]
   },
@@ -56,7 +57,8 @@
       "css": [],
       "js": [
         "js/libs/jquery.js",
-        "js/contents/params_stash.js"
+        "js/contents/params_stash_recover.js",
+        "js/contents/content_scripts.js"
       ],
       "run_at": "document_end"
     }

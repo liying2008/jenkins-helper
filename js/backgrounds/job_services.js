@@ -1,4 +1,4 @@
-var Services = (function () {
+var JobServices = (function () {
   "use strict";
 
   var jenkinsUrls = [];
@@ -56,7 +56,7 @@ var Services = (function () {
     if (lastInterval !== undefined) {
       window.clearInterval(lastInterval)
     }
-    lastInterval = window.setInterval("Services.queryJobStatus()", refreshTime * 1000)
+    lastInterval = window.setInterval("JobServices.queryJobStatus()", refreshTime * 1000)
   }
 
   function storageChange(changes) {
