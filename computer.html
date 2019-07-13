@@ -68,11 +68,14 @@
       <table class="table table-condensed table-striped table-bordered"
              v-show="jenkinsNodes.status=='ok'"
              style="margin-bottom: 0">
+        <thead>
         <tr>
           <th>{{strings.displayName}}</th>
           <th>{{strings.remainingDiskSpace}}</th>
           <th>{{strings.diskSpaceThreshold}}</th>
         </tr>
+        </thead>
+        <tbody>
         <tr v-for="(node, displayName, index) in jenkinsNodes.monitoredNodes" :title="node.offline?'Offline':''">
           <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
           <td v-bind:class="[node.offline?'disabled-row':'', isSafe(node)?'text-success':'text-danger']">
@@ -84,6 +87,7 @@
             {{node.diskSpaceThreshold}} GB
           </td>
         </tr>
+        </tbody>
       </table>
     </li>
   </ol>

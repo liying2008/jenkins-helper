@@ -67,17 +67,21 @@
     <p>{{strings.paramsList}}</p>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-bordered">
+        <thead>
         <tr>
           <th>Name</th>
           <th>Value</th>
         </tr>
+        </thead>
+        <tbody>
         <tr v-for="parameter in parameters">
           <td><span>{{parameter.name}}</span></td>
           <td><span v-bind:class="[
-          'pre-line',
-          {'hidden-param':parameter.hidden},
-          ]">{{parameter.value}}</span></td>
+            'pre-line',
+            {'hidden-param':parameter.hidden},
+            ]">{{parameter.value}}</span></td>
         </tr>
+        </tbody>
       </table>
     </div>
   </div>

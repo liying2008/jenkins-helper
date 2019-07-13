@@ -28,6 +28,7 @@
   </form>
   <div class="info-block" v-show="Object.keys(nodes).length>0">
     <table class="table table-striped table-bordered">
+      <thead>
       <tr>
         <th>{{strings.displayName}}</th>
         <th width="15%">{{strings.workingDirectory}}</th>
@@ -35,6 +36,8 @@
         <th width="10%">{{strings.responseTime}}</th>
         <th>{{strings.isMonitoring}}</th>
       </tr>
+      </thead>
+      <tbody>
       <tr v-for="(node, displayName, index) in nodes" :title="node.offline?'Offline':''">
         <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
         <td v-bind:class="{'monitored-row': node.monitoring, 'disabled-row':node.offline}">
@@ -59,15 +62,16 @@
                      min="1">
               <div class="input-group-addon">GB</div>
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-default">
-                  <i v-show="node.monitoring" class="glyphicon glyphicon-heart" style="color: #c9302c"></i>
-                  <i v-show="!node.monitoring" class="glyphicon glyphicon-heart-empty" style="color: #c9302c"></i>
-                </button>
-              </span>
+                  <button type="submit" class="btn btn-default">
+                    <i v-show="node.monitoring" class="glyphicon glyphicon-heart" style="color: #c9302c"></i>
+                    <i v-show="!node.monitoring" class="glyphicon glyphicon-heart-empty" style="color: #c9302c"></i>
+                  </button>
+                </span>
             </div>
           </form>
         </td>
       </tr>
+      </tbody>
     </table>
   </div>
 </div>

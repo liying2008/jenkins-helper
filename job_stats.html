@@ -16,6 +16,7 @@
   </div>
   <div class="info-block" v-show="originJobs.length>0">
     <table class="table table-striped table-bordered">
+      <thead>
       <tr>
         <th>Job URL</th>
         <th width="12%">CronTable</th>
@@ -23,6 +24,8 @@
         <th width="8%">Disabled?</th>
         <th width="8%">Concurrent?</th>
       </tr>
+      </thead>
+      <tbody>
       <tr v-for="job in jobs">
         <!--记录：如果给row设置background-color，有概率会被 bootstrap table-striped 样式覆盖-->
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">
@@ -34,6 +37,7 @@
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.disabled}}</td>
         <td v-bind:class="{'disabled-row':job.disabled === 'true'}">{{job.concurrentBuild}}</td>
       </tr>
+      </tbody>
     </table>
   </div>
   <div class="info-block">

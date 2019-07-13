@@ -258,7 +258,11 @@ var JobServices = (function () {
       } else {
         var count = _failureJobCount || _unstableJobCount || _successJobCount || 0;
         var color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c';
-        chrome.browserAction.setBadgeText({text: count.toString()});
+        if (count > 9999) {
+          chrome.browserAction.setBadgeText({text: '999+'});
+        } else {
+          chrome.browserAction.setBadgeText({text: count.toString()});
+        }
         chrome.browserAction.setBadgeBackgroundColor({color: color});
       }
     }
