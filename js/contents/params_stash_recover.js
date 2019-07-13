@@ -44,8 +44,8 @@ var ParamsStashRecover = (function () {
    * @returns {null|*}
    */
   function isParametersPage() {
-    // XPATH: //body[@id='jenkins']//div[@id='main-panel']//table[@class='pane']
-    var selector = "body#jenkins div#main-panel table.pane";
+    // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']//table[@class='pane']
+    var selector = "body#jenkins div#main-panel div.pane-frame div.row div.row table.pane";
     var elements = $(selector);
     console.log(elements);
     if (elements.length === 1) {
@@ -288,6 +288,7 @@ var ParamsStashRecover = (function () {
     if (size === 0) {
       return;
     }
+    console.log('currentPage', currentPage);
     var lastTBody = tBodies[size - 1];
     if (currentPage === PAGE_BUILD) {
       // 构建页面 或 Rebuild 页面
