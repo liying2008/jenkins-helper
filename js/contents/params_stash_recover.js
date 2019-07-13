@@ -7,6 +7,9 @@ var ParamsStashRecover = (function () {
   var PAGE_BUILD = 'build';
   var PAGE_PARAMETERS = 'parameters';
 
+  var extensionName = chrome.i18n.getMessage("extName");
+  var ok = chrome.i18n.getMessage("ok");
+
   // 获取文件内容
   function readHtml(file, result, error) {
     var url = chrome.runtime.getURL(file);
@@ -89,7 +92,7 @@ var ParamsStashRecover = (function () {
         console.log('param', 'PNAME=' + pname + ', tagName=' + c1.tagName + ', type=' + type + ', name=' + name + ', value=' + value);
         // console.log('param', 'PNAME=' + pname + ', checked=' + c1.checked);
 
-        if (type === 'file' || type === 'hidden' || name === 'credentialType') {
+        if (type === 'password' || type === 'file' || type === 'hidden' || name === 'credentialType') {
           // 无法暂存的参数类型
           console.log('getBuildPageParameters', pname + ' can not be stashed!');
           cannotStashed.push(pname);
@@ -173,8 +176,9 @@ var ParamsStashRecover = (function () {
     };
     chrome.runtime.sendMessage(message, function (resp) {
       if (resp.code !== 0) {
+        var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_parametersReadFailed") + '</p>';
         console.log('recoverParameters: 读取参数失败！');
-        alert('Parameters read failed!');
+        jenkinsHelperAlert(extensionName, failureMsgTitle, ok);
         return
       }
       var params = resp.data;
@@ -226,7 +230,8 @@ var ParamsStashRecover = (function () {
         } // end if
       } // end for
       if (cannotRecovered) {
-        alert('The following parameters failed to recover:\n\n' + getReadableParams(cannotRecovered))
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_failedToRecover") + '</p>';
+        jenkinsHelperAlert(extensionName, failureMsgTitle + getReadableParams(cannotRecovered), ok)
       }
     })
   }
@@ -239,28 +244,37 @@ var ParamsStashRecover = (function () {
   function getReadableParams(params) {
     var str = '';
     Object.keys(params).forEach(function (key) {
-      str += key + ': ' + params[key].value + '\n'
+      str += '<b>' + key + ':</b> ' + params[key].value + '<br>'
     });
     return str
   }
 
   /**
    * 暂存参数
-   * @param params
+   * @param stashedParams 可以被暂存的参数
+   * @param cannotStashed 无法被暂存的参数
    */
-  function saveParameters(params) {
+  function saveParameters(stashedParams, cannotStashed) {
     var message = {
       "cmd": CMD_STASH_PARAMS,
-      "data": params,
+      "data": stashedParams,
     };
     chrome.runtime.sendMessage(message, function (resp) {
       console.log('resp', resp);
       if (resp.code === 0) {
         console.log('saved.');
-        alert('Data saved successfully!\n\n' + getReadableParams(params))
+        // console.log(getReadableParams(params));
+        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + chrome.i18n.getMessage("content_saveSuccess") + '</p>';
+        var alertMsg = successMsgTitle + getReadableParams(stashedParams);
+        if (cannotStashed.length > 0) {
+          var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_supportOrSaveFail") + '</p>';
+          alertMsg += failureMsgTitle + '<b>' + cannotStashed.join('<br>') + '</b>'
+        }
+        jenkinsHelperAlert(extensionName, alertMsg, ok)
       } else {
         console.log('error in saving.');
-        alert('Data saving failed!\n\n' + resp.message);
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_dataSavingFailed") + '</p>';
+        jenkinsHelperAlert(extensionName, failureMsgTitle + resp.message, ok);
       }
     });
   }
@@ -313,7 +327,8 @@ var ParamsStashRecover = (function () {
       }
       if (!params) {
         console.log('获取参数失败');
-        alert('Parsing parameters failed!');
+        var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">Parsing parameters failed!</p>';
+        jenkinsHelperAlert(extensionName, failureMsgTitle, ok);
         return
       }
       // 暂存的参数
@@ -321,11 +336,7 @@ var ParamsStashRecover = (function () {
       // 不能被暂存的参数
       var cannotStashed = params[1];
       // save parameters to extension local storage
-      saveParameters(stashedParams);
-      // alert cannot stashed params
-      if (cannotStashed.length > 0) {
-        alert('Unsupported parameters: \n\n' + cannotStashed.join('\n'))
-      }
+      saveParameters(stashedParams, cannotStashed);
     });
     $("#jenkins-helper-recover-parameters").on("click", function () {
       recoverParameters(table)

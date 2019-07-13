@@ -1,6 +1,12 @@
 {
-  "pluginDesc": {
+  "extName": {
+    "message": "Jenkins Helper"
+  },
+  "extDesc": {
     "message": "Monitor Jenkins build state and node state, and provide some convenient services."
+  },
+  "ok": {
+    "message": "OK"
   },
   "globalOptionTitle": {
     "message": "Global Settings"
@@ -201,5 +207,20 @@
   },
   "fetchNodeInfoFailedNotifications": {
     "message": "Fetch node information failed!"
+  },
+  "content_parametersReadFailed": {
+    "message": "Parameters read failed!"
+  },
+  "content_failedToRecover": {
+    "message": "The following parameters failed to recover:"
+  },
+  "content_saveSuccess": {
+    "message": "Save success:"
+  },
+  "content_supportOrSaveFail": {
+    "message": "Failed to support or save:"
+  },
+  "content_dataSavingFailed": {
+    "message": "Data saving failed!"
   }
 }

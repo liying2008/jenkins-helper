@@ -1,6 +1,12 @@
 {
-  "pluginDesc": {
+  "extName": {
+    "message": "Jenkins Helper"
+  },
+  "extDesc": {
     "message": "监控 Jenkins 构建状态和节点状态，同时也提供一些便利功能。"
+  },
+  "ok": {
+    "message": "确定"
   },
   "globalOptionTitle": {
     "message": "全局设置"
@@ -201,5 +207,20 @@
   },
   "fetchNodeInfoFailedNotifications": {
     "message": "获取节点信息失败！"
+  },
+  "content_parametersReadFailed": {
+    "message": "读取参数失败！"
+  },
+  "content_failedToRecover": {
+    "message": "如下参数无法恢复："
+  },
+  "content_saveSuccess": {
+    "message": "保存成功的参数如下："
+  },
+  "content_supportOrSaveFail": {
+    "message": "保存失败的参数如下："
+  },
+  "content_dataSavingFailed": {
+    "message": "数据保存失败！"
   }
 }

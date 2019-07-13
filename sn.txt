@@ -1,3 +1,7 @@
 Google Chrome 以英文启动：
 
+LINUX:
 LANGUAGE=en google-chrome
+
+WINDOWS:
+chrome.exe --lang=en
