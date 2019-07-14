@@ -38,6 +38,11 @@ body {
   text-overflow: ellipsis;
 }
 
+.break-word {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
 .checkbox {
   margin: 0;
 }

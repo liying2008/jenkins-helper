@@ -100,6 +100,9 @@ new Vue({
       _self.data = {};
       Object.keys(status).forEach(function (v1) {
         _self.data[v1] = status[v1];
+        if (status[v1].jobs === undefined || status[v1].jobs === null) {
+          return
+        }
         Object.keys(status[v1].jobs).forEach(function (v2) {
           if (_self.filteringResult !== _self.strings.noFilterValue && status[v1].jobs[v2].color !== _self.filteringResult) {
             delete _self.data[v1].jobs[v2]
