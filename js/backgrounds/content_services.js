@@ -10,7 +10,11 @@ var ContentServices = (function () {
 
   function start() {
     StorageService.getOptions(function (options) {
-      enableParamsStashAndRecover = options.enableParamsStashAndRecover;
+      if (options.enableParamsStashAndRecover === undefined) {
+        enableParamsStashAndRecover = true;
+      } else {
+        enableParamsStashAndRecover = options.enableParamsStashAndRecover;
+      }
     });
     StorageService.addStorageListener(storageChange);
 
@@ -37,7 +41,11 @@ var ContentServices = (function () {
       // 设置改变
       // console.log('changes', changes);
       var newOptions = changes[StorageService.keyForOptions].newValue;
-      enableParamsStashAndRecover = newOptions.enableParamsStashAndRecover;
+      if (newOptions.enableParamsStashAndRecover === undefined) {
+        enableParamsStashAndRecover = true;
+      } else {
+        enableParamsStashAndRecover = newOptions.enableParamsStashAndRecover;
+      }
     }
   }
 
