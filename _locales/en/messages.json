@@ -217,6 +217,9 @@
   "content_failedToRecover": {
     "message": "The following parameters failed to recover:"
   },
+  "content_recoverSuccess": {
+    "message": "All parameters have been successfully recovered."
+  },
   "content_saveSuccess": {
     "message": "Save success:"
   },

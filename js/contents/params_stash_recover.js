@@ -229,9 +229,16 @@ var ParamsStashRecover = (function () {
           }
         } // end if
       } // end for
-      if (cannotRecovered) {
+      // console.log('cannotRecovered', cannotRecovered);
+      // console.log('Object.keys(cannotRecovered)', Object.keys(cannotRecovered));
+      if (Object.keys(cannotRecovered).length > 0) {
+        // 有无法恢复的参数
         failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_failedToRecover") + '</p>';
         jenkinsHelperAlert(extensionName, failureMsgTitle + getReadableParams(cannotRecovered), ok)
+      } else {
+        // 已恢复所有参数
+        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + chrome.i18n.getMessage("content_recoverSuccess") + '</p>';
+        jenkinsHelperAlert(extensionName, successMsgTitle, ok)
       }
     })
   }

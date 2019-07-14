@@ -217,6 +217,9 @@
   "content_failedToRecover": {
     "message": "如下参数无法恢复："
   },
+  "content_recoverSuccess": {
+    "message": "所有参数已成功恢复。"
+  },
   "content_saveSuccess": {
     "message": "保存成功的参数如下："
   },
