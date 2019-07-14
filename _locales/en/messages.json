@@ -208,6 +208,9 @@
   "fetchNodeInfoFailedNotifications": {
     "message": "Fetch node information failed!"
   },
+  "filterLabel": {
+    "message": "Filter: "
+  },
   "content_parametersReadFailed": {
     "message": "Parameters read failed!"
   },

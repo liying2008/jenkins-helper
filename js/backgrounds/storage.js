@@ -1,3 +1,7 @@
+/*
+ * storage apis
+ * https://developer.chrome.com/apps/storage#property-local
+ */
 var StorageService = (function () {
   function saveJenkinsUrls(jenkinsUrls, callback) {
     chrome.storage.local.set({'jenkins-url': jenkinsUrls}, callback);

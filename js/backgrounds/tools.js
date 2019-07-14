@@ -1,4 +1,26 @@
 var Tools = (function () {
+  /**
+   * job 状态
+   * @type {{red: string, blue: string, aborted: string, yellow: string, notbuilt: string, disabled: string}}
+   */
+  var jobStatus = {
+    blue: 'Success',
+    yellow: 'Unstable',
+    red: 'Failure',
+    aborted: 'Aborted',
+    notbuilt: 'Not built',
+    disabled: 'Disabled',
+  };
+
+  var labelClass = {
+    blue: 'label-success',
+    yellow: 'label-warning',
+    red: 'label-danger',
+    aborted: 'label-default',
+    notbuilt: 'label-primary',
+    disabled: 'label-primary',
+  };
+
   var jenkinsTokens = [];
 
   function setJenkinsTokens(tokens) {
@@ -40,6 +62,8 @@ var Tools = (function () {
   }
 
   return {
+    jobStatus,
+    labelClass,
     setJenkinsTokens,
     getDefaultFetchOption,
     getFetchOption

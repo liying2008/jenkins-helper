@@ -12,28 +12,17 @@ var JobServices = (function () {
   var successJobCount = 0;
   // 是否Jenkins URL无法访问
   var errorOnFetch = false;
-  var status = {
-    blue: 'Success',
-    yellow: 'Unstable',
-    red: 'Failure',
-    aborted: 'Aborted',
-    notbuilt: 'Not built',
-    disabled: 'Disabled',
-  };
 
-  // no use
-  var labelClass = {
-    blue: 'label-success',
-    yellow: 'label-warning',
-    red: 'label-danger',
-    aborted: 'label-default',
-    notbuilt: 'label-primary',
-    disabled: 'label-primary',
-  };
+  var status = Tools.jobStatus;
+  var labelClass = Tools.labelClass;
+
   // 通知ID和URL的对照
   var notificationUrlMap = {};
 
   function start() {
+    status = Tools.jobStatus;
+    labelClass = Tools.labelClass;
+
     StorageService.addStorageListener(storageChange);
     StorageService.getJenkinsUrls(function (result) {
       jenkinsUrls = result;

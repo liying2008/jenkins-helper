@@ -208,6 +208,9 @@
   "fetchNodeInfoFailedNotifications": {
     "message": "获取节点信息失败！"
   },
+  "filterLabel": {
+    "message": "过滤："
+  },
   "content_parametersReadFailed": {
     "message": "读取参数失败！"
   },

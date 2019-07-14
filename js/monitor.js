@@ -2,22 +2,28 @@ new Vue({
   el: '#app',
   data: {
     strings: {
+      noFilterValue: '-',
       url: chrome.i18n.getMessage("url"),
       inputUrlPlaceholder: chrome.i18n.getMessage("inputUrlPlaceholder"),
       monitor: chrome.i18n.getMessage("monitor"),
       params: chrome.i18n.getMessage("params"),
       computer: chrome.i18n.getMessage("computer"),
       showDisabledJobs: chrome.i18n.getMessage("showDisabledJobs"),
+      filterLabel: chrome.i18n.getMessage("filterLabel"),
     },
     inputUrlValue: '',
-    btnAddDisable: true,
+    btnAddDisabled: true,
     showDisabledJobs: true,
     jenkinsData: {
       jenkinsUrls: [],
       jobStatus: {}
-    }
+    },
+    data: {},
+    filteringResult: '',
+    filteringResults: [],
   },
   mounted() {
+    this.initPage();
     this.getAllJobStatus();
     StorageService.addStorageListener(this.jobStatusChange);
   },
@@ -27,9 +33,31 @@ new Vue({
         options.showDisabledJobs = newVal;
         StorageService.saveOptions(options)
       })
+    },
+    filteringResult: function () {
+      this.filterData()
     }
   },
   methods: {
+    /**
+     * 初始化页面
+     */
+    initPage() {
+      var _self = this;
+      // 默认不过滤
+      _self.filteringResult = _self.strings.noFilterValue;
+      _self.filteringResults.push({
+        value: _self.strings.noFilterValue,
+        text: _self.strings.noFilterValue
+      });
+      Object.keys(Tools.jobStatus).forEach(function (value) {
+        _self.filteringResults.push({
+          value: value,
+          text: Tools.jobStatus[value]
+        })
+      })
+    },
+
     jobStatusChange(changes) {
       delete changes[StorageService.keyForJenkinsUrl];
       delete changes[StorageService.keyForOptions];
@@ -56,8 +84,28 @@ new Vue({
         StorageService.getJobStatus(result, function (jobResult) {
           console.log('jobResult', jobResult);
           _self.jenkinsData.jobStatus = jobResult;
+          // 过滤数据
+          _self.filterData()
         })
       })
+    },
+
+    /**
+     * 过滤数据
+     */
+    filterData() {
+      var _self = this;
+      // 通过序列化的方式实现对象深拷贝
+      var status = JSON.parse(JSON.stringify(this.jenkinsData.jobStatus));
+      _self.data = {};
+      Object.keys(status).forEach(function (v1) {
+        _self.data[v1] = status[v1];
+        Object.keys(status[v1].jobs).forEach(function (v2) {
+          if (_self.filteringResult !== _self.strings.noFilterValue && status[v1].jobs[v2].color !== _self.filteringResult) {
+            delete _self.data[v1].jobs[v2]
+          }
+        })
+      });
     },
 
     /**
@@ -73,11 +121,11 @@ new Vue({
         StorageService.saveJenkinsUrls(newUrls, function () {
           _self.jenkinsData.jenkinsUrls = newUrls;
           _self.inputUrlValue = '';
-          _self.btnAddDisable = true;
+          _self.btnAddDisabled = true;
         })
       } else {
         _self.inputUrlValue = '';
-        _self.btnAddDisable = true;
+        _self.btnAddDisabled = true;
       }
     },
 
@@ -88,7 +136,7 @@ new Vue({
       var isFormInvalid = !this.$refs.formUrl.checkValidity();
       var isUrlInvalid = !this.$refs.inputUrl.validity.typeMismatch;
 
-      this.btnAddDisable = isFormInvalid || this.inputUrlValue === '';
+      this.btnAddDisabled = isFormInvalid || this.inputUrlValue === '';
 
       this.$refs.formUrl.classList.toggle('has-error', isFormInvalid && this.inputUrlValue);
       this.$refs.msgError.classList.toggle('hidden', isUrlInvalid);
@@ -118,15 +166,15 @@ new Vue({
       var hh = d.getHours();         //时
       var ii = d.getMinutes();       //分
       var ss = d.getSeconds();       //秒
-      var clock = yy + "-";
-      if (mm < 10) clock += "0";
-      clock += mm + "-";
-      if (dd < 10) clock += "0";
-      clock += dd + " ";
-      if (hh < 10) clock += "0";
-      clock += hh + ":";
+      var clock = yy + '-';
+      if (mm < 10) clock += '0';
+      clock += mm + '-';
+      if (dd < 10) clock += '0';
+      clock += dd + ' ';
+      if (hh < 10) clock += '0';
+      clock += hh + ':';
       if (ii < 10) clock += '0';
-      clock += ii + ":";
+      clock += ii + ':';
       if (ss < 10) clock += '0';
       clock += ss;
       return clock

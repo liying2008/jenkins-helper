@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script src="js/backgrounds/tools.js"></script>
   <script src="js/backgrounds/storage.js"></script>
 
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -29,7 +30,7 @@
       <input id="url" ref="inputUrl" @input="validateForm" autofocus type="url" class="form-control"
              :placeholder="strings.inputUrlPlaceholder" v-model="inputUrlValue">
       <span class="input-group-btn">
-        <button id="add-url" class="btn btn-info" type="submit" :disabled="btnAddDisable">
+        <button id="add-url" class="btn btn-info" type="submit" :disabled="btnAddDisabled">
           <i class="glyphicon glyphicon-plus"></i>
         </button>
       </span>
@@ -41,7 +42,7 @@
   </div>
 
   <ol class="list-group info-block">
-    <li class="list-group-item" v-for="(jenkins, jenkinsUrl, index) in jenkinsData.jobStatus">
+    <li class="list-group-item" v-for="(jenkins, jenkinsUrl, index) in data">
       <div style="height: 60px">
         <div class="col-xs-2">
           <img class="img-rounded avatar" alt="Jenkins" src="img/icon48.png">
@@ -110,11 +111,21 @@
     </li>
   </ol>
 
-  <!--是否显示禁用的Job-->
   <div class="checkbox info-block">
-    <label>
-      <input type="checkbox" v-model="showDisabledJobs">{{strings.showDisabledJobs}}
-    </label>
+    <span>
+      <!--是否显示禁用的Job-->
+      <label>
+        <input type="checkbox" v-model="showDisabledJobs">{{strings.showDisabledJobs}}
+      </label>
+
+      <!--过滤Job-->
+      <label>{{strings.filterLabel}}</label>
+      <div style="display: inline-block;">
+        <select class="form-control" v-model="filteringResult">
+          <option v-for="result in filteringResults" :name="result.value" :value="result.value">{{result.text}}</option>
+        </select>
+      </div>
+    </span>
   </div>
 </div>
 
