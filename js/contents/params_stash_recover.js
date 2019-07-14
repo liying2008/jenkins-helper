@@ -182,6 +182,12 @@ var ParamsStashRecover = (function () {
         return
       }
       var params = resp.data;
+      if (params === undefined || params === null || Object.keys(params).length < 1) {
+        // 无暂存数据
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_noStashedParams") + '</p>';
+        jenkinsHelperAlert(extensionName, failureMsgTitle, ok);
+        return;
+      }
       var cannotRecovered = {};
 
       var parameters = $("tbody tr td.setting-main div[name='parameter']", table);

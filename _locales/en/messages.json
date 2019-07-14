@@ -214,6 +214,9 @@
   "content_parametersReadFailed": {
     "message": "Parameters read failed!"
   },
+  "content_noStashedParams": {
+    "message": "There are no saved parameters!"
+  },
   "content_failedToRecover": {
     "message": "The following parameters failed to recover:"
   },

@@ -214,6 +214,9 @@
   "content_parametersReadFailed": {
     "message": "读取参数失败！"
   },
+  "content_noStashedParams": {
+    "message": "没有已保存的参数！"
+  },
   "content_failedToRecover": {
     "message": "如下参数无法恢复："
   },
