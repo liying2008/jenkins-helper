@@ -64,3 +64,11 @@ body {
     opacity: 0.2;
   }
 }
+
+/*table.dataTable.no-footer {*/
+/*  border-bottom-color: rgb(221, 221, 221);*/
+/*}*/
+
+/*table.dataTable thead .sorting:after {*/
+/*  content: "";*/
+/*}*/
