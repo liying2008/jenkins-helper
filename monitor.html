@@ -78,7 +78,8 @@
         <thead>
         <tr>
           <th>Job Name</th>
-          <th width="12%">Result</th>
+          <th width="23%">Last Time</th>
+          <th width="11%">Result</th>
         </tr>
         </thead>
         <tbody>
@@ -86,6 +87,9 @@
           <!--记录：如果给row设置background-color，有较大概率会被 bootstrap table-striped 样式覆盖-->
           <td v-bind:class="{'building-row':job.building,'disabled-row':job.color === 'disabled'}">
             <a target="_blank" :href="jobUrl" v-bind:class="{'building':job.building}">{{job.name}}</a>
+          </td>
+          <td v-bind:class="{'building-row':job.building,'disabled-row':job.color === 'disabled'}">
+            <span v-bind:class="{'building':job.building}" v-html="getStyledTime(job.lastBuildTimestamp)"></span>
           </td>
           <td v-bind:class="{'building-row':job.building,'disabled-row':job.color === 'disabled'}">
               <span v-bind:class="[

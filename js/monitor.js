@@ -59,7 +59,10 @@ new Vue({
         })
       })
     },
-    // 添加新 Jenkins URL
+
+    /**
+     * 添加新 Jenkins URL
+     */
     addJenkinsUrl() {
       var url = this.inputUrlValue;
       url = url.charAt(url.length - 1) === '/' ? url : url + '/';
@@ -77,7 +80,10 @@ new Vue({
         _self.btnAddDisable = true;
       }
     },
-    // 验证表单
+
+    /**
+     * 验证表单
+     */
     validateForm() {
       var isFormInvalid = !this.$refs.formUrl.checkValidity();
       var isUrlInvalid = !this.$refs.inputUrl.validity.typeMismatch;
@@ -95,6 +101,48 @@ new Vue({
         _self.getAllJobStatus();
       })
     },
+
+    /**
+     * 根据毫秒时间戳获取可读时间字符串
+     * @param timestamp 毫秒时间戳
+     * @returns {string}
+     */
+    getReadableTime(timestamp) {
+      if (timestamp === undefined || timestamp === null || timestamp === 0) {
+        return ''
+      }
+      var d = new Date(timestamp);
+      var yy = d.getFullYear();      //年
+      var mm = d.getMonth() + 1;     //月
+      var dd = d.getDate();          //日
+      var hh = d.getHours();         //时
+      var ii = d.getMinutes();       //分
+      var ss = d.getSeconds();       //秒
+      var clock = yy + "-";
+      if (mm < 10) clock += "0";
+      clock += mm + "-";
+      if (dd < 10) clock += "0";
+      clock += dd + " ";
+      if (hh < 10) clock += "0";
+      clock += hh + ":";
+      if (ii < 10) clock += '0';
+      clock += ii + ":";
+      if (ss < 10) clock += '0';
+      clock += ss;
+      return clock
+    },
+
+    /**
+     * 获取有样式的时间字符串
+     * @returns {string}
+     */
+    getStyledTime(timestamp) {
+      var s = this.getReadableTime(timestamp);
+      if (s === '') return '';
+      var arr = s.split(' ');
+      return '<span style="color: darkmagenta">' + arr[0] + '</span> <span style="color: blueviolet">' + arr[1] + '</span>'
+    },
+
     openOptions() {
       if (chrome.runtime.openOptionsPage) {
         chrome.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
@@ -102,6 +150,7 @@ new Vue({
         chrome.tabs.create({'url': chrome.runtime.getURL('options.html')});
       }
     },
+
     openJobList() {
       chrome.windows.create({
         url: 'job_stats.html',

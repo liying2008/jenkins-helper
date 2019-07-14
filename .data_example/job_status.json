@@ -6,6 +6,7 @@
         "color": "blue",
         "labelClass": "label-success",
         "lastBuildNumber": 15,
+        "lastBuildTimestamp": 1562384858151,
         "name": "LongBuild",
         "status": "Success"
       },
@@ -14,6 +15,7 @@
         "color": "red",
         "labelClass": "label-danger",
         "lastBuildNumber": 5,
+        "lastBuildTimestamp": 1562384858151,
         "name": "Pipeline2",
         "status": "Failure"
       }
@@ -28,6 +30,7 @@
         "color": "blue",
         "labelClass": "label-success",
         "lastBuildNumber": 55,
+        "lastBuildTimestamp": 1562384858151,
         "name": "Test1",
         "status": "Success"
       }

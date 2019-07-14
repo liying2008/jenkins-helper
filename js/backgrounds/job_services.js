@@ -112,7 +112,7 @@ var JobServices = (function () {
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
           // console.log('queryJobStatus::result', result);
-          var encodeParam = encodeURI('*,lastCompletedBuild[number,result,url],jobs[name,url,color,lastCompletedBuild[number,result,url]]');
+          var encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,url,color,lastCompletedBuild[number,result,timestamp,url]]');
           var jsonUrl = url + 'api/json?tree=' + encodeParam;
           // console.log('queryJobStatus jsonUrl', jsonUrl);
           // console.log('getFetchOption', Tools.getFetchOption(jsonUrl));
@@ -153,10 +153,12 @@ var JobServices = (function () {
     // console.log('jobs 1', jobs);
     for (var i = 0; i < jobs.length; i++) {
       jobs[i].lastBuildNumber = 0;
+      jobs[i].lastBuildTimestamp = 0;
       jobs[i].lastBuildUrl = '';
       jobs[i].lastBuildResult = '';
       if (jobs[i].lastCompletedBuild !== undefined && jobs[i].lastCompletedBuild !== null) {
         jobs[i].lastBuildNumber = jobs[i].lastCompletedBuild.number;
+        jobs[i].lastBuildTimestamp = jobs[i].lastCompletedBuild.timestamp;
         jobs[i].lastBuildUrl = jobs[i].lastCompletedBuild.url;
         jobs[i].lastBuildResult = jobs[i].lastCompletedBuild.result;
       }
@@ -193,8 +195,9 @@ var JobServices = (function () {
         building: building,
         labelClass: labelClass[jobColor],
         lastBuildNumber: job.lastBuildNumber,
+        lastBuildTimestamp: job.lastBuildTimestamp,
       }
-    }
+    } // end for
     changeBadge();
     // console.log(jenkinsObj);
     StorageService.saveJobStatus(url, jenkinsObj, function () {
@@ -218,6 +221,7 @@ var JobServices = (function () {
     var buildStatus = status[jobColor];
     var lastBuild = data.lastCompletedBuild || {};
     var lastBuildNumber = lastBuild.number || 0;
+    var lastBuildTimestamp = lastBuild.timestamp || 0;
     var lastBuildUrl = lastBuild.url || '';
     var lastBuildResult = lastBuild.result || '';
 
@@ -235,6 +239,7 @@ var JobServices = (function () {
       building: building,
       labelClass: labelClass[jobColor],
       lastBuildNumber: lastBuildNumber,
+      lastBuildTimestamp: lastBuildTimestamp,
     };
 
     changeBadge();
