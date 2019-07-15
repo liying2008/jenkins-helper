@@ -65,7 +65,11 @@
         <p>{{strings.jobStatisticsDataFrom_}}</p>
         <ul class="list-group">
           <li class="list-group-item">
-            <div v-for="(url, index) in jenkinsUrls">{{decodeURIComponent(url)}}
+            <div v-for="(url, index) in urls">
+              <span v-bind:class="{
+              'text-danger': badUrls.indexOf(url)!==-1,
+              'break-word': true
+              }">{{decodeURIComponent(url)}}</span>
               <!--间隔-->
               <p v-if="index<jenkinsUrls.length-1"></p>
             </div>

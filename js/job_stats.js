@@ -9,6 +9,10 @@ new Vue({
       jobStatisticsShowCronTableJobOnly: chrome.i18n.getMessage("jobStatisticsShowCronTableJobOnly"),
     },
     jenkinsUrls: [],
+    // 请求数据的URL
+    urls: [],
+    // 请求失败的URL
+    badUrls: [],
     nodeParams: [],
     jobUrlVisited: [],
     jobs: [],
@@ -96,34 +100,43 @@ new Vue({
     },
     getJobStats() {
       var _self = this;
+      _self.urls = [];
+      _self.badUrls = [];
       _self.jobs = [];
       _self.jobUrlVisited = [];
-      var urlLen = this.jenkinsUrls.length;
+      var urlLen = _self.jenkinsUrls.length;
       for (var i = 0; i < urlLen; i++) {
-        var url = this.jenkinsUrls[i].trim();
+        var url = _self.jenkinsUrls[i].trim();
         if (url === '') {
           continue
         }
         url = url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
-        fetch(url + '/api/json', Tools.getFetchOption(url + '/api/json')).then(function (res) {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return Promise.reject(res);
-          }
-        }).then(function (data) {
-          if (data.hasOwnProperty('jobs')) {
-            var jobLen = data.jobs.length;
-            for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
-              _self.getJobStatsByUrl(data.jobs[jobIndex].url)
+        _self.urls.push(url);
+
+        (function (url) {
+          var encodeParam = encodeURI('url,jobs[url]');
+          var jsonUrl = url + '/api/json?tree=' + encodeParam;
+          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
+            if (res.ok) {
+              return res.json();
+            } else {
+              return Promise.reject(res);
             }
-          } else {
-            // Job Url
-            _self.getJobStatsByUrl(url + '/')
-          }
-        }).catch(function (e) {
-          console.error("获取Job URL失败", e);
-        });
+          }).then(function (data) {
+            if (data.hasOwnProperty('jobs')) {
+              var jobLen = data.jobs.length;
+              for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
+                _self.getJobStatsByUrl(data.jobs[jobIndex].url)
+              }
+            } else {
+              // Job Url
+              _self.getJobStatsByUrl(data.url)
+            }
+          }).catch(function (e) {
+            console.error("获取Job URL失败", url, e);
+            _self.badUrls.push(url)
+          });
+        })(url)
       }
     },
 
@@ -176,6 +189,8 @@ new Vue({
             return 0;
           }
         }
+      }).catch(function (e) {
+        console.log('读取config.xml失败', e)
       })
     },
     parseFreeStyleJobFromXml(projectNode) {
