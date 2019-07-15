@@ -52,7 +52,9 @@ new Vue({
       } else {
         url = jenkinsUrl
       }
-      var jsonUrl = url + 'computer/api/json';
+      var encodeParam = encodeURI('computer[displayName,offline,monitorData[*]]');
+      var jsonUrl = url + 'computer/api/json?tree=' + encodeParam;
+
       fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
         if (res.ok) {
           return res.json();

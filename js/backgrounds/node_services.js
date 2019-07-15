@@ -49,7 +49,9 @@ var NodeServices = (function () {
         }
         (function (url) {
           // console.log('queryNodeStatus - url', url);
-          var jsonUrl = url + 'computer/api/json';
+          var encodeParam = encodeURI('computer[displayName,offline,monitorData[*]]');
+          var jsonUrl = url + 'computer/api/json?tree=' + encodeParam;
+
           fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
             if (res.ok) {
               return res.json();
