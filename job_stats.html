@@ -51,6 +51,8 @@
                 <input type="checkbox" v-model="showEnabledJobOnly">{{strings.jobStatisticsShowEnabledJobOnly}}
               </label>
             </div>
+            <!--间隔-->
+            <p></p>
             <div class="checkbox">
               <label>
                 <input type="checkbox" v-model="showCronTableJobOnly">{{strings.jobStatisticsShowCronTableJobOnly}}
@@ -63,7 +65,10 @@
         <p>{{strings.jobStatisticsDataFrom_}}</p>
         <ul class="list-group">
           <li class="list-group-item">
-            <p v-for="url in jenkinsUrls">{{decodeURIComponent(url)}}</p>
+            <div v-for="(url, index) in jenkinsUrls">{{decodeURIComponent(url)}}
+              <!--间隔-->
+              <p v-if="index<jenkinsUrls.length-1"></p>
+            </div>
           </li>
         </ul>
       </div>

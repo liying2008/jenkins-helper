@@ -285,7 +285,7 @@ var JobServices = (function () {
       iconUrl: 'img/logo-' + statusIcon + '.svg',
       title: 'Build ' + result + ' ! - ' + jobName,
       message: decodeURIComponent(url),
-      priority: 2,
+      priority: 0,  // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
     }, function (notificationId) {
       notificationUrlMap[notificationId] = url
     });
