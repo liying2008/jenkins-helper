@@ -13,7 +13,7 @@ var ParamsStashRecover = (function () {
   // 获取文件内容
   function readHtml(file, result, error) {
     var url = chrome.runtime.getURL(file);
-    console.log('url', url);
+    // console.log('url', url);
     fetch(url).then(function (res) {
       if (res.ok) {
         return res.text();
@@ -31,7 +31,7 @@ var ParamsStashRecover = (function () {
     // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/table[@class='parameters']
     var selector = "body#jenkins div#main-panel form table.parameters";
     var elements = $(selector);
-    console.log(elements);
+    // console.log(elements);
     if (elements.length === 1) {
       return elements[0];
     } else {
@@ -47,7 +47,7 @@ var ParamsStashRecover = (function () {
     // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']//table[@class='pane']
     var selector = "body#jenkins div#main-panel div.pane-frame div.row div.row table.pane";
     var elements = $(selector);
-    console.log(elements);
+    // console.log(elements);
     if (elements.length === 1) {
       return elements[0];
     } else {
@@ -204,7 +204,7 @@ var ParamsStashRecover = (function () {
           }
           // <input name="name" type="hidden" value="PARAM1">
           console.log('recoverParameters', c0.value + ' failed to recovered!');
-          cannotRecovered[c0.value] = params[c0.value]
+          cannotRecovered[c0.value] = {value: params[c0.value]}
         } else {
           c0 = children[0];
           var c1 = children[1];
@@ -212,7 +212,7 @@ var ParamsStashRecover = (function () {
             continue
           } else if (!params.hasOwnProperty(c0.value)) {
             console.log('没有暂存该参数: ' + c0.value);
-            cannotRecovered[c0.value] = '';
+            cannotRecovered[c0.value] = {value: ''};
             continue
           }
 
@@ -225,18 +225,22 @@ var ParamsStashRecover = (function () {
           if (type === 'file' || type === 'hidden' || name === 'credentialType') {
             // 无法恢复的参数类型
             console.log('recoverParameters', pname + ' failed to recovered!');
-            cannotRecovered[pname] = '';
+            cannotRecovered[pname] = {value: ''};
             continue
           } else if (type === 'checkbox') {
             // checkbox 特殊处理
             c1.checked = value
           } else {
-            c1.value = value
+            console.log('before - value: ', value, ', c1.value: ', c1.value);
+            c1.value = value;
+            console.log('after - value: ', value, ', c1.value: ', c1.value);
+            if (c1.value !== value) {
+              cannotRecovered[pname] = {value: value};
+            }
           }
         } // end if
       } // end for
       // console.log('cannotRecovered', cannotRecovered);
-      // console.log('Object.keys(cannotRecovered)', Object.keys(cannotRecovered));
       if (Object.keys(cannotRecovered).length > 0) {
         // 有无法恢复的参数
         failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_failedToRecover") + '</p>';
