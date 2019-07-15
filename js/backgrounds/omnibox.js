@@ -47,21 +47,25 @@ var Omnibox = (function () {
             description: url + 'job/%s/'
           });
         }
-        fetch(url + 'api/json', Tools.getFetchOption(url + 'api/json')).then(function (res) {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return Promise.reject(res);
-          }
-        }).then(function (data) {
-          if (data.hasOwnProperty('jobs')) {
-            allJobs = allJobs.concat(data.jobs);
-            // console.log('all fetched', allJobs)
-          }
-        }).catch(function (e) {
-          console.error("获取Job失败", e);
-        });
 
+        (function (url) {
+          var encodeParam = encodeURI('jobs[name,url]');
+          var jsonUrl = url + 'api/json?tree=' + encodeParam;
+          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
+            if (res.ok) {
+              return res.json();
+            } else {
+              return Promise.reject(res);
+            }
+          }).then(function (data) {
+            if (data.hasOwnProperty('jobs')) {
+              allJobs = allJobs.concat(data.jobs);
+              // console.log('all fetched', allJobs)
+            }
+          }).catch(function (e) {
+            console.error("获取Job失败", e);
+          });
+        })(url)
       }
     })
   }
