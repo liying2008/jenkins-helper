@@ -5,3 +5,6 @@ LANGUAGE=en google-chrome
 
 WINDOWS:
 chrome.exe --lang=en
+
+note:
+经测试，Windows上通过加--lang参数启动Chrome并未更改Chrome语言，不过可以通过Chrome设置来更改默认语言。
