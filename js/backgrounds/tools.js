@@ -1,3 +1,5 @@
+var chrome = chrome || browser;
+
 var Tools = (function () {
   /**
    * job 状态

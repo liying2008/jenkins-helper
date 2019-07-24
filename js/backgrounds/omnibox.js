@@ -1,5 +1,6 @@
 var Omnibox = (function () {
   "use strict";
+
   var allJobs = [];
   var defaultSuggestionUrl = '';
 
