@@ -147,6 +147,9 @@ new Vue({
       } else {
         _self.jobUrlVisited.push(url)
       }
+      // https://github.com/liying2008/jenkins-helper/issues/6
+      // 此方法无效
+      // var header = {"Content-Type": "text/xml;charset=UTF-8"};
       fetch(url + 'config.xml', Tools.getFetchOption(url + 'config.xml')).then(function (res) {
         return res.ok ? res.text() : Promise.reject(res);
       }).then(function (text) {

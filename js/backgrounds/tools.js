@@ -30,15 +30,20 @@ var Tools = (function () {
     jenkinsTokens = tokens
   }
 
-  function getDefaultFetchOption(method = 'GET') {
+  function getDefaultFetchOption(header = {}, method = 'GET') {
+    if (header === undefined || header === null) {
+      header = {}
+    }
     return {
       method: method,
       credentials: 'include',
       mode: 'cors',
       redirect: 'follow',
+      headers: new Headers(header)
     }
   }
-  function getFetchOption(url, method = 'GET') {
+
+  function getFetchOption(url, header = {}, method = 'GET') {
     // console.log('jenkinsTokens', jenkinsTokens);
     var token = undefined;
     for (var i = 0; i < jenkinsTokens.length; i++) {
@@ -48,18 +53,20 @@ var Tools = (function () {
         break
       }
     }
+    if (header === undefined || header === null) {
+      header = {}
+    }
     // console.log('Tool.getFetchOption token', token);
     if (token) {
+      header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token);
       return {
         method: method,
         mode: 'cors',
         redirect: 'follow',
-        headers: new Headers({
-          'Authorization': 'Basic ' + window.btoa(token.username + ':' + token.token)
-        })
+        headers: new Headers(header)
       }
     } else {
-      return getDefaultFetchOption(method)
+      return getDefaultFetchOption(header, method)
     }
   }
 
@@ -69,6 +76,6 @@ var Tools = (function () {
     labelClass,
     setJenkinsTokens,
     getDefaultFetchOption,
-    getFetchOption
+    getFetchOption,
   }
 })();
