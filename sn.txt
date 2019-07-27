@@ -8,3 +8,13 @@ chrome.exe --lang=en
 
 note:
 经测试，Windows上通过加--lang参数启动Chrome并未更改Chrome语言，不过可以通过Chrome设置来更改默认语言。
+
+在 Firefox 上调试：
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference
+// 普通版 Firefox
+web-ext run --firefox=firefox --no-reload
+// 开发版 FireFox
+web-ext run --firefox=firefoxdeveloperedition --no-reload
+
+Firefox 中的附加组件签名
+https://support.mozilla.org/zh-CN/kb/add-ons-signing-firefox?as=u&utm_source=inproduct

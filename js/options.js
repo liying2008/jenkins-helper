@@ -4,57 +4,57 @@ new Vue({
     refreshTime: '60',
     nodeRefreshTime: '2',
     strings: {
-      monitorOptionTitle: chrome.i18n.getMessage("monitorOptionTitle"),
-      showNotification: chrome.i18n.getMessage("showNotification"),
-      refreshTime: chrome.i18n.getMessage("refreshTime"),
-      nodeOptionTitle: chrome.i18n.getMessage("nodeOptionTitle"),
-      nodeRefreshTime: chrome.i18n.getMessage("nodeRefreshTime"),
-      optionsSaved: chrome.i18n.getMessage("optionsSaved"),
-      globalOptionTitle: chrome.i18n.getMessage("globalOptionTitle"),
-      defaultTab: chrome.i18n.getMessage("defaultTab"),
-      jenkinsToken: chrome.i18n.getMessage("jenkinsToken"),
-      addNewTokenBtn: chrome.i18n.getMessage("addNewTokenBtn"),
-      omniboxOptionTitle: chrome.i18n.getMessage("omniboxOptionTitle"),
-      searchFromJenkins: chrome.i18n.getMessage("searchFromJenkins"),
-      searchFromJenkinsPlaceholder: chrome.i18n.getMessage("searchFromJenkinsPlaceholder"),
-      searchFromJenkinsTips: chrome.i18n.getMessage("searchFromJenkinsTips"),
-      saveOptions: chrome.i18n.getMessage("saveOptions"),
-      jobStatsTitle: chrome.i18n.getMessage("jobStatsTitle"),
-      jobStatsTitleTip: chrome.i18n.getMessage("jobStatsTitleTip"),
-      jobStatsJenkinsPlaceholder: chrome.i18n.getMessage("jobStatsJenkinsPlaceholder"),
-      jobStatsNodeParamTip: chrome.i18n.getMessage("jobStatsNodeParamTip"),
-      jobStatsNodeParamPlaceholder: chrome.i18n.getMessage("jobStatsNodeParamPlaceholder"),
-      otherTitle: chrome.i18n.getMessage("otherTitle"),
-      enableParamsStashAndRecover: chrome.i18n.getMessage("enableParamsStashAndRecover"),
-      paramsStashAndRecoverTips: chrome.i18n.getMessage("paramsStashAndRecoverTips"),
+      monitorOptionTitle: browser.i18n.getMessage("monitorOptionTitle"),
+      showNotification: browser.i18n.getMessage("showNotification"),
+      refreshTime: browser.i18n.getMessage("refreshTime"),
+      nodeOptionTitle: browser.i18n.getMessage("nodeOptionTitle"),
+      nodeRefreshTime: browser.i18n.getMessage("nodeRefreshTime"),
+      optionsSaved: browser.i18n.getMessage("optionsSaved"),
+      globalOptionTitle: browser.i18n.getMessage("globalOptionTitle"),
+      defaultTab: browser.i18n.getMessage("defaultTab"),
+      jenkinsToken: browser.i18n.getMessage("jenkinsToken"),
+      addNewTokenBtn: browser.i18n.getMessage("addNewTokenBtn"),
+      omniboxOptionTitle: browser.i18n.getMessage("omniboxOptionTitle"),
+      searchFromJenkins: browser.i18n.getMessage("searchFromJenkins"),
+      searchFromJenkinsPlaceholder: browser.i18n.getMessage("searchFromJenkinsPlaceholder"),
+      searchFromJenkinsTips: browser.i18n.getMessage("searchFromJenkinsTips"),
+      saveOptions: browser.i18n.getMessage("saveOptions"),
+      jobStatsTitle: browser.i18n.getMessage("jobStatsTitle"),
+      jobStatsTitleTip: browser.i18n.getMessage("jobStatsTitleTip"),
+      jobStatsJenkinsPlaceholder: browser.i18n.getMessage("jobStatsJenkinsPlaceholder"),
+      jobStatsNodeParamTip: browser.i18n.getMessage("jobStatsNodeParamTip"),
+      jobStatsNodeParamPlaceholder: browser.i18n.getMessage("jobStatsNodeParamPlaceholder"),
+      otherTitle: browser.i18n.getMessage("otherTitle"),
+      enableParamsStashAndRecover: browser.i18n.getMessage("enableParamsStashAndRecover"),
+      paramsStashAndRecoverTips: browser.i18n.getMessage("paramsStashAndRecoverTips"),
     },
     defaultTab: 'monitor',
     defaultTabs: [
       {
-        text: chrome.i18n.getMessage("monitor"),
+        text: browser.i18n.getMessage("monitor"),
         value: 'monitor',
       },
       {
-        text: chrome.i18n.getMessage("params"),
+        text: browser.i18n.getMessage("params"),
         value: 'params',
       },
       {
-        text: chrome.i18n.getMessage("computer"),
+        text: browser.i18n.getMessage("computer"),
         value: 'computer',
       },
     ],
     showNotificationOption: 'all',
     showNotificationOptions: [
       {
-        text: chrome.i18n.getMessage("showNotificationOption_all"),
+        text: browser.i18n.getMessage("showNotificationOption_all"),
         value: 'all'
       },
       {
-        text: chrome.i18n.getMessage("showNotificationOption_unstable"),
+        text: browser.i18n.getMessage("showNotificationOption_unstable"),
         value: 'unstable'
       },
       {
-        text: chrome.i18n.getMessage("showNotificationOption_none"),
+        text: browser.i18n.getMessage("showNotificationOption_none"),
         value: 'none'
       },
     ],
@@ -66,22 +66,22 @@ new Vue({
   },
   computed: {
     refreshTimeTip() {
-      console.log(chrome.i18n.getMessage("refreshTimeTip_1") + this.refreshTime +
-        chrome.i18n.getMessage("refreshTimeTip_2"));
-      return chrome.i18n.getMessage("refreshTimeTip_1") + this.refreshTime +
-        chrome.i18n.getMessage("refreshTimeTip_2");
+      console.log(browser.i18n.getMessage("refreshTimeTip_1") + this.refreshTime +
+        browser.i18n.getMessage("refreshTimeTip_2"));
+      return browser.i18n.getMessage("refreshTimeTip_1") + this.refreshTime +
+        browser.i18n.getMessage("refreshTimeTip_2");
     },
     nodeRefreshTimeTip() {
-      console.log(chrome.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
-        chrome.i18n.getMessage("nodeRefreshTimeTip_2"));
-      return chrome.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
-        chrome.i18n.getMessage("nodeRefreshTimeTip_2");
+      console.log(browser.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
+        browser.i18n.getMessage("nodeRefreshTimeTip_2"));
+      return browser.i18n.getMessage("nodeRefreshTimeTip_1") + this.nodeRefreshTime +
+        browser.i18n.getMessage("nodeRefreshTimeTip_2");
     }
   },
   mounted() {
     var _self = this;
     StorageService.getOptions(function (result) {
-      // console.log('result', result);
+      console.log('result', result);
       _self.refreshTime = result.refreshTime;
       _self.nodeRefreshTime = result.nodeRefreshTime || 2;
       _self.showNotificationOption = result.showNotificationOption;
@@ -109,6 +109,7 @@ new Vue({
           arrangedJenkinsTokens.push(token)
         }
       }
+      console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
       return arrangedJenkinsTokens
     },
     saveOptions() {

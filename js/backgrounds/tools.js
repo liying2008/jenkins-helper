@@ -1,6 +1,7 @@
-var chrome = chrome || browser;
-
 var Tools = (function () {
+  // 是否是 Chrome 浏览器
+  var isChrome = navigator.userAgent.indexOf('Chrome') > -1;
+
   /**
    * job 状态
    * @type {{red: string, blue: string, aborted: string, yellow: string, notbuilt: string, disabled: string}}
@@ -37,7 +38,6 @@ var Tools = (function () {
       redirect: 'follow',
     }
   }
-
   function getFetchOption(url, method = 'GET') {
     // console.log('jenkinsTokens', jenkinsTokens);
     var token = undefined;
@@ -64,6 +64,7 @@ var Tools = (function () {
   }
 
   return {
+    isChrome,
     jobStatus,
     labelClass,
     setJenkinsTokens,

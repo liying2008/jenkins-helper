@@ -33,10 +33,10 @@ var JobServices = (function () {
       })
     });
     // 点击通知
-    chrome.notifications.onClicked.addListener(function (notificationId) {
+    browser.notifications.onClicked.addListener(function (notificationId) {
       // 打开构建页面
       if (notificationId in notificationUrlMap) {
-        chrome.tabs.create({'url': notificationUrlMap[notificationId]});
+        browser.tabs.create({'url': notificationUrlMap[notificationId]});
       }
     })
   }
@@ -244,20 +244,20 @@ var JobServices = (function () {
     var _successJobCount = successJobCount;
 
     if (errorOnFetch) {
-      chrome.browserAction.setBadgeText({text: 'ERR'});
-      chrome.browserAction.setBadgeBackgroundColor({color: '#df2b38'});
+      browser.browserAction.setBadgeText({text: 'ERR'});
+      browser.browserAction.setBadgeBackgroundColor({color: '#df2b38'});
     } else {
       if (_failureJobCount === 0 && _unstableJobCount === 0 && _successJobCount === 0) {
-        chrome.browserAction.setBadgeText({text: ''});
+        browser.browserAction.setBadgeText({text: ''});
       } else {
         var count = _failureJobCount || _unstableJobCount || _successJobCount || 0;
         var color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c';
         if (count > 9999) {
-          chrome.browserAction.setBadgeText({text: '999+'});
+          browser.browserAction.setBadgeText({text: '999+'});
         } else {
-          chrome.browserAction.setBadgeText({text: count.toString()});
+          browser.browserAction.setBadgeText({text: count.toString()});
         }
-        chrome.browserAction.setBadgeBackgroundColor({color: color});
+        browser.browserAction.setBadgeBackgroundColor({color: color});
       }
     }
   }
@@ -280,13 +280,13 @@ var JobServices = (function () {
     else if (result === 'FAILURE') statusIcon = 'red';
     else if (result === 'UNSTABLE') statusIcon = 'yellow';
 
-    chrome.notifications.create(null, {
+    browser.notifications.create(null, {
       type: 'basic',
       iconUrl: 'img/logo-' + statusIcon + '.svg',
       title: 'Build ' + result + ' ! - ' + jobName,
       message: decodeURIComponent(url),
       priority: 0,  // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
-    }, function (notificationId) {
+    }).then(function (notificationId) {
       notificationUrlMap[notificationId] = url
     });
   }

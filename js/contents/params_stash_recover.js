@@ -7,12 +7,12 @@ var ParamsStashRecover = (function () {
   var PAGE_BUILD = 'build';
   var PAGE_PARAMETERS = 'parameters';
 
-  var extensionName = chrome.i18n.getMessage("extName");
-  var ok = chrome.i18n.getMessage("ok");
+  var extensionName = browser.i18n.getMessage("extName");
+  var ok = browser.i18n.getMessage("ok");
 
   // 获取文件内容
   function readHtml(file, result, error) {
-    var url = chrome.runtime.getURL(file);
+    var url = browser.runtime.getURL(file);
     // console.log('url', url);
     fetch(url).then(function (res) {
       if (res.ok) {
@@ -174,9 +174,9 @@ var ParamsStashRecover = (function () {
     var message = {
       "cmd": CMD_RECOVER_PARAMS
     };
-    chrome.runtime.sendMessage(message, function (resp) {
+    browser.runtime.sendMessage(message).then(function (resp) {
       if (resp.code !== 0) {
-        var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_parametersReadFailed") + '</p>';
+        var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_parametersReadFailed") + '</p>';
         console.log('recoverParameters: 读取参数失败！');
         jenkinsHelperAlert(extensionName, failureMsgTitle, ok);
         return
@@ -184,7 +184,7 @@ var ParamsStashRecover = (function () {
       var params = resp.data;
       if (params === undefined || params === null || Object.keys(params).length < 1) {
         // 无暂存数据
-        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_noStashedParams") + '</p>';
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_noStashedParams") + '</p>';
         jenkinsHelperAlert(extensionName, failureMsgTitle, ok);
         return;
       }
@@ -243,11 +243,11 @@ var ParamsStashRecover = (function () {
       // console.log('cannotRecovered', cannotRecovered);
       if (Object.keys(cannotRecovered).length > 0) {
         // 有无法恢复的参数
-        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_failedToRecover") + '</p>';
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_failedToRecover") + '</p>';
         jenkinsHelperAlert(extensionName, failureMsgTitle + getReadableParams(cannotRecovered), ok)
       } else {
         // 已恢复所有参数
-        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + chrome.i18n.getMessage("content_recoverSuccess") + '</p>';
+        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + browser.i18n.getMessage("content_recoverSuccess") + '</p>';
         jenkinsHelperAlert(extensionName, successMsgTitle, ok)
       }
     })
@@ -276,21 +276,21 @@ var ParamsStashRecover = (function () {
       "cmd": CMD_STASH_PARAMS,
       "data": stashedParams,
     };
-    chrome.runtime.sendMessage(message, function (resp) {
+    browser.runtime.sendMessage(message).then(function (resp) {
       console.log('resp', resp);
       if (resp.code === 0) {
         console.log('saved.');
         // console.log(getReadableParams(params));
-        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + chrome.i18n.getMessage("content_saveSuccess") + '</p>';
+        var successMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:green;">' + browser.i18n.getMessage("content_saveSuccess") + '</p>';
         var alertMsg = successMsgTitle + getReadableParams(stashedParams);
         if (cannotStashed.length > 0) {
-          var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_supportOrSaveFail") + '</p>';
+          var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_supportOrSaveFail") + '</p>';
           alertMsg += failureMsgTitle + '<b>' + cannotStashed.join('<br>') + '</b>'
         }
         jenkinsHelperAlert(extensionName, alertMsg, ok)
       } else {
         console.log('error in saving.');
-        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + chrome.i18n.getMessage("content_dataSavingFailed") + '</p>';
+        failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_dataSavingFailed") + '</p>';
         jenkinsHelperAlert(extensionName, failureMsgTitle + resp.message, ok);
       }
     });

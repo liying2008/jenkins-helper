@@ -2,14 +2,14 @@ new Vue({
   el: '#app',
   data: {
     strings: {
-      monitor: chrome.i18n.getMessage("monitor"),
-      params: chrome.i18n.getMessage("params"),
-      computer: chrome.i18n.getMessage("computer"),
-      manageMonitoredNodes: chrome.i18n.getMessage("manageMonitoredNodes"),
-      openManagerPage: chrome.i18n.getMessage("openManagerPage"),
-      displayName: chrome.i18n.getMessage("displayName"),
-      remainingDiskSpace: chrome.i18n.getMessage("remainingDiskSpace"),
-      diskSpaceThreshold: chrome.i18n.getMessage("diskSpaceThreshold"),
+      monitor: browser.i18n.getMessage("monitor"),
+      params: browser.i18n.getMessage("params"),
+      computer: browser.i18n.getMessage("computer"),
+      manageMonitoredNodes: browser.i18n.getMessage("manageMonitoredNodes"),
+      openManagerPage: browser.i18n.getMessage("openManagerPage"),
+      displayName: browser.i18n.getMessage("displayName"),
+      remainingDiskSpace: browser.i18n.getMessage("remainingDiskSpace"),
+      diskSpaceThreshold: browser.i18n.getMessage("diskSpaceThreshold"),
     },
     refreshIconNormal: true,
     monitoredNodes: {},
@@ -67,29 +67,29 @@ new Vue({
       }, 2000);
     },
     openNodesManager(jenkinsUrl) {
-      chrome.windows.create({
+      browser.windows.create({
         url: 'computers_manager.html?jenkins=' + jenkinsUrl,
         type: 'popup',
         width: 1000,
         height: 800,
-      }, function (window) {
+      }).then(function (window) {
         console.log('window', window)
       })
     },
     openOptions() {
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
+      if (browser.runtime.openOptionsPage && Tools.isChrome) {
+        browser.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
       } else {
-        chrome.tabs.create({'url': chrome.runtime.getURL('options.html')});
+        browser.tabs.create({'url': browser.runtime.getURL('options.html')});
       }
     },
     openJobList() {
-      chrome.windows.create({
+      browser.windows.create({
         url: 'job_stats.html',
         type: 'popup',
         width: 1200,
         height: 800,
-      }, function (window) {
+      }).then(function (window) {
         console.log('window', window)
       })
     },

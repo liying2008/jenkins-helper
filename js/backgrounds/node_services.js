@@ -120,25 +120,25 @@ var NodeServices = (function () {
   function checkDiskSpace(jenkinsUrl, displayName, remainingDiskSpace, diskSpaceThreshold, offline) {
     var message = '';
     if (offline) {
-      message = chrome.i18n.getMessage("nodeOfflineNotifications")
+      message = browser.i18n.getMessage("nodeOfflineNotifications")
     } else if (remainingDiskSpace === 'N/A') {
-      message = chrome.i18n.getMessage("fetchNodeInfoFailedNotifications")
+      message = browser.i18n.getMessage("fetchNodeInfoFailedNotifications")
     } else {
       var remainingDiskSpaceInt = parseInt(remainingDiskSpace.replace('GB', '').trim());
       if (remainingDiskSpaceInt <= diskSpaceThreshold) {
-        message = chrome.i18n.getMessage("insufficientDiskSpaceNotifications", [remainingDiskSpace])
+        message = browser.i18n.getMessage("insufficientDiskSpaceNotifications", [remainingDiskSpace])
       }
     }
 
     if (message) {
       // 显示通知
-      chrome.notifications.create(null, {
+      browser.notifications.create(null, {
         type: 'basic',
         iconUrl: 'img/computer48.png',
         title: displayName,
         message: message,
         priority: 2,
-      }, function (notificationId) {
+      }).then(function (notificationId) {
         console.log('checkDiskSpace notifications', notificationId)
       });
     }

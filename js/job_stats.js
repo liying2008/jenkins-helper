@@ -2,11 +2,11 @@ new Vue({
   el: '#app',
   data: {
     strings: {
-      title: chrome.i18n.getMessage("jobStatisticsTitle"),
-      jobStatisticsDataFrom_: chrome.i18n.getMessage("jobStatisticsDataFrom_"),
-      jobStatisticsShowSettings_: chrome.i18n.getMessage("jobStatisticsShowSettings_"),
-      jobStatisticsShowEnabledJobOnly: chrome.i18n.getMessage("jobStatisticsShowEnabledJobOnly"),
-      jobStatisticsShowCronTableJobOnly: chrome.i18n.getMessage("jobStatisticsShowCronTableJobOnly"),
+      title: browser.i18n.getMessage("jobStatisticsTitle"),
+      jobStatisticsDataFrom_: browser.i18n.getMessage("jobStatisticsDataFrom_"),
+      jobStatisticsShowSettings_: browser.i18n.getMessage("jobStatisticsShowSettings_"),
+      jobStatisticsShowEnabledJobOnly: browser.i18n.getMessage("jobStatisticsShowEnabledJobOnly"),
+      jobStatisticsShowCronTableJobOnly: browser.i18n.getMessage("jobStatisticsShowCronTableJobOnly"),
     },
     jenkinsUrls: [],
     // 请求数据的URL

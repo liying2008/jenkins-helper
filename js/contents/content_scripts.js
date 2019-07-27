@@ -6,7 +6,7 @@
   var message = {
     "cmd": CMD_IS_ENABLE_STASH_AND_RECOVER
   };
-  chrome.runtime.sendMessage(message, function (resp) {
+  browser.runtime.sendMessage(message).then(function (resp) {
     if (resp.code !== 0) {
       console.log('是否开启stash & recover 未知！');
       return

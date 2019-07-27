@@ -2,18 +2,18 @@ new Vue({
   el: '#app',
   data: {
     strings: {
-      monitor: chrome.i18n.getMessage("monitor"),
-      params: chrome.i18n.getMessage("params"),
-      computer: chrome.i18n.getMessage("computer"),
-      buildStatus_: chrome.i18n.getMessage("buildStatus_"),
-      runLabel_: chrome.i18n.getMessage("runLabel_"),
-      copied: chrome.i18n.getMessage("copied"),
-      paramsList: chrome.i18n.getMessage("paramsList"),
-      noData: chrome.i18n.getMessage("noData"),
-      fetching: chrome.i18n.getMessage("fetching"),
-      passwordParameter: chrome.i18n.getMessage("passwordParameter"),
-      fileParameter: chrome.i18n.getMessage("fileParameter"),
-      credentialsParameter: chrome.i18n.getMessage("credentialsParameter"),
+      monitor: browser.i18n.getMessage("monitor"),
+      params: browser.i18n.getMessage("params"),
+      computer: browser.i18n.getMessage("computer"),
+      buildStatus_: browser.i18n.getMessage("buildStatus_"),
+      runLabel_: browser.i18n.getMessage("runLabel_"),
+      copied: browser.i18n.getMessage("copied"),
+      paramsList: browser.i18n.getMessage("paramsList"),
+      noData: browser.i18n.getMessage("noData"),
+      fetching: browser.i18n.getMessage("fetching"),
+      passwordParameter: browser.i18n.getMessage("passwordParameter"),
+      fileParameter: browser.i18n.getMessage("fileParameter"),
+      credentialsParameter: browser.i18n.getMessage("credentialsParameter"),
       building: 'BUILDING',
     },
     // status 的状态说明：
@@ -132,15 +132,15 @@ new Vue({
       });
     },
     getCurrentTab(callback) {
-      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+      browser.tabs.query({active: true, currentWindow: true}).then(function (tabs) {
         if (callback) callback(tabs.length ? tabs[0] : null);
       });
     },
     openOptions() {
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
+      if (browser.runtime.openOptionsPage && Tools.isChrome) {
+        browser.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
       } else {
-        chrome.tabs.create({'url': chrome.runtime.getURL('options.html')});
+        browser.tabs.create({'url': browser.runtime.getURL('options.html')});
       }
     },
     // 复制运行节点
@@ -160,11 +160,11 @@ new Vue({
     },
     // 下载日志
     downloadConsoleLog() {
-      chrome.downloads.download({
+      browser.downloads.download({
         url: this.url + 'logText/progressiveText?start=0',
         filename: this.fullDisplayName + ' Console Log.log',
         saveAs: true
-      }, function (downloadId) {
+      }).then(function (downloadId) {
         console.log('downloadId', downloadId)
       })
     },
@@ -172,10 +172,10 @@ new Vue({
     goToConfigure() {
       var url = this.url.substring(0, this.url.length - 1);
       var configureUrl = url.substring(0, url.lastIndexOf('/')) + '/configure';
-      chrome.tabs.create({'url': configureUrl});
+      browser.tabs.create({'url': configureUrl});
     },
     rebuild() {
-      chrome.tabs.create({'url': this.url + 'rebuild'});
+      browser.tabs.create({'url': this.url + 'rebuild'});
     },
     // 显示前一次构建信息
     prevBuild() {
@@ -186,7 +186,7 @@ new Vue({
         url = url + '/' + (this.number - 1);
         this.getParametersByUrl(url)
       } else {
-        alert(chrome.i18n.getMessage("noPrevBuild"))
+        alert(browser.i18n.getMessage("noPrevBuild"))
       }
     },
     // 显示后一次构建信息
@@ -197,12 +197,12 @@ new Vue({
       this.getParametersByUrl(url)
     },
     openJobList() {
-      chrome.windows.create({
+      browser.windows.create({
         url: 'job_stats.html',
         type: 'popup',
         width: 1200,
         height: 800,
-      }, function (window) {
+      }).then(function (window) {
         console.log('window', window)
       })
     },

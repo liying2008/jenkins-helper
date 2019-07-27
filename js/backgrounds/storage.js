@@ -4,11 +4,11 @@
  */
 var StorageService = (function () {
   function saveJenkinsUrls(jenkinsUrls, callback) {
-    chrome.storage.local.set({'jenkins-url': jenkinsUrls}, callback);
+    browser.storage.local.set({'jenkins-url': jenkinsUrls}).then(callback);
   }
 
   function getJenkinsUrls(callback) {
-    chrome.storage.local.get('jenkins-url', function (result) {
+    browser.storage.local.get('jenkins-url').then(function (result) {
       callback(result['jenkins-url'] || [])
     });
   }
@@ -31,36 +31,36 @@ var StorageService = (function () {
   function saveJobStatus(jenkinsUrl, info, callback) {
     var jenkinsObj = {};
     jenkinsObj[jenkinsUrl] = info;
-    chrome.storage.local.set(jenkinsObj, callback);
+    browser.storage.local.set(jenkinsObj).then(callback);
   }
 
   function removeJobStatus(jenkinsUrl, callback) {
-    chrome.storage.local.remove(jenkinsUrl, callback);
+    browser.storage.local.remove(jenkinsUrl).then(callback);
   }
 
 
   function getJobStatus(jenkinsUrl, callback) {
-    chrome.storage.local.get(jenkinsUrl, function (result) {
+    browser.storage.local.get(jenkinsUrl).then(function (result) {
       callback(result || {})
     });
   }
 
   function saveNodeStatus(nodesStatus, callback) {
-    chrome.storage.local.set({'nodes': nodesStatus}, callback);
+    browser.storage.local.set({'nodes': nodesStatus}).then(callback);
   }
 
   function getNodeStatus(callback) {
-    chrome.storage.local.get('nodes', function (result) {
+    browser.storage.local.get('nodes').then(function (result) {
       callback(result['nodes'] || {})
     });
   }
 
   function addStorageListener(listener) {
-    chrome.storage.onChanged.addListener(listener);
+    browser.storage.onChanged.addListener(listener);
   }
 
   function getOptions(callback) {
-    chrome.storage.local.get('options', function (result) {
+    browser.storage.local.get('options').then(function (result) {
       callback(result['options'] || {
         defaultTab: 'monitor',
         jenkinsTokens: [],
@@ -77,7 +77,7 @@ var StorageService = (function () {
   }
 
   function saveOptions(options, callback) {
-    chrome.storage.local.set({'options': options}, callback)
+    browser.storage.local.set({'options': options}).then(callback)
   }
 
   return {

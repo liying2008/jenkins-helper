@@ -3,13 +3,13 @@ new Vue({
   data: {
     strings: {
       noFilterValue: '-',
-      url: chrome.i18n.getMessage("url"),
-      inputUrlPlaceholder: chrome.i18n.getMessage("inputUrlPlaceholder"),
-      monitor: chrome.i18n.getMessage("monitor"),
-      params: chrome.i18n.getMessage("params"),
-      computer: chrome.i18n.getMessage("computer"),
-      showDisabledJobs: chrome.i18n.getMessage("showDisabledJobs"),
-      filterLabel: chrome.i18n.getMessage("filterLabel"),
+      url: browser.i18n.getMessage("url"),
+      inputUrlPlaceholder: browser.i18n.getMessage("inputUrlPlaceholder"),
+      monitor: browser.i18n.getMessage("monitor"),
+      params: browser.i18n.getMessage("params"),
+      computer: browser.i18n.getMessage("computer"),
+      showDisabledJobs: browser.i18n.getMessage("showDisabledJobs"),
+      filterLabel: browser.i18n.getMessage("filterLabel"),
     },
     inputUrlValue: '',
     btnAddDisabled: true,
@@ -195,20 +195,20 @@ new Vue({
     },
 
     openOptions() {
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
+      if (browser.runtime.openOptionsPage && Tools.isChrome) {
+        browser.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
       } else {
-        chrome.tabs.create({'url': chrome.runtime.getURL('options.html')});
+        browser.tabs.create({'url': browser.runtime.getURL('options.html')});
       }
     },
 
     openJobList() {
-      chrome.windows.create({
+      browser.windows.create({
         url: 'job_stats.html',
         type: 'popup',
         width: 1200,
         height: 800,
-      }, function (window) {
+      }).then(function (window) {
         console.log('window', window)
       })
     },

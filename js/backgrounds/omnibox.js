@@ -7,7 +7,7 @@ var Omnibox = (function () {
   getAllJobs();
 
   // 当用户输入时触发
-  chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
+  browser.omnibox.onInputChanged.addListener(function (text, suggest) {
     // console.log('text', text);
     if (!text) return;
     var suggestContent = filterJobs(text);
@@ -16,7 +16,7 @@ var Omnibox = (function () {
   });
 
   // 当用户接收关键字建议时触发
-  chrome.omnibox.onInputEntered.addListener(function (text) {
+  browser.omnibox.onInputEntered.addListener(function (text) {
     // console.log('inputEntered', text);
     if (!text) return;
     if (text.indexOf('http') !== 0) {
@@ -26,8 +26,8 @@ var Omnibox = (function () {
   });
 
   function navigate(url) {
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-      chrome.tabs.update(tabs[0].id, {url: url});
+    browser.tabs.query({active: true, currentWindow: true}).then(function (tabs) {
+      browser.tabs.update(tabs[0].id, {url: url});
     });
   }
 
@@ -44,7 +44,7 @@ var Omnibox = (function () {
         url = url.charAt(url.length - 1) === '/' ? url : url + '/';
         if (!defaultSuggestionUrl) {
           defaultSuggestionUrl = url;
-          chrome.omnibox.setDefaultSuggestion({
+          browser.omnibox.setDefaultSuggestion({
             description: url + 'job/%s/'
           });
         }

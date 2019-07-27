@@ -5,6 +5,12 @@
   "author": "LiYing",
   "homepage_url": "https://github.com/liying2008/jenkins-helper",
   "version": "2.0.1",
+  "applications": {
+    "gecko": {
+      "id": "jenkins.helper@duduhuo.cc",
+      "strict_min_version": "48.0"
+    }
+  },
   "minimum_chrome_version": "45",
   "default_locale": "en",
   "omnibox": {
@@ -23,6 +29,7 @@
   },
   "background": {
     "scripts": [
+      "js/libs/browser-polyfill.js",
       "js/backgrounds/tools.js",
       "js/backgrounds/storage.js",
       "js/backgrounds/omnibox.js",
@@ -56,6 +63,7 @@
       ],
       "css": [],
       "js": [
+        "js/libs/browser-polyfill.js",
         "js/libs/jquery.js",
         "js/contents/jenkins_helper_alerts.js",
         "js/contents/params_stash_recover.js",

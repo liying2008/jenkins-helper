@@ -20,7 +20,7 @@ var ContentServices = (function () {
 
 
     // 处理来自 content_scripts 的消息
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       // console.log('request', request);
       // console.log('sender', sender);
       if (request.cmd === CMD_STASH_PARAMS) {
