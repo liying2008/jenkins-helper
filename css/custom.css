@@ -1,10 +1,18 @@
 body {
-  width: 700px;
   min-height: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+}
+
+div#app {
+  width: 700px;
+  margin: auto;
 }
 
 .main-panel {
-  margin: 10px 18px;
+  margin: auto;
+  padding: 10px 16px;
 }
 
 .info-block {
