@@ -4,7 +4,7 @@
  */
 var StorageService = (function () {
   function saveJenkinsUrls(jenkinsUrls, callback) {
-    browser.storage.local.set({'jenkins-url': jenkinsUrls}).then(callback);
+    browser.storage.local.set({'jenkins-url': JSON.parse(JSON.stringify(jenkinsUrls))}).then(callback);
   }
 
   function getJenkinsUrls(callback) {
@@ -46,7 +46,7 @@ var StorageService = (function () {
   }
 
   function saveNodeStatus(nodesStatus, callback) {
-    browser.storage.local.set({'nodes': nodesStatus}).then(callback);
+    browser.storage.local.set({'nodes': JSON.parse(JSON.stringify(nodesStatus))}).then(callback);
   }
 
   function getNodeStatus(callback) {
@@ -77,7 +77,7 @@ var StorageService = (function () {
   }
 
   function saveOptions(options, callback) {
-    browser.storage.local.set({'options': options}).then(callback)
+    browser.storage.local.set({'options': JSON.parse(JSON.stringify(options))}).then(callback)
   }
 
   return {

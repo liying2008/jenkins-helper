@@ -81,7 +81,7 @@ new Vue({
   mounted() {
     var _self = this;
     StorageService.getOptions(function (result) {
-      console.log('result', result);
+      // console.log('result', result);
       _self.refreshTime = result.refreshTime;
       _self.nodeRefreshTime = result.nodeRefreshTime || 2;
       _self.showNotificationOption = result.showNotificationOption;
@@ -109,7 +109,7 @@ new Vue({
           arrangedJenkinsTokens.push(token)
         }
       }
-      console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
+      // console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
       return arrangedJenkinsTokens
     },
     saveOptions() {
