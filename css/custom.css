@@ -1,11 +1,10 @@
 body {
-  min-height: 200px;
   display: flex;
   flex-wrap: wrap;
-  overflow-x: hidden;
 }
 
 div#app {
+  min-height: 200px;
   width: 700px;
   margin: auto;
 }
