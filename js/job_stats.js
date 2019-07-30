@@ -147,12 +147,17 @@ new Vue({
       } else {
         _self.jobUrlVisited.push(url)
       }
-      // https://github.com/liying2008/jenkins-helper/issues/6
-      // 此方法无效
-      // var header = {"Content-Type": "text/xml;charset=UTF-8"};
+
       fetch(url + 'config.xml', Tools.getFetchOption(url + 'config.xml')).then(function (res) {
         return res.ok ? res.text() : Promise.reject(res);
       }).then(function (text) {
+        // 为了兼容Firefox，需要截取掉XML头部：<?xml version='1.1' encoding='UTF-8'?>
+        // 参考：https://github.com/liying2008/jenkins-helper/issues/6
+        var index = text.indexOf('<', 1);
+        if (index > 1) {
+          text = text.substring(index)
+        }
+        // console.log('text', text);
         var documentNode = _self.xmlParser.parseFromString(text, 'text/xml');
         var projectNodes = documentNode.getElementsByTagName('project');
 
