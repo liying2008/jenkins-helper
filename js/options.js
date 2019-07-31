@@ -4,6 +4,7 @@ new Vue({
     refreshTime: '60',
     nodeRefreshTime: '2',
     strings: {
+      settings: browser.i18n.getMessage("settings"),
       monitorOptionTitle: browser.i18n.getMessage("monitorOptionTitle"),
       showNotification: browser.i18n.getMessage("showNotification"),
       refreshTime: browser.i18n.getMessage("refreshTime"),
@@ -63,6 +64,8 @@ new Vue({
     jobStatsJenkinsUrl: '',
     jenkinsTokens: [],
     enableParamsStashAndRecover: true,
+    optionsJson: '',
+    isJsonView: false,
   },
   computed: {
     refreshTimeTip() {
@@ -112,10 +115,8 @@ new Vue({
       // console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
       return arrangedJenkinsTokens
     },
-    saveOptions() {
-      console.log('saveOptions');
-      var _self = this;
-      StorageService.saveOptions({
+    getThisOptions() {
+      return {
         defaultTab: this.defaultTab,
         jenkinsTokens: this.arrangeJenkinsTokens(),
         refreshTime: this.refreshTime,
@@ -125,12 +126,45 @@ new Vue({
         nodeParam: this.nodeParam,
         jobStatsJenkinsUrl: this.jobStatsJenkinsUrl,
         enableParamsStashAndRecover: this.enableParamsStashAndRecover,
-      }, function () {
+      };
+    },
+    saveOptions() {
+      console.log('saveOptions');
+      var _self = this;
+      StorageService.saveOptions(_self.getThisOptions(), function () {
         _self.$refs.showSavedMsg.style.visibility = "";
         setTimeout(function () {
           _self.$refs.showSavedMsg.style.visibility = "hidden";
         }, 2000);
       })
+    },
+    optionsToJson() {
+      this.optionsJson = JSON.stringify(this.getThisOptions(), null, 2)
+    },
+    jsonToOptions() {
+      try {
+        var options = JSON.parse(this.optionsJson);
+        return true;
+      } catch (e) {
+        console.log('转换异常：', e.message);
+        this.isJsonView = true;
+        // TODO alert
+        alert(e.message);
+        return false;
+      }
+    },
+    switchView() {
+      if (this.isJsonView) {
+        // 需要切换到 UI View
+        var result = this.jsonToOptions();
+        if (result) {
+          this.isJsonView = false;
+        }
+      } else {
+        // 需要切换到 JSON View
+        this.optionsToJson();
+        this.isJsonView = true;
+      }
     }
   },
 });

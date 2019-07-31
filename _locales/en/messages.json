@@ -8,6 +8,9 @@
   "ok": {
     "message": "OK"
   },
+  "settings": {
+    "message": "Settings"
+  },
   "globalOptionTitle": {
     "message": "Global Settings"
   },

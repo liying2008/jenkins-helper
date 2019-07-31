@@ -8,6 +8,9 @@
   "ok": {
     "message": "确定"
   },
+  "settings": {
+    "message": "设置"
+  },
   "globalOptionTitle": {
     "message": "全局设置"
   },
