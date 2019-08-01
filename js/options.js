@@ -67,6 +67,12 @@ new Vue({
     enableParamsStashAndRecover: true,
     optionsJson: '',
     isJsonView: false,
+    constants: {
+      monitorMinRefreshTime: 5,
+      monitorMaxRefreshTime: 300,
+      nodeMinRefreshTime: 1,
+      nodeMaxRefreshTime: 6,
+    },
   },
   computed: {
     refreshTimeTip() {
@@ -86,19 +92,7 @@ new Vue({
     var _self = this;
     StorageService.getOptions(function (result) {
       // console.log('result', result);
-      _self.refreshTime = result.refreshTime;
-      _self.nodeRefreshTime = result.nodeRefreshTime || 2;
-      _self.showNotificationOption = result.showNotificationOption;
-      _self.defaultTab = result.defaultTab;
-      _self.jenkinsTokens = result.jenkinsTokens || [];
-      _self.omniboxJenkinsUrl = result.omniboxJenkinsUrl;
-      _self.nodeParam = result.nodeParam;
-      _self.jobStatsJenkinsUrl = result.jobStatsJenkinsUrl;
-      if (result.enableParamsStashAndRecover === undefined) {
-        _self.enableParamsStashAndRecover = true;
-      } else {
-        _self.enableParamsStashAndRecover = result.enableParamsStashAndRecover;
-      }
+      _self.optionsToData(result)
     })
   },
   methods: {
@@ -116,7 +110,7 @@ new Vue({
       // console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
       return arrangedJenkinsTokens
     },
-    getThisOptions() {
+    dataToOptions() {
       return {
         defaultTab: this.defaultTab,
         jenkinsTokens: this.arrangeJenkinsTokens(),
@@ -129,10 +123,57 @@ new Vue({
         enableParamsStashAndRecover: this.enableParamsStashAndRecover,
       };
     },
+    optionsToData(options) {
+      //// refreshTime
+      if (options.refreshTime === undefined) {
+        this.refreshTime = '60';
+      } else if (parseInt(options.refreshTime) > this.constants.monitorMaxRefreshTime) {
+        this.refreshTime = this.constants.monitorMaxRefreshTime.toString();
+      } else if (parseInt(options.refreshTime) < this.constants.monitorMinRefreshTime) {
+        this.refreshTime = this.constants.monitorMinRefreshTime.toString();
+      } else {
+        this.refreshTime = options.refreshTime;
+      }
+
+      //// nodeRefreshTime
+      if (options.nodeRefreshTime === undefined) {
+        this.nodeRefreshTime = '2';
+      } else if (parseInt(options.nodeRefreshTime) > this.constants.nodeMaxRefreshTime) {
+        this.nodeRefreshTime = this.constants.nodeMaxRefreshTime.toString();
+      } else if (parseInt(options.nodeRefreshTime) < this.constants.nodeMinRefreshTime) {
+        this.nodeRefreshTime = this.constants.nodeMinRefreshTime.toString();
+      } else {
+        this.nodeRefreshTime = options.nodeRefreshTime;
+      }
+
+      //// showNotificationOption
+      var allShowNotificationOptions = this.showNotificationOptions.map(value => value.value);
+      // console.log('allShowNotificationOptions', allShowNotificationOptions);
+      if (allShowNotificationOptions.indexOf(options.showNotificationOption) >= 0) {
+        this.showNotificationOption = options.showNotificationOption;
+      }
+
+      //// defaultTab
+      var allDefaultTabs = this.defaultTabs.map(value => value.value);
+      // console.log('allDefaultTabs', allDefaultTabs);
+      if (allDefaultTabs.indexOf(options.defaultTab) >= 0) {
+        this.defaultTab = options.defaultTab;
+      }
+      
+      this.jenkinsTokens = options.jenkinsTokens || [];
+      this.omniboxJenkinsUrl = options.omniboxJenkinsUrl;
+      this.nodeParam = options.nodeParam;
+      this.jobStatsJenkinsUrl = options.jobStatsJenkinsUrl;
+      if (options.enableParamsStashAndRecover === undefined) {
+        this.enableParamsStashAndRecover = true;
+      } else {
+        this.enableParamsStashAndRecover = options.enableParamsStashAndRecover;
+      }
+    },
     saveOptions() {
       console.log('saveOptions');
       var _self = this;
-      StorageService.saveOptions(_self.getThisOptions(), function () {
+      StorageService.saveOptions(_self.dataToOptions(), function () {
         _self.$refs.showSavedMsg.style.visibility = "";
         setTimeout(function () {
           _self.$refs.showSavedMsg.style.visibility = "hidden";
@@ -140,11 +181,12 @@ new Vue({
       })
     },
     optionsToJson() {
-      this.optionsJson = JSON.stringify(this.getThisOptions(), null, 2)
+      this.optionsJson = JSON.stringify(this.dataToOptions(), null, 2)
     },
     jsonToOptions() {
       try {
         var options = JSON.parse(this.optionsJson);
+        this.optionsToData(options);
         return true;
       } catch (e) {
         console.log('JSON解析失败：', e);
