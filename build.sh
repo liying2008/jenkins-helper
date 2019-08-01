@@ -51,8 +51,6 @@ cp manifest.json.bak firefox/manifest.json
 cd firefox
 # 删除 Firefox 不兼容的 minimum_chrome_version 属性
 sed -i '/  "minimum_chrome_version":/d' manifest.json
-# 删除 options_ui 属性
-sed -i '/  "options_ui": {/,/  },/d' manifest.json
 
 web-ext build -v --overwrite-dest --artifacts-dir ..
 if [ "$IS_RELEASE" == "true" ]; then

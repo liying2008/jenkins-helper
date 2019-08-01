@@ -234,5 +234,8 @@
   },
   "content_dataSavingFailed": {
     "message": "数据保存失败！"
+  },
+  "jsonParsingFailed": {
+    "message": "JSON 解析失败"
   }
 }

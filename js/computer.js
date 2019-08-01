@@ -77,7 +77,7 @@ new Vue({
       })
     },
     openOptions() {
-      if (browser.runtime.openOptionsPage && Tools.isChrome) {
+      if (browser.runtime.openOptionsPage) {
         browser.runtime.openOptionsPage(); // Chrome 42+, Firefox 48
       } else {
         browser.tabs.create({'url': browser.runtime.getURL('options.html')});

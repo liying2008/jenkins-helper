@@ -5,6 +5,7 @@ new Vue({
     nodeRefreshTime: '2',
     strings: {
       settings: browser.i18n.getMessage("settings"),
+      jsonParsingFailed: browser.i18n.getMessage("jsonParsingFailed"),
       monitorOptionTitle: browser.i18n.getMessage("monitorOptionTitle"),
       showNotification: browser.i18n.getMessage("showNotification"),
       refreshTime: browser.i18n.getMessage("refreshTime"),
@@ -146,10 +147,9 @@ new Vue({
         var options = JSON.parse(this.optionsJson);
         return true;
       } catch (e) {
-        console.log('转换异常：', e.message);
+        console.log('JSON解析失败：', e);
         this.isJsonView = true;
-        // TODO alert
-        alert(e.message);
+        alert(this.strings.jsonParsingFailed + ' :\n' + e);
         return false;
       }
     },
