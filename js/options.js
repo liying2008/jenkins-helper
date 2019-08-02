@@ -159,15 +159,17 @@ new Vue({
       if (allDefaultTabs.indexOf(options.defaultTab) >= 0) {
         this.defaultTab = options.defaultTab;
       }
-      
+
       this.jenkinsTokens = options.jenkinsTokens || [];
       this.omniboxJenkinsUrl = options.omniboxJenkinsUrl;
       this.nodeParam = options.nodeParam;
       this.jobStatsJenkinsUrl = options.jobStatsJenkinsUrl;
+
+      //// enableParamsStashAndRecover
       if (options.enableParamsStashAndRecover === undefined) {
         this.enableParamsStashAndRecover = true;
       } else {
-        this.enableParamsStashAndRecover = options.enableParamsStashAndRecover;
+        this.enableParamsStashAndRecover = !!options.enableParamsStashAndRecover
       }
     },
     saveOptions() {
