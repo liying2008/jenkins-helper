@@ -116,6 +116,9 @@
   "computer": {
     "message": "节点"
   },
+  "tools": {
+    "message": "工具"
+  },
   "buildStatus_": {
     "message": "构建状态："
   },

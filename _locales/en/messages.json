@@ -116,6 +116,9 @@
   "computer": {
     "message": "Nodes"
   },
+  "tools": {
+    "message": "Tools"
+  },
   "buildStatus_": {
     "message": "Result:"
   },

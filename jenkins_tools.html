@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <title>Jenkins Tools</title>
+</head>
+<body class="main-panel">
+<div id="app">
+  <ul class="nav nav-tabs">
+    <li role="presentation"><a href="monitor.html">{{strings.monitor}}</a></li>
+    <li role="presentation"><a href="params.html">{{strings.params}}</a></li>
+    <li role="presentation"><a href="computer.html">{{strings.computer}}</a></li>
+    <li role="presentation" class="active"><a href="jenkins_tools.html">{{strings.tools}}</a></li>
+    <li role="presentation" title="Open Job Statistics"><a href="#" @click="openJobList">
+      <i class="glyphicon glyphicon-list"></i></a>
+    </li>
+    <li role="presentation" title="Open Options"><a href="#" @click="openOptions">
+      <i class="glyphicon glyphicon-cog"></i></a>
+    </li>
+  </ul>
+
+</div>
+</body>
+<script src="js/libs/browser-polyfill.js"></script>
+<script src="js/libs/vue.js"></script>
+<script src="js/jenkins_tools.js"></script>
+<script src="js/backgrounds/tools.js"></script>
+</html>

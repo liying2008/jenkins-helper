@@ -8,6 +8,7 @@ new Vue({
       monitor: browser.i18n.getMessage("monitor"),
       params: browser.i18n.getMessage("params"),
       computer: browser.i18n.getMessage("computer"),
+      tools: browser.i18n.getMessage("tools"),
       showDisabledJobs: browser.i18n.getMessage("showDisabledJobs"),
       filterLabel: browser.i18n.getMessage("filterLabel"),
     },
