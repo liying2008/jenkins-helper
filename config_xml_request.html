@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <title>Fetch/Update Config XML</title>
+</head>
+<body class="container-fluid main-panel">
+<div id="app" style="width: 1000px;">
+
+  <div class="form-group info-block" style="display: flex;">
+    <label for="url" style="width: 50px; margin-top: 5px;">URL</label>
+    <input type="url" class="form-control" id="url" placeholder="Please enter the request URL" style="margin: 0 10px;">
+    <button class="btn btn-info" style="width: 10%; margin-right: 10px;">GET</button>
+    <button class="btn btn-warning" style="width: 10%">POST</button>
+  </div>
+  <div class="form-group info-block" style="display: flex;">
+    <label for="username" style="width: 50px;">Basic Auth</label>
+    <input type="text" class="form-control" id="username" placeholder="Jenkins username (Optional)"
+           style="margin: 0 10px;">
+    <input type="password" class="form-control" id="password" placeholder="Jenkins password or api token (Optional)">
+  </div>
+  <div class="info-block row">
+    <div class="col-md-6">
+      <label for="request-data-area" style="float: left; margin-top: 5px; margin-right: 10px;">Request Data:</label>
+      <textarea id="request-data-area" class="form-control" rows="30"></textarea>
+    </div>
+    <div class="col-md-6">
+      <label for="response-data-area" style="float: left; margin-top: 5px; margin-right: 10px;">Response Data:</label>
+      <textarea id="response-data-area" class="form-control" rows="30"></textarea>
+    </div>
+  </div>
+
+</div>
+</body>
+<script src="js/libs/browser-polyfill.js"></script>
+<script src="js/libs/vue.js"></script>
+<script src="js/config_xml_request.js"></script>
+<script src="js/backgrounds/tools.js"></script>
+</html>
