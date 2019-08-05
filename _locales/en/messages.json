@@ -30,7 +30,7 @@
     "message": "Search from the following Jenkins"
   },
   "searchFromJenkinsPlaceholder": {
-    "message": "Enter the Jenkins URLs and enter one in a line, such as: http://127.0.0.1:8080"
+    "message": "Enter the Jenkins URLs and enter one in a line, for example: http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
     "message": "Tips: Type <b>jk</b> in the omnibox, press the space key or Tab to enter the Jenkins Job search mode, and enter the job name to quickly match the corresponding Jenkins Job link."
@@ -42,7 +42,7 @@
     "message": "Statistics Job information from the following Jenkins."
   },
   "jobStatsJenkinsPlaceholder": {
-    "message": "Enter the Jenkins/View/Job URLs and enter one in a line, such as: http://127.0.0.1:8080/view/My/"
+    "message": "Enter the Jenkins/View/Job URLs and enter one in a line, for example: http://127.0.0.1:8080/view/My/"
   },
   "jobStatsNodeParamTip": {
     "message": "If the Job node is null, it will obtain from the following parameters"

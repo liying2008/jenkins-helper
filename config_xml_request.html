@@ -12,24 +12,33 @@
 
   <div class="form-group info-block" style="display: flex;">
     <label for="url" style="width: 50px; margin-top: 5px;">URL</label>
-    <input type="url" class="form-control" id="url" placeholder="Please enter the request URL" style="margin: 0 10px;">
-    <button class="btn btn-info" style="width: 10%; margin-right: 10px;">GET</button>
-    <button class="btn btn-warning" style="width: 10%">POST</button>
+    <input type="url" class="form-control" id="url"
+           placeholder="Please enter the request URL, for example: http://127.0.0.1:8080/jenkins/job/Job1/config.xml"
+           style="margin: 0 10px;"
+           v-model="requestUrl">
+    <button class="btn btn-info" style="width: 10%; margin-right: 10px;" :disabled="btnGetDisabled" @click="invokeGet">
+      GET
+    </button>
+    <button class="btn btn-warning" style="width: 10%" :disabled="btnPostDisabled" @click="invokePost">POST</button>
   </div>
   <div class="form-group info-block" style="display: flex;">
     <label for="username" style="width: 50px;">Basic Auth</label>
     <input type="text" class="form-control" id="username" placeholder="Jenkins username (Optional)"
-           style="margin: 0 10px;">
-    <input type="password" class="form-control" id="password" placeholder="Jenkins password or api token (Optional)">
+           style="margin: 0 10px;"
+           v-model="username">
+    <input type="password" class="form-control" id="password" placeholder="Jenkins password or api token (Optional)"
+           v-model="password">
   </div>
   <div class="info-block row">
     <div class="col-md-6">
       <label for="request-data-area" style="float: left; margin-top: 5px; margin-right: 10px;">Request Data:</label>
-      <textarea id="request-data-area" class="form-control" rows="30"></textarea>
+      <textarea id="request-data-area" class="form-control" rows="30" placeholder="An updated config.xml"
+                v-model="requestData"></textarea>
     </div>
     <div class="col-md-6">
       <label for="response-data-area" style="float: left; margin-top: 5px; margin-right: 10px;">Response Data:</label>
-      <textarea id="response-data-area" class="form-control" rows="30"></textarea>
+      <textarea id="response-data-area" class="form-control" rows="30"
+                v-model="responseData"></textarea>
     </div>
   </div>
 
