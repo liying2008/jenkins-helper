@@ -39,11 +39,11 @@
             <div class="row" v-for="(token, index) in jenkinsTokens" style="margin-top: 8px">
               <div class="col-xs-4" style="padding-right: 0">
                 <input type="url" class="form-control" aria-label="Jenkins url (prefix)"
-                       placeholder="Jenkins url (prefix)" v-model="token.url">
+                       placeholder="Jenkins url (prefix)" v-model="token.url" :title="token.url">
               </div>
               <div class="col-xs-3" style="padding-right: 0">
                 <input type="text" class="form-control" aria-label="Username"
-                       placeholder="Username" v-model="token.username">
+                       placeholder="Username" v-model="token.username" :title="token.username">
               </div>
               <div class="col-xs-5">
                 <input type="password" class="form-control" aria-label="Token or password"
@@ -90,7 +90,12 @@
         </div>
         <div class="info-block">
           <div>{{strings.refreshTime}}</div>
-          <input style="width: 100%;" :min="constants.monitorMinRefreshTime" :max="constants.monitorMaxRefreshTime" step="5" type="range" v-model="refreshTime">
+          <input style="width: 100%;"
+                 :min="constants.monitorMinRefreshTime"
+                 :max="constants.monitorMaxRefreshTime"
+                 step="5"
+                 type="range"
+                 v-model="refreshTime">
           <i v-html="refreshTimeTip"></i>
         </div>
       </div>
@@ -103,7 +108,12 @@
       <div class="panel-body">
         <div>
           <div>{{strings.nodeRefreshTime}}</div>
-          <input style="width: 100%;" :min="constants.nodeMinRefreshTime" :max="constants.nodeMaxRefreshTime" step="0.5" type="range" v-model="nodeRefreshTime">
+          <input style="width: 100%;"
+                 :min="constants.nodeMinRefreshTime"
+                 :max="constants.nodeMaxRefreshTime"
+                 step="0.5"
+                 type="range"
+                 v-model="nodeRefreshTime">
           <i v-html="nodeRefreshTimeTip"></i>
         </div>
       </div>

@@ -48,10 +48,10 @@
         <div class="col-xs-8">
           <div class="no-margin inline-block">
             <h4>
-              <span class="no-wrap">{{jenkins.name}}</span>
+              <span class="no-wrap" :title="jenkins.name">{{jenkins.name}}</span>
               <br>
               <a class="small" target="_blank" :href="jenkinsUrl">
-                <span class="no-wrap">{{decodeURIComponent(jenkinsUrl)}}</span>
+                <span class="no-wrap" :title="decodeURIComponent(jenkinsUrl)">{{decodeURIComponent(jenkinsUrl)}}</span>
               </a>
             </h4>
           </div>

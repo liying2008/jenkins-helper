@@ -41,7 +41,7 @@
         <div class="col-xs-8">
           <div class="no-margin inline-block">
             <h4>
-              <span class="no-wrap">{{decodeURIComponent(jenkinsUrl)}}</span>
+              <span class="no-wrap" :title="decodeURIComponent(jenkinsUrl)">{{decodeURIComponent(jenkinsUrl)}}</span>
               <br>
               <button type="button" class="small btn btn-link" style="padding: unset; line-height: 1.1"
                       @click="openNodesManager(jenkinsUrl)">
