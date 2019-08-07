@@ -80,6 +80,13 @@ div#app {
   }
 }
 
+.list-item-key {
+  font-weight: bold;
+}
+
+.list-item-value {
+
+}
 /*table.dataTable.no-footer {*/
 /*  border-bottom-color: rgb(221, 221, 221);*/
 /*}*/

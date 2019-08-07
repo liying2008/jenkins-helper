@@ -1,7 +1,12 @@
 new Vue({
   el: '#app',
   data: {
-    strings: {},
+    strings: {
+      jenkinsUrlInputPlaceholder: 'Jenkins url, for example: http://127.0.0.1:8080/jenkins/',
+      requestPathInputPlaceholder: 'Request path, for example: job/Job1/config.xml',
+      jenkinsUsernameInputPlaceholder: 'Jenkins username (Optional)',
+      jenkinsPasswordInputPlaceholder: 'Jenkins password or api token (Optional)',
+    },
     baseUrl: '',
     requestPath: '',
     requestData: '',
@@ -33,10 +38,9 @@ new Vue({
 
   },
   methods: {
-    getRequestHeader(method = 'GET') {
+    getRequestHeader(header = {}, method = 'GET') {
       var requestHeader = {};
       if (this.username && this.password) {
-        var header = {};
         header['Authorization'] = 'Basic ' + window.btoa(this.username + ':' + this.password);
         requestHeader = {
           method: method,
@@ -45,12 +49,13 @@ new Vue({
           headers: new Headers(header)
         }
       } else {
-        requestHeader = Tools.getFetchOption(this.requestUrl, {}, method);
+        requestHeader = Tools.getFetchOption(this.requestUrl, header, method);
       }
       return requestHeader
     },
     invokeGet() {
       var _self = this;
+      this.responseData = '';
       fetch(this.requestUrl, this.getRequestHeader()).then(function (res) {
         if (res.ok) {
           return res.text();
@@ -66,13 +71,31 @@ new Vue({
     },
     invokePost() {
       var _self = this;
+      this.responseData = '';
       // 先获取 crumb
-      this.getJenkinsCrumbValue(function (value, e) {
+      this.getJenkinsCrumbValue(function (crumbKey, crumbValue, e) {
         if (e != null) {
           _self.responseData = e.message || 'Failed to fetch jenkins crumb.';
           return
         }
-        console.log('crumb value', value)
+        console.log('Jenkins-Crumb: ', crumbKey, crumbValue);
+        var initHeader = {'Content-Type': 'application/xml'};
+        initHeader[crumbKey] = crumbValue;
+        var header = _self.getRequestHeader(initHeader, 'POST');
+        header['body'] = _self.requestData;
+        // console.log('header', header);
+        fetch(_self.requestUrl, header).then(function (res) {
+          if (res.ok) {
+            return res.text();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          _self.responseData = data || 'OK.';
+        }).catch(function (e) {
+          console.error("invokePost 失败", _self.requestUrl, e);
+          _self.responseData = e.message || 'Failed to updated.';
+        });
       })
     },
     /**
@@ -80,11 +103,12 @@ new Vue({
      * @param callback
      */
     getJenkinsCrumbValue(callback) {
-      // http://127.0.0.1:8080/jenkins/crumbIssuer/api/xml?xpath=//crumb
+      // http://127.0.0.1:8080/jenkins/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)
       var _self = this;
+      var encodeParam = encodeURI('concat(//crumbRequestField,":",//crumb)');
       var tmpBaseUrl = this.baseUrl.charAt(this.baseUrl.length - 1) === '/' ?
         this.baseUrl.substring(0, this.baseUrl.length - 1) : this.baseUrl;
-      var url = tmpBaseUrl + '/crumbIssuer/api/xml?xpath=//crumb';
+      var url = tmpBaseUrl + '/crumbIssuer/api/xml?xpath=' + encodeParam;
       fetch(url, this.getRequestHeader()).then(function (res) {
         if (res.ok) {
           return res.text();
@@ -92,13 +116,17 @@ new Vue({
           return Promise.reject(res);
         }
       }).then(function (data) {
-        var startIndex = data.indexOf('<crumb>');
-        var endIndex = data.indexOf('</crumb>');
-        var value = data.substring(startIndex + 7, endIndex);
-        callback(value, null)
+        var sepIndex = data.indexOf(':');
+        if (sepIndex > 0 && sepIndex < data.length - 1) {
+          var key = data.substring(0, sepIndex);
+          var value = data.substring(sepIndex + 1);
+          callback(key, value, null)
+        } else {
+          callback(null, null, 'Bad format for crumb data.')
+        }
       }).catch(function (e) {
         console.error("getJenkinsCrumbValue 失败", url, e);
-        callback(null, e)
+        callback(null, null, e)
       });
     },
   }
