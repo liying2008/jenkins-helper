@@ -36,15 +36,16 @@ new Vue({
       StorageService.getNodeStatus(function (result) {
         console.log('monitoredNodes', result);
         _self.monitoredNodes = result;
-        StorageService.getOptions(function (options) {
-          Tools.setJenkinsTokens(options.jenkinsTokens || []);
-          _self.queryJenkinsNodes()
-        })
+        _self.queryJenkinsNodes()
       });
     },
+
+    /**
+     * 查询Jenkins节点数据
+     * @param jenkinsUrl
+     */
     queryJenkinsNodes(jenkinsUrl) {
       var _self = this;
-      _self.nodes = {};
       var url = _self.inputUrlValue;
       if (jenkinsUrl === undefined) {
         url = url.charAt(url.length - 1) === '/' ? url : url + '/';
@@ -55,7 +56,21 @@ new Vue({
       var encodeParam = encodeURI('computer[displayName,offline,monitorData[*]]');
       var jsonUrl = url + 'computer/api/json?tree=' + encodeParam;
 
-      fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
+      Tools.getFetchOption(jsonUrl, function (header) {
+        _self.getJenkinsNodeData(url, jsonUrl, header)
+      });
+    },
+
+    /**
+     * 请求Jenkins节点数据
+     * @param url
+     * @param jsonUrl
+     * @param header
+     */
+    getJenkinsNodeData(url, jsonUrl, header) {
+      var _self = this;
+      _self.nodes = {};
+      fetch(jsonUrl, header).then(function (res) {
         if (res.ok) {
           return res.json();
         } else {
@@ -117,7 +132,12 @@ new Vue({
         alert(_self.strings.fetchNodesDataFailure)
       });
     },
-    // 添加监控节点或取消监控节点
+
+    /**
+     * 添加监控节点或取消监控节点
+     * @param index
+     * @param displayName
+     */
     addOrDelMonitorNode(index, displayName) {
       var _self = this;
       // console.log('index', index);

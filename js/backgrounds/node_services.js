@@ -8,7 +8,6 @@ var NodeServices = (function () {
     queryNodeStatus();
     StorageService.addStorageListener(storageChange);
     StorageService.getOptions(function (options) {
-      Tools.setJenkinsTokens(options.jenkinsTokens || []);
       refreshNodeStatus(options.nodeRefreshTime || 2)
     });
   }
@@ -27,7 +26,6 @@ var NodeServices = (function () {
       var newOptions = changes[StorageService.keyForOptions].newValue;
       var oldOptions = changes[StorageService.keyForOptions].oldValue;
       var newRefreshTime = newOptions.nodeRefreshTime;
-      Tools.setJenkinsTokens(newOptions.jenkinsTokens || []);
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.nodeRefreshTime) {
         console.log('refreshNodeStatus', newRefreshTime);
@@ -52,66 +50,68 @@ var NodeServices = (function () {
           var encodeParam = encodeURI('computer[displayName,offline,monitorData[*]]');
           var jsonUrl = url + 'computer/api/json?tree=' + encodeParam;
 
-          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return Promise.reject(res);
-            }
-          }).then(function (data) {
-            var computers = data.computer;
-            for (var i = 0; i < computers.length; i++) {
-              var displayName = computers[i].displayName;
-              if (!result[url]['monitoredNodes'].hasOwnProperty(displayName)) {
-                continue
+          Tools.getFetchOption(jsonUrl, function (header) {
+            fetch(jsonUrl, header).then(function (res) {
+              if (res.ok) {
+                return res.json();
+              } else {
+                return Promise.reject(res);
               }
-              var nodeUrl = url + 'computer/' + displayName + '/';
-              if (displayName === 'master') {
-                nodeUrl = url + 'computer/(master)/';
-              }
-              var workingDirectory = 'N/A';
-              var remainingDiskSpace = 'N/A';
-              var responseTime = 'N/A';
-              var offline = computers[i].offline;
-              if (!offline) {
-                var diskSpaceMonitor = computers[i].monitorData['hudson.node_monitors.DiskSpaceMonitor'];
-                if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('path')) {
-                  workingDirectory = diskSpaceMonitor.path;
+            }).then(function (data) {
+              var computers = data.computer;
+              for (var i = 0; i < computers.length; i++) {
+                var displayName = computers[i].displayName;
+                if (!result[url]['monitoredNodes'].hasOwnProperty(displayName)) {
+                  continue
                 }
-                var size = undefined;
-                if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('size')) {
-                  size = diskSpaceMonitor.size;
+                var nodeUrl = url + 'computer/' + displayName + '/';
+                if (displayName === 'master') {
+                  nodeUrl = url + 'computer/(master)/';
                 }
-                if (size) {
-                  remainingDiskSpace = (size / 1024.0 / 1024.0 / 1024.0).toFixed(2) + ' GB';
+                var workingDirectory = 'N/A';
+                var remainingDiskSpace = 'N/A';
+                var responseTime = 'N/A';
+                var offline = computers[i].offline;
+                if (!offline) {
+                  var diskSpaceMonitor = computers[i].monitorData['hudson.node_monitors.DiskSpaceMonitor'];
+                  if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('path')) {
+                    workingDirectory = diskSpaceMonitor.path;
+                  }
+                  var size = undefined;
+                  if (diskSpaceMonitor && diskSpaceMonitor.hasOwnProperty('size')) {
+                    size = diskSpaceMonitor.size;
+                  }
+                  if (size) {
+                    remainingDiskSpace = (size / 1024.0 / 1024.0 / 1024.0).toFixed(2) + ' GB';
+                  }
+                  var responseTimeMonitor = computers[i].monitorData['hudson.node_monitors.ResponseTimeMonitor'];
+                  if (responseTimeMonitor && responseTimeMonitor.hasOwnProperty('average')) {
+                    responseTime = responseTimeMonitor.average + 'ms';
+                  }
                 }
-                var responseTimeMonitor = computers[i].monitorData['hudson.node_monitors.ResponseTimeMonitor'];
-                if (responseTimeMonitor && responseTimeMonitor.hasOwnProperty('average')) {
-                  responseTime = responseTimeMonitor.average + 'ms';
-                }
-              }
-              var diskSpaceThreshold = result[url]['monitoredNodes'][displayName]['diskSpaceThreshold'];
-              checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline);
+                var diskSpaceThreshold = result[url]['monitoredNodes'][displayName]['diskSpaceThreshold'];
+                checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline);
 
-              result[url]['monitoredNodes'][displayName] = {
-                nodeUrl,
-                workingDirectory,
-                remainingDiskSpace,
-                responseTime,
-                monitoring: true,
-                diskSpaceThreshold,
-                offline
-              };
-              result[url].status = 'ok';
+                result[url]['monitoredNodes'][displayName] = {
+                  nodeUrl,
+                  workingDirectory,
+                  remainingDiskSpace,
+                  responseTime,
+                  monitoring: true,
+                  diskSpaceThreshold,
+                  offline
+                };
+                result[url].status = 'ok';
+                StorageService.saveNodeStatus(result, function () {
+                })
+              }
+            }).catch(function (e) {
+              console.error("获取数据失败", e);
+              result[url].status = 'error';
               StorageService.saveNodeStatus(result, function () {
               })
-            }
-          }).catch(function (e) {
-            console.error("获取数据失败", e);
-            result[url].status = 'error';
-            StorageService.saveNodeStatus(result, function () {
-            })
-          });
+            });
+          })
         })(jenkinsUrl)
       }
     })

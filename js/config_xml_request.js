@@ -39,37 +39,46 @@ new Vue({
 
   },
   methods: {
-    getRequestHeader(header = {}, method = 'GET') {
-      var requestHeader = {};
+    getRequestHeader(callback, header = {}, method = 'GET') {
       if (this.username && this.password) {
         header['Authorization'] = 'Basic ' + window.btoa(this.username + ':' + this.password);
-        requestHeader = {
+        callback({
           method: method,
           mode: 'cors',
           redirect: 'follow',
           headers: new Headers(header)
-        }
+        })
       } else {
-        requestHeader = Tools.getFetchOption(this.requestUrl, header, method);
+        Tools.getFetchOption(this.requestUrl, callback, header, method);
       }
-      return requestHeader
     },
+
+    /**
+     * 执行 GET 请求
+     */
     invokeGet() {
       var _self = this;
       this.responseData = '';
-      fetch(this.requestUrl, this.getRequestHeader()).then(function (res) {
-        if (res.ok) {
-          return res.text();
-        } else {
-          return Promise.reject(res);
-        }
-      }).then(function (data) {
-        _self.responseData = data;
-      }).catch(function (e) {
-        console.error("invokeGet 失败", _self.requestUrl, e);
-        _self.responseData = e.message || 'Failed to fetch.';
-      });
+
+      this.getRequestHeader(function (header) {
+        fetch(_self.requestUrl, header).then(function (res) {
+          if (res.ok) {
+            return res.text();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          _self.responseData = data;
+        }).catch(function (e) {
+          console.error("invokeGet 失败", _self.requestUrl, e);
+          _self.responseData = e.message || 'Failed to fetch.';
+        });
+      })
     },
+
+    /**
+     * 执行 POST 请求
+     */
     invokePost() {
       var _self = this;
       this.responseData = '';
@@ -98,47 +107,52 @@ new Vue({
       var tmpBaseUrl = this.baseUrl.charAt(this.baseUrl.length - 1) === '/' ?
         this.baseUrl.substring(0, this.baseUrl.length - 1) : this.baseUrl;
       var url = tmpBaseUrl + '/crumbIssuer/api/xml?xpath=' + encodeParam;
-      fetch(url, this.getRequestHeader()).then(function (res) {
-        if (res.ok) {
-          return res.text();
-        } else {
-          return Promise.reject(res);
-        }
-      }).then(function (data) {
-        var sepIndex = data.indexOf(':');
-        if (sepIndex > 0 && sepIndex < data.length - 1) {
-          var key = data.substring(0, sepIndex);
-          var value = data.substring(sepIndex + 1);
-          callback(key, value, null)
-        } else {
-          callback(null, null, 'Bad format for crumb data.')
-        }
-      }).catch(function (e) {
-        console.error("getJenkinsCrumbValue 失败", url, e);
-        callback(null, null, e)
-      });
+
+      this.getRequestHeader(function (header) {
+        fetch(url, header).then(function (res) {
+          if (res.ok) {
+            return res.text();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          var sepIndex = data.indexOf(':');
+          if (sepIndex > 0 && sepIndex < data.length - 1) {
+            var key = data.substring(0, sepIndex);
+            var value = data.substring(sepIndex + 1);
+            callback(key, value, null)
+          } else {
+            callback(null, null, 'Bad format for crumb data.')
+          }
+        }).catch(function (e) {
+          console.error("getJenkinsCrumbValue 失败", url, e);
+          callback(null, null, e)
+        });
+      })
     },
+
     postXml(crumbKey, crumbValue) {
       var _self = this;
       var initHeader = {'Content-Type': 'application/xml;charset=UTF-8'};
       if (crumbKey !== undefined && crumbValue !== undefined) {
         initHeader[crumbKey] = crumbValue;
       }
-      var header = _self.getRequestHeader(initHeader, 'POST');
-      header['body'] = _self.requestData;
-      // console.log('header', header);
-      fetch(_self.requestUrl, header).then(function (res) {
-        if (res.ok) {
-          return res.text();
-        } else {
-          return Promise.reject(res);
-        }
-      }).then(function (data) {
-        _self.responseData = data || 'OK.';
-      }).catch(function (e) {
-        console.error("invokePost 失败", _self.requestUrl, e);
-        _self.responseData = e.message || 'Failed to updated.';
-      });
+      _self.getRequestHeader(function (header) {
+        header['body'] = _self.requestData;
+        // console.log('header', header);
+        fetch(_self.requestUrl, header).then(function (res) {
+          if (res.ok) {
+            return res.text();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          _self.responseData = data || 'OK.';
+        }).catch(function (e) {
+          console.error("invokePost 失败", _self.requestUrl, e);
+          _self.responseData = e.message || 'Failed to updated.';
+        });
+      }, initHeader, 'POST');
     },
   }
 });

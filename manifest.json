@@ -30,8 +30,8 @@
   "background": {
     "scripts": [
       "js/libs/browser-polyfill.js",
-      "js/backgrounds/tools.js",
       "js/backgrounds/storage.js",
+      "js/backgrounds/tools.js",
       "js/backgrounds/omnibox.js",
       "js/backgrounds/job_services.js",
       "js/backgrounds/node_services.js",

@@ -34,7 +34,6 @@ var Omnibox = (function () {
   function getAllJobs() {
     allJobs = [];
     StorageService.getOptions(function (result) {
-      Tools.setJenkinsTokens(result.jenkinsTokens || []);
       var jenkinsUrls = result.omniboxJenkinsUrl.split('\n');
       for (var i = 0; i < jenkinsUrls.length; i++) {
         var url = jenkinsUrls[i].trim();
@@ -52,20 +51,23 @@ var Omnibox = (function () {
         (function (url) {
           var encodeParam = encodeURI('jobs[name,url]');
           var jsonUrl = url + 'api/json?tree=' + encodeParam;
-          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return Promise.reject(res);
-            }
-          }).then(function (data) {
-            if (data.hasOwnProperty('jobs')) {
-              allJobs = allJobs.concat(data.jobs);
-              // console.log('all fetched', allJobs)
-            }
-          }).catch(function (e) {
-            console.error("获取Job失败", e);
-          });
+
+          Tools.getFetchOption(jsonUrl, function (header) {
+            fetch(jsonUrl, header).then(function (res) {
+              if (res.ok) {
+                return res.json();
+              } else {
+                return Promise.reject(res);
+              }
+            }).then(function (data) {
+              if (data.hasOwnProperty('jobs')) {
+                allJobs = allJobs.concat(data.jobs);
+                // console.log('all fetched', allJobs)
+              }
+            }).catch(function (e) {
+              console.error("获取Job失败", e);
+            });
+          })
         })(url)
       }
     })

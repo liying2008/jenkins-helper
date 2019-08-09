@@ -38,7 +38,6 @@ new Vue({
       _self.xmlParser = new DOMParser();
       StorageService.addStorageListener(this.jobStatsChange);
       StorageService.getOptions(function (result) {
-        Tools.setJenkinsTokens(result.jenkinsTokens || []);
         if (result.jobStatsJenkinsUrl.trim() !== '') {
           _self.jenkinsUrls = result.jobStatsJenkinsUrl.trim().split('\n');
         }
@@ -116,26 +115,28 @@ new Vue({
         (function (url) {
           var encodeParam = encodeURI('url,jobs[url]');
           var jsonUrl = url + '/api/json?tree=' + encodeParam;
-          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return Promise.reject(res);
-            }
-          }).then(function (data) {
-            if (data.hasOwnProperty('jobs')) {
-              var jobLen = data.jobs.length;
-              for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
-                _self.getJobStatsByUrl(data.jobs[jobIndex].url)
+          Tools.getFetchOption(jsonUrl, function (header) {
+            fetch(jsonUrl, header).then(function (res) {
+              if (res.ok) {
+                return res.json();
+              } else {
+                return Promise.reject(res);
               }
-            } else {
-              // Job Url
-              _self.getJobStatsByUrl(data.url)
-            }
-          }).catch(function (e) {
-            console.error("获取Job URL失败", url, e);
-            _self.badUrls.push(url)
-          });
+            }).then(function (data) {
+              if (data.hasOwnProperty('jobs')) {
+                var jobLen = data.jobs.length;
+                for (var jobIndex = 0; jobIndex < jobLen; jobIndex++) {
+                  _self.getJobStatsByUrl(data.jobs[jobIndex].url)
+                }
+              } else {
+                // Job Url
+                _self.getJobStatsByUrl(data.url)
+              }
+            }).catch(function (e) {
+              console.error("获取Job URL失败", url, e);
+              _self.badUrls.push(url)
+            });
+          })
         })(url)
       }
     },
@@ -148,59 +149,67 @@ new Vue({
         _self.jobUrlVisited.push(url)
       }
 
-      fetch(url + 'config.xml', Tools.getFetchOption(url + 'config.xml')).then(function (res) {
-        return res.ok ? res.text() : Promise.reject(res);
-      }).then(function (text) {
-        // 为了兼容Firefox，需要截取掉XML头部：<?xml version='1.1' encoding='UTF-8'?>
-        // 参考：https://github.com/liying2008/jenkins-helper/issues/6
-        var index = text.indexOf('<', 1);
-        if (index > 1) {
-          text = text.substring(index)
-        }
-        // console.log('text', text);
-        var documentNode = _self.xmlParser.parseFromString(text, 'text/xml');
-        var projectNodes = documentNode.getElementsByTagName('project');
-
-        var job;
-        if (projectNodes.length > 0) {
-          // 自由风格项目
-          job = _self.parseFreeStyleJobFromXml(projectNodes[0])
-        } else {
-          var flowNodes = documentNode.getElementsByTagName('flow-definition');
-          if (flowNodes.length > 0) {
-            // 流水线项目
-            job = _self.parsePipelineJobFromXml(flowNodes[0])
-          } else {
-            // 其他项目
-            // todo
+      Tools.getFetchOption(url + 'config.xml', function (header) {
+        fetch(url + 'config.xml', header).then(function (res) {
+          return res.ok ? res.text() : Promise.reject(res);
+        }).then(function (text) {
+          // 为了兼容Firefox，需要截取掉XML头部：<?xml version='1.1' encoding='UTF-8'?>
+          // 参考：https://github.com/liying2008/jenkins-helper/issues/6
+          var index = text.indexOf('<', 1);
+          if (index > 1) {
+            text = text.substring(index)
           }
-        }
-        // console.log('job', job)
-        if (job) {
-          job.url = decodeURIComponent(url);
-          _self.jobs.push(job);
-          _self.originJobs.push(job);
-          // 默认按 Node 排序
-          _self.jobs.sort(compare);
-          _self.originJobs.sort(compare);
-        }
+          // console.log('text', text);
+          var documentNode = _self.xmlParser.parseFromString(text, 'text/xml');
+          var projectNodes = documentNode.getElementsByTagName('project');
 
-        // 对象数组排序函数
-        function compare(job1, job2) {
-          var node1 = job1.node;
-          var node2 = job2.node;
-          if (node1 < node2) {
-            return -1;
-          } else if (node1 > node2) {
-            return 1;
+          var job;
+          if (projectNodes.length > 0) {
+            // 自由风格项目
+            job = _self.parseFreeStyleJobFromXml(projectNodes[0])
           } else {
-            return 0;
+            var flowNodes = documentNode.getElementsByTagName('flow-definition');
+            if (flowNodes.length > 0) {
+              // 流水线项目
+              job = _self.parsePipelineJobFromXml(flowNodes[0])
+            } else {
+              // 其他项目
+              // todo
+            }
           }
-        }
-      }).catch(function (e) {
-        console.log('读取config.xml失败', e)
+          // console.log('job', job)
+          if (job) {
+            job.url = decodeURIComponent(url);
+            _self.jobs.push(job);
+            _self.originJobs.push(job);
+            // 默认按 Node 排序
+            _self.jobs.sort(compare);
+            _self.originJobs.sort(compare);
+          }
+
+          // 对象数组排序函数
+          function compare(job1, job2) {
+            var node1 = job1.node;
+            var node2 = job2.node;
+            if (node1 < node2) {
+              return -1;
+            } else if (node1 > node2) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        }).catch(function (e) {
+          console.log('读取config.xml失败', e)
+        })
       })
     },
+
+    /**
+     * 解析自由风格 Job 的XML
+     * @param projectNode
+     * @returns {{timerTrigger: *, node: *, concurrentBuild: *, param: *, disabled: *}}
+     */
     parseFreeStyleJobFromXml(projectNode) {
       var _self = this;
       var node = '';
@@ -241,6 +250,12 @@ new Vue({
         concurrentBuild,
       }
     },
+
+    /**
+     * 解析 Pipeline Job 的XML
+     * @param flowNode
+     * @returns {{timerTrigger: *, node: *, concurrentBuild: *, param: *, disabled: *}}
+     */
     parsePipelineJobFromXml(flowNode) {
       var _self = this;
       var node = '';

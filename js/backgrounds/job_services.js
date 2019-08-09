@@ -28,7 +28,6 @@ var JobServices = (function () {
       jenkinsUrls = result;
       StorageService.getOptions(function (options) {
         showNotificationOption = options.showNotificationOption;
-        Tools.setJenkinsTokens(options.jenkinsTokens || []);
         refreshJobStatus(options.refreshTime || 60)
       })
     });
@@ -55,7 +54,6 @@ var JobServices = (function () {
       var oldOptions = changes[StorageService.keyForOptions].oldValue;
       var newOptions = changes[StorageService.keyForOptions].newValue;
       showNotificationOption = newOptions.showNotificationOption;
-      Tools.setJenkinsTokens(newOptions.jenkinsTokens || []);
       var newRefreshTime = newOptions.refreshTime;
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.refreshTime) {
@@ -104,34 +102,35 @@ var JobServices = (function () {
           var encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,url,color,lastCompletedBuild[number,result,timestamp,url]]');
           var jsonUrl = url + 'api/json?tree=' + encodeParam;
           // console.log('queryJobStatus jsonUrl', jsonUrl);
-          // console.log('getFetchOption', Tools.getFetchOption(jsonUrl));
-          fetch(jsonUrl, Tools.getFetchOption(jsonUrl)).then(function (res) {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return Promise.reject(res);
-            }
-          }).then(function (data) {
-            if (data.hasOwnProperty('jobs')) {
-              // Jenkins or view data
-              parseJenkinsOrViewData(url, data, result || {})
-            } else {
-              // Single job data
-              parseSingleJobData(url, data, result || {})
-            }
-          }).catch(function (e) {
-            console.error("queryJobStatus: 获取Job状态失败", e);
-            var jenkinsObj = {};
-            jenkinsObj.name = url;
-            jenkinsObj.status = 'error';
-            jenkinsObj.error = e.message || 'Unreachable';
-            console.log(jenkinsObj);
-            countBadgeJobCount();
-            changeBadge();
-            StorageService.saveJobStatus(url, jenkinsObj, function () {
-              console.log('saveJobStatus error ok')
-            })
-          });
+          Tools.getFetchOption(jsonUrl, function (header) {
+            fetch(jsonUrl, header).then(function (res) {
+              if (res.ok) {
+                return res.json();
+              } else {
+                return Promise.reject(res);
+              }
+            }).then(function (data) {
+              if (data.hasOwnProperty('jobs')) {
+                // Jenkins or view data
+                parseJenkinsOrViewData(url, data, result || {})
+              } else {
+                // Single job data
+                parseSingleJobData(url, data, result || {})
+              }
+            }).catch(function (e) {
+              console.error("queryJobStatus: 获取Job状态失败", e);
+              var jenkinsObj = {};
+              jenkinsObj.name = url;
+              jenkinsObj.status = 'error';
+              jenkinsObj.error = e.message || 'Unreachable';
+              console.log(jenkinsObj);
+              countBadgeJobCount();
+              changeBadge();
+              StorageService.saveJobStatus(url, jenkinsObj, function () {
+                console.log('saveJobStatus error ok')
+              })
+            });
+          })
         });
       })(url)
     }

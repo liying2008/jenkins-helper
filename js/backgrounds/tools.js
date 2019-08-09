@@ -24,12 +24,6 @@ var Tools = (function () {
     disabled: 'label-primary',
   };
 
-  var jenkinsTokens = [];
-
-  function setJenkinsTokens(tokens) {
-    jenkinsTokens = tokens
-  }
-
   function getDefaultFetchOption(header = {}, method = 'GET') {
     if (header === undefined || header === null) {
       header = {}
@@ -43,38 +37,40 @@ var Tools = (function () {
     }
   }
 
-  function getFetchOption(url, header = {}, method = 'GET') {
-    // console.log('jenkinsTokens', jenkinsTokens);
-    var token = undefined;
-    for (var i = 0; i < jenkinsTokens.length; i++) {
-      var currentToken = jenkinsTokens[i];
-      if (url.indexOf(currentToken.url) === 0) {
-        token = currentToken;
-        break
+  function getFetchOption(url, callback, header = {}, method = 'GET') {
+    StorageService.getOptions(function (options) {
+      var jenkinsTokens = options.jenkinsTokens || [];
+      // console.log('jenkinsTokens', jenkinsTokens);
+      var token = undefined;
+      for (var i = 0; i < jenkinsTokens.length; i++) {
+        var currentToken = jenkinsTokens[i];
+        if (url.indexOf(currentToken.url) === 0) {
+          token = currentToken;
+          break
+        }
       }
-    }
-    if (header === undefined || header === null) {
-      header = {}
-    }
-    // console.log('Tool.getFetchOption token', token);
-    if (token) {
-      header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token);
-      return {
-        method: method,
-        mode: 'cors',
-        redirect: 'follow',
-        headers: new Headers(header)
+      if (header === undefined || header === null) {
+        header = {}
       }
-    } else {
-      return getDefaultFetchOption(header, method)
-    }
+      // console.log('Tool.getFetchOption token', token);
+      if (token) {
+        header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token);
+        callback({
+          method: method,
+          mode: 'cors',
+          redirect: 'follow',
+          headers: new Headers(header)
+        })
+      } else {
+        callback(getDefaultFetchOption(header, method))
+      }
+    });
   }
 
   return {
     isChrome,
     jobStatus,
     labelClass,
-    setJenkinsTokens,
     getDefaultFetchOption,
     getFetchOption,
   }
