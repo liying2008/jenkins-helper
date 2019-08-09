@@ -47,6 +47,9 @@
            :title="strings.jenkinsPasswordInputPlaceholder"
            style="margin-left: 10px;"
            v-model="password">
+    <label style="width: 45%; margin-left: 10px; margin-top: 5px;">
+      <input type="checkbox" v-model="useCrumb"> Use Crumb
+    </label>
   </div>
   <div class="info-block row">
     <div class="col-md-6">

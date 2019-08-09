@@ -13,6 +13,7 @@ new Vue({
     responseData: '',
     username: '',
     password: '',
+    useCrumb: true,
   },
   computed: {
     requestUrl: function () {
@@ -72,31 +73,19 @@ new Vue({
     invokePost() {
       var _self = this;
       this.responseData = '';
-      // 先获取 crumb
-      this.getJenkinsCrumbValue(function (crumbKey, crumbValue, e) {
-        if (e != null) {
-          _self.responseData = e.message || 'Failed to fetch jenkins crumb.';
-          return
-        }
-        console.log('Jenkins-Crumb: ', crumbKey, crumbValue);
-        var initHeader = {'Content-Type': 'application/xml'};
-        initHeader[crumbKey] = crumbValue;
-        var header = _self.getRequestHeader(initHeader, 'POST');
-        header['body'] = _self.requestData;
-        // console.log('header', header);
-        fetch(_self.requestUrl, header).then(function (res) {
-          if (res.ok) {
-            return res.text();
-          } else {
-            return Promise.reject(res);
+      if (this.useCrumb) {
+        // 先获取 crumb
+        this.getJenkinsCrumbValue(function (crumbKey, crumbValue, e) {
+          if (e != null) {
+            _self.responseData = e.message || 'Failed to fetch jenkins crumb.';
+            return
           }
-        }).then(function (data) {
-          _self.responseData = data || 'OK.';
-        }).catch(function (e) {
-          console.error("invokePost 失败", _self.requestUrl, e);
-          _self.responseData = e.message || 'Failed to updated.';
-        });
-      })
+          console.log('Jenkins-Crumb: ', crumbKey, crumbValue);
+          _self.postXml(crumbKey, crumbValue)
+        })
+      } else {
+        _self.postXml(undefined, undefined)
+      }
     },
     /**
      * 获取 Jenkins crumb value
@@ -127,6 +116,28 @@ new Vue({
       }).catch(function (e) {
         console.error("getJenkinsCrumbValue 失败", url, e);
         callback(null, null, e)
+      });
+    },
+    postXml(crumbKey, crumbValue) {
+      var _self = this;
+      var initHeader = {'Content-Type': 'application/xml;charset=UTF-8'};
+      if (crumbKey !== undefined && crumbValue !== undefined) {
+        initHeader[crumbKey] = crumbValue;
+      }
+      var header = _self.getRequestHeader(initHeader, 'POST');
+      header['body'] = _self.requestData;
+      // console.log('header', header);
+      fetch(_self.requestUrl, header).then(function (res) {
+        if (res.ok) {
+          return res.text();
+        } else {
+          return Promise.reject(res);
+        }
+      }).then(function (data) {
+        _self.responseData = data || 'OK.';
+      }).catch(function (e) {
+        console.error("invokePost 失败", _self.requestUrl, e);
+        _self.responseData = e.message || 'Failed to updated.';
       });
     },
   }
