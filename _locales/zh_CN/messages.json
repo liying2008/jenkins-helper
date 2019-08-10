@@ -33,7 +33,7 @@
     "message": "输入 Jenkins URL，一行一个，如：http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
-    "message": "Tips: 在地址栏输入 <b>jk</b>，按空格键或 Tab 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
+    "message": "Tips: 在地址栏输入 <b>jk</b>，按空格键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
   },
   "jobStatsTitle": {
     "message": "Job 统计设置"
