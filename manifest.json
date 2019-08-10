@@ -4,7 +4,7 @@
   "description": "__MSG_extDesc__",
   "author": "LiYing",
   "homepage_url": "https://github.com/liying2008/jenkins-helper",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "applications": {
     "gecko": {
       "id": "jenkins.helper@duduhuo.cc",
