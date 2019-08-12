@@ -136,7 +136,7 @@ new Vue({
       } else if (parseInt(options.refreshTime) < this.constants.monitorMinRefreshTime) {
         this.refreshTime = this.constants.monitorMinRefreshTime.toString();
       } else {
-        this.refreshTime = options.refreshTime;
+        this.refreshTime = parseInt(options.refreshTime).toString();
       }
 
       //// nodeRefreshTime
@@ -147,7 +147,7 @@ new Vue({
       } else if (parseInt(options.nodeRefreshTime) < this.constants.nodeMinRefreshTime) {
         this.nodeRefreshTime = this.constants.nodeMinRefreshTime.toString();
       } else {
-        this.nodeRefreshTime = options.nodeRefreshTime;
+        this.nodeRefreshTime = parseInt(options.nodeRefreshTime).toString();
       }
 
       //// showNotificationOption
