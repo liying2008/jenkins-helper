@@ -179,11 +179,16 @@ new Vue({
     saveOptions() {
       console.log('saveOptions');
       var _self = this;
-      StorageService.saveOptions(_self.dataToOptions(), function () {
-        _self.$refs.showSavedMsg.style.visibility = "";
-        setTimeout(function () {
-          _self.$refs.showSavedMsg.style.visibility = "hidden";
-        }, 2000);
+      StorageService.getOptions(function (result) {
+        var option = _self.dataToOptions();
+        option.showDisabledJobs = result.showDisabledJobs;
+        // console.log('option', option);
+        StorageService.saveOptions(option, function () {
+          _self.$refs.showSavedMsg.style.visibility = "";
+          setTimeout(function () {
+            _self.$refs.showSavedMsg.style.visibility = "hidden";
+          }, 2000);
+        })
       })
     },
     optionsToJson() {
