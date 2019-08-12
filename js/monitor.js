@@ -192,7 +192,7 @@ new Vue({
       var s = this.getReadableTime(timestamp);
       if (s === '') return '';
       var arr = s.split(' ');
-      return '<span style="color: darkmagenta">' + arr[0] + '</span> <span style="color: blueviolet">' + arr[1] + '</span>'
+      return '<span style="color: #444">' + arr[0] + '</span> <span style="color: #888">' + arr[1] + '</span>'
     },
 
     openOptions() {
