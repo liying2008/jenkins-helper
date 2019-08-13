@@ -8,7 +8,7 @@
   "applications": {
     "gecko": {
       "id": "jenkins.helper@duduhuo.cc",
-      "strict_min_version": "48.0"
+      "strict_min_version": "57.0"
     }
   },
   "minimum_chrome_version": "45",
