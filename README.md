@@ -1,17 +1,18 @@
 # Jenkins Helper   
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/lkjoiakaidioklnfdejmnoebfbjcbemh.svg)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lkjoiakaidioklnfdejmnoebfbjcbemh.svg)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
+[![Version](https://img.shields.io/github/release/liying2008/jenkins-helper?label=version)](https://github.com/liying2008/jenkins-helper/releases)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/lkjoiakaidioklnfdejmnoebfbjcbemh?label=chrome%20users)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/lkjoiakaidioklnfdejmnoebfbjcbemh?label=chrome%20stars)](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh)
+[![Mozilla Add-on](https://img.shields.io/amo/users/jenkins.helper@duduhuo.cc?label=firefox%20users)](https://addons.mozilla.org/addon/jenkins-helper/)
+[![Mozilla Add-on](https://img.shields.io/amo/stars/jenkins.helper@duduhuo.cc?label=firefox%20stars)](https://addons.mozilla.org/addon/jenkins-helper/)
 [![license](https://img.shields.io/github/license/liying2008/jenkins-helper.svg)](https://github.com/liying2008/jenkins-helper/blob/master/LICENSE)
 
 
-
-一款能够极大地提高工作效率的 **Chrome浏览器扩展程序** 。
+一款能够极大地提高工作效率的 **Chrome/Firefox 浏览器扩展程序** 。
 
 ## 下载地址
 
-在 Chrome Web Store 中搜索 **Jenkins Helper** 或 直接点击下面的链接：  
-https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh
+[Chrome Web Store](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh) / [Firefox Add-ons](https://addons.mozilla.org/addon/jenkins-helper/)
 
 
 ## 功能介绍
