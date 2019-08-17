@@ -12,7 +12,18 @@
 
 ## 下载地址
 
+### 在线安装
+
 [Chrome Web Store](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh) / [Firefox Add-ons](https://addons.mozilla.org/addon/jenkins-helper/)
+
+### 下载文件离线安装
+
+[https://github.com/liying2008/jenkins-helper/releases](https://github.com/liying2008/jenkins-helper/releases)
+
+**扩展离线安装方法：**
+
+- **Chrome**：打开 `chrome://extensions` 页面，打开 **开发者模式** ，重启浏览器（`chrome://restart`），重新进入 `chrome://extensions` 页面，将crx文件拖至当前页面上即可。
+- **Firefox**：将xpi文件拖至浏览器任一页面上即可。
 
 
 ## 功能介绍
@@ -42,7 +53,7 @@
 > 注意：状态更新的频率可以在设置页更改。默认是2小时更新一次状态，每次浏览器启动后会自动检查最新的状态。
 
 
-4. **地址栏智能搜索**： 在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
+4. **地址栏智能搜索**： 在地址栏输入 **`jk`**，按 <kbd>Space</kbd> 键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。
 
 ![Omnibox](screenshots/omnibox.png)
 
