@@ -138,7 +138,8 @@ new Vue({
         initHeader[crumbKey] = crumbValue;
       }
       _self.getRequestHeader(function (header) {
-        header['body'] = _self.requestData;
+        // 务必 trim ，请求数据第一行如果是空行会导致请求失败
+        header['body'] = _self.requestData.trim();
         // console.log('header', header);
         fetch(_self.requestUrl, header).then(function (res) {
           if (res.ok) {
