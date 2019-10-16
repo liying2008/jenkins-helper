@@ -99,7 +99,7 @@ var JobServices = (function () {
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
           // console.log('queryJobStatus::result', result);
-          var encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,url,color,lastCompletedBuild[number,result,timestamp,url]]');
+          var encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]');
           var jsonUrl = url + 'api/json?tree=' + encodeParam;
           // console.log('queryJobStatus jsonUrl', jsonUrl);
           Tools.getFetchOption(jsonUrl, function (header) {
@@ -152,7 +152,7 @@ var JobServices = (function () {
       }
     }
     var jenkinsObj = {};
-    jenkinsObj.name = data.name || 'All Jobs';
+    jenkinsObj.name = data.displayName || data.name || 'All Jobs';
     jenkinsObj.status = 'ok';
     jenkinsObj.jobs = {};
     for (var jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
@@ -173,11 +173,11 @@ var JobServices = (function () {
       }
       if (oldStatus[job.url] && job.lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
         // 新的一次构建
-        showNotification(job.lastBuildResult, job.name, job.lastBuildUrl);
+        showNotification(job.lastBuildResult, job.displayName, job.lastBuildUrl);
       }
 
       jenkinsObj.jobs[job.url] = {
-        name: job.name,
+        name: job.displayName,
         color: jobColor,
         status: buildStatus,
         building: building,
@@ -195,7 +195,7 @@ var JobServices = (function () {
 
   function parseSingleJobData(url, data, oldStatus) {
     var jenkinsObj = {};
-    jenkinsObj.name = data.name || data.displayName || data.fullName;
+    jenkinsObj.name = data.displayName || data.name || data.fullName;
     jenkinsObj.status = 'ok';
     jenkinsObj.jobs = {};
     var jobColor = data.color;
@@ -218,10 +218,10 @@ var JobServices = (function () {
     }
     if (oldStatus[data.url] && lastBuildNumber > oldStatus[data.url].lastBuildNumber) {
       // 新的一次构建
-      showNotification(lastBuildResult, jenkinsObj.name, lastBuildUrl);
+      showNotification(lastBuildResult, jenkinsObj.displayName, lastBuildUrl);
     }
     jenkinsObj.jobs[data.url] = {
-      name: data.name,
+      name: data.displayName,
       color: jobColor,
       status: buildStatus,
       building: building,
