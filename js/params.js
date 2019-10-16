@@ -32,7 +32,9 @@ new Vue({
     result: '',
     buildTime: '',
     builtOn: '',
-    parameters: []
+    parameters: [],
+    // 是否禁用下载按钮
+    disableDownload: false,
   },
   mounted() {
     this.getParameters()
@@ -161,12 +163,15 @@ new Vue({
     },
     // 下载日志
     downloadConsoleLog() {
+      var _self = this;
+      _self.disableDownload = true;
       browser.downloads.download({
         url: this.url + 'logText/progressiveText?start=0',
         filename: this.fullDisplayName + ' Console Log.log',
         saveAs: true
       }).then(function (downloadId) {
-        console.log('downloadId', downloadId)
+        _self.disableDownload = false;
+        console.log('downloadId', downloadId);
       })
     },
     // 去“配置”页

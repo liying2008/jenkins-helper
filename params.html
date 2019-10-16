@@ -98,7 +98,8 @@
     </div>
     <div class="col-xs-6">
       <p class="text-right">
-        <button type="button" class="btn btn-default" @click="downloadConsoleLog" title="Download Console Log">
+        <button type="button" class="btn btn-default" @click="downloadConsoleLog" title="Download Console Log"
+                :disabled="disableDownload">
           <i class="glyphicon glyphicon-cloud-download"></i>
         </button>
         <button type="button" class="btn btn-default" @click="goToConfigure" title="Configure">
