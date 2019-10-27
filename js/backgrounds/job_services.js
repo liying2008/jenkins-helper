@@ -19,6 +19,15 @@ var JobServices = (function () {
   // 通知ID和URL的对照
   var notificationUrlMap = {};
 
+  function getErrorJenkinsObj(url, errorMsg) {
+    var jenkinsObj = {};
+    jenkinsObj.name = url;
+    jenkinsObj.status = 'error';
+    jenkinsObj.error = errorMsg;
+    console.log(jenkinsObj);
+    return jenkinsObj
+  }
+
   function start() {
     status = Tools.jobStatus;
     labelClass = Tools.labelClass;
@@ -110,20 +119,27 @@ var JobServices = (function () {
                 return Promise.reject(res);
               }
             }).then(function (data) {
-              if (data.hasOwnProperty('jobs')) {
-                // Jenkins or view data
-                parseJenkinsOrViewData(url, data, result || {})
+              // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length);
+              if (Object.getOwnPropertyNames(data).length === 0) {
+                console.error("queryJobStatus: 获取Job状态失败，返回数据为空");
+                var jenkinsObj = getErrorJenkinsObj(url, 'No permissions or no data');
+                countBadgeJobCount();
+                changeBadge();
+                StorageService.saveJobStatus(url, jenkinsObj, function () {
+                  console.log('saveJobStatus error ok')
+                })
               } else {
-                // Single job data
-                parseSingleJobData(url, data, result || {})
+                if (data.hasOwnProperty('jobs')) {
+                  // Jenkins or view data
+                  parseJenkinsOrViewData(url, data, result || {})
+                } else {
+                  // Single job data
+                  parseSingleJobData(url, data, result || {})
+                }
               }
             }).catch(function (e) {
               console.error("queryJobStatus: 获取Job状态失败", e);
-              var jenkinsObj = {};
-              jenkinsObj.name = url;
-              jenkinsObj.status = 'error';
-              jenkinsObj.error = e.message || 'Unreachable';
-              console.log(jenkinsObj);
+              var jenkinsObj = getErrorJenkinsObj(url, e.message || 'Unreachable');
               countBadgeJobCount();
               changeBadge();
               StorageService.saveJobStatus(url, jenkinsObj, function () {
@@ -271,7 +287,6 @@ var JobServices = (function () {
       }
     }
   }
-
 
   function show(result, jobName, url) {
     var statusIcon = 'gray';
