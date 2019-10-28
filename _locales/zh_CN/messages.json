@@ -240,5 +240,11 @@
   },
   "jsonParsingFailed": {
     "message": "JSON 解析失败"
+  },
+  "importAndExportSettings": {
+    "message": "导入/导出设置"
+  },
+  "about": {
+    "message": "关于"
   }
 }

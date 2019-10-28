@@ -240,5 +240,11 @@
   },
   "jsonParsingFailed": {
     "message": "JSON parsing failed"
+  },
+  "importAndExportSettings": {
+    "message": "Import/Export Settings"
+  },
+  "about": {
+    "message": "About"
   }
 }

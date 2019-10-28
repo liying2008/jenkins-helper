@@ -5,7 +5,7 @@ body {
 
 div#app {
   min-height: 200px;
-  width: 700px;
+  min-width: 700px;
   margin: auto;
 }
 
@@ -87,6 +87,7 @@ div#app {
 .list-item-value {
 
 }
+
 /*table.dataTable.no-footer {*/
 /*  border-bottom-color: rgb(221, 221, 221);*/
 /*}*/

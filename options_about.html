@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+  <title>Jenkins Helper - About</title>
+</head>
+<body class="container-fluid main-panel">
+<div id="app" style="width: 50%;">
+  <!--导航条-->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <!--Icon-->
+        <div class="navbar-brand">
+          <img :alt="strings.extName" src="img/icon20.png">
+        </div>
+        <div class="navbar-brand">{{strings.extName}}</div>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="options_settings.html">{{strings.settings}}</a></li>
+          <li><a href="options_import_export.html">{{strings.importAndExportSettings}}</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="#">{{strings.about}}<span class="sr-only">(current)</span></a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  <div style="height: 60px;"></div>
+
+</div>
+</body>
+<script src="js/libs/browser-polyfill.js"></script>
+<script src="js/backgrounds/storage.js"></script>
+<script src="js/libs/vue.js"></script>
+<script src="js/options_about.js"></script>
+</html>
