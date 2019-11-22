@@ -38,7 +38,6 @@ var StorageService = (function () {
     browser.storage.local.remove(jenkinsUrl).then(callback);
   }
 
-
   function getJobStatus(jenkinsUrl, callback) {
     browser.storage.local.get(jenkinsUrl).then(function (result) {
       callback(result || {})
@@ -80,6 +79,16 @@ var StorageService = (function () {
     browser.storage.local.set({'options': JSON.parse(JSON.stringify(options))}).then(callback)
   }
 
+  function set(object, callback) {
+    browser.storage.local.set(object).then(callback)
+  }
+
+  function get(keys, callback) {
+    browser.storage.local.get(keys).then(function (result) {
+      callback(result || {})
+    });
+  }
+
   return {
     keyForJenkinsUrl: 'jenkins-url',
     keyForOptions: 'options',
@@ -93,6 +102,8 @@ var StorageService = (function () {
     saveOptions,
     saveNodeStatus,
     getNodeStatus,
+    set,
+    get,
     addStorageListener,
   }
 })();

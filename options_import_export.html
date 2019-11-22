@@ -33,11 +33,30 @@
     </div><!-- /.container-fluid -->
   </nav>
   <div style="height: 60px;"></div>
+  <div class="btn-group btn-group-justified" role="group" aria-label="import/export">
+    <div class="btn-group btn-group-lg" role="group">
+      <button type="button" class="btn btn-default" style="color: #3c80b7" @click="importSettings"
+              :disabled="disableImportBtn">
+        <i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;&nbsp;&nbsp;{{strings.importSettings}}
+      </button>
+    </div>
+    <div class="btn-group btn-group-lg" role="group">
+      <button type="button" class="btn btn-default" style="color: #3c80b7" @click="exportSettings"
+              :disabled="disableExportBtn">
+        <i class="glyphicon glyphicon-cloud-download"></i>&nbsp;&nbsp;&nbsp;{{strings.exportSettings}}
+      </button>
+    </div>
+  </div>
+  <!--显示导入成功的信息-->
+  <div ref="showImportedMsg" class="alert alert-success" role="alert"
+       style="margin-top: 20px;padding: 6px;visibility:hidden;text-align: center;">{{strings.settingsImported}}
+  </div>
 
 </div>
 </body>
 <script src="js/libs/browser-polyfill.js"></script>
 <script src="js/backgrounds/storage.js"></script>
+<script src="js/backgrounds/tools.js"></script>
 <script src="js/libs/vue.js"></script>
 <script src="js/options_import_export.js"></script>
 </html>

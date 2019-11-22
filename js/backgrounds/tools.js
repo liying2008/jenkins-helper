@@ -67,11 +67,47 @@ var Tools = (function () {
     });
   }
 
+  /**
+   * 根据毫秒时间戳获取可读时间字符串
+   * @param timestamp 毫秒时间戳
+   * @param withSep 是否含有日期时间分隔符
+   * @returns {string}
+   */
+  function getReadableTime(timestamp, withSep = true) {
+    if (timestamp === undefined || timestamp === null || timestamp === 0) {
+      return ''
+    }
+    var d = new Date(timestamp);
+    var year = d.getFullYear();
+    var month = zeroFill(d.getMonth() + 1);
+    var day = zeroFill(d.getDate());
+    var hour = zeroFill(d.getHours());
+    var minute = zeroFill(d.getMinutes());
+    var second = zeroFill(d.getSeconds());
+    if (withSep) {
+      return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    } else {
+      return '' + year + month + day + hour + minute + second;
+    }
+  }
+
+  /**
+   * 前位补零
+   */
+  function zeroFill(i) {
+    if (i >= 0 && i <= 9) {
+      return "0" + i;
+    } else {
+      return i;
+    }
+  }
+
   return {
     isChrome,
     jobStatus,
     labelClass,
     getDefaultFetchOption,
     getFetchOption,
+    getReadableTime,
   }
 })();

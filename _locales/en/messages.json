@@ -246,5 +246,14 @@
   },
   "about": {
     "message": "About"
+  },
+  "importSettings": {
+    "message": "Import Settings"
+  },
+  "exportSettings": {
+    "message": "Export Settings"
+  },
+  "settingsImported": {
+    "message": "Settings imported."
   }
 }
