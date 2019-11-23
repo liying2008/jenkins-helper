@@ -254,6 +254,15 @@
     "message": "导出设置"
   },
   "settingsImported": {
-    "message": "设置已导入"
+    "message": "设置已导入。"
+  },
+  "settingContentIsEmpty": {
+    "message": "设置内容为空。"
+  },
+  "settingsFileParsingFailed": {
+    "message": "文件解析失败。"
+  },
+  "settingsFileContentIncorrect": {
+    "message": "文件内容不正确。"
   }
 }

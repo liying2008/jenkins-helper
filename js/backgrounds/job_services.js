@@ -73,10 +73,12 @@ var JobServices = (function () {
       if (oldOptions === undefined || newOmniboxJenkinsUrl !== oldOptions.omniboxJenkinsUrl) {
         Omnibox.getAllJobs();
       }
-    } else if (StorageService.keyForJenkinsUrl in changes) {
+    }
+    if (StorageService.keyForJenkinsUrl in changes) {
       // Jenkins Url 改变
       console.log('changes', changes);
       jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue;
+      // console.log('jenkinsUrls', jenkinsUrls);
       queryJobStatus()
     }
   }

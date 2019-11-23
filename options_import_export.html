@@ -49,9 +49,12 @@
   </div>
   <!--显示导入成功的信息-->
   <div ref="showImportedMsg" class="alert alert-success" role="alert"
-       style="margin-top: 20px;padding: 6px;visibility:hidden;text-align: center;">{{strings.settingsImported}}
+       style="margin-top: 20px;padding: 6px;visibility:hidden;text-align: center;">
   </div>
 
+  <!--隐藏的文件上传输入框-->
+  <input type="file" name="configFile" id="configFile" ref="configFile" value="" @change="readFile($event)"
+         accept="application/json" style="display: none"/>
 </div>
 </body>
 <script src="js/libs/browser-polyfill.js"></script>

@@ -255,5 +255,14 @@
   },
   "settingsImported": {
     "message": "Settings imported."
+  },
+  "settingContentIsEmpty": {
+    "message": "Settings content is empty."
+  },
+  "settingsFileParsingFailed": {
+    "message": "File content parsing failed."
+  },
+  "settingsFileContentIncorrect": {
+    "message": "The file content is incorrect."
   }
 }
