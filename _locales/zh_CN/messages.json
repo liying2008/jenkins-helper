@@ -264,5 +264,14 @@
   },
   "settingsFileContentIncorrect": {
     "message": "文件内容不正确。"
+  },
+  "sourceCode": {
+    "message": "项目源代码"
+  },
+  "contactAuthor": {
+    "message": "联系作者"
+  },
+  "reportIssue": {
+    "message": "反馈问题"
   }
 }

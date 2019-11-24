@@ -264,5 +264,14 @@
   },
   "settingsFileContentIncorrect": {
     "message": "The file content is incorrect."
+  },
+  "sourceCode": {
+    "message": "Source Code"
+  },
+  "contactAuthor": {
+    "message": "Contact Author"
+  },
+  "reportIssue": {
+    "message": "Report Issue"
   }
 }
