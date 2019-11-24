@@ -1,6 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extName__",
+  "short_name": "__MSG_extShortName__",
   "description": "__MSG_extDesc__",
   "author": "LiYing",
   "homepage_url": "https://github.com/liying2008/jenkins-helper",
@@ -11,7 +12,7 @@
       "strict_min_version": "57.0"
     }
   },
-  "minimum_chrome_version": "45",
+  "minimum_chrome_version": "55",
   "default_locale": "en",
   "omnibox": {
     "keyword": "jk"
@@ -20,7 +21,7 @@
     "browser_style": false,
     "default_icon": "img/icon.png",
     "default_popup": "popup.html",
-    "default_title": "__MSG_extName__"
+    "default_title": "__MSG_extDesc__"
   },
   "icons": {
     "16": "img/icon16.png",

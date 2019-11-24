@@ -2,6 +2,9 @@
   "extName": {
     "message": "Jenkins Helper"
   },
+  "extShortName": {
+    "message": "Jenkins Helper"
+  },
   "extDesc": {
     "message": "Monitor Jenkins build state and node state, and provide some convenient services."
   },
