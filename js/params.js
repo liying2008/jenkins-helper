@@ -46,7 +46,7 @@ new Vue({
         // console.log(tab);
         var title = tab.title;
         var url = tab.url;
-        var urlRegExp = /^https*:\/\/.+\/job\/.+\/\d+/;
+        var urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/;
         var urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/(.+\/\d+)\//;
         var urlRegExpPipelineLog = /^(https*:\/\/.+\/)blue\/rest\/organizations\/jenkins\/pipelines\/(.+)\/runs\/(\d+)\//;
         var m = url.match(urlRegExp);
