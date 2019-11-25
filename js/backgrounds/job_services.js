@@ -88,6 +88,7 @@ var JobServices = (function () {
     unstableJobCount = 0;
     successJobCount = 0;
     errorOnFetch = false;
+    return failureJobCount === 0 && unstableJobCount === 0 && successJobCount === 0 && !errorOnFetch;
   }
 
   function countBadgeJobCount(color) {
@@ -99,14 +100,16 @@ var JobServices = (function () {
 
   function queryJobStatus() {
     // console.log('jenkinsUrls', jenkinsUrls);
-    resetBadgeJobCount();
+    // 重置 成功失败计数器
+    while (!resetBadgeJobCount()) {
+      console.log('resetBadgeJobCount failed!!! Retry...');
+      console.log('queryJobStatus#resetBadgeJobCount')
+    }
     if (jenkinsUrls.length === 0) {
       changeBadge();
     }
     for (var jenkinsIndex = 0; jenkinsIndex < jenkinsUrls.length; jenkinsIndex++) {
       var url = jenkinsUrls[jenkinsIndex];
-
-
       (function (url) {
         StorageService.getJobStatus(url, function (result) {
           // console.log('queryJobStatus::result', result);
