@@ -175,6 +175,7 @@ var ParamsStashRecover = (function () {
       "cmd": CMD_RECOVER_PARAMS
     };
     browser.runtime.sendMessage(message).then(function (resp) {
+      // console.log('recoverParameters::resp', resp);
       if (resp.code !== 0) {
         var failureMsgTitle = '<p style="font-size: 16px; font-weight: bold; color:red;">' + browser.i18n.getMessage("content_parametersReadFailed") + '</p>';
         console.log('recoverParameters: 读取参数失败！');
@@ -277,7 +278,7 @@ var ParamsStashRecover = (function () {
       "data": stashedParams,
     };
     browser.runtime.sendMessage(message).then(function (resp) {
-      console.log('resp', resp);
+      // console.log('saveParameters::resp', resp);
       if (resp.code === 0) {
         console.log('saved.');
         // console.log(getReadableParams(params));

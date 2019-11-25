@@ -7,6 +7,7 @@
     "cmd": CMD_IS_ENABLE_STASH_AND_RECOVER
   };
   browser.runtime.sendMessage(message).then(function (resp) {
+    // console.log('content_scripts::resp', resp);
     if (resp.code !== 0) {
       console.log('是否开启stash & recover 未知！');
       return
