@@ -27,9 +27,9 @@ for html in $html_files; do
     sed -i 's/src="js\/libs\/vue.js"/src="js\/libs\/vue.min.js"/' $html
 done
 
-# 将 browser-polyfill.js 替换为 browser-polyfill.min.js
-sed -i 's/"js\/libs\/jquery.js"/"js\/libs\/jquery.min.js"/' manifest.json
 # 将 jquery.js 替换为 jquery.min.js
+sed -i 's/"js\/libs\/jquery.js"/"js\/libs\/jquery.min.js"/' manifest.json
+# 将 browser-polyfill.js 替换为 browser-polyfill.min.js
 sed -i 's/"js\/libs\/browser-polyfill.js"/"js\/libs\/browser-polyfill.min.js"/' manifest.json
 # 删除 Chrome 不兼容的 application 属性
 sed -i.bak '/  "applications": {/,/  },/d' manifest.json
