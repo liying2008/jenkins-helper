@@ -32,6 +32,7 @@ new Vue({
     result: '',
     buildTime: '',
     builtOn: '',
+    causes: [],
     parameters: [],
     // 是否禁用下载按钮
     disableDownload: false,
@@ -79,60 +80,69 @@ new Vue({
       _self.status = 1;
       var jsonUrl = url + '/api/json';
       // console.log("jsonUrl", jsonUrl);
-      fetch(jsonUrl, Tools.getDefaultFetchOption()).then(function (res) {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return Promise.reject(res);
-        }
-      }).then(function (data) {
-        _self.status = 2;
-        _self.preStatus = 2;
-        _self.number = data.number;
-        _self.fullDisplayName = data.fullDisplayName;
-        _self.url = data.url;
-        _self.building = data.building;
-        _self.result = data.result;
-        _self.buildTime = new Date(data.timestamp).toLocaleString();
-        _self.builtOn = data.builtOn;
-        _self.parameters = [];
-        var actions = data.actions;
-        for (var i = 0; i < actions.length; i++) {
-          if (actions[i].hasOwnProperty('parameters')) {
-            var parameters = actions[i].parameters;
-            for (var pIndex = 0; pIndex < parameters.length; pIndex++) {
-              var _class = parameters[pIndex]._class;
-              param = {
-                hidden: false,
-                name: parameters[pIndex].name,
-                value: parameters[pIndex].value,
-              };
-              // 额外处理几个特殊类型的参数
-              if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
-                // 密码参数
-                param.hidden = true;
-                param.value = '<' + _self.strings.passwordParameter + '>'
-              } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
-                // 凭据参数
-                param.hidden = true;
-                param.value = '<' + _self.strings.credentialsParameter + '>'
-              } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
-                // 文件参数
-                param.hidden = true;
-                param.value = '<' + _self.strings.fileParameter + '>'
-              } else if (_class === 'hudson.model.RunParameterValue') {
-                // 运行时参数
-                param.value = parameters[pIndex].jobName + ' #' + parameters[pIndex].number
+      Tools.getFetchOption(jsonUrl, function (header) {
+        fetch(jsonUrl, header).then(function (res) {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return Promise.reject(res);
+          }
+        }).then(function (data) {
+          _self.status = 2;
+          _self.preStatus = 2;
+          _self.number = data.number;
+          _self.fullDisplayName = data.fullDisplayName;
+          _self.url = data.url;
+          _self.building = data.building;
+          _self.result = data.result;
+          _self.buildTime = new Date(data.timestamp).toLocaleString();
+          _self.builtOn = data.builtOn;
+          _self.causes = [];
+          _self.parameters = [];
+          var actions = data.actions;
+          for (var i = 0; i < actions.length; i++) {
+            if (actions[i].hasOwnProperty('parameters')) {
+              var parameters = actions[i].parameters;
+              for (var pIndex = 0; pIndex < parameters.length; pIndex++) {
+                var _class = parameters[pIndex]._class;
+                param = {
+                  hidden: false,
+                  name: parameters[pIndex].name,
+                  value: parameters[pIndex].value,
+                };
+                // 额外处理几个特殊类型的参数
+                if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
+                  // 密码参数
+                  param.hidden = true;
+                  param.value = '<' + _self.strings.passwordParameter + '>'
+                } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
+                  // 凭据参数
+                  param.hidden = true;
+                  param.value = '<' + _self.strings.credentialsParameter + '>'
+                } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
+                  // 文件参数
+                  param.hidden = true;
+                  param.value = '<' + _self.strings.fileParameter + '>'
+                } else if (_class === 'hudson.model.RunParameterValue') {
+                  // 运行时参数
+                  param.value = parameters[pIndex].jobName + ' #' + parameters[pIndex].number
+                }
+                _self.parameters.push(param)
               }
-              _self.parameters.push(param)
+            } else if (actions[i].hasOwnProperty('causes')) {
+              var causes = actions[i].causes;
+              for (var cIndex = 0; cIndex < causes.length; cIndex++) {
+                var shortDescription = causes[cIndex].shortDescription;
+                _self.causes.push(shortDescription)
+              }
             }
           }
-        }
-      }).catch(function (e) {
-        console.error("获取参数失败", e);
-        _self.status = _self.preStatus;
-        alert(_self.strings.noData)
-      });
+        }).catch(function (e) {
+          console.error("获取参数失败", e);
+          _self.status = _self.preStatus;
+          alert(_self.strings.noData)
+        });
+      })
     },
     getCurrentTab(callback) {
       browser.tabs.query({active: true, currentWindow: true}).then(function (tabs) {

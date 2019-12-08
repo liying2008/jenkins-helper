@@ -24,8 +24,9 @@
   <ul class="list-group info-block" v-show="status === 2">
     <li class="list-group-item">
       <div>
+        <!--Display name & 构建状态-->
         <div class="row">
-          <div class="col-xs-6"><i class="glyphicon glyphicon-tag"></i>
+          <div class="col-xs-6"><i class="glyphicon glyphicon-tag" title="Full DisplayName"></i>
             <a :href="url" target="_blank" style="margin-left: 8px">{{fullDisplayName}}</a>
           </div>
           <div class="col-xs-6">{{strings.buildStatus_}}
@@ -47,9 +48,9 @@
 
           </div>
         </div>
-
+        <!--构建时间 & 执行节点-->
         <div class="row" style="margin-top: 10px">
-          <div class="col-xs-6"><i class="glyphicon glyphicon-time"></i>
+          <div class="col-xs-6"><i class="glyphicon glyphicon-time" title="Build Timestamp"></i>
             <span style="margin-left: 8px">{{buildTime}}</span></div>
           <div class="col-xs-6" v-show="builtOn">{{strings.runLabel_}}<span ref="builtOnSpan">{{builtOn}}</span>
             <a style="margin-left: 8px;cursor: pointer" class="glyphicon glyphicon-duplicate" @click="copyBuiltOn"
@@ -58,6 +59,11 @@
                   style="color: #3c763d;font-size:smaller;margin-left: 10px;visibility: hidden">{{strings.copied}}
             </span>
           </div>
+        </div>
+        <!--Build Causes-->
+        <div class="row" v-for="cause in causes" style="margin-top: 10px">
+          <div class="col-xs-12"><i class="glyphicon glyphicon-flash" title="Build Cause"></i>
+            <span style="margin-left: 8px">{{cause}}</span></div>
         </div>
       </div>
     </li>
