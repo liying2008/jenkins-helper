@@ -63,7 +63,10 @@
         <!--Build Causes-->
         <div class="row" v-for="cause in causes" style="margin-top: 10px">
           <div class="col-xs-12"><i class="glyphicon glyphicon-flash" title="Build Cause"></i>
-            <span style="margin-left: 8px">{{cause}}</span></div>
+            <span style="margin-left: 8px">{{cause.shortDescription}}</span>
+            <a :href="cause.url" target="_blank" style="margin-left: 6px;" v-if="cause.url">
+              <i class="glyphicon glyphicon-circle-arrow-right" title="Go"></i></a>
+          </div>
         </div>
       </div>
     </li>

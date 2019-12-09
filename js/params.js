@@ -133,7 +133,17 @@ new Vue({
               var causes = actions[i].causes;
               for (var cIndex = 0; cIndex < causes.length; cIndex++) {
                 var shortDescription = causes[cIndex].shortDescription;
-                _self.causes.push(shortDescription)
+                var upstreamUrl = '';
+                if (causes[cIndex].upstreamUrl && causes[cIndex].upstreamBuild) {
+                  var rootUrl = _self.getJenkinsRootUrl(data.url, data.fullDisplayName);
+                  if (rootUrl) {
+                    upstreamUrl = rootUrl + '/' + causes[cIndex].upstreamUrl + causes[cIndex].upstreamBuild + '/'
+                  }
+                }
+                _self.causes.push({
+                  shortDescription: shortDescription,
+                  url: upstreamUrl
+                })
               }
             }
           }
@@ -221,6 +231,25 @@ new Vue({
       }).then(function (window) {
         console.log('window', window)
       })
+    },
+    getJenkinsRootUrl(url, fullDisplayName) {
+      if (url[url.length - 1] === '/') {
+        url = url.substring(0, url.length - 1);
+      }
+      fullDisplayName = encodeURIComponent(fullDisplayName);
+      // %20%C2%BB%20: »
+      // %20%23: #
+      var path = fullDisplayName.replace('%20%C2%BB%20', '/job/').replace('%20%23', '/');
+      path = '/job/' + path;
+      var index = url.lastIndexOf(path);
+      if (index > 0) {
+        var rootUrl = url.substring(0, index);
+        console.log('rootUrl', rootUrl);
+        return rootUrl
+      } else {
+        console.log('error: url:', url, 'fullDisplayName', fullDisplayName, 'path:', path);
+        return ''
+      }
     },
   }
 });
