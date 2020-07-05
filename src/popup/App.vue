@@ -63,34 +63,32 @@
   </div>
 </template>
 
-<script>
-  import Vue from "vue";
-  import Monitor from "@/popup/pages/Monitor";
-  import Params from "@/popup/pages/Params";
-  import Computer from "@/popup/pages/Computer";
-  import JenkinsTools from "@/popup/pages/JenkinsTools";
+<script lang="ts">
+  import {Vue, Component} from "vue-property-decorator";
+  import Monitor from "@/popup/pages/Monitor.vue";
+  import Params from "@/popup/pages/Params.vue";
+  import Computer from "@/popup/pages/Computer.vue";
+  import JenkinsTools from "@/popup/pages/JenkinsTools.vue";
 
-  export default Vue.extend({
+  @Component({
     name: 'App',
     components: {
       Monitor,
       Params,
       Computer,
       JenkinsTools,
-    },
-    data() {
-      return {
-        strings: {
-          extName: browser.i18n.getMessage("extName"),
-          monitor: browser.i18n.getMessage("monitor"),
-          params: browser.i18n.getMessage("params"),
-          computer: browser.i18n.getMessage("computer"),
-          tools: browser.i18n.getMessage("tools"),
-        },
-        tab: null,
-      }
-    },
+    }
   })
+  export default class App extends Vue {
+    private strings = {
+      extName: browser.i18n.getMessage("extName"),
+      monitor: browser.i18n.getMessage("monitor"),
+      params: browser.i18n.getMessage("params"),
+      computer: browser.i18n.getMessage("computer"),
+      tools: browser.i18n.getMessage("tools"),
+    }
+    private tab = null
+  }
 </script>
 
 <style scoped lang="scss">

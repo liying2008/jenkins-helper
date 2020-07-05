@@ -18,7 +18,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-this-alias': 'warn',
     '@typescript-eslint/no-empty-function': 'warn',
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-prototype-builtins': 'off',
+    'prefer-const': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    '@typescript-eslint/ban-ts-ignore': 'off',
+    'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
 }
