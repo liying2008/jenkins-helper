@@ -1,0 +1,52 @@
+{
+  "PARAM1": {
+    "type": "text",
+    "name": "value",
+    "value": "admin"
+  },
+  "admin": {
+    "type": "password",
+    "name": "value",
+    "value": "admin"
+  },
+  "BOOL": {
+    "type": "checkbox",
+    "name": "value",
+    "value": true
+  },
+  "TEXT1": {
+    "type": "textarea",
+    "name": "value",
+    "value": "ddqwd"
+  },
+  "CHOICE": {
+    "type": "text",
+    "name": "value",
+    "value": "1"
+  },
+  "RUNTIME": {
+    "type": "select-one",
+    "name": "runId",
+    "value": "test1#13"
+  },
+  "DATE1": {
+    "type": "text",
+    "name": "value",
+    "value": ""
+  },
+  "LABEL1": {
+    "type": "text",
+    "name": "label",
+    "value": "master"
+  },
+  "NODE1": {
+    "type": "text",
+    "name": "label",
+    "value": "master"
+  },
+  "BOOL2": {
+    "type": "checkbox",
+    "name": "value",
+    "value": false
+  }
+}
