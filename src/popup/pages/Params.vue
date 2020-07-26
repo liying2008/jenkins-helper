@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+import Vue from 'vue'
 
-  export default Vue.extend({
-    name: 'Params',
-  })
+export default Vue.extend({
+  name: 'Params',
+})
 </script>
 
 <style scoped lang="scss">

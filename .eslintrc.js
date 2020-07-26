@@ -43,6 +43,7 @@ module.exports = {
     }],
     'semi': ['error', 'never'],
     'array-bracket-spacing': ['warn', 'never'],
+    'object-curly-spacing': ['warn', 'always'],
     'arrow-parens': ['warn', 'always'],
     'arrow-spacing': 'warn',
     'use-isnan': 'error',
