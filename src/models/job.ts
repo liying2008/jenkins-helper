@@ -2,11 +2,17 @@ export interface JobRoot {
   [setUrl: string]: JobSet;
 }
 
-export interface JobSet {
+export class JobSet {
   jobs?: JobStatus;
   name: string;
   status: string;
   error?: string;
+
+  constructor(name: string, status: string, error: string = '') {
+    this.name = name;
+    this.status = status;
+    this.error = error;
+  }
 }
 
 export interface JobStatus {

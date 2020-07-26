@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
     <v-app>
-      <v-card>
+      <v-card elevation="0">
         <v-toolbar
           color="teal"
           dark
