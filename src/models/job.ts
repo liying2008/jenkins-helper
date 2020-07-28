@@ -1,5 +1,5 @@
 export interface JobRoot {
-  [setUrl: string]: JobSet;
+  [setUrl: string]: JobSet
 }
 
 export class JobSet {
@@ -8,10 +8,10 @@ export class JobSet {
   status: string;
   error?: string;
 
-  constructor(name: string, status: string, error: string = '') {
-    this.name = name;
-    this.status = status;
-    this.error = error;
+  constructor(name: string, status: string, error = '') {
+    this.name = name
+    this.status = status
+    this.error = error
   }
 }
 
@@ -20,11 +20,11 @@ export interface JobStatus {
 }
 
 export interface JobDetail {
-  building: boolean;
-  color: string;
-  labelClass: string;
-  lastBuildNumber: number;
-  lastBuildTimestamp: number;
-  name: string;
-  status: string;
+  building: boolean
+  color: string
+  labelClass: string
+  lastBuildNumber: number
+  lastBuildTimestamp: number
+  name: string
+  status: string
 }

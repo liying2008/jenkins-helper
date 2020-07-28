@@ -80,7 +80,7 @@ export default class Monitor extends Vue {
     jenkinsUrls: [],
     jobStatus: {}
   }
-  data = {}
+  data: any = {}
   filteringResult = ''
   filteringResults = []
 
@@ -183,7 +183,7 @@ export default class Monitor extends Vue {
 
   @Watch('showDisabledJobs')
   showDisabledJobsChanged(newVal: boolean) {
-    StorageService.getOptions(function (options: any) {
+    StorageService.getOptions().then((options: any) => {
       options.showDisabledJobs = newVal
       StorageService.saveOptions(options)
     })
@@ -231,22 +231,21 @@ export default class Monitor extends Vue {
   }
 
   getAllJobStatus() {
-    const _self: any = this
-    StorageService.getOptions(function (options: any) {
+    StorageService.getOptions().then((options: any) => {
       if (options.showDisabledJobs === undefined) {
-        _self.showDisabledJobs = true
+        this.showDisabledJobs = true
       } else {
-        _self.showDisabledJobs = options.showDisabledJobs
+        this.showDisabledJobs = options.showDisabledJobs
       }
     })
-    StorageService.getJenkinsUrls(function (result: any) {
-      _self.jenkinsData.jenkinsUrls = result
+    StorageService.getJenkinsUrls().then((result: any) => {
+      this.jenkinsData.jenkinsUrls = result
       console.log('result', result)
-      StorageService.getJobStatus(result, function (jobResult: any) {
+      StorageService.getJobStatus(result).then((jobResult: any) => {
         console.log('jobResult', jobResult)
-        _self.jenkinsData.jobStatus = jobResult
+        this.jenkinsData.jobStatus = jobResult
         // 过滤数据
-        _self.filterData()
+        this.filterData()
       })
     })
   }
@@ -255,18 +254,17 @@ export default class Monitor extends Vue {
    * 过滤数据
    */
   filterData() {
-    const _self: any = this
     // 通过序列化的方式实现对象深拷贝
     const status = JSON.parse(JSON.stringify(this.jenkinsData.jobStatus))
-    _self.data = {}
-    Object.keys(status).forEach(function (v1) {
-      _self.data[v1] = status[v1]
+    this.data = {}
+    Object.keys(status).forEach((v1) => {
+      this.data[v1] = status[v1]
       if (status[v1].jobs === undefined || status[v1].jobs === null) {
         return
       }
-      Object.keys(status[v1].jobs).forEach(function (v2) {
-        if (_self.filteringResult !== _self.strings.noFilterValue && status[v1].jobs[v2].color !== _self.filteringResult) {
-          delete _self.data[v1].jobs[v2]
+      Object.keys(status[v1].jobs).forEach((v2) => {
+        if (this.filteringResult !== this.strings.noFilterValue && status[v1].jobs[v2].color !== this.filteringResult) {
+          delete this.data[v1].jobs[v2]
         }
       })
     })
@@ -276,20 +274,19 @@ export default class Monitor extends Vue {
    * 添加新 Jenkins URL
    */
   addJenkinsUrl() {
-    const _self: any = this
     let url = this.inputUrlValue
     url = url.charAt(url.length - 1) === '/' ? url : url + '/'
     if (this.jenkinsData.jenkinsUrls.indexOf(url) === -1) {
       const newUrls = this.jenkinsData.jenkinsUrls.concat(url)
       console.log('newUrls', newUrls)
-      StorageService.saveJenkinsUrls(newUrls, function () {
-        _self.jenkinsData.jenkinsUrls = newUrls
-        _self.inputUrlValue = ''
-        _self.btnAddDisabled = true
+      StorageService.saveJenkinsUrls(newUrls).then(() => {
+        this.jenkinsData.jenkinsUrls = newUrls
+        this.inputUrlValue = ''
+        this.btnAddDisabled = true
       })
     } else {
-      _self.inputUrlValue = ''
-      _self.btnAddDisabled = true
+      this.inputUrlValue = ''
+      this.btnAddDisabled = true
     }
   }
 
@@ -308,9 +305,8 @@ export default class Monitor extends Vue {
   // }
 
   removeJenkins(jenkinsUrl: string) {
-    const _self: any = this
-    StorageService.removeJenkinsUrls(jenkinsUrl, function () {
-      _self.getAllJobStatus()
+    StorageService.removeJenkinsUrls(jenkinsUrl).then(() => {
+      this.getAllJobStatus()
     })
   }
 

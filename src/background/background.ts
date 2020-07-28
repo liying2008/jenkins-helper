@@ -1,7 +1,7 @@
-import {Tools} from "@/libs/tools";
-import {Omnibox} from "@/background/omnibox";
-import {JobService} from "@/background/job-service";
-import {NodeService} from "@/background/node-service";
+import { Tools } from '@/libs/tools'
+import { Omnibox } from '@/background/omnibox'
+import { JobService } from '@/background/job-service'
+import { NodeService } from '@/background/node-service'
 import PermissionLevel = browser.notifications.PermissionLevel;
 
 // NOTE:
@@ -18,5 +18,5 @@ if (Tools.isChrome) {
 }
 // ContentServices.start();
 Omnibox.start()
-JobService.start();
-NodeService.start();
+JobService.start()
+NodeService.start()

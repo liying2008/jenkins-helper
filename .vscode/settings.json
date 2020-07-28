@@ -10,6 +10,7 @@
         "vue"
     ],
     "editor.tabSize": 2,
+    "editor.wordWrapColumn": 120,
     "vetur.completion.autoImport": true,
     "vetur.format.enable": true,
     "vetur.format.options.tabSize": 2,

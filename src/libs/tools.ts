@@ -1,4 +1,4 @@
-import {StorageService} from "@/libs/storage";
+import { StorageService } from '@/libs/storage'
 
 export class Tools {
   // 是否是 Chrome 浏览器
@@ -39,34 +39,33 @@ export class Tools {
     }
   }
 
-  static getFetchOption(url: string, callback: any, header: any = {}, method = 'GET') {
-    StorageService.getOptions(function (options: any) {
-      var jenkinsTokens = options.jenkinsTokens || [];
-      // console.log('jenkinsTokens', jenkinsTokens);
-      var token = undefined;
-      for (var i = 0; i < jenkinsTokens.length; i++) {
-        var currentToken = jenkinsTokens[i];
-        if (url.indexOf(currentToken.url) === 0) {
-          token = currentToken;
-          break
-        }
+  static async getFetchOption(url: string, header: any = {}, method = 'GET') {
+    const options = await StorageService.getOptions()
+    const jenkinsTokens = options.jenkinsTokens || []
+    // console.log('jenkinsTokens', jenkinsTokens);
+    let token = undefined
+    for (let i = 0; i < jenkinsTokens.length; i++) {
+      const currentToken = jenkinsTokens[i]
+      if (url.indexOf(currentToken.url) === 0) {
+        token = currentToken
+        break
       }
-      if (header === undefined || header === null) {
-        header = {}
+    }
+    if (header === undefined || header === null) {
+      header = {}
+    }
+    // console.log('Tool.getFetchOption token', token);
+    if (token) {
+      header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token)
+      return {
+        method: method,
+        mode: 'cors',
+        redirect: 'follow',
+        headers: new Headers(header)
       }
-      // console.log('Tool.getFetchOption token', token);
-      if (token) {
-        header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token);
-        callback({
-          method: method,
-          mode: 'cors',
-          redirect: 'follow',
-          headers: new Headers(header)
-        })
-      } else {
-        callback(Tools.getDefaultFetchOption(header, method))
-      }
-    });
+    } else {
+      return Tools.getDefaultFetchOption(header, method)
+    }
   }
 
   /**
@@ -79,17 +78,17 @@ export class Tools {
     if (timestamp === undefined || timestamp === null || timestamp === 0) {
       return ''
     }
-    var d = new Date(timestamp);
-    var year = d.getFullYear();
-    var month = Tools.zeroFill(d.getMonth() + 1);
-    var day = Tools.zeroFill(d.getDate());
-    var hour = Tools.zeroFill(d.getHours());
-    var minute = Tools.zeroFill(d.getMinutes());
-    var second = Tools.zeroFill(d.getSeconds());
+    const d = new Date(timestamp)
+    const year = d.getFullYear()
+    const month = Tools.zeroFill(d.getMonth() + 1)
+    const day = Tools.zeroFill(d.getDate())
+    const hour = Tools.zeroFill(d.getHours())
+    const minute = Tools.zeroFill(d.getMinutes())
+    const second = Tools.zeroFill(d.getSeconds())
     if (withSep) {
-      return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+      return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
     } else {
-      return '' + year + month + day + hour + minute + second;
+      return '' + year + month + day + hour + minute + second
     }
   }
 
@@ -98,10 +97,9 @@ export class Tools {
    */
   static zeroFill(i: number): string | number {
     if (i >= 0 && i <= 9) {
-      return "0" + i;
+      return '0' + i
     } else {
-      return i;
+      return i
     }
   }
-
 }

@@ -22,7 +22,6 @@
 
         <template v-slot:extension>
           <v-tabs
-            v-model="tab"
             show-arrows
             align-with-title
           >

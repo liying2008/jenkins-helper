@@ -1,77 +1,77 @@
-import {StorageService} from "@/libs/storage";
-import {Options} from "@/models/option";
-import {Tools} from "@/libs/tools";
+import { StorageService } from '@/libs/storage'
+import { Options } from '@/models/option'
+import { Tools } from '@/libs/tools'
 
 export class Omnibox {
   private static allJobs: any[] = [];
   private static defaultSuggestionUrl = '';
 
   static start() {
-    Omnibox.getAllJobs();
+    Omnibox.getAllJobs()
 
     // 当用户输入时触发
     browser.omnibox.onInputChanged.addListener(function (text, suggest) {
       // console.log('text', text);
-      if (!text) return;
-      const suggestContent = Omnibox.filterJobs(text);
+      if (!text) return
+      const suggestContent = Omnibox.filterJobs(text)
       // console.log('suggestContent', suggestContent);
       return suggest(suggestContent)
-    });
+    })
 
     // 当用户接收关键字建议时触发
     browser.omnibox.onInputEntered.addListener(function (text) {
       // console.log('inputEntered', text);
-      if (!text) return;
+      if (!text) return
       if (text.indexOf('http') !== 0) {
         text = Omnibox.defaultSuggestionUrl + 'job/' + text + '/'
       }
       Omnibox.navigate(text)
-    });
+    })
 
   }
 
   private static navigate(url: string) {
-    browser.tabs.query({active: true, currentWindow: true}).then(function (tabs) {
-      return browser.tabs.update(tabs[0].id!, {url: url});
-    });
+    browser.tabs.query({ active: true, currentWindow: true }).then(function (tabs) {
+      return browser.tabs.update(tabs[0].id!, { url: url })
+    })
   }
 
   static getAllJobs() {
-    Omnibox.allJobs = [];
-    StorageService.getOptions(function (result: Options) {
-      const jenkinsUrls = result.omniboxJenkinsUrl.split('\n');
+    Omnibox.allJobs = []
+    StorageService.getOptions().then((result: Options) => {
+      const jenkinsUrls = result.omniboxJenkinsUrl.split('\n')
       for (let i = 0; i < jenkinsUrls.length; i++) {
-        let url = jenkinsUrls[i].trim();
+        let url = jenkinsUrls[i].trim()
         if (url === '') {
           continue
         }
-        url = url.charAt(url.length - 1) === '/' ? url : url + '/';
+        url = url.charAt(url.length - 1) === '/' ? url : url + '/'
         if (!Omnibox.defaultSuggestionUrl) {
-          Omnibox.defaultSuggestionUrl = url;
+          Omnibox.defaultSuggestionUrl = url
           browser.omnibox.setDefaultSuggestion({
             description: url + 'job/%s/'
-          });
+          })
         }
 
         (function (url) {
-          const encodeParam = encodeURI('jobs[name,url]');
-          const jsonUrl = url + 'api/json?tree=' + encodeParam;
+          const encodeParam = encodeURI('jobs[name,url]')
+          const jsonUrl = url + 'api/json?tree=' + encodeParam
 
-          Tools.getFetchOption(jsonUrl, function (header: any) {
+          Tools.getFetchOption(jsonUrl).then((header: any) => {
             fetch(jsonUrl, header).then(function (res) {
               if (res.ok) {
-                return res.json();
+                return res.json()
               } else {
-                return Promise.reject(res);
+                return Promise.reject(res)
               }
             }).then(function (data) {
               if (data.hasOwnProperty('jobs')) {
-                Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs);
+                Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
                 console.log('all fetched', Omnibox.allJobs)
               }
             }).catch(function (e) {
-              console.error("获取Job失败", e);
-            });
+              console.error('获取Job失败', e)
+            })
           })
         })(url)
       }
@@ -80,8 +80,8 @@ export class Omnibox {
 
   // 过滤符合输入的 Job
   private static filterJobs(text: string) {
-    const suggests = [];
-    const len = Omnibox.allJobs.length;
+    const suggests = []
+    const len = Omnibox.allJobs.length
     for (let i = 0; i < len; i++) {
       if (Omnibox.allJobs[i].name.toLowerCase().indexOf(text.toLowerCase()) >= 0) {
         suggests.push({
@@ -90,6 +90,6 @@ export class Omnibox {
         })
       }
     }
-    return suggests;
+    return suggests
   }
 }

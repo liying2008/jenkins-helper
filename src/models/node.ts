@@ -1,5 +1,5 @@
 export interface NodesRoot {
-  nodes: Nodes;
+  nodes: Nodes
 }
 
 export interface Nodes {
@@ -7,8 +7,8 @@ export interface Nodes {
 }
 
 export interface NodeStatus {
-  status: string;
-  monitoredNodes: MonitoredNodes;
+  status: string
+  monitoredNodes: MonitoredNodes
 }
 
 export interface MonitoredNodes {
@@ -16,11 +16,11 @@ export interface MonitoredNodes {
 }
 
 export interface NodeDetail {
-  nodeUrl: string;
-  workingDirectory: string;
-  remainingDiskSpace: string;
-  responseTime: string;
-  monitoring: boolean;
-  diskSpaceThreshold: number;
-  offline: boolean;
+  nodeUrl: string
+  workingDirectory: string
+  remainingDiskSpace: string
+  responseTime: string
+  monitoring: boolean
+  diskSpaceThreshold: number
+  offline: boolean
 }

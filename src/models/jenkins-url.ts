@@ -1,3 +1,3 @@
 export interface JenkinsUrlRoot {
-  'jenkins-url': string[];
+  'jenkins-url': string[]
 }
