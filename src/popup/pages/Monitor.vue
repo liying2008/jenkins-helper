@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 添加URL的表单 -->
     <v-form>
       <v-row>
         <v-col cols="12">
@@ -45,9 +46,25 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="desserts"
+          :items="toArray(jenkins.jobs)"
           :search="search"
-        ></v-data-table>
+        >
+          <template
+            v-if="true"
+            v-slot:body="{ items }"
+          >
+            <tbody>
+              <tr
+                v-for="item in items"
+                :key="item.name"
+              >
+                <td>{{ item.name }}</td>
+                <td v-html="getStyledTime(item.lastBuildTimestamp)"></td>
+                <td>{{ item.status }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
       </v-card>
     </div>
   </div>
@@ -57,6 +74,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage.ts'
 import { Tools } from '@/libs/tools.ts'
+import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
 
 @Component({
   name: 'Monitor'
@@ -76,109 +94,19 @@ export default class Monitor extends Vue {
   inputUrlValue = ''
   btnAddDisabled = true
   showDisabledJobs = true
-  jenkinsData: { jenkinsUrls: string[]; jobStatus: any } = {
+  jenkinsData: { jenkinsUrls: string[]; jobStatus: JobRoot } = {
     jenkinsUrls: [],
     jobStatus: {}
   }
   data: any = {}
   filteringResult = ''
-  filteringResults = []
+  filteringResults: any[] = []
 
   search = ''
   headers = [
-    {
-      text: 'Dessert (100g serving)',
-      align: 'start',
-      sortable: false,
-      value: 'name',
-    },
-    { text: 'Calories', value: 'calories' },
-    { text: 'Fat (g)', value: 'fat' },
-    { text: 'Carbs (g)', value: 'carbs' },
-    { text: 'Protein (g)', value: 'protein' },
-    { text: 'Iron (%)', value: 'iron' },
-  ]
-  desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6.0,
-      carbs: 24,
-      protein: 4.0,
-      iron: '1%',
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9.0,
-      carbs: 37,
-      protein: 4.3,
-      iron: '1%',
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16.0,
-      carbs: 23,
-      protein: 6.0,
-      iron: '7%',
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      iron: '8%',
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-      fat: 16.0,
-      carbs: 49,
-      protein: 3.9,
-      iron: '16%',
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0.0,
-      carbs: 94,
-      protein: 0.0,
-      iron: '0%',
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-      fat: 0.2,
-      carbs: 98,
-      protein: 0,
-      iron: '2%',
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-      fat: 3.2,
-      carbs: 87,
-      protein: 6.5,
-      iron: '45%',
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-      fat: 25.0,
-      carbs: 51,
-      protein: 4.9,
-      iron: '22%',
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-      fat: 26.0,
-      carbs: 65,
-      protein: 7,
-      iron: '6%',
-    },
+    { text: 'Job Name', align: 'start' },
+    { text: 'Last Build Time' },
+    { text: 'Result' },
   ]
 
   @Watch('showDisabledJobs')
@@ -200,19 +128,36 @@ export default class Monitor extends Vue {
     StorageService.addStorageListener(this.jobStatusChange)
   }
 
+  toArray(jobStatus: JobStatus|undefined) {
+    const jobArray: DisplayedJobDetail[] = []
+    console.log('jobStatus type', typeof jobStatus)
+    if (jobStatus === undefined) {
+      return jobArray
+    }
+    for (const jobUrl of Object.keys(jobStatus)) {
+      if (jobStatus.hasOwnProperty(jobUrl)) {
+        const jobDetail = jobStatus[jobUrl]
+        jobArray.push({
+          jobUrl,
+          ...jobDetail
+        })
+      }
+    }
+    return jobArray
+  }
+
   /**
    * 初始化页面
    */
   initPage() {
-    const _self: any = this
     // 默认不过滤
-    _self.filteringResult = _self.strings.noFilterValue
-    _self.filteringResults.push({
-      value: _self.strings.noFilterValue,
-      text: _self.strings.noFilterValue
+    this.filteringResult = this.strings.noFilterValue
+    this.filteringResults.push({
+      value: this.strings.noFilterValue,
+      text: this.strings.noFilterValue
     })
-    Object.keys(Tools.jobStatus).forEach(function (value) {
-      _self.filteringResults.push({
+    Object.keys(Tools.jobStatus).forEach((value) => {
+      this.filteringResults.push({
         value: value,
         text: Tools.jobStatus[value]
       })
@@ -238,10 +183,10 @@ export default class Monitor extends Vue {
         this.showDisabledJobs = options.showDisabledJobs
       }
     })
-    StorageService.getJenkinsUrls().then((result: any) => {
+    StorageService.getJenkinsUrls().then((result: string[]) => {
       this.jenkinsData.jenkinsUrls = result
       console.log('result', result)
-      StorageService.getJobStatus(result).then((jobResult: any) => {
+      StorageService.getJobStatus(result).then((jobResult: JobRoot) => {
         console.log('jobResult', jobResult)
         this.jenkinsData.jobStatus = jobResult
         // 过滤数据
@@ -276,6 +221,7 @@ export default class Monitor extends Vue {
   addJenkinsUrl() {
     let url = this.inputUrlValue
     url = url.charAt(url.length - 1) === '/' ? url : url + '/'
+    console.log('url', url)
     if (this.jenkinsData.jenkinsUrls.indexOf(url) === -1) {
       const newUrls = this.jenkinsData.jenkinsUrls.concat(url)
       console.log('newUrls', newUrls)
@@ -335,7 +281,7 @@ export default class Monitor extends Vue {
       type: 'popup',
       width: 1200,
       height: 800,
-    }).then(function (window) {
+    }).then((window) => {
       console.log('window', window)
     })
   }

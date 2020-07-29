@@ -43,10 +43,12 @@ export class JobService {
       StorageService.getOptions().then((options: Options) => {
         JobService.showNotificationOption = options.showNotificationOption
         JobService.refreshJobStatus(options.refreshTime || 60)
+        // TODO 仅测试使用
+        // JobService.refreshJobStatus(5)
       })
     })
     // 点击通知
-    browser.notifications.onClicked.addListener(function (notificationId) {
+    browser.notifications.onClicked.addListener((notificationId) => {
       // 打开构建页面
       if (notificationId in JobService.notificationUrlMap) {
         browser.tabs.create({ 'url': JobService.notificationUrlMap[notificationId] })
@@ -58,7 +60,7 @@ export class JobService {
     if (JobService.lastInterval !== undefined) {
       window.clearInterval(JobService.lastInterval)
     }
-    JobService.lastInterval = window.setInterval('JobServices.queryJobStatus()', Number(refreshTime) * 1000)
+    JobService.lastInterval = window.setInterval(() => { JobService.queryJobStatus() }, Number(refreshTime) * 1000)
   }
 
   private static storageChange(changes: any) {
@@ -193,7 +195,7 @@ export class JobService {
         jobColor = jobColor.replace(/_anime$/, '')
       }
       JobService.countBadgeJobCount(jobColor)
-      const buildStatus = status[jobColor]
+      const buildStatus = JobService.status[jobColor]
 
       if (oldStatus[url] && oldStatus[url].jobs) {
         oldStatus = oldStatus[url].jobs
@@ -234,7 +236,7 @@ export class JobService {
       jobColor = jobColor.replace(/_anime$/, '')
     }
     JobService.countBadgeJobCount(jobColor)
-    const buildStatus = status[jobColor]
+    const buildStatus = JobService.status[jobColor]
     const lastBuild = data.lastCompletedBuild || {}
     const lastBuildNumber = lastBuild.number || 0
     const lastBuildTimestamp = lastBuild.timestamp || 0

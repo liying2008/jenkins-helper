@@ -18,7 +18,7 @@ export class NodeService {
     if (NodeService.lastInterval !== undefined) {
       window.clearInterval(NodeService.lastInterval)
     }
-    NodeService.lastInterval = window.setInterval('NodeServices.queryNodeStatus()', Number(refreshTime) * 3600 * 1000)
+    NodeService.lastInterval = window.setInterval(() => { NodeService.queryNodeStatus() }, Number(refreshTime) * 3600 * 1000)
   }
 
   private static storageChange(changes: any) {

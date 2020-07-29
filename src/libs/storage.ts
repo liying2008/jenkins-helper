@@ -19,7 +19,7 @@ export class StorageService {
 
   static async getJenkinsUrls() {
     const result = await browser.storage.local.get('jenkins-url')
-    return result['jenkins-url'] || []
+    return result['jenkins-url'] as string[] || []
   }
 
   // 删除一个Jenkins Url
@@ -45,9 +45,9 @@ export class StorageService {
     return browser.storage.local.remove(jenkinsUrl)
   }
 
-  static async getJobStatus(jenkinsUrl: string) {
+  static async getJobStatus(jenkinsUrl: string | string[]) {
     const result = await browser.storage.local.get(jenkinsUrl)
-    return result || {}
+    return result as JobRoot || {}
   }
 
   static async saveNodeStatus(nodesStatus: Nodes) {
