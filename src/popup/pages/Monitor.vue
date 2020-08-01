@@ -32,16 +32,16 @@
             alt="Jenkins"
             src="img/icon48.png"
           >
-          <div class="ml-5">
+          <div class="ml-5 card-title-job">
             <span
               :title="jenkins.name"
-              class="card-title"
+              class="card-title-job-name"
             >
               {{ jenkins.name }}
             </span>
             <br style="height: 10px;">
             <a
-              class="card-title-url"
+              class="card-title-job-url"
               target="_blank"
               :href="jenkinsUrl"
             >
@@ -60,6 +60,7 @@
               :title="jenkins.error"
               target="_blank"
               color="error"
+              class="card-title-err-btn"
             >
               <span v-if="jenkins.status=='cctray'">CCtray Error</span>
               <span v-else>ERROR</span>
@@ -362,18 +363,26 @@ export default class Monitor extends Vue {
 
 <style lang="scss" scoped>
 .card {
-  .card-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: #333;
+  .card-title-job {
+    width: 460px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .card-title-job-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .card-title-job-url {
+      font-size: 14px;
+      text-decoration: none;
+    }
   }
 
-  .card-title-url {
-    font-size: 14px;
-    text-decoration: none;
+  .card-title-err-btn {
+    width: 70px;
   }
 
   .monitor-table-job-name {
