@@ -35,6 +35,7 @@ export interface DisplayedJobDetail {
   color: string
   labelClass: string
   lastBuildNumber: number
+  lastBuildTime: string
   lastBuildTimestamp: number
   name: string
   status: string

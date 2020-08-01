@@ -1,15 +1,19 @@
 <template>
   <div>
     <!-- 添加URL的表单 -->
-    <v-form>
+    <v-form
+      ref="form"
+      v-model="isFormValid"
+    >
       <v-row>
         <v-col cols="12">
           <v-text-field
             v-model="inputUrlValue"
-            append-outer-icon="mdi-plus"
+            :append-outer-icon="isFormValid ? 'mdi-plus' : ''"
             prepend-icon="mdi-link-variant"
             :label="strings.inputUrlPlaceholder"
             type="text"
+            :rules="[required(), isValidURL()]"
             @click:append-outer="addJenkinsUrl"
           ></v-text-field>
         </v-col>
@@ -20,6 +24,7 @@
       <v-card
         v-for="(jenkins, jenkinsUrl, index) in data"
         :key="index"
+        class="card my-3"
       >
         <v-card-title>
           <img
@@ -27,42 +32,81 @@
             alt="Jenkins"
             src="img/icon48.png"
           >
-          <div>
-            <h4>
-              <span :title="jenkins.name">{{ jenkins.name }}</span>
-              <br>
-              <a
-                class="small"
-                target="_blank"
-                :href="jenkinsUrl"
-              >
-                <span
-                  class="no-wrap"
-                  :title="decodeURIComponent(jenkinsUrl)"
-                >{{ decodeURIComponent(jenkinsUrl) }}</span>
-              </a>
-            </h4>
+          <div class="ml-5">
+            <span
+              :title="jenkins.name"
+              class="card-title"
+            >
+              {{ jenkins.name }}
+            </span>
+            <br style="height: 10px;">
+            <a
+              class="card-title-url"
+              target="_blank"
+              :href="jenkinsUrl"
+            >
+              <span
+                class="no-wrap"
+                :title="decodeURIComponent(jenkinsUrl)"
+              >{{ decodeURIComponent(jenkinsUrl) }}</span>
+            </a>
+          </div>
+          <v-spacer></v-spacer>
+          <div v-show="jenkins.status!=='ok'">
+            <v-btn
+              depressed
+              small
+              :href="jenkinsUrl"
+              :title="jenkins.error"
+              target="_blank"
+              color="error"
+            >
+              <span v-if="jenkins.status=='cctray'">CCtray Error</span>
+              <span v-else>ERROR</span>
+            </v-btn>
+          </div>
+          <div class="ml-2">
+            <v-btn
+              icon
+              title="Remove monitoring for this task"
+              x-small
+              color="grey"
+              @click="removeJenkins(jenkinsUrl)"
+            >
+              <v-icon>mdi-close-circle-outline</v-icon>
+            </v-btn>
           </div>
         </v-card-title>
         <v-data-table
+          v-show="jenkins.hasOwnProperty('jobs')"
           :headers="headers"
           :items="toArray(jenkins.jobs)"
           :search="search"
+          dense
+          hide-default-footer
+          disable-pagination
         >
-          <template
-            v-if="true"
-            v-slot:body="{ items }"
-          >
-            <tbody>
-              <tr
-                v-for="item in items"
-                :key="item.name"
-              >
-                <td>{{ item.name }}</td>
-                <td v-html="getStyledTime(item.lastBuildTimestamp)"></td>
-                <td>{{ item.status }}</td>
-              </tr>
-            </tbody>
+          <template v-slot:item.name="{ item }">
+            <a
+              :href="item.jobUrl"
+              target="_blank"
+              class="monitor-table-job-name"
+            >{{ item.name }}</a>
+          </template>
+          <template v-slot:item.lastBuildTime="{ item }">
+            <span v-html="item.lastBuildTime "></span>
+          </template>
+          <template v-slot:item.status="{ item }">
+            <v-chip
+              small
+              text-color="white"
+              label
+              pill
+              :color="getResultColor(item.color)"
+              class="monitor-table-result-chip"
+            >
+              <span class="monitor-table-result-chip-text">{{ item.status }}</span>
+            </v-chip>
           </template>
         </v-data-table>
       </v-card>
@@ -91,6 +135,7 @@ export default class Monitor extends Vue {
     showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
     filterLabel: browser.i18n.getMessage('filterLabel'),
   }
+  isFormValid = false
   inputUrlValue = ''
   btnAddDisabled = true
   showDisabledJobs = true
@@ -104,10 +149,17 @@ export default class Monitor extends Vue {
 
   search = ''
   headers = [
-    { text: 'Job Name', align: 'start' },
-    { text: 'Last Build Time' },
-    { text: 'Result' },
+    { text: 'Job Name', align: 'start', value: 'name' },
+    { text: 'Last Build Time', align: 'center', value: 'lastBuildTime' },
+    { text: 'Result', align: 'center', value: 'status' },
   ]
+
+  get form() {
+    return this.$refs.form as Vue & {
+      validate: () => boolean
+      resetValidation: () => void
+    }
+  }
 
   @Watch('showDisabledJobs')
   showDisabledJobsChanged(newVal: boolean) {
@@ -128,9 +180,25 @@ export default class Monitor extends Vue {
     StorageService.addStorageListener(this.jobStatusChange)
   }
 
+  required() {
+    return (v: string) => (v && v.length > 0) || 'URL cannot be empty.'
+  }
+
+  isValidURL() {
+    const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+    const regex = new RegExp(expression)
+    return (v: string) => {
+      if (!v || v.length === 0) {
+        return true
+      } else {
+        return (regex.test(v)) || 'URL is invalid.'
+      }
+    }
+  }
+
   toArray(jobStatus: JobStatus|undefined) {
     const jobArray: DisplayedJobDetail[] = []
-    console.log('jobStatus type', typeof jobStatus)
+    // console.log('jobStatus type', typeof jobStatus)
     if (jobStatus === undefined) {
       return jobArray
     }
@@ -139,11 +207,24 @@ export default class Monitor extends Vue {
         const jobDetail = jobStatus[jobUrl]
         jobArray.push({
           jobUrl,
+          lastBuildTime: this.getStyledTime(jobDetail.lastBuildTimestamp),
           ...jobDetail
         })
       }
     }
     return jobArray
+  }
+
+  getResultColor(jobColor: string) {
+    switch (jobColor) {
+      case 'blue': return 'success'
+      case 'red': return 'error'
+      case 'notbuilt': return 'grey'
+      case 'yellow': return 'warning'
+      case 'aborted': return 'brown'
+      case 'disabled': return 'blue-grey'
+      default: return 'blue'
+    }
   }
 
   /**
@@ -219,6 +300,10 @@ export default class Monitor extends Vue {
    * 添加新 Jenkins URL
    */
   addJenkinsUrl() {
+    // 先验证输入
+    if (!this.inputUrlValue || !this.isFormValid) {
+      return
+    }
     let url = this.inputUrlValue
     url = url.charAt(url.length - 1) === '/' ? url : url + '/'
     console.log('url', url)
@@ -235,20 +320,6 @@ export default class Monitor extends Vue {
       this.btnAddDisabled = true
     }
   }
-
-  // /**
-  //  * 验证表单
-  //  */
-  // validateForm() {
-  //   const isFormInvalid = !this.$refs.formUrl.checkValidity();
-  //   const isUrlInvalid = !this.$refs.inputUrl.validity.typeMismatch;
-  //
-  //   this.btnAddDisabled = isFormInvalid || this.inputUrlValue === '';
-  //
-  //   this.$refs.formUrl.classList.toggle('has-error', isFormInvalid && this.inputUrlValue);
-  //   this.$refs.msgError.classList.toggle('hidden', isUrlInvalid);
-  //   this.$refs.msgError.innerText = this.$refs.inputUrl.validationMessage;
-  // }
 
   removeJenkins(jenkinsUrl: string) {
     StorageService.removeJenkinsUrls(jenkinsUrl).then(() => {
@@ -288,3 +359,33 @@ export default class Monitor extends Vue {
 }
 
 </script>
+
+<style lang="scss" scoped>
+.card {
+  .card-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-title-url {
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .monitor-table-job-name {
+    text-decoration-line: none;
+  }
+
+  .monitor-table-result-chip {
+    .monitor-table-result-chip-text {
+      width: 46px;
+      text-align: center;
+      justify-content: center;
+    }
+  }
+}
+</style>
