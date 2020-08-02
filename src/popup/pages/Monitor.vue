@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="monitor-wrapper">
     <!-- 添加URL的表单 -->
     <v-form
       ref="form"
@@ -82,21 +82,30 @@
           v-show="jenkins.hasOwnProperty('jobs')"
           :headers="headers"
           :items="toArray(jenkins.jobs)"
+          :item-class="getRowClass"
           :search="search"
           dense
           hide-default-footer
           disable-pagination
         >
+          <!-- name -->
           <template v-slot:item.name="{ item }">
             <a
               :href="item.jobUrl"
               target="_blank"
-              class="monitor-table-job-name"
+              :class="['monitor-table-job-name', {'building':item.building}]"
             >{{ item.name }}</a>
           </template>
+
+          <!-- lastBuildTime -->
           <template v-slot:item.lastBuildTime="{ item }">
-            <span v-html="item.lastBuildTime "></span>
+            <span
+              :class="[ {'building':item.building}]"
+              v-html="item.lastBuildTime"
+            ></span>
           </template>
+
+          <!-- status -->
           <template v-slot:item.status="{ item }">
             <v-chip
               small
@@ -104,13 +113,36 @@
               label
               pill
               :color="getResultColor(item.color)"
-              class="monitor-table-result-chip"
+              :class="['monitor-table-result-chip', {'building':item.building} ]"
             >
               <span class="monitor-table-result-chip-text">{{ item.status }}</span>
             </v-chip>
           </template>
         </v-data-table>
       </v-card>
+    </div>
+
+    <!--底部设置-->
+    <div v-show="Object.keys(data).length>0">
+      <v-container fluid>
+        <v-row>
+          <!--是否显示禁用的Job-->
+          <v-checkbox
+            v-model="showDisabledJobs"
+            :label="strings.showDisabledJobs"
+            class="pt-0 mt-1 bottom-show-disabled"
+          ></v-checkbox>
+
+          <!--过滤Job-->
+          <v-select
+            v-model="filteringResult"
+            :items="filteringResults"
+            :label="strings.filterLabel"
+            dense
+            class="mt-1 ml-10 bottom-filter"
+          ></v-select>
+        </v-row>
+      </v-container>
     </div>
   </div>
 </template>
@@ -120,6 +152,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage.ts'
 import { Tools } from '@/libs/tools.ts'
 import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
+import { Options } from '../../models/option'
 
 @Component({
   name: 'Monitor'
@@ -138,7 +171,6 @@ export default class Monitor extends Vue {
   }
   isFormValid = false
   inputUrlValue = ''
-  btnAddDisabled = true
   showDisabledJobs = true
   jenkinsData: { jenkinsUrls: string[]; jobStatus: JobRoot } = {
     jenkinsUrls: [],
@@ -151,8 +183,8 @@ export default class Monitor extends Vue {
   search = ''
   headers = [
     { text: 'Job Name', align: 'start', value: 'name' },
-    { text: 'Last Build Time', align: 'center', value: 'lastBuildTime' },
-    { text: 'Result', align: 'center', value: 'status' },
+    { text: 'Last Build Time', align: 'center', value: 'lastBuildTime', width: '24%' },
+    { text: 'Result', align: 'center', value: 'status', width: '12%' },
   ]
 
   get form() {
@@ -164,7 +196,8 @@ export default class Monitor extends Vue {
 
   @Watch('showDisabledJobs')
   showDisabledJobsChanged(newVal: boolean) {
-    StorageService.getOptions().then((options: any) => {
+    StorageService.getOptions().then((options: Options) => {
+      // console.log('showDisabledJobsChanged', options)
       options.showDisabledJobs = newVal
       StorageService.saveOptions(options)
     })
@@ -198,8 +231,8 @@ export default class Monitor extends Vue {
   }
 
   toArray(jobStatus: JobStatus|undefined) {
+    console.log('toArray', 'jobStatus type', typeof jobStatus)
     const jobArray: DisplayedJobDetail[] = []
-    // console.log('jobStatus type', typeof jobStatus)
     if (jobStatus === undefined) {
       return jobArray
     }
@@ -228,6 +261,18 @@ export default class Monitor extends Vue {
     }
   }
 
+  getRowClass(item: DisplayedJobDetail) {
+    if (!this.showDisabledJobs && item.color === 'disabled') {
+      return 'gone-row'
+    } else if (item.color === 'disabled') {
+      return 'disabled-row'
+    } else if (item.building) {
+      return 'building-row'
+    } else {
+      return ''
+    }
+  }
+
   /**
    * 初始化页面
    */
@@ -247,9 +292,11 @@ export default class Monitor extends Vue {
   }
 
   jobStatusChange(changes: any) {
+    console.log('jobStatusChange1', changes)
     delete changes[StorageService.keyForJenkinsUrl]
     delete changes[StorageService.keyForOptions]
     delete changes[StorageService.keyForNodes]
+    console.log('jobStatusChange2', changes)
     if (Object.getOwnPropertyNames(changes).length > 0) {
       // Job Status 有变动
       // 刷新页面
@@ -258,7 +305,7 @@ export default class Monitor extends Vue {
   }
 
   getAllJobStatus() {
-    StorageService.getOptions().then((options: any) => {
+    StorageService.getOptions().then((options: Options) => {
       if (options.showDisabledJobs === undefined) {
         this.showDisabledJobs = true
       } else {
@@ -314,11 +361,11 @@ export default class Monitor extends Vue {
       StorageService.saveJenkinsUrls(newUrls).then(() => {
         this.jenkinsData.jenkinsUrls = newUrls
         this.inputUrlValue = ''
-        this.btnAddDisabled = true
+        this.form.resetValidation()
       })
     } else {
       this.inputUrlValue = ''
-      this.btnAddDisabled = true
+      this.form.resetValidation()
     }
   }
 
@@ -361,40 +408,86 @@ export default class Monitor extends Vue {
 
 </script>
 
-<style lang="scss" scoped>
-.card {
-  .card-title-job {
-    width: 460px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+<style lang="scss">
+#monitor-wrapper {
+  .card {
+    .card-title-job {
+      width: 460px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
-    .card-title-job-name {
-      font-size: 18px;
-      font-weight: 500;
-      color: #333;
+      .card-title-job-name {
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .card-title-job-url {
+        font-size: 14px;
+        text-decoration: none;
+      }
     }
 
-    .card-title-job-url {
-      font-size: 14px;
-      text-decoration: none;
+    .card-title-err-btn {
+      width: 70px;
+    }
+
+    .monitor-table-job-name {
+      text-decoration-line: none;
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+
+    .monitor-table-result-chip {
+      .monitor-table-result-chip-text {
+        width: 46px;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+      padding: 0 10px;
+    }
+    .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+      padding: 0 10px;
+    }
+
+    .gone-row {
+      display: none;
+    }
+
+    .building-row {
+      background-color: powderblue;
+    }
+
+    .disabled-row {
+      background-color: lightgray;
+    }
+
+    .building {
+      animation-name: building;
+      animation-duration: 1.4s;
+      animation-timing-function: ease-out;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+      animation-fill-mode: none;
+      animation-play-state: running;
+    }
+
+    @keyframes building {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.2;
+      }
     }
   }
 
-  .card-title-err-btn {
-    width: 70px;
-  }
-
-  .monitor-table-job-name {
-    text-decoration-line: none;
-  }
-
-  .monitor-table-result-chip {
-    .monitor-table-result-chip-text {
-      width: 46px;
-      text-align: center;
-      justify-content: center;
-    }
+  .bottom-filter {
+    max-width: 130px;
   }
 }
 </style>
