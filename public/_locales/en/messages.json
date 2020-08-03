@@ -220,6 +220,12 @@
   "filterLabel": {
     "message": "Filter: "
   },
+  "urlCannotEmpty": {
+    "message": "URL cannot be empty."
+  },
+  "urlInvalid": {
+    "message": "URL is invalid."
+  },
   "content_parametersReadFailed": {
     "message": "Parameters read failed!"
   },

@@ -220,6 +220,12 @@
   "filterLabel": {
     "message": "过滤："
   },
+  "urlCannotEmpty": {
+    "message": "URL不能为空。"
+  },
+  "urlInvalid": {
+    "message": "URL格式不正确。"
+  },
   "content_parametersReadFailed": {
     "message": "读取参数失败！"
   },

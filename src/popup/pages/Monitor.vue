@@ -81,7 +81,7 @@
         <v-data-table
           v-show="jenkins.hasOwnProperty('jobs')"
           :headers="headers"
-          :items="toArray(jenkins.jobs)"
+          :items="jenkins.jobs"
           :item-class="getRowClass"
           :search="search"
           dense
@@ -101,7 +101,7 @@
           <template v-slot:item.lastBuildTime="{ item }">
             <span
               :class="[ {'building':item.building}]"
-              v-html="item.lastBuildTime"
+              v-html="getStyledTime(item.lastBuildTimestamp)"
             ></span>
           </template>
 
@@ -152,6 +152,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage.ts'
 import { Tools } from '@/libs/tools.ts'
 import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
+import { SelectionOption } from '../../models/vuetify'
 import { Options } from '../../models/option'
 
 @Component({
@@ -168,6 +169,8 @@ export default class Monitor extends Vue {
     tools: browser.i18n.getMessage('tools'),
     showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
     filterLabel: browser.i18n.getMessage('filterLabel'),
+    urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
+    urlInvalid: browser.i18n.getMessage('urlInvalid'),
   }
   isFormValid = false
   inputUrlValue = ''
@@ -178,7 +181,7 @@ export default class Monitor extends Vue {
   }
   data: any = {}
   filteringResult = ''
-  filteringResults: any[] = []
+  filteringResults: SelectionOption[] = []
 
   search = ''
   headers = [
@@ -215,7 +218,7 @@ export default class Monitor extends Vue {
   }
 
   required() {
-    return (v: string) => (v && v.length > 0) || 'URL cannot be empty.'
+    return (v: string) => (v && v.length > 0) || this.strings.urlCannotEmpty
   }
 
   isValidURL() {
@@ -225,28 +228,9 @@ export default class Monitor extends Vue {
       if (!v || v.length === 0) {
         return true
       } else {
-        return (regex.test(v)) || 'URL is invalid.'
+        return (regex.test(v)) || this.strings.urlInvalid
       }
     }
-  }
-
-  toArray(jobStatus: JobStatus|undefined) {
-    console.log('toArray', 'jobStatus type', typeof jobStatus)
-    const jobArray: DisplayedJobDetail[] = []
-    if (jobStatus === undefined) {
-      return jobArray
-    }
-    for (const jobUrl of Object.keys(jobStatus)) {
-      if (jobStatus.hasOwnProperty(jobUrl)) {
-        const jobDetail = jobStatus[jobUrl]
-        jobArray.push({
-          jobUrl,
-          lastBuildTime: this.getStyledTime(jobDetail.lastBuildTimestamp),
-          ...jobDetail
-        })
-      }
-    }
-    return jobArray
   }
 
   getResultColor(jobColor: string) {
@@ -314,9 +298,9 @@ export default class Monitor extends Vue {
     })
     StorageService.getJenkinsUrls().then((result: string[]) => {
       this.jenkinsData.jenkinsUrls = result
-      console.log('result', result)
+      // console.log('result', result)
       StorageService.getJobStatus(result).then((jobResult: JobRoot) => {
-        console.log('jobResult', jobResult)
+        // console.log('jobResult', jobResult)
         this.jenkinsData.jobStatus = jobResult
         // 过滤数据
         this.filterData()
@@ -328,20 +312,30 @@ export default class Monitor extends Vue {
    * 过滤数据
    */
   filterData() {
-    // 通过序列化的方式实现对象深拷贝
-    const status = JSON.parse(JSON.stringify(this.jenkinsData.jobStatus))
+    const status: JobRoot = this.jenkinsData.jobStatus
     this.data = {}
-    Object.keys(status).forEach((v1) => {
-      this.data[v1] = status[v1]
-      if (status[v1].jobs === undefined || status[v1].jobs === null) {
+    Object.keys(status).forEach((setUrl: string) => {
+      this.data[setUrl] = {}
+      this.data[setUrl].name = status[setUrl].name
+      this.data[setUrl].status = status[setUrl].status
+      this.data[setUrl].error = status[setUrl].error
+
+      if (status[setUrl].jobs === undefined || status[setUrl].jobs === null) {
         return
       }
-      Object.keys(status[v1].jobs).forEach((v2) => {
-        if (this.filteringResult !== this.strings.noFilterValue && status[v1].jobs[v2].color !== this.filteringResult) {
-          delete this.data[v1].jobs[v2]
+      this.data[setUrl].jobs = []
+      const jobs = status[setUrl].jobs!
+      Object.keys(jobs).forEach((jobUrl: string) => {
+        const jobDetail = jobs[jobUrl]
+        if (this.filteringResult === this.strings.noFilterValue || jobDetail.color === this.filteringResult) {
+          this.data[setUrl].jobs.push({
+            jobUrl,
+            ...jobDetail
+          })
         }
       })
     })
+    // console.log('filterData', this.data)
   }
 
   /**
