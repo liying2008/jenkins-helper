@@ -379,25 +379,6 @@ export default class Monitor extends Vue {
     const arr = s.split(' ')
     return '<span style="color: #444">' + arr[0] + '</span> <span style="color: #888">' + arr[1] + '</span>'
   }
-
-  openOptions() {
-    if (browser.runtime.openOptionsPage) {
-      browser.runtime.openOptionsPage() // Chrome 42+, Firefox 48
-    } else {
-      browser.tabs.create({ 'url': browser.runtime.getURL('options.html') })
-    }
-  }
-
-  openJobList() {
-    browser.windows.create({
-      url: 'job_stats.html',
-      type: 'popup',
-      width: 1200,
-      height: 800,
-    }).then((window) => {
-      console.log('window', window)
-    })
-  }
 }
 
 </script>

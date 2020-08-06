@@ -12,11 +12,17 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon>
+        <v-btn
+          icon
+          @click="openJobList"
+        >
           <v-icon>mdi-view-list</v-icon>
         </v-btn>
 
-        <v-btn icon>
+        <v-btn
+          icon
+          @click="openOptions"
+        >
           <v-icon>mdi-cog</v-icon>
         </v-btn>
 
@@ -68,5 +74,25 @@ export default class Layout extends Vue {
     computer: browser.i18n.getMessage('computer'),
     tools: browser.i18n.getMessage('tools'),
   }
+
+  openOptions() {
+    if (browser.runtime.openOptionsPage) {
+      browser.runtime.openOptionsPage() // Chrome 42+, Firefox 48
+    } else {
+      browser.tabs.create({ 'url': browser.runtime.getURL('options.html') })
+    }
+  }
+
+  openJobList() {
+    browser.windows.create({
+      url: 'job_stats.html',
+      type: 'popup',
+      width: 1200,
+      height: 800,
+    }).then((window) => {
+      console.log('window', window)
+    })
+  }
+
 }
 </script>

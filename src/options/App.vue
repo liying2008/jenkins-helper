@@ -1,20 +1,16 @@
 <template>
-  <hello-world />
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { Vue, Component } from 'vue-property-decorator'
 
-export default Vue.extend({
-  name: 'App',
-  components: { HelloWorld }
-})
-</script>
-
-<style>
-html {
-  width: 400px;
-  height: 400px;
+@Component
+export default class App extends Vue {
+  mounted() {
+    console.log('lifecycle: ', 'App mounted!')
+  }
 }
-</style>
+</script>
