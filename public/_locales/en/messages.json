@@ -36,7 +36,7 @@
     "message": "Enter the Jenkins URLs, one per line, for example: http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
-    "message": "Tips: Type <b>jk</b> in the omnibox, press the space key and enter intelligent search mode. Enter the job name to quickly match the corresponding Jenkins Job link."
+    "message": "Tips: Type `jk` in the omnibox, press the space key and enter intelligent search mode. Enter the job name to quickly match the corresponding Jenkins Job link."
   },
   "jobStatsTitle": {
     "message": "Job Statistics Settings"
