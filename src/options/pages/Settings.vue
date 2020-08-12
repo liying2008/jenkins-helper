@@ -1,10 +1,9 @@
 <template>
   <div id="options-settings-wrapper">
     <v-container>
-      <v-card
+      <div
         class="mx-auto"
-        flat
-        max-width="900"
+        style="max-width: 900px;"
       >
         <v-row>
           <v-col
@@ -21,7 +20,7 @@
             </v-btn>
           </v-col>
         </v-row>
-      </v-card>
+      </div>
       <div v-show="!isJsonView">
         <!--全局设置-->
         <v-card
@@ -41,6 +40,7 @@
               <v-row
                 v-for="(token, index) in jenkinsTokens"
                 :key="index"
+                class="mt-2"
                 dense
               >
                 <v-col cols="4">
@@ -74,7 +74,6 @@
                     outlined
                     type="password"
                     class="remove-text-field-mb"
-                    placeholder="Token or password"
                     dense
                   ></v-text-field>
                 </v-col>

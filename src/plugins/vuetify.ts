@@ -10,6 +10,7 @@ const vuetify = new Vuetify({
     iconfont: 'mdi',
   },
   theme: {
+    dark: false,
     themes: {
       light: {
         primary: colors.teal.base,
@@ -21,13 +22,13 @@ const vuetify = new Vuetify({
         info: colors.blue.darken2,
       },
       dark: {
-        primary: colors.teal.base,
-        secondary: colors.teal.lighten4,
-        accent: colors.teal.accent1,
-        success: colors.green.darken2,
-        error: colors.red.darken2,
-        warning: colors.orange.darken2,
-        info: colors.blue.darken2,
+        primary: colors.teal.darken3,
+        secondary: colors.teal.lighten2,
+        accent: colors.teal.accent3,
+        success: colors.green.darken3,
+        error: colors.red.darken3,
+        warning: colors.orange.darken3,
+        info: colors.blue.darken3,
       }
     }
   }
