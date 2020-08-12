@@ -63,13 +63,13 @@ export class StorageService {
     browser.storage.onChanged.addListener(listener)
   }
 
-  static async getOptions() {
+  static async getOptions(): Promise<Options> {
     const result = await browser.storage.local.get('options')
     const options = result['options'] || {
       defaultTab: 'monitor',
       jenkinsTokens: [],
-      refreshTime: 60,
-      nodeRefreshTime: 2,
+      refreshTime: '60',
+      nodeRefreshTime: '2',
       showNotificationOption: 'all',
       omniboxJenkinsUrl: '',
       nodeParam: '',

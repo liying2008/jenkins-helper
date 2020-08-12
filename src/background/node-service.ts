@@ -10,11 +10,11 @@ export class NodeService {
     NodeService.queryNodeStatus()
     StorageService.addStorageListener(NodeService.storageChange)
     StorageService.getOptions().then((options: Options) => {
-      NodeService.refreshNodeStatus(options.nodeRefreshTime || 2)
+      NodeService.refreshNodeStatus(options.nodeRefreshTime || '2')
     })
   }
 
-  private static refreshNodeStatus(refreshTime: string | number) {
+  private static refreshNodeStatus(refreshTime: string) {
     if (NodeService.lastInterval !== undefined) {
       window.clearInterval(NodeService.lastInterval)
     }

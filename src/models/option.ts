@@ -8,15 +8,15 @@ export interface Options {
   jobStatsJenkinsUrl: string
   nodeParam: string
   omniboxJenkinsUrl: string
-  refreshTime: string | number
-  nodeRefreshTime: string | number
+  refreshTime: string
+  nodeRefreshTime: string
   showNotificationOption: string
   showDisabledJobs: boolean
   enableParamsStashAndRecover: boolean
 }
 
 export interface JenkinsToken {
-  token: string
   url: string
-  username: string
+  username?: string
+  token?: string
 }

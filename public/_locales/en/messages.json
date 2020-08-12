@@ -14,6 +14,12 @@
   "settings": {
     "message": "Settings"
   },
+  "editing": {
+    "message": "Editing"
+  },
+  "close": {
+    "message": "Close"
+  },
   "globalOptionTitle": {
     "message": "Global Settings"
   },

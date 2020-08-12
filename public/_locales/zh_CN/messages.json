@@ -14,6 +14,12 @@
   "settings": {
     "message": "设置"
   },
+  "editing": {
+    "message": "编辑"
+  },
+  "close": {
+    "message": "关闭"
+  },
   "globalOptionTitle": {
     "message": "全局设置"
   },

@@ -42,7 +42,7 @@ export class JobService {
       JobService.jenkinsUrls = result
       StorageService.getOptions().then((options: Options) => {
         JobService.showNotificationOption = options.showNotificationOption
-        JobService.refreshJobStatus(options.refreshTime || 60)
+        JobService.refreshJobStatus(options.refreshTime || '60')
         // TODO 仅测试使用
         // JobService.refreshJobStatus(5)
       })
@@ -56,7 +56,7 @@ export class JobService {
     })
   }
 
-  private static refreshJobStatus(refreshTime: number | string) {
+  private static refreshJobStatus(refreshTime: string) {
     if (JobService.lastInterval !== undefined) {
       window.clearInterval(JobService.lastInterval)
     }
