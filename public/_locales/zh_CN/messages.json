@@ -268,6 +268,9 @@
   "exportSettings": {
     "message": "导出设置"
   },
+  "exportSettingsTip": {
+    "message": "提示：导出的配置文件是明文保存的，对安全性有要求的请自行加密。"
+  },
   "settingsImported": {
     "message": "设置已导入。"
   },

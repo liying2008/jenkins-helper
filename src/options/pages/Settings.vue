@@ -277,12 +277,8 @@ import { Options, JenkinsToken } from '@/models/option'
 @Component
 export default class Settings extends Vue {
   strings = {
-    extName: browser.i18n.getMessage('extName'),
-    settings: browser.i18n.getMessage('settings'),
     editing: browser.i18n.getMessage('editing'),
     close: browser.i18n.getMessage('close'),
-    importAndExportSettings: browser.i18n.getMessage('importAndExportSettings'),
-    about: browser.i18n.getMessage('about'),
     jsonParsingFailed: browser.i18n.getMessage('jsonParsingFailed'),
     monitorOptionTitle: browser.i18n.getMessage('monitorOptionTitle'),
     showNotification: browser.i18n.getMessage('showNotification'),
