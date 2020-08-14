@@ -130,7 +130,7 @@
           <v-checkbox
             v-model="showDisabledJobs"
             :label="strings.showDisabledJobs"
-            class="pt-0 mt-1 bottom-show-disabled"
+            class="bottom-show-disabled"
           ></v-checkbox>
 
           <!--过滤Job-->
@@ -139,7 +139,8 @@
             :items="filteringResults"
             :label="strings.filterLabel"
             dense
-            class="mt-1 ml-10 bottom-filter"
+            outlined
+            class="ml-12 pt-3 bottom-filter"
           ></v-select>
         </v-row>
       </v-container>
@@ -456,7 +457,7 @@ export default class Monitor extends Vue {
         opacity: 1;
       }
       100% {
-        opacity: 0.2;
+        opacity: 0.3;
       }
     }
   }

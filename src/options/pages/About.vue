@@ -1,6 +1,16 @@
 <template>
   <div id="options-about-wrapper">
-    About
+    <v-container>
+      <div
+        class="mx-auto"
+        style="max-width: 900px;"
+      >
+        <v-row>
+          <v-col cols="6">
+          </v-col>
+        </v-row>
+      </div>
+    </v-container>
   </div>
 </template>
 

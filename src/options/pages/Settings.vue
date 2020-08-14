@@ -473,13 +473,18 @@ export default class Settings extends Vue {
 
   saveOptions() {
     console.log('saveOptions')
-    const option = this.dataToOptions()
-    StorageService.saveOptions(option).then(() => {
-      this.snackbar = {
-        show: true,
-        message: this.strings.optionsSaved,
-        color: MessageColor.Success,
-      }
+    StorageService.getOptions().then((result: Options) => {
+      const option = this.dataToOptions()
+      // 使用最新的 showDisabledJobs 设置
+      option.showDisabledJobs = result.showDisabledJobs
+      // console.log('option', option)
+      StorageService.saveOptions(option).then(() => {
+        this.snackbar = {
+          show: true,
+          message: this.strings.optionsSaved,
+          color: MessageColor.Success,
+        }
+      })
     })
   }
 
