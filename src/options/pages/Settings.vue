@@ -250,16 +250,16 @@
       </div>
       <div class="my-6" />
       <v-snackbar
-        v-model="snackbar"
-        color="success"
+        v-model="snackbar.show"
+        :color="snackbar.color"
       >
-        {{ message }}
+        {{ snackbar.message }}
 
         <template v-slot:action="{ attrs }">
           <v-btn
             text
             v-bind="attrs"
-            @click="snackbar = false"
+            @click="snackbar.show = false"
           >
             {{ strings.close }}
           </v-btn>
@@ -273,6 +273,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken } from '@/models/option'
+import { MessageColor } from '@/models/message'
 
 @Component
 export default class Settings extends Vue {
@@ -354,8 +355,11 @@ export default class Settings extends Vue {
     nodeMinRefreshTime: 1,
     nodeMaxRefreshTime: 6,
   }
-  snackbar = false
-  message = ''
+  snackbar = {
+    show: false,
+    message: '',
+    color: MessageColor.Success,
+  }
 
   get refreshTimeTip() {
     const tip = browser.i18n.getMessage('refreshTimeTip_1') + this.refreshTime +
@@ -471,8 +475,11 @@ export default class Settings extends Vue {
     console.log('saveOptions')
     const option = this.dataToOptions()
     StorageService.saveOptions(option).then(() => {
-      this.message = this.strings.optionsSaved
-      this.snackbar = true
+      this.snackbar = {
+        show: true,
+        message: this.strings.optionsSaved,
+        color: MessageColor.Success,
+      }
     })
   }
 
