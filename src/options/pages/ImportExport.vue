@@ -2,7 +2,7 @@
   <div id="options-import-export-wrapper">
     <v-container>
       <div
-        class="mx-auto"
+        class="mx-auto mt-2"
         style="max-width: 900px;"
       >
         <v-row>
