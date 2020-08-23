@@ -9,7 +9,7 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Layout',
     component: Layout,
-    redirect: '/monitor',
+    // redirect: '/monitor',
     children: [
       {
         path: '/monitor',
@@ -27,7 +27,7 @@ const routes: Array<RouteConfig> = [
         component: () => import('../pages/Computer.vue')
       },
       {
-        path: '/jenkins-tools',
+        path: '/tools',
         name: 'JenkinsTools',
         component: () => import('../pages/JenkinsTools.vue')
       }

@@ -28,6 +28,7 @@
 
         <template v-slot:extension>
           <v-tabs
+            v-model="activeTab"
             show-arrows
             align-with-title
           >
@@ -42,7 +43,7 @@
             <v-tab to="computer">
               {{ strings.computer }}
             </v-tab>
-            <v-tab to="jenkins-tools">
+            <v-tab to="tools">
               {{ strings.tools }}
             </v-tab>
           </v-tabs>
@@ -62,6 +63,8 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { StorageService } from '@/libs/storage'
+import { Options } from '@/models/option'
 
 @Component({
   name: 'Layout'
@@ -73,6 +76,22 @@ export default class Layout extends Vue {
     params: browser.i18n.getMessage('params'),
     computer: browser.i18n.getMessage('computer'),
     tools: browser.i18n.getMessage('tools'),
+  }
+
+  defaultTab = 'monitor'
+  activeTab = this.defaultTab
+
+  created() {
+    StorageService.getOptions().then((option: Options) => {
+      // 切换页面
+      if (option.defaultTab) {
+        this.activeTab = option.defaultTab
+        this.$router.replace(this.activeTab)
+      } else {
+        this.activeTab = this.defaultTab
+        this.$router.replace(this.defaultTab)
+      }
+    })
   }
 
   openOptions() {
