@@ -89,7 +89,7 @@
           disable-pagination
         >
           <!-- name -->
-          <template v-slot:item.name="{ item }">
+          <template v-slot:[`item.name`]="{ item }">
             <a
               :href="item.jobUrl"
               target="_blank"
@@ -98,7 +98,7 @@
           </template>
 
           <!-- lastBuildTime -->
-          <template v-slot:item.lastBuildTime="{ item }">
+          <template v-slot:[`item.lastBuildTime`]="{ item }">
             <span
               :class="[ {'building':item.building}]"
               v-html="getStyledTime(item.lastBuildTimestamp)"
@@ -106,7 +106,7 @@
           </template>
 
           <!-- status -->
-          <template v-slot:item.status="{ item }">
+          <template v-slot:[`item.status`]="{ item }">
             <v-chip
               small
               text-color="white"

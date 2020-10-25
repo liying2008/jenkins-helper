@@ -26,6 +26,7 @@ module.exports = {
     'vue/no-unused-components': 'warn',
     'vue/no-unused-vars': 'warn',
     'vue/html-self-closing': 'off',
+    'vue/no-v-html': 'off',
     'no-trailing-spaces': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-this-alias': 'warn',

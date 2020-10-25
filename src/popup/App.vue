@@ -29,5 +29,8 @@ export default class App extends Vue {
     letter-spacing: inherit;
     text-transform: initial;
   }
+  .v-btn-toggle > .v-btn.v-btn--active {
+    opacity: inherit;
+  }
 }
 </style>

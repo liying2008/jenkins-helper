@@ -34,16 +34,16 @@
           >
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
-            <v-tab to="monitor">
+            <v-tab to="/monitor">
               {{ strings.monitor }}
             </v-tab>
-            <v-tab to="params">
+            <v-tab to="/params">
               {{ strings.params }}
             </v-tab>
-            <v-tab to="computer">
+            <v-tab to="/computer">
               {{ strings.computer }}
             </v-tab>
-            <v-tab to="tools">
+            <v-tab to="/tools">
               {{ strings.tools }}
             </v-tab>
           </v-tabs>

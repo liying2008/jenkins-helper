@@ -17,7 +17,7 @@
         <!-- 设置 -->
         <v-list-item
           link
-          to="settings"
+          to="/settings"
         >
           <v-list-item-icon>
             <v-icon>mdi-cog-outline</v-icon>
@@ -27,7 +27,7 @@
         <!-- 导入/导出设置 -->
         <v-list-item
           link
-          to="import-export"
+          to="/import-export"
         >
           <v-list-item-icon>
             <v-icon>mdi-file-import-outline</v-icon>
@@ -37,7 +37,7 @@
         <!-- 关于 -->
         <v-list-item
           link
-          to="about"
+          to="/about"
         >
           <v-list-item-icon>
             <v-icon>mdi-information-outline</v-icon>
