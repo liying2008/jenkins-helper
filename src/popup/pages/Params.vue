@@ -2,6 +2,7 @@
   <div id="params-wrapper">
     <v-card
       v-show="status === 2"
+      id="info-block"
       class="mx-auto my-3"
     >
       <v-card-text>
@@ -36,7 +37,7 @@
               label
               pill
               color="light-blue"
-              class="building"
+              class="dense-chip building"
             >
               <span>{{ strings.building }}</span>
             </v-chip>
@@ -48,6 +49,7 @@
               label
               pill
               :color="getResultColor(result)"
+              class="dense-chip"
             >
               <span>{{ result }}</span>
             </v-chip>
@@ -120,7 +122,10 @@
     </v-card>
 
     <!-- 参数列表 -->
-    <div v-show="status === 2 && parameters.length > 0">
+    <div
+      v-show="status === 2 && parameters.length > 0"
+      id="params-table"
+    >
       <div>{{ strings.paramsList }}</div>
       <v-card class="my-3">
         <v-data-table
@@ -130,7 +135,13 @@
           :items-per-page="5"
           hide-default-footer
           disable-pagination
-        ></v-data-table>
+        >
+          <template v-slot:[`item.value`]="{ item }">
+            <div :class="[{'hidden-param':item.hidden}]">
+              {{ item.value }}
+            </div>
+          </template>
+        </v-data-table>
       </v-card>
     </div>
 
@@ -499,31 +510,45 @@ export default class Params extends Vue {
     opacity: 0;
   }
 
-  .info-col {
-    padding: 6px 12px;
-    line-height: 1rem;
+  #info-block {
+    .info-col {
+      padding: 6px 12px;
+      line-height: 1rem;
+      color: #333333;
 
-    .building {
-      animation-name: building;
-      animation-duration: 1.4s;
-      animation-timing-function: ease-out;
-      animation-direction: alternate;
-      animation-iteration-count: infinite;
-      animation-fill-mode: none;
-      animation-play-state: running;
-    }
-
-    @keyframes building {
-      0% {
-        opacity: 1;
+      .dense-chip {
+        height: inherit;
       }
-      100% {
-        opacity: 0.3;
+
+      .building {
+        animation-name: building;
+        animation-duration: 1.4s;
+        animation-timing-function: ease-out;
+        animation-direction: alternate;
+        animation-iteration-count: infinite;
+        animation-fill-mode: none;
+        animation-play-state: running;
+      }
+
+      @keyframes building {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.3;
+        }
+      }
+
+      .info-icon-btn {
+        align-items: baseline;
       }
     }
-
-    .info-icon-btn {
-      align-items: baseline;
+  }
+  #params-table {
+    .hidden-param {
+      font-size: 0.8em;
+      color: #8c8c8c;
+      font-style: italic;
     }
   }
 }
