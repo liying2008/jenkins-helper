@@ -15,6 +15,7 @@
             type="text"
             :rules="[required(), isValidURL()]"
             @click:append-outer="addJenkinsUrl"
+            @keyup.enter.prevent="addJenkinsUrl"
           ></v-text-field>
         </v-col>
       </v-row>

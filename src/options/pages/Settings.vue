@@ -29,12 +29,13 @@
         >
           <v-container>
             <v-card-title>{{ strings.globalOptionTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <v-select
                 v-model="defaultTab"
                 :label="strings.defaultTab"
                 :items="defaultTabs"
                 outlined
+                dense
               ></v-select>
               <div>{{ strings.jenkinsToken }}</div>
               <v-row
@@ -104,13 +105,14 @@
         >
           <v-container>
             <v-card-title>{{ strings.omniboxOptionTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <v-textarea
                 v-model="omniboxJenkinsUrl"
                 outlined
                 :hint="strings.searchFromJenkinsTips"
                 persistent-hint
-                rows="4"
+                rows="1"
+                auto-grow
                 :placeholder="strings.searchFromJenkinsPlaceholder"
                 :label="strings.searchFromJenkins"
               ></v-textarea>
@@ -125,12 +127,13 @@
         >
           <v-container>
             <v-card-title>{{ strings.monitorOptionTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <v-select
                 v-model="showNotificationOption"
                 :label="strings.showNotification"
                 :items="showNotificationOptions"
                 outlined
+                dense
               ></v-select>
               <div>{{ strings.refreshTime }}</div>
               <v-slider
@@ -153,7 +156,7 @@
         >
           <v-container>
             <v-card-title>{{ strings.nodeOptionTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <div>{{ strings.nodeRefreshTime }}</div>
               <v-slider
                 v-model="nodeRefreshTime"
@@ -175,11 +178,12 @@
         >
           <v-container>
             <v-card-title>{{ strings.jobStatsTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <v-textarea
                 v-model="jobStatsJenkinsUrl"
                 outlined
-                rows="4"
+                rows="1"
+                auto-grow
                 :placeholder="strings.jobStatsJenkinsPlaceholder"
                 :label="strings.jobStatsTitleTip"
               ></v-textarea>
@@ -204,7 +208,7 @@
         >
           <v-container>
             <v-card-title>{{ strings.otherTitle }}</v-card-title>
-            <v-card-text class="my-4">
+            <v-card-text class="mt-4">
               <v-checkbox
                 v-model="enableParamsStashAndRecover"
                 :label="strings.enableParamsStashAndRecover"
