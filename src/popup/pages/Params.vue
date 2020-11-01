@@ -132,7 +132,6 @@
           dense
           :headers="headers"
           :items="parameters"
-          :items-per-page="5"
           hide-default-footer
           disable-pagination
         >

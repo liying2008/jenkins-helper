@@ -176,6 +176,9 @@
   "manageMonitoredNodes": {
     "message": "Nodes Management"
   },
+  "refresh": {
+    "message": "Refresh"
+  },
   "openManagerPage": {
     "message": "Open the management page"
   },

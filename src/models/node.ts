@@ -16,6 +16,7 @@ export interface MonitoredNodes {
 }
 
 export interface NodeDetail {
+  displayName: string
   nodeUrl: string
   workingDirectory: string
   remainingDiskSpace: string

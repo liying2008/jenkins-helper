@@ -176,6 +176,9 @@
   "manageMonitoredNodes": {
     "message": "管理监控节点"
   },
+  "refresh": {
+    "message": "刷新"
+  },
   "openManagerPage": {
     "message": "打开管理页面"
   },

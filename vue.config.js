@@ -20,11 +20,17 @@ module.exports = {
       entry: './src/options/main.ts',
       title: 'Options'
     },
-    standalone: {
+    computersManager: {
       template: 'public/browser-extension.html',
-      entry: './src/standalone/main.ts',
-      title: 'Standalone',
-      filename: 'index.html'
+      entry: './src/computers_manager/main.ts',
+      title: 'Jenkins Computer Monitor Manager',
+      filename: 'computers_manager.html'
+    },
+    jobStats: {
+      template: 'public/browser-extension.html',
+      entry: './src/job_stats/main.ts',
+      title: 'Jenkins Job Statistics',
+      filename: 'job_stats.html'
     }
   },
 

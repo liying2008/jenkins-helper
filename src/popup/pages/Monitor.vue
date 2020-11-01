@@ -4,6 +4,7 @@
     <v-form
       ref="form"
       v-model="isFormValid"
+      @submit.prevent="addJenkinsUrl"
     >
       <v-row>
         <v-col cols="12">
@@ -15,7 +16,6 @@
             type="text"
             :rules="[required(), isValidURL()]"
             @click:append-outer="addJenkinsUrl"
-            @keyup.enter.prevent="addJenkinsUrl"
           ></v-text-field>
         </v-col>
       </v-row>
