@@ -215,6 +215,9 @@
   "fetchNodesDataFailure": {
     "message": "Failed to fetch node data!"
   },
+  "diskSpaceThresholdInvalid": {
+    "message": "The disk space threshold is invalid!"
+  },
   "inputJenkinsUrl": {
     "message": "Please enter Jenkins URL"
   },

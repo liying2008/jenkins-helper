@@ -59,64 +59,93 @@
             :headers="headers"
             :items="nodes"
             :search="search"
+            :item-class="getRowClass"
             hide-default-footer
             disable-pagination
           >
             <!-- 名称 -->
             <template v-slot:[`item.displayName`]="{ item }">
-              <a
-                :href="item.nodeUrl"
-                target="_blank"
-              >{{ item.displayName }}</a>
+              <span :title="item.offline ? 'Offline' : ''">
+                <a
+                  :href="item.nodeUrl"
+                  target="_blank"
+                >{{ item.displayName }}</a>
+              </span>
             </template>
             <!-- 工作目录 -->
             <template v-slot:[`item.workingDirectory`]="{ item }">
-              <div>{{ item.workingDirectory }}</div>
+              <span :title="item.offline ? 'Offline' : ''">
+                {{ item.workingDirectory }}
+              </span>
             </template>
 
             <!-- 剩余磁盘空间 -->
             <template v-slot:[`item.remainingDiskSpace`]="{ item }">
-              <div>{{ item.remainingDiskSpace }}</div>
+              <span :title="item.offline ? 'Offline' : ''">
+                {{ item.remainingDiskSpace }}
+              </span>
             </template>
 
             <!-- 响应时间 -->
             <template v-slot:[`item.responseTime`]="{ item }">
-              <div>{{ item.responseTime }}</div>
+              <span :title="item.offline ? 'Offline' : ''">
+                {{ item.responseTime }}
+              </span>
             </template>
 
             <!-- 监控？ -->
             <template v-slot:[`item.monitoring`]="props">
-              <v-edit-dialog
-                large
-                :cancel-text="strings.cancel"
-                :save-text="strings.save"
-                :return-value.sync="props.item.monitoring"
-                @save="saveEditedItem(props.item)"
-              >
-                <v-simple-checkbox
-                  v-model="props.item.monitoring"
-                  disabled
-                  style="cursor: pointer;"
-                  @click="bubblingUp"
-                ></v-simple-checkbox>
-                <template v-slot:input>
-                  <v-checkbox
+              <span :title="props.item.offline ? 'Offline' : ''">
+                <v-edit-dialog
+                  large
+                  :cancel-text="strings.cancel"
+                  :save-text="strings.save"
+                  :return-value.sync="props.item.monitoring"
+                  @save="saveEditedItem(props.item)"
+                >
+                  <v-simple-checkbox
                     v-model="props.item.monitoring"
-                    :label="strings.enableMonitoringOrNot"
-                    autofocus
-                  ></v-checkbox>
-                  <v-text-field
-                    v-model="props.item.diskSpaceThreshold"
-                    :label="strings.diskSpaceThreshold"
-                    type="number"
-                    suffix="GB"
-                  ></v-text-field>
-                </template>
-              </v-edit-dialog>
+                    disabled
+                    style="cursor: pointer;"
+                    @click="bubblingUp"
+                  ></v-simple-checkbox>
+                  <template v-slot:input>
+                    <v-checkbox
+                      v-model="props.item.monitoring"
+                      :label="strings.enableMonitoringOrNot"
+                      autofocus
+                    ></v-checkbox>
+                    <v-text-field
+                      v-model="props.item.diskSpaceThreshold"
+                      :label="strings.diskSpaceThreshold"
+                      type="number"
+                      suffix="GB"
+                    ></v-text-field>
+                  </template>
+                </v-edit-dialog>
+              </span>
             </template>
           </v-data-table>
         </v-card>
       </div>
+
+      <!-- snackbar -->
+      <v-snackbar
+        v-model="snackbar.show"
+        :color="snackbar.color"
+      >
+        {{ snackbar.message }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            text
+            v-bind="attrs"
+            @click="snackbar.show = false"
+          >
+            {{ strings.close }}
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
   </v-app>
 </template>
@@ -124,6 +153,7 @@
 <script lang="ts">
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
+import { MessageColor } from '@/models/message'
 import { NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
@@ -131,9 +161,11 @@ import { DataTableHeader } from 'vuetify'
 @Component
 export default class App extends Vue {
   strings = {
+    close: browser.i18n.getMessage('close'),
     search: browser.i18n.getMessage('search'),
     cancel: browser.i18n.getMessage('cancel'),
     save: browser.i18n.getMessage('save'),
+    diskSpaceThresholdInvalid: browser.i18n.getMessage('diskSpaceThresholdInvalid'),
     enableMonitoringOrNot: browser.i18n.getMessage('enableMonitoringOrNot'),
     fetchNodesDataFailure: browser.i18n.getMessage('fetchNodesDataFailure'),
     diskSpaceThreshold: browser.i18n.getMessage('diskSpaceThreshold'),
@@ -160,6 +192,11 @@ export default class App extends Vue {
     { text: this.strings.responseTime, align: 'start', value: 'responseTime', filterable: false },
     { text: this.strings.isMonitoring, align: 'start', value: 'monitoring', filterable: false },
   ]
+  snackbar = {
+    show: false,
+    message: '',
+    color: MessageColor.Success,
+  }
 
   get form() {
     return this.$refs.form as Vue & {
@@ -184,6 +221,16 @@ export default class App extends Vue {
     }
   }
 
+  getRowClass(item: NodeDetail) {
+    let rowClass = ''
+    if (item.offline) {
+      rowClass += 'offline-row '
+    }
+    if (item.monitoring) {
+      rowClass += 'monitored-row '
+    }
+    return rowClass
+  }
 
   mounted() {
     this.getInitJenkinsUrl()
@@ -311,8 +358,12 @@ export default class App extends Vue {
     console.log(item)
     const displayName = item.displayName
     if (item.monitoring) {
-      if (!item.diskSpaceThreshold) {
-        alert('The disk space threshold is illegal!')
+      if (!item.diskSpaceThreshold || item.diskSpaceThreshold <= 0) {
+        this.snackbar = {
+          show: true,
+          message: this.strings.diskSpaceThresholdInvalid,
+          color: MessageColor.Error,
+        }
         this.queryJenkinsNodes(this.url)
         return
       }
@@ -351,5 +402,14 @@ export default class App extends Vue {
 </script>
 <style lang="scss">
 #computer-manager-wrapper {
+  #computers-table {
+    .offline-row {
+      background-color: lightgray;
+    }
+
+    .monitored-row {
+      background-color: #dff0d8;
+    }
+  }
 }
 </style>

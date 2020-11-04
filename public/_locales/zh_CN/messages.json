@@ -215,6 +215,9 @@
   "fetchNodesDataFailure": {
     "message": "获取节点数据失败！"
   },
+  "diskSpaceThresholdInvalid": {
+    "message": "磁盘空间告警阈值无效！"
+  },
   "inputJenkinsUrl": {
     "message": "请输入Jenkins URL"
   },
