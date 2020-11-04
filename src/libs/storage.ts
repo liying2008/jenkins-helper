@@ -84,7 +84,7 @@ export class StorageService {
     return browser.storage.local.set({ 'options': JSON.parse(JSON.stringify(options)) })
   }
 
-  static async set(object: any) {
+  static async set<T>(object: T) {
     return browser.storage.local.set(object)
   }
 

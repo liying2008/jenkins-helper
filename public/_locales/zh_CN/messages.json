@@ -20,6 +20,9 @@
   "close": {
     "message": "关闭"
   },
+  "search": {
+    "message": "搜索"
+  },
   "globalOptionTitle": {
     "message": "全局设置"
   },
@@ -189,7 +192,7 @@
     "message": "剩余磁盘空间"
   },
   "diskSpaceThreshold": {
-    "message": "告警阈值"
+    "message": "磁盘空间告警阈值"
   },
   "workingDirectory": {
     "message": "工作目录"
@@ -198,7 +201,16 @@
     "message": "响应时间"
   },
   "isMonitoring": {
-    "message": "监视？"
+    "message": "监控？"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "enableMonitoringOrNot": {
+    "message": "是否开启监控"
   },
   "fetchNodesDataFailure": {
     "message": "获取节点数据失败！"

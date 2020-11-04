@@ -43,10 +43,22 @@
         id="computers-table"
       >
         <v-card class="my-3">
+          <v-card-title>
+            All Nodes
+            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              :label="strings.search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-card-title>
           <v-data-table
             dense
             :headers="headers"
             :items="nodes"
+            :search="search"
             hide-default-footer
             disable-pagination
           >
@@ -72,12 +84,35 @@
               <div>{{ item.responseTime }}</div>
             </template>
 
-            <!-- 监视？ -->
-            <template v-slot:[`item.monitoring`]="{ item }">
-              <v-simple-checkbox
-                v-model="item.monitoring"
-                disabled
-              ></v-simple-checkbox>
+            <!-- 监控？ -->
+            <template v-slot:[`item.monitoring`]="props">
+              <v-edit-dialog
+                large
+                :cancel-text="strings.cancel"
+                :save-text="strings.save"
+                :return-value.sync="props.item.monitoring"
+                @save="saveEditedItem(props.item)"
+              >
+                <v-simple-checkbox
+                  v-model="props.item.monitoring"
+                  disabled
+                  style="cursor: pointer;"
+                  @click="bubblingUp"
+                ></v-simple-checkbox>
+                <template v-slot:input>
+                  <v-checkbox
+                    v-model="props.item.monitoring"
+                    :label="strings.enableMonitoringOrNot"
+                    autofocus
+                  ></v-checkbox>
+                  <v-text-field
+                    v-model="props.item.diskSpaceThreshold"
+                    :label="strings.diskSpaceThreshold"
+                    type="number"
+                    suffix="GB"
+                  ></v-text-field>
+                </template>
+              </v-edit-dialog>
             </template>
           </v-data-table>
         </v-card>
@@ -89,13 +124,19 @@
 <script lang="ts">
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
-import { MonitoredNodes, NodeDetail, Nodes } from '@/models/node'
+import { NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component } from 'vue-property-decorator'
+import { DataTableHeader } from 'vuetify'
 
 @Component
 export default class App extends Vue {
   strings = {
+    search: browser.i18n.getMessage('search'),
+    cancel: browser.i18n.getMessage('cancel'),
+    save: browser.i18n.getMessage('save'),
+    enableMonitoringOrNot: browser.i18n.getMessage('enableMonitoringOrNot'),
     fetchNodesDataFailure: browser.i18n.getMessage('fetchNodesDataFailure'),
+    diskSpaceThreshold: browser.i18n.getMessage('diskSpaceThreshold'),
     inputJenkinsUrl: browser.i18n.getMessage('inputJenkinsUrl'),
     inputDiskSpaceThreshold: browser.i18n.getMessage('inputDiskSpaceThreshold'),
     displayName: browser.i18n.getMessage('displayName'),
@@ -108,15 +149,16 @@ export default class App extends Vue {
   }
   isFormValid = true
   inputUrlValue = 'http://192.168.5.200:8080/jenkins/'
+  search = ''
   nodes: NodeDetail[] = []
   monitoredNodes: Nodes = {}
   url = ''
-  headers = [
+  headers: DataTableHeader[] = [
     { text: this.strings.displayName, align: 'start', value: 'displayName' },
     { text: this.strings.workingDirectory, align: 'start', value: 'workingDirectory' },
-    { text: this.strings.remainingDiskSpace, align: 'start', value: 'remainingDiskSpace' },
-    { text: this.strings.responseTime, align: 'start', value: 'responseTime' },
-    { text: this.strings.isMonitoring, align: 'start', value: 'monitoring' },
+    { text: this.strings.remainingDiskSpace, align: 'start', value: 'remainingDiskSpace', filterable: false },
+    { text: this.strings.responseTime, align: 'start', value: 'responseTime', filterable: false },
+    { text: this.strings.isMonitoring, align: 'start', value: 'monitoring', filterable: false },
   ]
 
   get form() {
@@ -258,47 +300,51 @@ export default class App extends Vue {
     })
   }
 
-  /**
-   * 添加监控节点或取消监控节点
-   * @param index
-   * @param displayName
-   */
-  addOrDelMonitorNode(index: number, displayName: string) {
-    // console.log('index', index);
-    // const thisInput = (this.$refs.diskSpaceThreshold as any)[index]
-    // if (!thisInput.value) {
-    //   alert('The disk space threshold is illegal!')
-    //   return
-    // }
-    // const diskSpaceThreshold = parseInt(thisInput.value)
-    // console.log(displayName)
-    // console.log(diskSpaceThreshold)
-    // const node = this.nodes[displayName]
-    // if (node.monitoring) {
-    //   // 之前已监控，需要取消监控
-    //   delete this.monitoredNodes[this.url]['monitoredNodes'][displayName]
-    // } else {
-    //   // 之前未监控，需要监控
-    //   if (!this.monitoredNodes.hasOwnProperty(this.url)) {
-    //     this.monitoredNodes[this.url] = {
-    //       'status': 'ok',
-    //       'monitoredNodes': {},
-    //     }
-    //   }
-    //   this.monitoredNodes[this.url]['monitoredNodes'][displayName] = {
-    //     nodeUrl: node.nodeUrl,
-    //     workingDirectory: node.workingDirectory,
-    //     remainingDiskSpace: node.remainingDiskSpace,
-    //     responseTime: node.responseTime,
-    //     monitoring: true,
-    //     diskSpaceThreshold: diskSpaceThreshold,
-    //     offline: node.offline
-    //   }
+  bubblingUp(ev: MouseEvent) {
+    // console.log(ev)
+    const elem: HTMLElement = ev.target as HTMLElement
+    elem.parentElement!.parentElement!.click()
+    return false
+  }
 
-    // }
-    // StorageService.saveNodeStatus(this.monitoredNodes).then(() => {
-    //   this.queryJenkinsNodes(this.url)
-    // })
+  saveEditedItem(item: NodeDetail) {
+    console.log(item)
+    const displayName = item.displayName
+    if (item.monitoring) {
+      if (!item.diskSpaceThreshold) {
+        alert('The disk space threshold is illegal!')
+        this.queryJenkinsNodes(this.url)
+        return
+      }
+
+      // 开启监控
+      if (!this.monitoredNodes.hasOwnProperty(this.url)) {
+        this.monitoredNodes[this.url] = {
+          'status': 'ok',
+          'monitoredNodes': {},
+        }
+      }
+
+      const diskSpaceThreshold = parseInt(item.diskSpaceThreshold.toString())
+      this.monitoredNodes[this.url]['monitoredNodes'][displayName] = {
+        displayName: displayName,
+        nodeUrl: item.nodeUrl,
+        workingDirectory: item.workingDirectory,
+        remainingDiskSpace: item.remainingDiskSpace,
+        responseTime: item.responseTime,
+        monitoring: true,
+        diskSpaceThreshold: diskSpaceThreshold,
+        offline: item.offline
+      }
+    } else {
+      // 取消监控
+      delete this.monitoredNodes[this.url]['monitoredNodes'][displayName]
+    }
+
+    // 保存监控配置
+    StorageService.saveNodeStatus(this.monitoredNodes).then(() => {
+      this.queryJenkinsNodes(this.url)
+    })
   }
 
 }

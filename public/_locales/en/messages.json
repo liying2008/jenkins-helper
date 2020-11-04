@@ -20,6 +20,9 @@
   "close": {
     "message": "Close"
   },
+  "search": {
+    "message": "Search"
+  },
   "globalOptionTitle": {
     "message": "Global Settings"
   },
@@ -199,6 +202,15 @@
   },
   "isMonitoring": {
     "message": "Monitoring?"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "enableMonitoringOrNot": {
+    "message": "Whether to enable monitoring"
   },
   "fetchNodesDataFailure": {
     "message": "Failed to fetch node data!"
