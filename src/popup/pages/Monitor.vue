@@ -151,7 +151,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { StorageService } from '@/libs/storage.ts'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage.ts'
 import { Tools } from '@/libs/tools.ts'
 import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
 import { SelectionOption } from '../../models/vuetify'
@@ -277,7 +277,7 @@ export default class Monitor extends Vue {
     })
   }
 
-  jobStatusChange(changes: any) {
+  jobStatusChange(changes: StorageChangeWrapper) {
     console.log('jobStatusChange1', changes)
     delete changes[StorageService.keyForJenkinsUrl]
     delete changes[StorageService.keyForOptions]

@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import { NodeService } from '@/background/node-service'
-import { StorageService } from '@/libs/storage'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { MessageColor } from '@/models/message'
 import { NodeDetail, Nodes } from '@/models/node'
@@ -157,7 +157,7 @@ export default class Computer extends Vue {
     StorageService.addStorageListener(this.nodeStatusChange)
   }
 
-  nodeStatusChange(changes: any) {
+  nodeStatusChange(changes: StorageChangeWrapper) {
     // console.log(changes)
     if (StorageService.keyForNodes in changes) {
       // nodes 数据改变

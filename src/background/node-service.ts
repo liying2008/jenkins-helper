@@ -1,4 +1,4 @@
-import { StorageService } from '@/libs/storage'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { JenkinsNode } from '@/models/jenkins/node'
 import { Nodes } from '@/models/node'
@@ -23,7 +23,8 @@ export class NodeService {
     NodeService.lastInterval = window.setInterval(() => { NodeService.queryNodeStatus() }, Number(refreshTime) * 3600 * 1000)
   }
 
-  private static storageChange(changes: any) {
+  private static storageChange(changes: StorageChangeWrapper) {
+    // console.log('storageChange::', changes)
     if (StorageService.keyForOptions in changes) {
       // 设置改变
       console.log('changes', changes)

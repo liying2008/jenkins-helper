@@ -7,6 +7,15 @@ import { JenkinsUrlRoot } from '@/models/jenkins-url'
 import { Nodes } from '@/models/node'
 import { Options } from '@/models/option'
 
+export interface StorageChangeWrapper {
+  [key: string]: StorageChange
+}
+
+export interface StorageChange {
+  oldValue?: any
+  newValue?: any
+}
+
 export class StorageService {
   static readonly keyForJenkinsUrl = 'jenkins-url'
   static readonly keyForOptions = 'options'

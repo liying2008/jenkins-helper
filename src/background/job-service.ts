@@ -1,5 +1,5 @@
 import { Tools } from '@/libs/tools'
-import { StorageService } from '@/libs/storage'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { JobSet } from '@/models/job'
 import { Options } from '@/models/option'
 import { Omnibox } from '@/background/omnibox'
@@ -63,7 +63,7 @@ export class JobService {
     JobService.lastInterval = window.setInterval(() => { JobService.queryJobStatus() }, Number(refreshTime) * 1000)
   }
 
-  private static storageChange(changes: any) {
+  private static storageChange(changes: StorageChangeWrapper) {
     if (StorageService.keyForOptions in changes) {
       // 设置改变
       console.log('changes', changes)
