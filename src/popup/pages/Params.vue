@@ -338,7 +338,7 @@ export default class Params extends Vue {
     this.status = 1
     const jsonUrl = url + '/api/json'
     // console.log("jsonUrl", jsonUrl);
-    Tools.getFetchOption(jsonUrl).then((header: any) => {
+    Tools.getFetchOption(jsonUrl).then((header: RequestInit) => {
       fetch(jsonUrl, header).then((res) => {
         if (res.ok) {
           return res.json()
@@ -405,7 +405,7 @@ export default class Params extends Vue {
             }
           }
         }
-      }).catch((e) => {
+      }).catch((e: Error) => {
         console.error('获取参数失败', e)
         this.status = this.preStatus
         alert(this.strings.noData)

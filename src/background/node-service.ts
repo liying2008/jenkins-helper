@@ -1,5 +1,7 @@
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
+import { JenkinsNode } from '@/models/jenkins/node'
+import { Nodes } from '@/models/node'
 import { Options } from '@/models/option'
 
 export class NodeService {
@@ -38,7 +40,7 @@ export class NodeService {
 
   static queryNodeStatus() {
     console.log('queryNodeStatus', 'queryNodeStatus')
-    StorageService.getNodeStatus().then((result: any) => {
+    StorageService.getNodeStatus().then((result: Nodes) => {
       for (const jenkinsUrl in result) {
         // console.log('node', result[jenkinsUrl]);
         if (!result.hasOwnProperty(jenkinsUrl)) {
@@ -52,14 +54,15 @@ export class NodeService {
           const encodeParam = encodeURI('computer[displayName,offline,monitorData[*]]')
           const jsonUrl = url + 'computer/api/json?tree=' + encodeParam
 
-          Tools.getFetchOption(jsonUrl).then((header: any) => {
-            fetch(jsonUrl, header).then(function (res) {
+          Tools.getFetchOption(jsonUrl).then((header: RequestInit) => {
+            fetch(jsonUrl, header).then((res) => {
               if (res.ok) {
                 return res.json()
               } else {
                 return Promise.reject(res)
               }
-            }).then(function (data) {
+            }).then((data: JenkinsNode) => {
+              // console.log('queryNodeStatus::data', data)
               const computers = data.computer
               for (let i = 0; i < computers.length; i++) {
                 const displayName = computers[i].displayName
@@ -95,6 +98,7 @@ export class NodeService {
                 NodeService.checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline)
 
                 result[url]['monitoredNodes'][displayName] = {
+                  displayName,
                   nodeUrl,
                   workingDirectory,
                   remainingDiskSpace,
@@ -107,7 +111,7 @@ export class NodeService {
                 StorageService.saveNodeStatus(result).then(() => {
                 })
               }
-            }).catch(function (e) {
+            }).catch((e: Error) => {
               console.error('获取数据失败', e)
               result[url].status = 'error'
               StorageService.saveNodeStatus(result).then(() => {
@@ -140,7 +144,7 @@ export class NodeService {
         title: displayName,
         message: message,
         priority: 2,
-      }).then(function (notificationId) {
+      }).then((notificationId) => {
         console.log('checkDiskSpace notifications', notificationId)
       })
     }

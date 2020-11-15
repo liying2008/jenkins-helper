@@ -26,7 +26,7 @@ export class Tools {
     disabled: 'label-primary',
   };
 
-  static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET') {
+  static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET'): RequestInit {
     if (!headers) {
       headers = {}
     }
@@ -39,7 +39,7 @@ export class Tools {
     }
   }
 
-  static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET') {
+  static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET'): Promise<RequestInit> {
     const options = await StorageService.getOptions()
     const jenkinsTokens = options.jenkinsTokens || []
     // console.log('jenkinsTokens', jenkinsTokens);

@@ -12,7 +12,7 @@ if (Tools.isChrome) {
   // Chrome 浏览器
   // 是否允许显示通知
   // @ts-ignore
-  chrome.notifications.getPermissionLevel(function (level: PermissionLevel) {
+  chrome.notifications.getPermissionLevel((level: PermissionLevel) => {
     console.log('PermissionLevel', level)
   })
 }

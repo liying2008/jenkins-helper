@@ -281,7 +281,7 @@ export default class App extends Vue {
    * @param jsonUrl
    * @param header
    */
-  getJenkinsNodeData(url: string, jsonUrl: string, header: any) {
+  getJenkinsNodeData(url: string, jsonUrl: string, header: RequestInit) {
     this.nodes = []
     fetch(jsonUrl, header).then((res) => {
       if (res.ok) {
@@ -341,7 +341,7 @@ export default class App extends Vue {
         })
       }
       console.log('nodes', this.nodes)
-    }).catch((e) => {
+    }).catch((e: Error) => {
       console.error('获取数据失败', e)
       alert(this.strings.fetchNodesDataFailure)
     })

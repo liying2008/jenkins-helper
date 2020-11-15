@@ -39,13 +39,13 @@
           >
           <div class="ml-5 card-title-job">
             <span
-              :title="jenkins.name"
+              :title="decodeURIComponent(jenkinsUrl)"
               class="card-title-job-name"
             >
-              {{ jenkins.name }}
+              {{ decodeURIComponent(jenkinsUrl) }}
             </span>
             <br style="height: 10px;">
-            <a
+            <!-- <a
               class="card-title-job-url"
               target="_blank"
               :href="jenkinsUrl"
@@ -54,10 +54,10 @@
                 class="no-wrap"
                 :title="decodeURIComponent(jenkinsUrl)"
               >{{ decodeURIComponent(jenkinsUrl) }}</span>
-            </a>
+            </a> -->
           </div>
           <v-spacer></v-spacer>
-          <div v-show="jenkins.status!=='ok'">
+          <div v-show="jenkinsNodes.status!=='ok'">
             <v-btn
               depressed
               small
@@ -67,8 +67,7 @@
               color="error"
               class="card-title-err-btn"
             >
-              <span v-if="jenkins.status=='cctray'">CCtray Error</span>
-              <span v-else>ERROR</span>
+              <span>ERROR</span>
             </v-btn>
           </div>
           <div class="ml-2">
@@ -77,16 +76,16 @@
               title="Remove monitoring for this task"
               x-small
               color="grey"
-              @click="removeJenkins(jenkinsUrl)"
+              @click="removeMonitor(jenkinsUrl)"
             >
               <v-icon>mdi-close-circle-outline</v-icon>
             </v-btn>
           </div>
         </v-card-title>
         <v-data-table
-          v-show="jenkins.hasOwnProperty('jobs')"
+          v-show="jenkinsNodes.hasOwnProperty('monitoredNodes')"
           :headers="headers"
-          :items="jenkins.jobs"
+          :items="jenkinsNodes.monitoredNodes"
           :item-class="getRowClass"
           :search="search"
           dense
@@ -134,7 +133,7 @@ import { NodeService } from '@/background/node-service'
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { MessageColor } from '@/models/message'
-import { NodeDetail } from '@/models/node'
+import { NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
 
@@ -151,7 +150,7 @@ export default class Computer extends Vue {
     diskSpaceThreshold: browser.i18n.getMessage('diskSpaceThreshold'),
   }
   refreshIconNormal = true
-  monitoredNodes: any = {}
+  monitoredNodes: Nodes = {}
 
   mounted() {
     this.queryMonitoredNodes()
@@ -167,14 +166,14 @@ export default class Computer extends Vue {
   }
 
   queryMonitoredNodes() {
-    StorageService.getNodeStatus().then((result) => {
+    StorageService.getNodeStatus().then((result: Nodes) => {
       console.log('monitoredNodes', result)
       this.monitoredNodes = result
     })
   }
 
   removeMonitor(jenkinsUrl: string) {
-    StorageService.getNodeStatus().then((result) => {
+    StorageService.getNodeStatus().then((result: Nodes) => {
       if (result.hasOwnProperty(jenkinsUrl)) {
         delete result[jenkinsUrl]
         StorageService.saveNodeStatus(result).then(() => {

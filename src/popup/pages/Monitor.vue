@@ -322,7 +322,7 @@ export default class Monitor extends Vue {
       this.data[setUrl].status = status[setUrl].status
       this.data[setUrl].error = status[setUrl].error
 
-      if (status[setUrl].jobs === undefined || status[setUrl].jobs === null) {
+      if (!status[setUrl].jobs) {
         return
       }
       this.data[setUrl].jobs = []

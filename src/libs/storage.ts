@@ -45,7 +45,7 @@ export class StorageService {
     return browser.storage.local.remove(jenkinsUrl)
   }
 
-  static async getJobStatus(jenkinsUrl: string | string[]) {
+  static async getJobStatus(jenkinsUrl: string | string[]): Promise<JobRoot> {
     const result = await browser.storage.local.get(jenkinsUrl)
     return result as JobRoot || {}
   }
@@ -54,7 +54,7 @@ export class StorageService {
     return browser.storage.local.set({ 'nodes': JSON.parse(JSON.stringify(nodesStatus)) })
   }
 
-  static async getNodeStatus() {
+  static async getNodeStatus(): Promise<Nodes> {
     const result = await browser.storage.local.get('nodes')
     return result['nodes'] || {}
   }

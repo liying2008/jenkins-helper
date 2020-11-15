@@ -123,14 +123,14 @@ export class JobService {
           const encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]')
           const jsonUrl = url + 'api/json?tree=' + encodeParam
           // console.log('queryJobStatus jsonUrl', jsonUrl);
-          Tools.getFetchOption(jsonUrl).then((header: any) => {
-            fetch(jsonUrl, header).then(function (res) {
+          Tools.getFetchOption(jsonUrl).then((header: RequestInit) => {
+            fetch(jsonUrl, header).then((res) => {
               if (res.ok) {
                 return res.json()
               } else {
                 return Promise.reject(res)
               }
-            }).then(function (data) {
+            }).then((data) => {
               // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length);
               if (Object.getOwnPropertyNames(data).length === 0) {
                 console.error('queryJobStatus: 获取Job状态失败，返回数据为空')
@@ -149,7 +149,7 @@ export class JobService {
                   JobService.parseSingleJobData(url, data, result || {})
                 }
               }
-            }).catch(function (e) {
+            }).catch((e: Error) => {
               console.error('queryJobStatus: 获取Job状态失败', e)
               const jenkinsObj = JobService.getErrorJenkinsObj(url, e.message || 'Unreachable')
               JobService.countBadgeJobCount()
@@ -314,7 +314,7 @@ export class JobService {
       title: 'Build ' + result + ' ! - ' + jobName,
       message: decodeURIComponent(url),
       priority: 0, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
-    }).then(function (notificationId) {
+    }).then((notificationId) => {
       if (notificationId) {
         JobService.notificationUrlMap[notificationId] = url
       }

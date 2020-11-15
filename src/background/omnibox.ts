@@ -10,7 +10,7 @@ export class Omnibox {
     Omnibox.getAllJobs()
 
     // 当用户输入时触发
-    browser.omnibox.onInputChanged.addListener(function (text, suggest) {
+    browser.omnibox.onInputChanged.addListener((text, suggest) => {
       // console.log('text', text);
       if (!text) return
       const suggestContent = Omnibox.filterJobs(text)
@@ -19,7 +19,7 @@ export class Omnibox {
     })
 
     // 当用户接收关键字建议时触发
-    browser.omnibox.onInputEntered.addListener(function (text) {
+    browser.omnibox.onInputEntered.addListener((text) => {
       // console.log('inputEntered', text);
       if (!text) return
       if (text.indexOf('http') !== 0) {
@@ -31,7 +31,7 @@ export class Omnibox {
   }
 
   private static navigate(url: string) {
-    browser.tabs.query({ active: true, currentWindow: true }).then(function (tabs) {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       return browser.tabs.update(tabs[0].id!, { url: url })
     })
   }
@@ -57,19 +57,19 @@ export class Omnibox {
           const encodeParam = encodeURI('jobs[name,url]')
           const jsonUrl = url + 'api/json?tree=' + encodeParam
 
-          Tools.getFetchOption(jsonUrl).then((header: any) => {
-            fetch(jsonUrl, header).then(function (res) {
+          Tools.getFetchOption(jsonUrl).then((header: RequestInit) => {
+            fetch(jsonUrl, header).then((res) => {
               if (res.ok) {
                 return res.json()
               } else {
                 return Promise.reject(res)
               }
-            }).then(function (data) {
+            }).then((data) => {
               if (data.hasOwnProperty('jobs')) {
                 Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
                 console.log('all fetched', Omnibox.allJobs)
               }
-            }).catch(function (e) {
+            }).catch((e: Error) => {
               console.error('获取Job失败', e)
             })
           })
