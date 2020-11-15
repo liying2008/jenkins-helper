@@ -180,7 +180,7 @@ export default class App extends Vue {
     urlInvalid: browser.i18n.getMessage('urlInvalid'),
   }
   isFormValid = true
-  inputUrlValue = 'http://192.168.5.200:8080/jenkins/'
+  inputUrlValue = ''
   search = ''
   nodes: NodeDetail[] = []
   monitoredNodes: Nodes = {}

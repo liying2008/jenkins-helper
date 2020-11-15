@@ -26,45 +26,45 @@ export class Tools {
     disabled: 'label-primary',
   };
 
-  static getDefaultFetchOption(header = {}, method = 'GET') {
-    if (header === undefined || header === null) {
-      header = {}
+  static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET') {
+    if (!headers) {
+      headers = {}
     }
     return {
       method: method,
       credentials: 'include',
       mode: 'cors',
       redirect: 'follow',
-      headers: new Headers(header)
+      headers: headers
     }
   }
 
-  static async getFetchOption(url: string, header: any = {}, method = 'GET') {
+  static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET') {
     const options = await StorageService.getOptions()
     const jenkinsTokens = options.jenkinsTokens || []
     // console.log('jenkinsTokens', jenkinsTokens);
     let token = undefined
     for (let i = 0; i < jenkinsTokens.length; i++) {
       const currentToken = jenkinsTokens[i]
-      if (url.indexOf(currentToken.url) === 0) {
+      if (url.indexOf(currentToken.url) >= 0) {
         token = currentToken
         break
       }
     }
-    if (header === undefined || header === null) {
-      header = {}
+    if (!headers) {
+      headers = {}
     }
     // console.log('Tool.getFetchOption token', token);
     if (token) {
-      header['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token)
+      headers['Authorization'] = 'Basic ' + window.btoa(token.username + ':' + token.token)
       return {
         method: method,
         mode: 'cors',
         redirect: 'follow',
-        headers: new Headers(header)
+        headers: headers
       }
     } else {
-      return Tools.getDefaultFetchOption(header, method)
+      return Tools.getDefaultFetchOption(headers, method)
     }
   }
 
