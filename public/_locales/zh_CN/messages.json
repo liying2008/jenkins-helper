@@ -194,6 +194,12 @@
   "diskSpaceThreshold": {
     "message": "磁盘空间告警阈值"
   },
+  "alarmThreshold": {
+    "message": "告警阈值"
+  },
+  "monitoringCancelled": {
+    "message": "已取消监控："
+  },
   "workingDirectory": {
     "message": "工作目录"
   },

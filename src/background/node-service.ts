@@ -131,7 +131,7 @@ export class NodeService {
     } else if (remainingDiskSpace === 'N/A') {
       message = browser.i18n.getMessage('fetchNodeInfoFailedNotifications')
     } else {
-      const remainingDiskSpaceInt = parseInt(remainingDiskSpace.replace('GB', '').trim())
+      const remainingDiskSpaceInt = parseFloat(remainingDiskSpace.replace('GB', '').trim())
       if (remainingDiskSpaceInt <= diskSpaceThreshold) {
         message = browser.i18n.getMessage('insufficientDiskSpaceNotifications', [remainingDiskSpace])
       }

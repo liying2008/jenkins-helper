@@ -37,24 +37,20 @@
             alt="Computer"
             src="img/computer48.png"
           >
-          <div class="ml-5 card-title-job">
+          <div class="ml-5 card-title-node">
             <span
               :title="decodeURIComponent(jenkinsUrl)"
-              class="card-title-job-name"
+              class="card-title-node-url"
             >
               {{ decodeURIComponent(jenkinsUrl) }}
             </span>
             <br style="height: 10px;">
-            <!-- <a
-              class="card-title-job-url"
-              target="_blank"
-              :href="jenkinsUrl"
+            <a
+              class="card-title-node-sub"
+              @click="openNodesManager(jenkinsUrl)"
             >
-              <span
-                class="no-wrap"
-                :title="decodeURIComponent(jenkinsUrl)"
-              >{{ decodeURIComponent(jenkinsUrl) }}</span>
-            </a> -->
+              <span class="no-wrap">{{ strings.openManagerPage }}</span>
+            </a>
           </div>
           <v-spacer></v-spacer>
           <div v-show="jenkinsNodes.status!=='ok'">
@@ -62,7 +58,6 @@
               depressed
               small
               :href="jenkinsUrl"
-              :title="jenkins.error"
               target="_blank"
               color="error"
               class="card-title-err-btn"
@@ -85,46 +80,58 @@
         <v-data-table
           v-show="jenkinsNodes.hasOwnProperty('monitoredNodes')"
           :headers="headers"
-          :items="jenkinsNodes.monitoredNodes"
+          :items="toArray(jenkinsNodes.monitoredNodes)"
           :item-class="getRowClass"
           :search="search"
           dense
           hide-default-footer
           disable-pagination
         >
-          <!-- name -->
-          <template v-slot:[`item.name`]="{ item }">
+          <!-- displayName -->
+          <template v-slot:[`item.displayName`]="{ item }">
             <a
-              :href="item.jobUrl"
+              :href="item.nodeUrl"
               target="_blank"
-              :class="['monitor-table-job-name', {'building':item.building}]"
-            >{{ item.name }}</a>
+              :class="['monitor-table-node-url', isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+            >{{ item.displayName }}</a>
           </template>
 
-          <!-- lastBuildTime -->
-          <template v-slot:[`item.lastBuildTime`]="{ item }">
+          <!-- remainingDiskSpace -->
+          <template v-slot:[`item.remainingDiskSpace`]="{ item }">
             <span
-              :class="[ {'building':item.building}]"
-              v-html="getStyledTime(item.lastBuildTimestamp)"
+              :class="[isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+              v-html="item.remainingDiskSpace"
             ></span>
           </template>
 
-          <!-- status -->
-          <template v-slot:[`item.status`]="{ item }">
-            <v-chip
-              small
-              text-color="white"
-              label
-              pill
-              :color="getResultColor(item.color)"
-              :class="['monitor-table-result-chip', {'building':item.building} ]"
-            >
-              <span class="monitor-table-result-chip-text">{{ item.status }}</span>
-            </v-chip>
+          <!-- diskSpaceThreshold -->
+          <template v-slot:[`item.diskSpaceThreshold`]="{ item }">
+            <span
+              :class="[isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+              v-html="item.diskSpaceThreshold"
+            ></span>
           </template>
         </v-data-table>
       </v-card>
     </div>
+    <v-row class="my-3"></v-row>
+    <!-- snackbar -->
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+    >
+      {{ snackbar.message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="snackbar.show = false"
+        >
+          {{ strings.close }}
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -133,8 +140,9 @@ import { NodeService } from '@/background/node-service'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { MessageColor } from '@/models/message'
-import { NodeDetail, Nodes } from '@/models/node'
+import { MonitoredNodes, NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { DataTableHeader } from 'vuetify'
 
 
 @Component({
@@ -147,10 +155,23 @@ export default class Computer extends Vue {
     openManagerPage: browser.i18n.getMessage('openManagerPage'),
     displayName: browser.i18n.getMessage('displayName'),
     remainingDiskSpace: browser.i18n.getMessage('remainingDiskSpace'),
-    diskSpaceThreshold: browser.i18n.getMessage('diskSpaceThreshold'),
+    alarmThreshold: browser.i18n.getMessage('alarmThreshold'),
+    monitoringCancelled: browser.i18n.getMessage('monitoringCancelled'),
   }
   refreshIconNormal = true
   monitoredNodes: Nodes = {}
+
+  search = ''
+  headers: DataTableHeader[] = [
+    { text: this.strings.displayName, align: 'start', value: 'displayName' },
+    { text: this.strings.remainingDiskSpace, align: 'start', value: 'remainingDiskSpace' },
+    { text: this.strings.alarmThreshold, align: 'start', value: 'diskSpaceThreshold' },
+  ]
+  snackbar = {
+    show: false,
+    message: '',
+    color: MessageColor.Success,
+  }
 
   mounted() {
     this.queryMonitoredNodes()
@@ -172,12 +193,29 @@ export default class Computer extends Vue {
     })
   }
 
+  getRowClass(item: NodeDetail) {
+    if (item.offline) {
+      return 'disabled-row'
+    } else {
+      return ''
+    }
+  }
+
+  toArray(monitoredNodes: MonitoredNodes) {
+    return Object.values(monitoredNodes)
+  }
+
   removeMonitor(jenkinsUrl: string) {
     StorageService.getNodeStatus().then((result: Nodes) => {
       if (result.hasOwnProperty(jenkinsUrl)) {
         delete result[jenkinsUrl]
         StorageService.saveNodeStatus(result).then(() => {
           console.log(jenkinsUrl + ' 已删除')
+          this.snackbar = {
+            show: true,
+            message: `${this.strings.monitoringCancelled}${jenkinsUrl}`,
+            color: MessageColor.Success,
+          }
         })
       }
     })
@@ -188,7 +226,7 @@ export default class Computer extends Vue {
     if (node.offline) {
       return false
     }
-    const remainingDiskSpace = parseInt(node.remainingDiskSpace.replace('GB', '').trim())
+    const remainingDiskSpace = parseFloat(node.remainingDiskSpace.replace('GB', '').trim())
     const threshold = node.diskSpaceThreshold
     return remainingDiskSpace > threshold
   }
@@ -214,5 +252,38 @@ export default class Computer extends Vue {
 
 <style lang="scss">
 #computer-wrapper {
+  .card {
+    .card-title-node {
+      width: 460px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .card-title-node-url {
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .card-title-node-sub {
+        font-size: 14px;
+        text-decoration: none;
+      }
+    }
+
+    .card-title-err-btn {
+      width: 70px;
+    }
+
+    .monitor-table-node-url {
+      text-decoration-line: none;
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+
+    .disabled-row {
+      background-color: lightgray;
+    }
+  }
 }
 </style>

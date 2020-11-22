@@ -156,6 +156,7 @@ import { Tools } from '@/libs/tools.ts'
 import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
 import { SelectionOption } from '../../models/vuetify'
 import { Options } from '../../models/option'
+import { DataTableHeader } from 'vuetify'
 
 @Component({
   name: 'Monitor'
@@ -186,7 +187,7 @@ export default class Monitor extends Vue {
   filteringResults: SelectionOption[] = []
 
   search = ''
-  headers = [
+  headers: DataTableHeader[] = [
     { text: 'Job Name', align: 'start', value: 'name' },
     { text: 'Last Build Time', align: 'center', value: 'lastBuildTime', width: '24%' },
     { text: 'Result', align: 'center', value: 'status', width: '12%' },

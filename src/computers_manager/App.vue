@@ -118,6 +118,7 @@
                     <v-text-field
                       v-model="props.item.diskSpaceThreshold"
                       :label="strings.diskSpaceThreshold"
+                      :disabled="!props.item.monitoring"
                       type="number"
                       suffix="GB"
                     ></v-text-field>
@@ -376,7 +377,7 @@ export default class App extends Vue {
         }
       }
 
-      const diskSpaceThreshold = parseInt(item.diskSpaceThreshold.toString())
+      const diskSpaceThreshold = parseFloat(item.diskSpaceThreshold.toString())
       this.monitoredNodes[this.url]['monitoredNodes'][displayName] = {
         displayName: displayName,
         nodeUrl: item.nodeUrl,

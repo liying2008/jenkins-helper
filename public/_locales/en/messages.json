@@ -194,6 +194,12 @@
   "diskSpaceThreshold": {
     "message": "DiskSpaceThreshold"
   },
+  "alarmThreshold": {
+    "message": "Threshold"
+  },
+  "monitoringCancelled": {
+    "message": "Monitoring cancelled: "
+  },
   "workingDirectory": {
     "message": "WorkingDirectory"
   },

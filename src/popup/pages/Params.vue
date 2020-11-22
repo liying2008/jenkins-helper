@@ -240,6 +240,7 @@
 import { Tools } from '@/libs/tools'
 import { MessageColor } from '@/models/message'
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { DataTableHeader } from 'vuetify'
 
 @Component({
   name: 'Params'
@@ -258,7 +259,7 @@ export default class Params extends Vue {
     credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
     building: 'BUILDING',
   }
-  headers = [
+  headers: DataTableHeader[] = [
     { text: 'Name', align: 'start', value: 'name' },
     { text: 'Value', align: 'start', value: 'value' },
   ]
