@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="layout-wrapper">
     <v-card elevation="0">
       <v-toolbar
         color="teal"
@@ -119,3 +119,11 @@ export default class Layout extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+#layout-wrapper {
+  .v-application--wrap {
+    min-height: inherit;
+  }
+}
+</style>
