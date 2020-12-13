@@ -179,9 +179,10 @@ export default class Computer extends Vue {
   }
 
   nodeStatusChange(changes: StorageChangeWrapper) {
-    // console.log(changes)
+    console.log('00-nodeStatusChange', changes)
     if (StorageService.keyForNodes in changes) {
       // nodes 数据改变
+      // console.log('01-nodeStatusChange', changes)
       this.queryMonitoredNodes()
     }
   }

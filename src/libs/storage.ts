@@ -69,7 +69,17 @@ export class StorageService {
   }
 
   static addStorageListener(listener: any) {
-    browser.storage.onChanged.addListener(listener)
+    if (!browser.storage.onChanged.hasListener(listener)) {
+      // console.log('addStorageListener::listener', listener)
+      browser.storage.onChanged.addListener(listener)
+    }
+  }
+
+  static removeStorageListener(listener: any) {
+    if (browser.storage.onChanged.hasListener(listener)) {
+      // console.log('removeStorageListener::listener', listener)
+      browser.storage.onChanged.removeListener(listener)
+    }
   }
 
   static async getOptions(): Promise<Options> {

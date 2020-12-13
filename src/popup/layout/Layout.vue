@@ -54,7 +54,7 @@
           fluid
           class="py-0"
         >
-          <router-view></router-view>
+          <router-view :key="$route.fullPath" />
         </v-container>
       </v-main>
     </v-card>
@@ -92,6 +92,10 @@ export default class Layout extends Vue {
         this.$router.replace(this.defaultTab)
       }
     })
+  }
+
+  mounted() {
+    // console.log('popup::fullPath', this.$route.fullPath)
   }
 
   openOptions() {

@@ -279,12 +279,13 @@ export default class Monitor extends Vue {
   }
 
   jobStatusChange(changes: StorageChangeWrapper) {
-    console.log('jobStatusChange1', changes)
-    delete changes[StorageService.keyForJenkinsUrl]
-    delete changes[StorageService.keyForOptions]
-    delete changes[StorageService.keyForNodes]
-    console.log('jobStatusChange2', changes)
-    if (Object.getOwnPropertyNames(changes).length > 0) {
+    console.log('00-jobStatusChange', changes)
+    const copied = Object.assign({}, changes)
+    delete copied[StorageService.keyForJenkinsUrl]
+    delete copied[StorageService.keyForOptions]
+    delete copied[StorageService.keyForNodes]
+    console.log('01-jobStatusChange', copied)
+    if (Object.getOwnPropertyNames(copied).length > 0) {
       // Job Status 有变动
       // 刷新页面
       this.getAllJobStatus()
