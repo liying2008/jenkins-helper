@@ -22,6 +22,7 @@
               :href="url"
               target="_blank"
               style="margin-left: 8px"
+              class="display-name"
             >{{ fullDisplayName }}</a>
           </v-col>
           <v-col
@@ -239,8 +240,20 @@
 <script lang="ts">
 import { Tools } from '@/libs/tools'
 import { MessageColor } from '@/models/message'
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
+
+
+interface BuildCause {
+  shortDescription: string
+  url: string
+}
+
+interface BuildParameter {
+  hidden: boolean
+  name: string
+  value: unknown
+}
 
 @Component({
   name: 'Params'
@@ -283,8 +296,8 @@ export default class Params extends Vue {
   result = ''
   buildTime = ''
   builtOn = ''
-  causes: any[] = []
-  parameters: any[] = []
+  causes: BuildCause[] = []
+  parameters: BuildParameter[] = []
   // 是否禁用下载按钮
   disableDownload = false
 
@@ -305,7 +318,7 @@ export default class Params extends Vue {
   getParameters() {
     this.getCurrentTab((tab: any) => {
       // console.log(tab);
-      const title = tab.title
+      // const title = tab.title
       const url = tab.url
       const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
       const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
@@ -422,7 +435,7 @@ export default class Params extends Vue {
 
   // 复制运行节点
   copyBuiltOn() {
-    const text = (this.$refs.builtOnSpan as any).innerText
+    const text = (this.$refs.builtOnSpan as HTMLElement).innerText
     const tempInput = document.createElement('input')
     tempInput.value = text
     document.body.appendChild(tempInput)
@@ -516,6 +529,12 @@ export default class Params extends Vue {
       padding: 6px 12px;
       line-height: 1rem;
       color: #333333;
+
+      .display-name {
+        text-decoration-line: none;
+        word-break: break-all;
+        word-wrap: break-word;
+      }
 
       .dense-chip {
         height: inherit;
