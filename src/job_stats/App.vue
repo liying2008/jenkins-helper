@@ -40,18 +40,23 @@
 
         <!-- Node -->
         <template v-slot:[`item.node`]="{ item }">
-          <div class="pre-line">
+          <div
+            class="pre-line"
+            :title="item.param"
+          >
             {{ item.node }}
           </div>
         </template>
       </v-data-table>
+      <v-divider></v-divider>
 
       <!-- 显示设置 -->
       <v-list
+        v-show="originJobs.length > 0"
         id="display-settings"
         outlined
         subheader
-        class="mt-6"
+        class="my-6"
       >
         <v-subheader>{{ strings.jobStatisticsShowSettings_ }}</v-subheader>
         <v-list-item-group
@@ -125,8 +130,8 @@ export default class App extends Vue {
   settings: number[] = []
   headers: DataTableHeader[] = [
     { text: 'Job URL', align: 'start', value: 'url' },
-    { text: 'Cron Table', align: 'start', value: 'timerTrigger' },
-    { text: 'Node', align: 'start', value: 'node', filterable: false },
+    { text: 'Cron Table', align: 'start', value: 'timerTrigger', filterable: false },
+    { text: 'Node', align: 'start', value: 'node' },
     { text: 'Disabled?', align: 'start', value: 'disabled', filterable: false },
     { text: 'Concurrent?', align: 'start', value: 'concurrentBuild', filterable: false },
   ]
@@ -430,44 +435,48 @@ export default class App extends Vue {
     // console.log('getParamsNode::rootNode', rootNode)
     let node = ''
     let param = ''
-    let parameterDefinitionsNodes: any = rootNode.getElementsByTagName('parameterDefinitions')
+    const parameterDefinitionsNodes = rootNode.getElementsByTagName('parameterDefinitions')
     if (parameterDefinitionsNodes.length > 0) {
-      parameterDefinitionsNodes = parameterDefinitionsNodes[0].childNodes
-      const params: any = {}
-      for (let paramIndex = 0; paramIndex < parameterDefinitionsNodes.length; paramIndex++) {
-        const paramNode = parameterDefinitionsNodes[paramIndex]
+      const parameterDefinitionChildren = parameterDefinitionsNodes[0].childNodes
+      // console.log('parameterDefinitionChildren', parameterDefinitionChildren)
+      const params = new Map<string, string>()
+      for (let paramIndex = 0; paramIndex < parameterDefinitionChildren.length; paramIndex++) {
+        const paramNode = parameterDefinitionChildren[paramIndex]
         if (paramNode.nodeType === Node.TEXT_NODE) {
           continue
         }
-        const nameNodes = paramNode.getElementsByTagName('name')
+        const nameNodes = (paramNode as Element).getElementsByTagName('name')
         if (nameNodes.length === 0) {
           continue
         }
-        const name = paramNode.getElementsByTagName('name')[0].textContent
+        const name = (paramNode as Element).getElementsByTagName('name')[0].textContent || ''
         let value = ''
-        const defaultValueNodes = paramNode.getElementsByTagName('defaultValue')
+        const defaultValueNodes = (paramNode as Element).getElementsByTagName('defaultValue')
+        const choiceNodes = (paramNode as Element).getElementsByTagName('choices')
+        const defaultSlavesNodes = (paramNode as Element).getElementsByTagName('defaultSlaves')
         if (defaultValueNodes.length > 0) {
-          value = defaultValueNodes[0].textContent
-        } else {
-          let choiceNodes = paramNode.getElementsByTagName('choices')
-          if (choiceNodes.length > 0) {
-            choiceNodes = choiceNodes[0].getElementsByTagName('a')
-            choiceNodes = choiceNodes[0].childNodes
-            for (let choiceNodeIndex = 0; choiceNodeIndex < choiceNodes.length; choiceNodeIndex++) {
-              if (choiceNodes[choiceNodeIndex].nodeType === Node.TEXT_NODE) {
-                continue
-              }
-              value = choiceNodes[choiceNodeIndex].textContent
-              break
+          value = defaultValueNodes[0].textContent || ''
+        } else if (choiceNodes.length > 0) {
+          const choiceChildren = choiceNodes[0].getElementsByTagName('a')[0].childNodes
+          for (let choiceNodeIndex = 0; choiceNodeIndex < choiceChildren.length; choiceNodeIndex++) {
+            if (choiceChildren[choiceNodeIndex].nodeType === Node.TEXT_NODE) {
+              continue
             }
+            value = choiceChildren[choiceNodeIndex].textContent || ''
+            break
+          }
+        } else if (defaultSlavesNodes.length > 0) {
+          const defaultSlaveStringNodes = defaultSlavesNodes[0].getElementsByTagName('string')
+          if (defaultSlaveStringNodes.length > 0) {
+            value = defaultSlaveStringNodes[0].textContent || ''
           }
         }
-        params[name] = value
+        params.set(name, value)
       }
       for (let nodeParamsIndex = 0; nodeParamsIndex < this.nodeParams.length; nodeParamsIndex++) {
-        if (params.hasOwnProperty(this.nodeParams[nodeParamsIndex])) {
-          param = this.nodeParams[nodeParamsIndex]
-          node = params[param]
+        param = this.nodeParams[nodeParamsIndex]
+        if (params.has(param)) {
+          node = params.get(param)!
           break
         }
       }
@@ -480,6 +489,9 @@ export default class App extends Vue {
    */
   getStatisticsDataFromDesc() {
     const urls = this.urls.map((item: string) => decodeURIComponent(item))
+    if (urls.length === 0) {
+      urls.push('NA')
+    }
     return this.strings.jobStatisticsDataFrom_ + '\n\n' + urls.join('\n')
   }
 
