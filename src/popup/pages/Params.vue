@@ -351,7 +351,7 @@ export default class Params extends Vue {
         this.preStatus = 2
         this.number = data.number
         this.fullDisplayName = data.fullDisplayName
-        this.url = data.url
+        this.url = data.url // jenkins 设置的 jenkins 网站 url
         this.building = data.building
         this.result = data.result
         this.buildTime = new Date(data.timestamp).toLocaleString()
@@ -453,6 +453,7 @@ export default class Params extends Vue {
   goToConfigure() {
     const url = this.url.substring(0, this.url.length - 1)
     const configureUrl = url.substring(0, url.lastIndexOf('/')) + '/configure'
+    // console.log('this.url=' + this.url + ', configureUrl=' + configureUrl)
     browser.tabs.create({ 'url': configureUrl })
   }
 

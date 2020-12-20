@@ -171,10 +171,10 @@
     "message": "显示设置："
   },
   "jobStatisticsShowEnabledJobOnly": {
-    "message": "不显示 disabled job"
+    "message": "不显示禁用的Job"
   },
   "jobStatisticsShowCronTableJobOnly": {
-    "message": "不显示无 cron table 的 job"
+    "message": "不显示无定时器的Job"
   },
   "manageMonitoredNodes": {
     "message": "管理监控节点"

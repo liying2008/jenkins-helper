@@ -1,22 +1,22 @@
 {
-    "standard.enable": false,
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-    },
-    "eslint.validate": [
-        "javascript",
-        "typescript",
-        "vue"
-    ],
-    "editor.tabSize": 2,
-    "editor.wordWrapColumn": 120,
-    "vetur.completion.autoImport": true,
-    "vetur.format.enable": true,
-    "vetur.format.options.tabSize": 2,
-    "vetur.format.options.useTabs": false,
-    "vetur.completion.tagCasing": "initial",
-    "vetur.format.defaultFormatter.html": "js-beautify-html",
-    "vetur.format.defaultFormatter.ts": "none",
-    "files.eol": "\n"
+  "standard.enable": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "editor.tabSize": 2,
+  "editor.wordWrapColumn": 120,
+  "vetur.completion.autoImport": true,
+  "vetur.format.enable": true,
+  "vetur.format.options.tabSize": 2,
+  "vetur.format.options.useTabs": false,
+  "vetur.completion.tagCasing": "initial",
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  "vetur.format.defaultFormatter.ts": "vscode-typescript",
+  "files.eol": "\n"
 }

@@ -59,7 +59,7 @@ module.exports = {
     'quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
     'keyword-spacing': 'error',
     'no-undef': 'error',
-    'no-underscore-dangle': 'warn',
+    'no-underscore-dangle': 'off',
     'camelcase': ['error', { 'properties': 'never' }],
     'no-multi-spaces': 'warn',
     'no-multiple-empty-lines': ['warn', { 'max': 2 }],
