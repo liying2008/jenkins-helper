@@ -325,10 +325,6 @@ export default class Settings extends Vue {
       text: browser.i18n.getMessage('computer'),
       value: 'computer',
     },
-    {
-      text: browser.i18n.getMessage('tools'),
-      value: 'tools',
-    },
   ]
   showNotificationOption = 'all'
   showNotificationOptions = [

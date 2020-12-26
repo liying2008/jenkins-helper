@@ -14,6 +14,7 @@
 
         <v-btn
           icon
+          title="Open job statistics page"
           @click="openJobList"
         >
           <v-icon>mdi-view-list</v-icon>
@@ -21,6 +22,15 @@
 
         <v-btn
           icon
+          title="Open Jenkins tools page"
+          @click="openTools"
+        >
+          <v-icon>mdi-toolbox</v-icon>
+        </v-btn>
+
+        <v-btn
+          icon
+          title="Open options page"
           @click="openOptions"
         >
           <v-icon>mdi-cog</v-icon>
@@ -42,9 +52,6 @@
             </v-tab>
             <v-tab to="/computer">
               {{ strings.computer }}
-            </v-tab>
-            <v-tab to="/tools">
-              {{ strings.tools }}
             </v-tab>
           </v-tabs>
         </template>
@@ -75,22 +82,21 @@ export default class Layout extends Vue {
     monitor: browser.i18n.getMessage('monitor'),
     params: browser.i18n.getMessage('params'),
     computer: browser.i18n.getMessage('computer'),
-    tools: browser.i18n.getMessage('tools'),
   }
 
   defaultTab = 'monitor'
   activeTab = this.defaultTab
+  allowTabs = ['monitor', 'params', 'computer']
 
   created() {
     StorageService.getOptions().then((option: Options) => {
-      // 切换页面
-      if (option.defaultTab) {
+      // 设置默认激活页面
+      if (option.defaultTab && this.allowTabs.indexOf(option.defaultTab) > -1) {
         this.activeTab = option.defaultTab
-        this.$router.replace(this.activeTab)
       } else {
         this.activeTab = this.defaultTab
-        this.$router.replace(this.defaultTab)
       }
+      this.$router.replace(this.activeTab)
     })
   }
 
@@ -114,6 +120,14 @@ export default class Layout extends Vue {
       height: 800,
     }).then((window) => {
       console.log('window', window)
+    })
+  }
+
+  openTools() {
+    browser.tabs.create({
+      url: 'jenkins_tools.html'
+    }).then((tab) => {
+      console.log('tab', tab)
     })
   }
 

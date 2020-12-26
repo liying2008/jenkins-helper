@@ -315,5 +315,11 @@
   },
   "reportIssue": {
     "message": "Report Issue"
+  },
+  "apiTool": {
+    "message": "API Tool"
+  },
+  "jobMigration": {
+    "message": "Job Migration"
   }
 }

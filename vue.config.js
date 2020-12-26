@@ -31,7 +31,13 @@ module.exports = {
       entry: './src/job_stats/main.ts',
       title: 'Jenkins Job Statistics',
       filename: 'job_stats.html'
-    }
+    },
+    jenkinsTools: {
+      template: 'public/browser-extension.html',
+      entry: './src/jenkins_tools/main.ts',
+      title: 'Jenkins Tools',
+      filename: 'jenkins_tools.html'
+    },
   },
 
   pluginOptions: {

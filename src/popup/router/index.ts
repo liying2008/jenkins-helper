@@ -26,11 +26,6 @@ const routes: Array<RouteConfig> = [
         name: 'Computer',
         component: () => import('../pages/Computer.vue')
       },
-      {
-        path: '/tools',
-        name: 'JenkinsTools',
-        component: () => import('../pages/JenkinsTools.vue')
-      }
     ]
   }
 ]

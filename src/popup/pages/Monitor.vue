@@ -130,6 +130,7 @@
           <!--是否显示禁用的Job-->
           <v-checkbox
             v-model="showDisabledJobs"
+            dense
             :label="strings.showDisabledJobs"
             class="bottom-show-disabled"
           ></v-checkbox>
@@ -151,9 +152,9 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { StorageChangeWrapper, StorageService } from '@/libs/storage.ts'
-import { Tools } from '@/libs/tools.ts'
-import { JobDetail, DisplayedJobDetail, JobSet, JobRoot, JobStatus } from '../../models/job'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage'
+import { Tools } from '@/libs/tools'
+import { DisplayedJobDetail, JobRoot } from '../../models/job'
 import { SelectionOption } from '../../models/vuetify'
 import { Options } from '../../models/option'
 import { DataTableHeader } from 'vuetify'
@@ -166,10 +167,6 @@ export default class Monitor extends Vue {
     noFilterValue: '-',
     url: browser.i18n.getMessage('url'),
     inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
-    monitor: browser.i18n.getMessage('monitor'),
-    params: browser.i18n.getMessage('params'),
-    computer: browser.i18n.getMessage('computer'),
-    tools: browser.i18n.getMessage('tools'),
     showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
     filterLabel: browser.i18n.getMessage('filterLabel'),
     urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
