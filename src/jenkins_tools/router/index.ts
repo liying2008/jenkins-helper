@@ -14,12 +14,12 @@ const routes: Array<RouteConfig> = [
       {
         path: '/api-tool',
         name: 'ApiTool',
-        component: () => import('../pages/ApiTool.vue')
+        component: () => import('../pages/api-tool/Index.vue')
       },
       {
         path: '/job-migration',
         name: 'JobMigration',
-        component: () => import('../pages/JobMigration.vue')
+        component: () => import('../pages/job-migration/Index.vue')
       },
     ]
   }

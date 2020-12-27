@@ -1,5 +1,5 @@
 <template>
-  <div id="api-tool-wrapper">
+  <div id="job-migration-wrapper">
     <v-container>
       <div
         class="mx-auto mt-2"
@@ -31,7 +31,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { MessageColor } from '@/models/message'
 
 @Component
-export default class Settings extends Vue {
+export default class Index extends Vue {
   strings = {
   }
   snackbar = {
@@ -39,10 +39,11 @@ export default class Settings extends Vue {
     message: '',
     color: MessageColor.Success,
   }
+
 }
 </script>
 
 <style lang="scss">
-#api-tool-wrapper {
+#job-migration-wrapper {
 }
 </style>
