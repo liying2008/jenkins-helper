@@ -71,6 +71,7 @@
               title="Remove monitoring for this task"
               x-small
               color="grey"
+              class="card-title-remove-btn"
               @click="removeMonitor(jenkinsUrl)"
             >
               <v-icon>mdi-close-circle-outline</v-icon>
@@ -78,7 +79,7 @@
           </div>
         </v-card-title>
         <v-data-table
-          v-show="jenkinsNodes.hasOwnProperty('monitoredNodes')"
+          v-show="jenkinsNodes.status=='ok'"
           :headers="headers"
           :items="toArray(jenkinsNodes.monitoredNodes)"
           :item-class="getRowClass"
@@ -273,7 +274,12 @@ export default class Computer extends Vue {
     }
 
     .card-title-err-btn {
-      width: 70px;
+      width: 4rem;
+      height: 1.6rem;
+    }
+
+    .card-title-remove-btn {
+      align-items: baseline;
     }
 
     .monitor-table-node-url {

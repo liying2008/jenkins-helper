@@ -73,6 +73,7 @@
               title="Remove monitoring for this task"
               x-small
               color="grey"
+              class="card-title-remove-btn"
               @click="removeJenkins(jenkinsUrl)"
             >
               <v-icon>mdi-close-circle-outline</v-icon>
@@ -406,7 +407,12 @@ export default class Monitor extends Vue {
     }
 
     .card-title-err-btn {
-      width: 70px;
+      width: 4rem;
+      height: 1.6rem;
+    }
+
+    .card-title-remove-btn {
+      align-items: baseline;
     }
 
     .monitor-table-job-name {
