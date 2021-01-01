@@ -43,7 +43,7 @@
               class="mt-4 mx-4"
             >
               <v-tab class="text-capitalize">
-                Params
+                Query Params
               </v-tab>
               <v-tab class="text-capitalize">
                 Authorization
@@ -61,7 +61,10 @@
               class="full-width"
             >
               <v-tab-item>
-                <PanelParams />
+                <PanelParams
+                  :params="queryParams"
+                  @params-changed="queryParamsChanged"
+                />
               </v-tab-item>
               <v-tab-item>
                 <PanelAuthorization />
@@ -103,6 +106,7 @@ import PanelParams from './panel-params.vue'
 import PanelAuthorization from './panel-authorization.vue'
 import PanelHeaders from './panel-headers.vue'
 import PanelBody from './panel-body.vue'
+import { QueryParam } from './models'
 
 
 const HTTP_METHOD_GET = 'GET'
@@ -125,12 +129,17 @@ export default class Index extends Vue {
   httpMetod = HTTP_METHOD_GET
   url = ''
   configTab = ''
+  queryParams: QueryParam[] = [new QueryParam()]
+
   snackbar = {
     show: false,
     message: '',
     color: MessageColor.Success,
   }
 
+  queryParamsChanged(newParams: QueryParam[]) {
+    this.queryParams = newParams
+  }
 
   send() {
     console.log('send')
