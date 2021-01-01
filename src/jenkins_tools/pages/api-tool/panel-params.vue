@@ -85,6 +85,10 @@ export default class PanelParams extends Vue {
     const paramsLength = this.params.length
     const lastItem = this.params[paramsLength - 1]
     if (lastItem.key !== '' || lastItem.value !== '') {
+      if (lastItem.initialState) {
+        this.params[paramsLength - 1].enable = true
+        this.params[paramsLength - 1].initialState = false
+      }
       this.params.push(new QueryParam())
     }
     this.$emit('params-changed', this.params)
