@@ -71,17 +71,99 @@ import { QueryParam } from './models'
   name: 'PanelParams'
 })
 export default class PanelParams extends Vue {
-  @Prop({ type: Array, required: true, default: [] }) readonly params!: Array<QueryParam>
+  @Prop({ type: String, required: true, default: '' }) readonly url!: string
+
   strings = {
+  }
+
+  params: QueryParam[] = [new QueryParam()]
+  endWithEqualSign = false // url 参数部分末尾是否是 =
+
+  @Watch('url')
+  watchUrl(url: string) {
+    console.log('watchUrl::url', url)
+    const queryParams: QueryParam[] = []
+    const sepIndex = url.indexOf('?')
+    if (sepIndex === -1 || sepIndex === url.length - 1) {
+      // url 没有参数，nothing to do
+    } else {
+      if (url[url.length - 1] === '=') {
+        console.log('watchUrl::endWithEqualSign', true)
+        this.endWithEqualSign = true
+        // 去掉末尾的 =
+        url = url.substring(0, url.length - 1)
+      } else {
+        console.log('watchUrl::endWithEqualSign', false)
+        this.endWithEqualSign = false
+      }
+      const paramsStr = url.substring(sepIndex + 1)
+      const paramsArray = paramsStr.split('&')
+      for (const paramStr of paramsArray) {
+        const equalSignIndex = paramStr.indexOf('=')
+        if (equalSignIndex === -1) {
+          queryParams.push({
+            key: paramStr,
+            value: '',
+            enable: true,
+            initialState: false,
+          })
+        } else if (equalSignIndex === paramStr.length - 1) {
+          queryParams.push({
+            key: paramStr.substring(0, paramStr.length - 1),
+            value: '',
+            enable: true,
+            initialState: false,
+          })
+        } else {
+          queryParams.push({
+            key: paramStr.substring(0, equalSignIndex),
+            value: paramStr.substring(equalSignIndex + 1),
+            enable: true,
+            initialState: false,
+          })
+        }
+      }
+    }
+
+    console.log('watchUrl::oldParams', this.params.slice(0))
+    console.log('watchUrl::queryParams', queryParams.slice(0))
+    // 根据 queryParams 修改 this.params
+    const newParams: QueryParam[] = []
+
+    const oldParamsLength = this.params.length
+    this.params.forEach((item: QueryParam, index: number) => {
+      if (index === oldParamsLength - 1) {
+        return
+      }
+      const curKey = item.key
+      if (item.enable) {
+        const { matchedItem, matchedIndex } = this.getItemAndIndex(curKey, item.value, queryParams)
+        console.log('watchUrl::matchedItem', matchedItem)
+        console.log('watchUrl::matchedIndex', matchedIndex)
+        if (matchedIndex !== -1) {
+          queryParams.splice(matchedIndex, 1)
+          newParams.push({
+            key: curKey,
+            value: matchedItem!.value,
+            enable: true,
+            initialState: false,
+          })
+        }
+      } else {
+        newParams.push(item)
+      }
+    })
+
+    newParams.push(...(JSON.parse(JSON.stringify(queryParams))))
+    newParams.push(new QueryParam())
+    console.log('watchUrl::newParams', newParams)
+    this.params = newParams
   }
 
   @Watch('params', { deep: true })
   watchParams() {
     console.log('0-params', this.params)
-    if (this.params.length === 0) {
-      this.params.push(new QueryParam())
-    }
-    console.log('1-params', this.params)
+
     const paramsLength = this.params.length
     const lastItem = this.params[paramsLength - 1]
     if (lastItem.key !== '' || lastItem.value !== '') {
@@ -91,10 +173,81 @@ export default class PanelParams extends Vue {
       }
       this.params.push(new QueryParam())
     }
-    this.$emit('params-changed', this.params)
+    console.log('1-params', this.params)
+    this.updateUrl()
   }
 
   mounted() {
+  }
+
+  getItemAndIndex(key: string, value: string, arr: QueryParam[]) {
+    let matchedItem: QueryParam | null = null
+    let matchedIndex: number = -1
+
+    let isFullMatch = false
+
+    for (let index = 0; index < arr.length; index++) {
+      if (arr[index].key === key) {
+        if (matchedIndex === -1) {
+          matchedIndex = index
+          matchedItem = Object.assign({}, arr[index])
+          if (arr[index].value === value) {
+            isFullMatch = true
+            break
+          }
+        } else {
+          if (!isFullMatch && arr[index].value === value) {
+            matchedIndex = index
+            matchedItem = Object.assign({}, arr[index])
+            isFullMatch = true
+            break
+          }
+        }
+      }
+    }
+    return {
+      matchedItem,
+      matchedIndex,
+    }
+  }
+
+  updateUrl() {
+    const sepIndex = this.url.indexOf('?')
+    let newUrl = ''
+    if (sepIndex === -1) {
+      newUrl = this.url
+    } else {
+      newUrl = this.url.substring(0, sepIndex)
+    }
+
+    let isFirstParam = true
+    this.params.forEach((item: QueryParam) => {
+      if (!item.enable) return
+      if (isFirstParam) {
+        newUrl += '?'
+        isFirstParam = false
+      } else {
+        newUrl += '&'
+      }
+      if (item.key !== '' && item.value === '') {
+        newUrl += `${item.key}`
+      } else if (item.value !== '') {
+        newUrl += `${item.key}=${item.value}`
+      }
+    })
+    if (this.endWithEqualSign) {
+      if (!newUrl.endsWith('=')) {
+        newUrl += '='
+      }
+    } else {
+      if (newUrl.endsWith('=')) {
+        newUrl = newUrl.substring(0, newUrl.length - 1)
+      }
+    }
+    console.log('newUrl', newUrl)
+    if (this.url !== newUrl) {
+      this.$emit('url-changed', newUrl)
+    }
   }
 
   /**

@@ -23,7 +23,6 @@
                 hide-details
                 outlined
                 class="full-width ml-6"
-                @input="urlChange"
               ></v-text-field>
 
               <v-btn
@@ -63,8 +62,8 @@
             >
               <v-tab-item>
                 <PanelParams
-                  :params="queryParams"
-                  @params-changed="queryParamsChanged"
+                  :url="url"
+                  @url-changed="urlChanged"
                 />
               </v-tab-item>
               <v-tab-item>
@@ -101,13 +100,12 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { MessageColor } from '@/models/message'
 import PanelParams from './panel-params.vue'
 import PanelAuthorization from './panel-authorization.vue'
 import PanelHeaders from './panel-headers.vue'
 import PanelBody from './panel-body.vue'
-import { QueryParam } from './models'
 
 
 const HTTP_METHOD_GET = 'GET'
@@ -130,7 +128,6 @@ export default class Index extends Vue {
   httpMetod = HTTP_METHOD_GET
   url = ''
   configTab = ''
-  queryParams: QueryParam[] = [new QueryParam()]
 
   snackbar = {
     show: false,
@@ -138,71 +135,8 @@ export default class Index extends Vue {
     color: MessageColor.Success,
   }
 
-  urlChange(url: string) {
-    console.log('urlChanged::url', url)
-    // TODO 需要根据现有的queryParams进行修改，不能直接替换
-    const sepIndex = url.indexOf('?')
-    if (sepIndex === -1 || sepIndex === url.length - 1) {
-      this.queryParams = [new QueryParam()]
-      return
-    }
-    const queryParams = []
-    const paramsStr = url.substring(sepIndex + 1)
-    const paramsArray = paramsStr.split('&')
-    for (const paramStr of paramsArray) {
-      const kv = paramStr.split('=')
-      if (kv.length === 1) {
-        queryParams.push({
-          key: kv[0],
-          value: '',
-          enable: true,
-          initialState: false,
-        })
-      } else if (kv.length === 2) {
-        queryParams.push({
-          key: kv[0],
-          value: kv[1],
-          enable: true,
-          initialState: false,
-        })
-      }
-    }
-    queryParams.push(new QueryParam())
-    this.queryParams = queryParams
-
-  }
-
-  queryParamsChanged(newParams: QueryParam[]) {
-    // console.log('queryParamsChanged::newParams', newParams)
-    this.queryParams = newParams
-    // 修改url
-    this.updateUrlDisplay()
-  }
-
-  updateUrlDisplay() {
-    const sepIndex = this.url.indexOf('?')
-    let newUrl = ''
-    if (sepIndex === -1) {
-      newUrl = this.url
-    } else {
-      newUrl = this.url.substring(0, sepIndex)
-    }
-
-    let isFirstParam = true
-    this.queryParams.forEach((item: QueryParam) => {
-      if (!item.enable) return
-      if (isFirstParam) {
-        newUrl += '?'
-        isFirstParam = false
-      } else {
-        newUrl += '&'
-      }
-      if (item.key !== '' && item.value === '') {
-        newUrl += `${item.key}`
-      } else if (item.value !== '') {
-        newUrl += `${item.key}=${item.value}`
-      }
-    })
+  urlChanged(newUrl: string) {
+    // console.log('urlChanged::newUrl', newUrl)
     this.url = newUrl
   }
 
