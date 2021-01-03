@@ -17,3 +17,14 @@ export class AuthorizationEntity {
   // 是否使用 crumb 标记
   useCrumb: boolean = true
 }
+
+export class Header {
+  // Header Key
+  key: string = ''
+  // Header Value
+  value: string = ''
+  // Header 是否启用
+  enable: boolean = false
+  // 是否是初始状态，Header 首次创建为初始状态，开始输入之后取消初始状态
+  initialState: boolean = true
+}

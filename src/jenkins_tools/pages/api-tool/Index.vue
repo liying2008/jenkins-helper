@@ -73,7 +73,7 @@
                 />
               </v-tab-item>
               <v-tab-item>
-                <PanelHeaders />
+                <PanelHeaders @headers-changed="headersChanged" />
               </v-tab-item>
               <v-tab-item>
                 <PanelBody />
@@ -109,7 +109,7 @@ import PanelParams from './panel-params.vue'
 import PanelAuthorization from './panel-authorization.vue'
 import PanelHeaders from './panel-headers.vue'
 import PanelBody from './panel-body.vue'
-import { AuthorizationEntity } from './models'
+import { AuthorizationEntity, Header } from './models'
 
 
 const HTTP_METHOD_GET = 'GET'
@@ -133,6 +133,7 @@ export default class Index extends Vue {
   url = ''
   configTab = ''
   authorizationEntity: AuthorizationEntity = new AuthorizationEntity()
+  headers: Header[] = []
 
   snackbar = {
     show: false,
@@ -150,6 +151,10 @@ export default class Index extends Vue {
     this.authorizationEntity = newAuthorizationEntity
   }
 
+  headersChanged(newHeaders: Header[]) {
+    console.log('headersChanged::newHeaders', newHeaders)
+    this.headers = newHeaders
+  }
   send() {
     console.log('send')
   }

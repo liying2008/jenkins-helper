@@ -33,6 +33,7 @@
               v-model="param.key"
               dense
               hide-details
+              :disabled="!param.enable && index !== params.length - 1"
               placeholder="Key"
             ></v-text-field>
           </div>
@@ -42,12 +43,13 @@
             v-model="param.value"
             dense
             hide-details
+            :disabled="!param.enable && index !== params.length - 1"
             placeholder="Value"
           ></v-text-field>
         </v-col>
         <v-col cols="1">
           <v-btn
-            v-if="index != params.length - 1"
+            v-if="index !== params.length - 1"
             dense
             icon
             title="Remove this parameter"
