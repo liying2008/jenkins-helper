@@ -67,7 +67,10 @@
                 />
               </v-tab-item>
               <v-tab-item>
-                <PanelAuthorization />
+                <PanelAuthorization
+                  :authorization-entity="authorizationEntity"
+                  @authorization-changed="authorizationChanged"
+                />
               </v-tab-item>
               <v-tab-item>
                 <PanelHeaders />
@@ -106,6 +109,7 @@ import PanelParams from './panel-params.vue'
 import PanelAuthorization from './panel-authorization.vue'
 import PanelHeaders from './panel-headers.vue'
 import PanelBody from './panel-body.vue'
+import { AuthorizationEntity } from './models'
 
 
 const HTTP_METHOD_GET = 'GET'
@@ -128,6 +132,7 @@ export default class Index extends Vue {
   httpMetod = HTTP_METHOD_GET
   url = ''
   configTab = ''
+  authorizationEntity: AuthorizationEntity = new AuthorizationEntity()
 
   snackbar = {
     show: false,
@@ -138,6 +143,11 @@ export default class Index extends Vue {
   urlChanged(newUrl: string) {
     // console.log('urlChanged::newUrl', newUrl)
     this.url = newUrl
+  }
+
+  authorizationChanged(newAuthorizationEntity: AuthorizationEntity) {
+    // console.log('authorizationChanged::newAuthorizationEntity', newAuthorizationEntity)
+    this.authorizationEntity = newAuthorizationEntity
   }
 
   send() {

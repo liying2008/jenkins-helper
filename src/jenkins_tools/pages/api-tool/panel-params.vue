@@ -21,6 +21,8 @@
       >
         <v-col cols="3">
           <div class="d-flex">
+            <!-- 最后一个条目不显示checkbox的设置方法，但有性能问题，暂不使用 -->
+            <!-- :style="{ visibility: index === params.length - 1 ? 'hidden': 'visible' }" -->
             <v-checkbox
               v-model="param.enable"
               dense
@@ -71,10 +73,7 @@ import { QueryParam } from './models'
   name: 'PanelParams'
 })
 export default class PanelParams extends Vue {
-  @Prop({ type: String, required: true, default: '' }) readonly url!: string
-
-  strings = {
-  }
+  @Prop({ type: String, required: true }) readonly url!: string
 
   params: QueryParam[] = [new QueryParam()]
   endWithEqualSign = false // url 参数部分末尾是否是 =
@@ -165,6 +164,14 @@ export default class PanelParams extends Vue {
     console.log('0-params', this.params)
 
     const paramsLength = this.params.length
+    // 处理 key 和 value 中的一些特殊字符
+    for (let i = 0; i < paramsLength; i++) {
+      const key = this.params[i].key
+      const value = this.params[i].value
+      this.params[i].key = key.replaceAll('=', '%3D').replaceAll('&', '%26').replaceAll('#', '%23')
+      this.params[i].value = value.replaceAll('&', '%26').replaceAll('#', '%23')
+    }
+    // 判断最后一个条目是否为空，不为空则添加一个空条目
     const lastItem = this.params[paramsLength - 1]
     if (lastItem.key !== '' || lastItem.value !== '') {
       if (lastItem.initialState) {
@@ -174,6 +181,7 @@ export default class PanelParams extends Vue {
       this.params.push(new QueryParam())
     }
     console.log('1-params', this.params)
+    // 根据当前参数列表生成URL
     this.updateUrl()
   }
 

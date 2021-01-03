@@ -8,3 +8,12 @@ export class QueryParam {
   // 是否是初始状态，参数首次创建为初始状态，开始输入之后取消初始状态
   initialState: boolean = true
 }
+
+export class AuthorizationEntity {
+  // Jenkins username
+  username: string | null = null
+  // Jenkins password or api token
+  password: string | null = null
+  // 是否使用 crumb 标记
+  useCrumb: boolean = true
+}
