@@ -4,7 +4,7 @@
     <v-form
       ref="form"
       v-model="isFormValid"
-      @submit.prevent="addJenkinsUrl"
+      @submit.native.prevent="addJenkinsUrl"
     >
       <v-row>
         <v-col cols="12">

@@ -8296,10 +8296,10 @@ vue-cli-plugin-browser-extension@~0.25.1:
     webpack-extension-reloader "^1.1.0"
     zip-webpack-plugin "^3.0.0"
 
-vue-cli-plugin-vuetify@~2.0.8:
-  version "2.0.8"
-  resolved "https://registry.npm.taobao.org/vue-cli-plugin-vuetify/download/vue-cli-plugin-vuetify-2.0.8.tgz?cache=0&sync_timestamp=1606985603485&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-cli-plugin-vuetify%2Fdownload%2Fvue-cli-plugin-vuetify-2.0.8.tgz#026051aad7820b356ec9cea208bf0f06e95a53a2"
-  integrity sha1-AmBRqteCCzVuyc6iCL8PBulaU6I=
+vue-cli-plugin-vuetify@~2.0.9:
+  version "2.0.9"
+  resolved "https://registry.npm.taobao.org/vue-cli-plugin-vuetify/download/vue-cli-plugin-vuetify-2.0.9.tgz?cache=0&sync_timestamp=1609234884643&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-cli-plugin-vuetify%2Fdownload%2Fvue-cli-plugin-vuetify-2.0.9.tgz#982991aec28e79d1f0c2eb8f6e3d62e042087ee8"
+  integrity sha1-mCmRrsKOedHwwuuPbj1i4EIIfug=
   dependencies:
     null-loader "^3.0.0"
     semver "^7.1.2"
@@ -8379,10 +8379,10 @@ vuetify-loader@^1.6.0:
     file-loader "^4.0.0"
     loader-utils "^1.2.0"
 
-vuetify@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.npm.taobao.org/vuetify/download/vuetify-2.4.0.tgz#6aa2616b0fecb0614cf85052b0ffbb5cad80bf92"
-  integrity sha1-aqJhaw/ssGFM+FBSsP+7XK2Av5I=
+vuetify@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.npm.taobao.org/vuetify/download/vuetify-2.4.2.tgz#d37d160c1fc6b241fc166a32980b34590a017d6e"
+  integrity sha1-030WDB/GskH8FmoymAs0WQoBfW4=
 
 vuex@^3.5.1:
   version "3.5.1"
