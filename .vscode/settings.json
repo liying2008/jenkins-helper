@@ -18,5 +18,6 @@
   "vetur.completion.tagCasing": "initial",
   "vetur.format.defaultFormatter.html": "js-beautify-html",
   "vetur.format.defaultFormatter.ts": "vscode-typescript",
+  "vetur.experimental.templateInterpolationService": true,
   "files.eol": "\n"
 }
