@@ -127,7 +127,7 @@
     <!--底部设置-->
     <div v-show="Object.keys(data).length>0">
       <v-container fluid>
-        <v-row>
+        <v-row class="bottom-toolbar-row">
           <!--是否显示禁用的Job-->
           <v-checkbox
             v-model="showDisabledJobs"
@@ -143,7 +143,7 @@
             :label="strings.filterLabel"
             dense
             outlined
-            class="ml-12 pt-3 bottom-filter"
+            class="ml-12 bottom-filter"
           ></v-select>
         </v-row>
       </v-container>
@@ -468,8 +468,10 @@ export default class Monitor extends Vue {
     }
   }
 
-  .bottom-filter {
-    max-width: 130px;
+  .bottom-toolbar-row {
+    .bottom-filter {
+      max-width: 130px;
+    }
   }
 }
 </style>

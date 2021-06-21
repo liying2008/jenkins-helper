@@ -23,6 +23,9 @@
   "search": {
     "message": "搜索"
   },
+  "baiduSearch": {
+    "message": "百度搜索"
+  },
   "globalOptionTitle": {
     "message": "全局设置"
   },

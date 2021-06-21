@@ -23,6 +23,9 @@
   "search": {
     "message": "Search"
   },
+  "baiduSearch": {
+    "message": "Baidu Search"
+  },
   "globalOptionTitle": {
     "message": "Global Settings"
   },
