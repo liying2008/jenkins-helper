@@ -1,25 +1,35 @@
 <template>
   <div id="monitor-wrapper">
-    <!-- 添加URL的表单 -->
-    <v-form
-      ref="form"
-      v-model="isFormValid"
-      @submit.native.prevent="addJenkinsUrl"
-    >
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="inputUrlValue"
-            :append-outer-icon="isFormValid ? 'mdi-plus' : ''"
-            prepend-icon="mdi-link-variant"
-            :label="strings.inputUrlPlaceholder"
-            type="text"
-            :rules="[required(), isValidURL()]"
-            @click:append-outer="addJenkinsUrl"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-    </v-form>
+    <!-- 创建监控任务面板 -->
+    <v-expansion-panels class="mt-3">
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          {{ strings.createMonitoringTaskTitle }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <!-- 添加URL的表单 -->
+          <v-form
+            ref="form"
+            v-model="isFormValid"
+            @submit.native.prevent="addJenkinsUrl"
+          >
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="inputUrlValue"
+                  :append-outer-icon="isFormValid ? 'mdi-plus' : ''"
+                  prepend-icon="mdi-link-variant"
+                  :label="strings.inputUrlPlaceholder"
+                  type="text"
+                  :rules="[required(), isValidURL()]"
+                  @click:append-outer="addJenkinsUrl"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <div>
       <v-card
@@ -166,6 +176,7 @@ import { DataTableHeader } from 'vuetify'
 export default class Monitor extends Vue {
   strings = {
     noFilterValue: '-',
+    createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
     url: browser.i18n.getMessage('url'),
     inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
     showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),

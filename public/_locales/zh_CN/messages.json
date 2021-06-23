@@ -119,6 +119,9 @@
   "nodeRefreshTimeTip_2": {
     "message": " 小时</b> 获取一次最新状态"
   },
+  "createMonitoringTaskTitle": {
+    "message": "创建监控任务"
+  },
   "url": {
     "message": "URL"
   },

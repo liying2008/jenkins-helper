@@ -119,6 +119,9 @@
   "nodeRefreshTimeTip_2": {
     "message": " hours</b>"
   },
+  "createMonitoringTaskTitle": {
+    "message": "Create Monitoring Task"
+  },
   "url": {
     "message": "URL"
   },
