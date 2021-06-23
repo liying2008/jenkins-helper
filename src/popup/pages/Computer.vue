@@ -223,6 +223,12 @@ export default class Computer extends Vue {
   }
 
   removeMonitor(jenkinsUrl: string) {
+    const ok = confirm(`Whether to cancel this monitoring [${jenkinsUrl}] ?`)
+    if (!ok) {
+      // 点击取消
+      return
+    }
+
     StorageService.getNodeStatus().then((result: Nodes) => {
       if (result.hasOwnProperty(jenkinsUrl)) {
         delete result[jenkinsUrl]

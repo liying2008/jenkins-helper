@@ -35,10 +35,10 @@
           >
           <div class="ml-5 card-title-job">
             <span
-              :title="jenkins.name"
+              :title="decodeURIComponent(jenkins.name)"
               class="card-title-job-name"
             >
-              {{ jenkins.name }}
+              {{ decodeURIComponent(jenkins.name) }}
             </span>
             <br style="height: 10px;">
             <a
@@ -366,6 +366,12 @@ export default class Monitor extends Vue {
   }
 
   removeJenkins(jenkinsUrl: string) {
+    const ok = confirm(`Whether to cancel this monitoring [${jenkinsUrl}] ?`)
+    if (!ok) {
+      // 点击取消
+      return
+    }
+
     StorageService.removeJenkinsUrls(jenkinsUrl).then(() => {
       this.getAllJobStatus()
     })
