@@ -112,6 +112,16 @@
               v-html="item.diskSpaceThreshold"
             ></span>
           </template>
+          <!-- actions -->
+          <template v-slot:[`item.actions`]="props">
+            <v-icon
+              small
+              title="Cancel Monitoring"
+              @click="deleteItem(jenkinsUrl, props.item)"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
         </v-data-table>
       </v-card>
     </div>
@@ -151,12 +161,16 @@ import { DataTableHeader } from 'vuetify'
 })
 export default class Computer extends Vue {
   strings = {
+    close: browser.i18n.getMessage('close'),
+    cancel: browser.i18n.getMessage('cancel'),
+    save: browser.i18n.getMessage('save'),
     manageMonitoredNodes: browser.i18n.getMessage('manageMonitoredNodes'),
     refresh: browser.i18n.getMessage('refresh'),
     openManagerPage: browser.i18n.getMessage('openManagerPage'),
     displayName: browser.i18n.getMessage('displayName'),
     remainingDiskSpace: browser.i18n.getMessage('remainingDiskSpace'),
     alarmThreshold: browser.i18n.getMessage('alarmThreshold'),
+    actions: browser.i18n.getMessage('actions'),
     monitoringCancelled: browser.i18n.getMessage('monitoringCancelled'),
   }
   refreshIconNormal = true
@@ -167,6 +181,7 @@ export default class Computer extends Vue {
     { text: this.strings.displayName, align: 'start', value: 'displayName' },
     { text: this.strings.remainingDiskSpace, align: 'start', value: 'remainingDiskSpace' },
     { text: this.strings.alarmThreshold, align: 'start', value: 'diskSpaceThreshold' },
+    { text: this.strings.actions, value: 'actions', sortable: false },
   ]
   snackbar = {
     show: false,
@@ -231,6 +246,31 @@ export default class Computer extends Vue {
     const remainingDiskSpace = parseFloat(node.remainingDiskSpace.replace('GB', '').trim())
     const threshold = node.diskSpaceThreshold
     return remainingDiskSpace > threshold
+  }
+
+  // 删除监控条目
+  deleteItem(jenkinsUrl: string, node: NodeDetail) {
+    // console.log(jenkinsUrl, node)
+    const nodeName = node.displayName
+    const ok = confirm(`Do you cancel the monitoring of this node [${nodeName}] ?`)
+    if (!ok) {
+      // 点击取消
+      return
+    }
+    StorageService.getNodeStatus().then((result: Nodes) => {
+      if (result.hasOwnProperty(jenkinsUrl)) {
+        // 删除 node
+        delete result[jenkinsUrl]['monitoredNodes'][nodeName]
+        StorageService.saveNodeStatus(result).then(() => {
+          console.log(nodeName + ' 已删除')
+          this.snackbar = {
+            show: true,
+            message: `${this.strings.monitoringCancelled}${nodeName}`,
+            color: MessageColor.Success,
+          }
+        })
+      }
+    })
   }
 
   // 刷新节点信息

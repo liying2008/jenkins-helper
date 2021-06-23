@@ -526,7 +526,7 @@ export default class Params extends Vue {
 
   #info-block {
     .info-col {
-      padding: 0.6rem;
+      padding: 0.4rem;
       line-height: 1rem;
       color: #333333;
 

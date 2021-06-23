@@ -127,7 +127,7 @@
     <!--底部设置-->
     <div v-show="Object.keys(data).length>0">
       <v-container fluid>
-        <v-row class="bottom-toolbar-row">
+        <v-row class="pt-3 bottom-toolbar-row">
           <!--是否显示禁用的Job-->
           <v-checkbox
             v-model="showDisabledJobs"
