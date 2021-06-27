@@ -122,6 +122,14 @@
   "createMonitoringTaskTitle": {
     "message": "创建监控任务"
   },
+  "cancelMonitoringTaskGroup": {
+    "message": "是否删除该监控任务 [$url$]？",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
   "url": {
     "message": "URL"
   },
@@ -208,6 +216,22 @@
   },
   "monitoringCancelled": {
     "message": "已取消监控："
+  },
+  "cancelMonitoringNodeUrl": {
+    "message": "是否不再监控该Jenkins的节点 [$url$]？",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "cancelMonitoringNode": {
+    "message": "是否不再监控此节点 [$name$]？",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "workingDirectory": {
     "message": "工作目录"

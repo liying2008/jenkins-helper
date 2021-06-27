@@ -377,7 +377,7 @@ export default class Monitor extends Vue {
   }
 
   removeJenkins(jenkinsUrl: string) {
-    const ok = confirm(`Whether to cancel this monitoring [${jenkinsUrl}] ?`)
+    const ok = confirm(browser.i18n.getMessage('cancelMonitoringTaskGroup', [jenkinsUrl]))
     if (!ok) {
       // 点击取消
       return

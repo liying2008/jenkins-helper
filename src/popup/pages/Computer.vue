@@ -109,7 +109,7 @@
           <template v-slot:[`item.diskSpaceThreshold`]="{ item }">
             <span
               :class="[isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
-              v-html="item.diskSpaceThreshold"
+              v-html="item.diskSpaceThreshold + ' GB'"
             ></span>
           </template>
           <!-- actions -->
@@ -223,7 +223,7 @@ export default class Computer extends Vue {
   }
 
   removeMonitor(jenkinsUrl: string) {
-    const ok = confirm(`Whether to cancel this monitoring [${jenkinsUrl}] ?`)
+    const ok = confirm(browser.i18n.getMessage('cancelMonitoringNodeUrl', [jenkinsUrl]))
     if (!ok) {
       // 点击取消
       return
@@ -258,7 +258,7 @@ export default class Computer extends Vue {
   deleteItem(jenkinsUrl: string, node: NodeDetail) {
     // console.log(jenkinsUrl, node)
     const nodeName = node.displayName
-    const ok = confirm(`Do you cancel the monitoring of this node [${nodeName}] ?`)
+    const ok = confirm(browser.i18n.getMessage('cancelMonitoringNode', [nodeName]))
     if (!ok) {
       // 点击取消
       return

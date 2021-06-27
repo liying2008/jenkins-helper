@@ -122,6 +122,14 @@
   "createMonitoringTaskTitle": {
     "message": "Create Monitoring Task"
   },
+  "cancelMonitoringTaskGroup": {
+    "message": "Whether to cancel this monitoring [$url$] ?",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
   "url": {
     "message": "URL"
   },
@@ -208,6 +216,22 @@
   },
   "monitoringCancelled": {
     "message": "Monitoring cancelled: "
+  },
+  "cancelMonitoringNodeUrl": {
+    "message": "Whether to cancel this monitoring [$url$] ?",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "cancelMonitoringNode": {
+    "message": "Do you cancel the monitoring of this node [$name$] ?",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "workingDirectory": {
     "message": "WorkingDirectory"
