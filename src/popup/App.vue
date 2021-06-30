@@ -20,6 +20,10 @@ export default class App extends Vue {
   /*min-width: 700;*/
   width: 700px;
   margin: auto;
+  // a 链接文本颜色
+  .a-link-color {
+    color: var(--v-link-base);
+  }
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   .v-card__title {
     line-height: 1.1;

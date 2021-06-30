@@ -55,7 +55,7 @@
                 Body
               </v-tab>
             </v-tabs>
-            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <v-tabs-slider></v-tabs-slider>
             <v-tabs-items
               v-model="configTab"
               class="full-width"
@@ -127,6 +127,7 @@ const HTTP_METHOD_DELETE = 'DELETE'
 })
 export default class Index extends Vue {
   strings = {
+    close: browser.i18n.getMessage('close'),
   }
   httpMethods = [HTTP_METHOD_GET, HTTP_METHOD_POST, HTTP_METHOD_PUT, HTTP_METHOD_DELETE]
   httpMetod = HTTP_METHOD_GET

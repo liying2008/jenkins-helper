@@ -46,13 +46,14 @@
           <div class="ml-5 card-title-job">
             <span
               :title="decodeURIComponent(jenkins.name)"
+              color="title"
               class="card-title-job-name"
             >
               {{ decodeURIComponent(jenkins.name) }}
             </span>
             <br style="height: 10px;">
             <a
-              class="card-title-job-url"
+              class="card-title-job-url a-link-color"
               target="_blank"
               :href="jenkinsUrl"
             >
@@ -105,7 +106,7 @@
             <a
               :href="item.jobUrl"
               target="_blank"
-              :class="['monitor-table-job-name', {'building':item.building}]"
+              :class="['monitor-table-job-name', 'a-link-color', {'building':item.building}]"
             >{{ item.name }}</a>
           </template>
 
@@ -121,7 +122,6 @@
           <template v-slot:[`item.status`]="{ item }">
             <v-chip
               small
-              text-color="white"
               label
               pill
               :color="getResultColor(item.color)"
@@ -396,7 +396,13 @@ export default class Monitor extends Vue {
     const s = Tools.getReadableTime(timestamp, true)
     if (s === '') return ''
     const arr = s.split(' ')
-    return '<span style="color: #444">' + arr[0] + '</span> <span style="color: #888">' + arr[1] + '</span>'
+    let dateColor = '#444444'
+    let timeColor = '#888888'
+    if (this.$vuetify.theme.dark) {
+      dateColor = '#bbbbbb'
+      timeColor = '#888888'
+    }
+    return `<span style="color: ${dateColor}">${arr[0]}</span> <span style="color: ${timeColor}">${arr[1]}</span>`
   }
 }
 
@@ -414,7 +420,6 @@ export default class Monitor extends Vue {
       .card-title-job-name {
         font-size: 18px;
         font-weight: 500;
-        color: #333;
       }
 
       .card-title-job-url {
@@ -458,11 +463,11 @@ export default class Monitor extends Vue {
     }
 
     .building-row {
-      background-color: powderblue;
+      background-color: var(--v-buildingline-base);
     }
 
     .disabled-row {
-      background-color: lightgray;
+      background-color: var(--v-disabledline-base);
     }
 
     .building {

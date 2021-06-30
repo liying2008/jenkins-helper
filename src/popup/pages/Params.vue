@@ -22,7 +22,7 @@
               :href="url"
               target="_blank"
               style="margin-left: 8px"
-              class="display-name"
+              class="display-name a-link-color"
             >{{ fullDisplayName }}</a>
           </v-col>
           <v-col
@@ -528,7 +528,7 @@ export default class Params extends Vue {
     .info-col {
       padding: 0.4rem;
       line-height: 1rem;
-      color: #333333;
+      color: var(--v-title-base);
 
       .display-name {
         text-decoration-line: none;
@@ -567,7 +567,7 @@ export default class Params extends Vue {
   #params-table {
     .hidden-param {
       font-size: 0.8em;
-      color: #8c8c8c;
+      color: var(--v-subtitle-base);
       font-style: italic;
     }
   }

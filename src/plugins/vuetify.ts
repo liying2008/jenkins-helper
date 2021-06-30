@@ -20,16 +20,29 @@ const vuetify = new Vuetify({
         error: colors.red.darken2,
         warning: colors.orange.darken2,
         info: colors.blue.darken2,
+        title: colors.grey.darken4,
+        subtitle: colors.grey.base,
+        link: colors.teal.base,
+        buildingline: '#b0e0e6',
+        disabledline: '#d6d6d6',
       },
       dark: {
-        primary: colors.teal.darken3,
+        primary: colors.teal.darken4,
         secondary: colors.teal.lighten2,
         accent: colors.teal.accent3,
-        success: colors.green.darken3,
-        error: colors.red.darken3,
-        warning: colors.orange.darken3,
-        info: colors.blue.darken3,
+        success: colors.green.darken4,
+        error: colors.red.darken4,
+        warning: colors.orange.darken4,
+        info: colors.blue.darken4,
+        title: colors.grey.lighten1,
+        subtitle: colors.grey.darken1,
+        link: colors.teal.base,
+        buildingline: '#2d4e52',
+        disabledline: '#4a4a4a',
       }
+    },
+    options: {
+      customProperties: true
     }
   }
 })

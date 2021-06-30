@@ -8,7 +8,7 @@
       <!--管理监控节点按钮-->
       <v-btn
         text
-        color="primary"
+        class="a-link-color"
         @click="openNodesManager('')"
       >
         {{ strings.manageMonitoredNodes }}
@@ -16,7 +16,7 @@
       <!--刷新节点信息按钮-->
       <v-btn
         text
-        color="primary"
+        class="a-link-color"
         title="Refresh nodes information"
         @click="refreshNodesInfo"
       >
@@ -40,13 +40,14 @@
           <div class="ml-5 card-title-node">
             <span
               :title="decodeURIComponent(jenkinsUrl)"
+              color="title"
               class="card-title-node-url"
             >
               {{ decodeURIComponent(jenkinsUrl) }}
             </span>
             <br style="height: 10px;">
             <a
-              class="card-title-node-sub"
+              class="card-title-node-sub a-link-color"
               @click="openNodesManager(jenkinsUrl)"
             >
               <span class="no-wrap">{{ strings.openManagerPage }}</span>
@@ -93,14 +94,14 @@
             <a
               :href="item.nodeUrl"
               target="_blank"
-              :class="['monitor-table-node-url', isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+              :class="['monitor-table-node-url', isSafe(item)?'success--text':'error--text']"
             >{{ item.displayName }}</a>
           </template>
 
           <!-- remainingDiskSpace -->
           <template v-slot:[`item.remainingDiskSpace`]="{ item }">
             <span
-              :class="[isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+              :class="[isSafe(item)?'success--text':'error--text']"
               v-html="item.remainingDiskSpace"
             ></span>
           </template>
@@ -108,7 +109,7 @@
           <!-- diskSpaceThreshold -->
           <template v-slot:[`item.diskSpaceThreshold`]="{ item }">
             <span
-              :class="[isSafe(item)?'success--text text--darken-2':'error--text text--darken-2']"
+              :class="[isSafe(item)?'success--text':'error--text']"
               v-html="item.diskSpaceThreshold + ' GB'"
             ></span>
           </template>
@@ -310,7 +311,6 @@ export default class Computer extends Vue {
       .card-title-node-url {
         font-size: 18px;
         font-weight: 500;
-        color: #333;
       }
 
       .card-title-node-sub {
@@ -335,7 +335,7 @@ export default class Computer extends Vue {
     }
 
     .disabled-row {
-      background-color: lightgray;
+      background-color: var(--v-disabledline-base);
     }
   }
 }

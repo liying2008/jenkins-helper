@@ -1,8 +1,8 @@
 <template>
   <v-app id="layout-wrapper">
-    <v-card elevation="0">
+    <div>
       <v-toolbar
-        color="teal"
+        color="primary"
         dark
         flat
       >
@@ -40,12 +40,14 @@
           <v-tabs
             v-model="activeTab"
             show-arrows
+            dark
+            color="white"
             align-with-title
           >
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
             <v-tab to="/monitor">
-              {{ strings.monitor }}
+              <div>{{ strings.monitor }}</div>
             </v-tab>
             <v-tab to="/params">
               {{ strings.params }}
@@ -64,7 +66,7 @@
           <router-view :key="$route.fullPath" />
         </v-container>
       </v-main>
-    </v-card>
+    </div>
   </v-app>
 </template>
 
