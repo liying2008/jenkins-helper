@@ -310,8 +310,8 @@ export default class Params extends Vue {
       case 'SUCCESS': return 'success'
       case 'FAILURE': return 'error'
       case 'UNSTABLE': return 'warning'
-      case 'ABORTED': return 'brown'
-      default: return 'blue'
+      case 'ABORTED': return 'aborted'
+      default: return 'orange darken-2'
     }
   }
 

@@ -123,6 +123,7 @@
             <v-chip
               small
               label
+              text-color="white"
               pill
               :color="getResultColor(item.color)"
               :class="['monitor-table-result-chip', {'building':item.building} ]"
@@ -249,11 +250,11 @@ export default class Monitor extends Vue {
     switch (jobColor) {
       case 'blue': return 'success'
       case 'red': return 'error'
-      case 'notbuilt': return 'grey'
+      case 'notbuilt': return 'notbuilt'
       case 'yellow': return 'warning'
-      case 'aborted': return 'brown'
-      case 'disabled': return 'blue-grey'
-      default: return 'blue'
+      case 'aborted': return 'aborted'
+      case 'disabled': return 'disabled'
+      default: return 'orange darken-2'
     }
   }
 

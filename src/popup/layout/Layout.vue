@@ -47,7 +47,7 @@
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
             <v-tab to="/monitor">
-              <div>{{ strings.monitor }}</div>
+              {{ strings.monitor }}
             </v-tab>
             <v-tab to="/params">
               {{ strings.params }}
