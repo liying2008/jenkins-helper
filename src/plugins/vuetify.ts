@@ -28,6 +28,8 @@ const vuetify = new Vuetify({
         link: colors.teal.base,
         buildingline: '#b0e0e6',
         disabledline: '#d6d6d6',
+        offlineline: '#d6d6d6',
+        monitoredline: '#dff0d8',
       },
       dark: {
         primary: colors.teal.darken4,
@@ -45,6 +47,8 @@ const vuetify = new Vuetify({
         link: colors.teal.base,
         buildingline: '#2d4e52',
         disabledline: '#4a4a4a',
+        offlineline: '#404040',
+        monitoredline: '#174802',
       }
     },
     options: {

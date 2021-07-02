@@ -67,6 +67,7 @@
             <template v-slot:[`item.displayName`]="{ item }">
               <span :title="item.offline ? 'Offline' : ''">
                 <a
+                  class="a-link-color"
                   :href="item.nodeUrl"
                   target="_blank"
                 >{{ item.displayName }}</a>
@@ -260,7 +261,7 @@ export default class App extends Vue {
    * 查询Jenkins节点数据
    * @param jenkinsUrl
    */
-  queryJenkinsNodes(jenkinsUrl?: string|undefined) {
+  queryJenkinsNodes(jenkinsUrl?: string | undefined) {
     let url = this.inputUrlValue
     if (jenkinsUrl === undefined) {
       url = url.charAt(url.length - 1) === '/' ? url : url + '/'
@@ -403,13 +404,17 @@ export default class App extends Vue {
 </script>
 <style lang="scss">
 #computer-manager-wrapper {
+  .a-link-color {
+    color: var(--v-link-base);
+  }
+
   #computers-table {
     .offline-row {
-      background-color: lightgray;
+      background-color: var(--v-offlineline-base);
     }
 
     .monitored-row {
-      background-color: #dff0d8;
+      background-color: var(--v-monitoredline-base);
     }
   }
 }
