@@ -110,8 +110,8 @@
             >{{ item.name }}</a>
           </template>
 
-          <!-- lastBuildTime -->
-          <template v-slot:[`item.lastBuildTime`]="{ item }">
+          <!-- lastBuildTimestamp -->
+          <template v-slot:[`item.lastBuildTimestamp`]="{ item }">
             <span
               :class="[ {'building':item.building}]"
               v-html="getStyledTime(item.lastBuildTimestamp)"
@@ -199,7 +199,7 @@ export default class Monitor extends Vue {
   search = ''
   headers: DataTableHeader[] = [
     { text: 'Job Name', align: 'start', value: 'name' },
-    { text: 'Last Build Time', align: 'center', value: 'lastBuildTime', width: '24%' },
+    { text: 'Last Build Time', align: 'center', value: 'lastBuildTimestamp', width: '24%' },
     { text: 'Result', align: 'center', value: 'status', width: '12%' },
   ]
 
