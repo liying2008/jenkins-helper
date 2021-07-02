@@ -27,7 +27,7 @@
           <a
             :href="item.url"
             target="_blank"
-            class="jobs-table-url"
+            class="a-link-color jobs-table-url"
           >{{ item.url }}</a>
         </template>
 
@@ -56,11 +56,13 @@
         id="display-settings"
         outlined
         subheader
+        dense
         class="my-6"
       >
         <v-subheader>{{ strings.jobStatisticsShowSettings_ }}</v-subheader>
         <v-list-item-group
           v-model="settings"
+          dense
           active-class="primary--text"
           multiple
         >
@@ -499,6 +501,9 @@ export default class App extends Vue {
 </script>
 <style lang="scss">
 #job-stats-wrapper {
+  .a-link-color {
+    color: var(--v-link-base);
+  }
   #jobs-table {
     table tbody tr td {
       font-size: 0.78rem;
@@ -512,7 +517,7 @@ export default class App extends Vue {
       white-space: pre-line;
     }
     .disabled-row {
-      background-color: lightgray;
+      background-color: var(--v-disabledline-base);
     }
   }
   #display-settings {
