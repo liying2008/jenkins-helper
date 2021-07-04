@@ -3,10 +3,10 @@ export interface JobRoot {
 }
 
 export class JobSet {
-  jobs?: JobStatus | undefined = undefined
+  jobs?: JobStatus = undefined
   name: string = ''
   status: string = ''
-  error?: string | undefined = undefined
+  error?: string = undefined
 
   constructor(name: string, status: string, error = '') {
     this.name = name

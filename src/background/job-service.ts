@@ -1,8 +1,10 @@
 import { Tools } from '@/libs/tools'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
-import { JobSet } from '@/models/job'
+import { JobRoot, JobSet, JobStatus } from '@/models/job'
 import { Options } from '@/models/option'
 import { Omnibox } from '@/background/omnibox'
+import { JenkinsCompletedBuild, JenkinsJob } from '@/models/jenkins/job'
+import { JenkinsView } from '@/models/jenkins/view'
 
 export class JobService {
   private static jenkinsUrls: string[] = [];
@@ -95,7 +97,10 @@ export class JobService {
     JobService.unstableJobCount = 0
     JobService.successJobCount = 0
     JobService.errorOnFetch = false
-    return JobService.failureJobCount === 0 && JobService.unstableJobCount === 0 && JobService.successJobCount === 0 && !JobService.errorOnFetch
+    return JobService.failureJobCount === 0 &&
+      JobService.unstableJobCount === 0 &&
+      JobService.successJobCount === 0 &&
+      !JobService.errorOnFetch
   }
 
   private static countBadgeJobCount(color?: string) {
@@ -164,7 +169,8 @@ export class JobService {
     }
   }
 
-  private static parseJenkinsOrViewData(url: string, data: any, oldStatus: any) {
+  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldStatus: any) {
+    // console.log('parseJenkinsOrViewData::oldStatus', oldStatus)
     const jobs = data.jobs
     // console.log('jobs 1', jobs);
     for (let i = 0; i < jobs.length; i++) {
@@ -172,11 +178,11 @@ export class JobService {
       jobs[i].lastBuildTimestamp = 0
       jobs[i].lastBuildUrl = ''
       jobs[i].lastBuildResult = ''
-      if (jobs[i].lastCompletedBuild !== undefined && jobs[i].lastCompletedBuild !== null) {
-        jobs[i].lastBuildNumber = jobs[i].lastCompletedBuild.number
-        jobs[i].lastBuildTimestamp = jobs[i].lastCompletedBuild.timestamp
-        jobs[i].lastBuildUrl = jobs[i].lastCompletedBuild.url
-        jobs[i].lastBuildResult = jobs[i].lastCompletedBuild.result
+      if (jobs[i].lastCompletedBuild) {
+        jobs[i].lastBuildNumber = jobs[i].lastCompletedBuild!.number
+        jobs[i].lastBuildTimestamp = jobs[i].lastCompletedBuild!.timestamp
+        jobs[i].lastBuildUrl = jobs[i].lastCompletedBuild!.url
+        jobs[i].lastBuildResult = jobs[i].lastCompletedBuild!.result
       }
     }
     const jenkinsObj: JobSet = {
@@ -200,9 +206,9 @@ export class JobService {
       if (oldStatus[url] && oldStatus[url].jobs) {
         oldStatus = oldStatus[url].jobs
       }
-      if (oldStatus[job.url] && job.lastBuildNumber > oldStatus[job.url].lastBuildNumber) {
+      if (oldStatus[job.url] && job.lastBuildNumber! > oldStatus[job.url].lastBuildNumber) {
         // 新的一次构建
-        JobService.showNotification(job.lastBuildResult, job.displayName, job.lastBuildUrl)
+        JobService.showNotification(job.lastBuildResult!, job.displayName, job.lastBuildUrl!)
       }
 
       jenkinsObj.jobs![job.url] = {
@@ -211,8 +217,8 @@ export class JobService {
         status: buildStatus,
         building: building,
         labelClass: JobService.labelClass[jobColor],
-        lastBuildNumber: job.lastBuildNumber,
-        lastBuildTimestamp: job.lastBuildTimestamp,
+        lastBuildNumber: job.lastBuildNumber!,
+        lastBuildTimestamp: job.lastBuildTimestamp!,
       }
     } // end for
     JobService.changeBadge()
@@ -222,7 +228,8 @@ export class JobService {
     })
   }
 
-  private static parseSingleJobData(url: string, data: any, oldStatus: any) {
+  private static parseSingleJobData(url: string, data: JenkinsJob, oldStatus: any) {
+    // console.log('parseSingleJobData::oldStatus', oldStatus)
     const jenkinsObj: JobSet = {
       name: data.displayName || data.name || data.fullName,
       status: 'ok',
@@ -237,11 +244,11 @@ export class JobService {
     }
     JobService.countBadgeJobCount(jobColor)
     const buildStatus = JobService.status[jobColor]
-    const lastBuild = data.lastCompletedBuild || {}
-    const lastBuildNumber = lastBuild.number || 0
-    const lastBuildTimestamp = lastBuild.timestamp || 0
-    const lastBuildUrl = lastBuild.url || ''
-    const lastBuildResult = lastBuild.result || ''
+    const lastBuild = data.lastCompletedBuild || JenkinsCompletedBuild.empty()
+    const lastBuildNumber = lastBuild.number
+    const lastBuildTimestamp = lastBuild.timestamp
+    const lastBuildUrl = lastBuild.url
+    const lastBuildResult = lastBuild.result
 
     if (oldStatus[url] && oldStatus[url].jobs) {
       oldStatus = oldStatus[url].jobs
@@ -282,7 +289,7 @@ export class JobService {
         const count = _failureJobCount || _unstableJobCount || _successJobCount || 0
         const color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c'
         if (count > 9999) {
-          browser.browserAction.setBadgeText({ text: '999+' })
+          browser.browserAction.setBadgeText({ text: 'MUCH' })
         } else {
           browser.browserAction.setBadgeText({ text: count.toString() })
         }

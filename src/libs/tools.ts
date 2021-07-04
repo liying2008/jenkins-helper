@@ -1,5 +1,7 @@
 import { StorageService } from '@/libs/storage'
 
+// export type JobResultType = 'blue' | 'yellow' | 'red' | 'aborted' | 'notbuilt' | 'disabled'
+
 export class Tools {
   // 是否是 Chrome 浏览器
   static readonly isChrome = navigator.userAgent.indexOf('Chrome') > -1;
@@ -8,7 +10,7 @@ export class Tools {
    * job 状态
    * @type {{red: string, blue: string, aborted: string, yellow: string, notbuilt: string, disabled: string}}
    */
-  static readonly jobStatus: any = {
+  static readonly jobStatus: { [key: string]: string } = {
     blue: 'Success',
     yellow: 'Unstable',
     red: 'Failure',
