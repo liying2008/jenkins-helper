@@ -155,7 +155,7 @@
 <script lang="ts">
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 import { NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
@@ -194,11 +194,7 @@ export default class App extends Vue {
     { text: this.strings.responseTime, align: 'start', value: 'responseTime', filterable: false },
     { text: this.strings.isMonitoring, align: 'start', value: 'monitoring', filterable: false },
   ]
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
   get form() {
     return this.$refs.form as Vue & {

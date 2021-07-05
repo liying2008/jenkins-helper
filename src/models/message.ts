@@ -6,3 +6,13 @@ export enum MessageColor {
   Primary = 'primary',
   Accent = 'accent',
 }
+
+export class SnackbarData {
+  show: boolean = false
+  message: string = ''
+  color: MessageColor = MessageColor.Success
+
+  static empty() {
+    return new SnackbarData()
+  }
+}

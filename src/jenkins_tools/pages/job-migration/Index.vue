@@ -28,17 +28,14 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 
 @Component
 export default class Index extends Vue {
   strings = {
+    close: browser.i18n.getMessage('close'),
   }
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
 }
 </script>

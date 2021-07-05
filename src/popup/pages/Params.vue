@@ -37,7 +37,7 @@
               text-color="white"
               label
               pill
-              color="light-blue"
+              :color="getBuildingChipColor()"
               class="dense-chip building"
             >
               <span>{{ strings.building }}</span>
@@ -78,7 +78,7 @@
             {{ strings.runLabel_ }}<span ref="builtOnSpan">{{ builtOn }}</span>
             <v-btn
               icon
-              color="primary"
+              color="link"
               x-small
               class="info-icon-btn ml-2"
               title="Copy"
@@ -108,7 +108,7 @@
             <v-btn
               v-if="cause.url"
               icon
-              color="primary"
+              color="link"
               x-small
               class="info-icon-btn ml-2"
               title="Go"
@@ -239,7 +239,7 @@
 
 <script lang="ts">
 import { Tools } from '@/libs/tools'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
 
@@ -276,11 +276,7 @@ export default class Params extends Vue {
     { text: 'Name', align: 'start', value: 'name' },
     { text: 'Value', align: 'start', value: 'value' },
   ]
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
   // status 的状态说明：
   // 0：无数据
   // 1：正在请求数据
@@ -315,10 +311,22 @@ export default class Params extends Vue {
     }
   }
 
+  getBuildingChipColor() {
+    if (this.$vuetify.theme.dark) {
+      return 'light-blue darken-3'
+    } else {
+      return 'light-blue'
+    }
+  }
+
   getParameters() {
-    this.getCurrentTab((tab: any) => {
-      // console.log(tab);
+    this.getCurrentTab().then((tab: any | null) => {
+      // console.log(tab)
       // const title = tab.title
+      if (!tab) {
+        console.error('tab is null!')
+        return
+      }
       const url = tab.url
       const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
       const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
@@ -427,10 +435,9 @@ export default class Params extends Vue {
     })
   }
 
-  getCurrentTab(callback: any) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (callback) callback(tabs.length ? tabs[0] : null)
-    })
+  async getCurrentTab() {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    return tabs.length ? tabs[0] : null
   }
 
   // 复制运行节点

@@ -104,7 +104,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 import PanelParams from './panel-params.vue'
 import PanelAuthorization from './panel-authorization.vue'
 import PanelHeaders from './panel-headers.vue'
@@ -136,11 +136,7 @@ export default class Index extends Vue {
   authorizationEntity: AuthorizationEntity = new AuthorizationEntity()
   headers: Header[] = []
 
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
   urlChanged(newUrl: string) {
     // console.log('urlChanged::newUrl', newUrl)

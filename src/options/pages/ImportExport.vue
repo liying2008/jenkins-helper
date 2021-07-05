@@ -96,7 +96,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { SettingsFileData } from '@/models/settings-file'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 
 @Component
 export default class ImportExport extends Vue {
@@ -113,11 +113,7 @@ export default class ImportExport extends Vue {
   settingsKeyName = 'jenkins-helper'
   disableExportBtn = false
   disableImportBtn = false
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
 
   /**

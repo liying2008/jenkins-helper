@@ -277,7 +277,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken } from '@/models/option'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 
 @Component
 export default class Settings extends Vue {
@@ -355,11 +355,7 @@ export default class Settings extends Vue {
     nodeMinRefreshTime: 1,
     nodeMaxRefreshTime: 6,
   }
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
   get refreshTimeTip() {
     const tip = browser.i18n.getMessage('refreshTimeTip_1') + this.refreshTime +

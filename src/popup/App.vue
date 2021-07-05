@@ -15,7 +15,7 @@ export default class App extends Vue {
 
 <style lang="scss">
 #app {
-  min-height: 200px;
+  // min-height: 200px;
   /*设置 min-width 之后，Firefox上会有横向滚动条*/
   /*min-width: 700;*/
   width: 700px;

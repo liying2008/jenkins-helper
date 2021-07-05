@@ -151,7 +151,7 @@
 import { NodeService } from '@/background/node-service'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
-import { MessageColor } from '@/models/message'
+import { MessageColor, SnackbarData } from '@/models/message'
 import { MonitoredNodes, NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
@@ -184,11 +184,7 @@ export default class Computer extends Vue {
     { text: this.strings.alarmThreshold, align: 'start', value: 'diskSpaceThreshold' },
     { text: this.strings.actions, value: 'actions', sortable: false },
   ]
-  snackbar = {
-    show: false,
-    message: '',
-    color: MessageColor.Success,
-  }
+  snackbar = SnackbarData.empty()
 
   mounted() {
     this.queryMonitoredNodes()

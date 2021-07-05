@@ -1,7 +1,7 @@
 <template>
   <div id="monitor-wrapper">
     <!-- 创建监控任务面板 -->
-    <v-expansion-panels class="mt-3">
+    <v-expansion-panels class="my-3">
       <v-expansion-panel>
         <v-expansion-panel-header>
           {{ strings.createMonitoringTaskTitle }}
