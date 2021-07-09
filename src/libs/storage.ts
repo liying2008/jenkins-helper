@@ -84,19 +84,46 @@ export class StorageService {
 
   static async getOptions(): Promise<Options> {
     const result = await browser.storage.local.get('options')
-    const options = result['options'] || {
-      defaultTab: 'monitor',
-      jenkinsTokens: [],
-      refreshTime: '60',
-      nodeRefreshTime: '2',
-      showNotificationOption: 'all',
-      omniboxJenkinsUrl: '',
-      nodeParam: '',
-      jobStatsJenkinsUrl: '',
-      showDisabledJobs: true,
-      enableParamsStashAndRecover: true,
+    const options: any = result['options'] || {}
+    // 逐个检查各配置属性，不存在则给予默认值
+    if (options.defaultTab == undefined) {
+      options.defaultTab = 'monitor'
     }
-    return options
+    if (options.jenkinsTokens == undefined) {
+      options.jenkinsTokens = []
+    }
+    if (options.refreshTime == undefined) {
+      options.refreshTime = '60'
+    }
+    if (options.nodeRefreshTime == undefined) {
+      options.nodeRefreshTime = '2'
+    }
+    if (options.showNotificationOption == undefined) {
+      options.showNotificationOption = 'all'
+    }
+    if (options.omniboxJenkinsUrl == undefined) {
+      options.omniboxJenkinsUrl = ''
+    }
+    if (options.nodeParam == undefined) {
+      options.nodeParam = ''
+    }
+    if (options.jobStatsJenkinsUrl == undefined) {
+      options.jobStatsJenkinsUrl = ''
+    }
+    if (options.currentTheme == undefined) {
+      options.currentTheme = 'default'
+    }
+    if (options.enableDarkMode == undefined) {
+      options.enableDarkMode = false
+    }
+    if (options.showDisabledJobs == undefined) {
+      options.showDisabledJobs = true
+    }
+    if (options.enableParamsStashAndRecover == undefined) {
+      options.enableParamsStashAndRecover = true
+    }
+
+    return options as Options
   }
 
   static async saveOptions(options: Options) {

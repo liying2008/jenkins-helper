@@ -201,6 +201,30 @@
           </v-container>
         </v-card>
         <div class="my-6" />
+        <!--主题设置-->
+        <v-card
+          class="mx-auto"
+          max-width="900"
+        >
+          <v-container>
+            <v-card-title>{{ strings.themeTitle }}</v-card-title>
+            <v-card-text class="mt-4">
+              <v-select
+                v-model="currentTheme"
+                :label="strings.theme"
+                :items="themes"
+                outlined
+                dense
+              ></v-select>
+              <v-checkbox
+                v-model="enableDarkMode"
+                class="mt-0 remove-message-height"
+                :label="strings.enableDarkMode"
+              ></v-checkbox>
+            </v-card-text>
+          </v-container>
+        </v-card>
+        <div class="my-6" />
         <!--其他设置-->
         <v-card
           class="mx-auto"
@@ -278,6 +302,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken } from '@/models/option'
 import { MessageColor, SnackbarData } from '@/models/message'
+import { SelectionOption } from '@/models/vuetify'
 
 @Component
 export default class Settings extends Vue {
@@ -305,6 +330,10 @@ export default class Settings extends Vue {
     jobStatsJenkinsPlaceholder: browser.i18n.getMessage('jobStatsJenkinsPlaceholder'),
     jobStatsNodeParamTip: browser.i18n.getMessage('jobStatsNodeParamTip'),
     jobStatsNodeParamPlaceholder: browser.i18n.getMessage('jobStatsNodeParamPlaceholder'),
+    themeTitle: browser.i18n.getMessage('themeTitle'),
+    theme: browser.i18n.getMessage('theme'),
+    defaultTheme: browser.i18n.getMessage('defaultTheme'),
+    enableDarkMode: browser.i18n.getMessage('enableDarkMode'),
     otherTitle: browser.i18n.getMessage('otherTitle'),
     enableParamsStashAndRecover: browser.i18n.getMessage('enableParamsStashAndRecover'),
     paramsStashAndRecoverTips: browser.i18n.getMessage('paramsStashAndRecoverTips'),
@@ -312,7 +341,7 @@ export default class Settings extends Vue {
   refreshTime = '60'
   nodeRefreshTime = '2'
   defaultTab = 'monitor'
-  defaultTabs = [
+  defaultTabs: SelectionOption[] = [
     {
       text: browser.i18n.getMessage('monitor'),
       value: 'monitor',
@@ -327,7 +356,7 @@ export default class Settings extends Vue {
     },
   ]
   showNotificationOption = 'all'
-  showNotificationOptions = [
+  showNotificationOptions: SelectionOption[] = [
     {
       text: browser.i18n.getMessage('showNotificationOption_all'),
       value: 'all'
@@ -345,6 +374,14 @@ export default class Settings extends Vue {
   nodeParam = ''
   jobStatsJenkinsUrl = ''
   jenkinsTokens: JenkinsToken[] = []
+  themes: SelectionOption[] = [
+    {
+      text: browser.i18n.getMessage('defaultTheme'),
+      value: 'default',
+    }
+  ]
+  currentTheme = 'default'
+  enableDarkMode = false
   enableParamsStashAndRecover = true
   showDisabledJobs = true
   optionsJson = ''
@@ -404,6 +441,8 @@ export default class Settings extends Vue {
       omniboxJenkinsUrl: this.omniboxJenkinsUrl,
       nodeParam: this.nodeParam,
       jobStatsJenkinsUrl: this.jobStatsJenkinsUrl,
+      currentTheme: this.currentTheme,
+      enableDarkMode: this.enableDarkMode,
       enableParamsStashAndRecover: this.enableParamsStashAndRecover,
       showDisabledJobs: this.showDisabledJobs,
     }
@@ -452,19 +491,15 @@ export default class Settings extends Vue {
     this.nodeParam = options.nodeParam
     this.jobStatsJenkinsUrl = options.jobStatsJenkinsUrl
 
+    //// theme
+    this.currentTheme = options.currentTheme
+    this.enableDarkMode = options.enableDarkMode
+
     //// enableParamsStashAndRecover
-    if (options.enableParamsStashAndRecover === undefined) {
-      this.enableParamsStashAndRecover = true
-    } else {
-      this.enableParamsStashAndRecover = !!options.enableParamsStashAndRecover
-    }
+    this.enableParamsStashAndRecover = options.enableParamsStashAndRecover
 
     //// showDisabledJobs
-    if (options.showDisabledJobs === undefined) {
-      this.showDisabledJobs = true
-    } else {
-      this.showDisabledJobs = !!options.showDisabledJobs
-    }
+    this.showDisabledJobs = options.showDisabledJobs
   }
 
   saveOptions() {

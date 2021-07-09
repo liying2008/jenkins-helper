@@ -68,6 +68,18 @@
   "jobStatsNodeParamPlaceholder": {
     "message": "可填写多个参数名称，以英文逗号(,)分割"
   },
+  "themeTitle": {
+    "message": "主题设置"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "defaultTheme": {
+    "message": "默认主题"
+  },
+  "enableDarkMode": {
+    "message": "启用暗色模式"
+  },
   "otherTitle": {
     "message": "其他设置"
   },

@@ -11,6 +11,8 @@ export interface Options {
   refreshTime: string
   nodeRefreshTime: string
   showNotificationOption: string
+  currentTheme: string
+  enableDarkMode: boolean
   showDisabledJobs: boolean
   enableParamsStashAndRecover: boolean
 }

@@ -68,6 +68,18 @@
   "jobStatsNodeParamPlaceholder": {
     "message": "Multiple parameters can be entered, separated by comma (,)"
   },
+  "themeTitle": {
+    "message": "Theme Settings"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "defaultTheme": {
+    "message": "Default Theme"
+  },
+  "enableDarkMode": {
+    "message": "Enable dark mode"
+  },
   "otherTitle": {
     "message": "Other Settings"
   },
