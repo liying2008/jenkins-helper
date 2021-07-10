@@ -6,6 +6,7 @@ import { JobRoot, JobSet } from '@/models/job'
 import { JenkinsUrlRoot } from '@/models/jenkins-url'
 import { Nodes } from '@/models/node'
 import { Options } from '@/models/option'
+import { defaultTheme } from '@/theme'
 
 export interface StorageChangeWrapper {
   [key: string]: StorageChange
@@ -111,7 +112,7 @@ export class StorageService {
       options.jobStatsJenkinsUrl = ''
     }
     if (options.currentTheme == undefined) {
-      options.currentTheme = 'default'
+      options.currentTheme = defaultTheme.name
     }
     if (options.enableDarkMode == undefined) {
       options.enableDarkMode = false

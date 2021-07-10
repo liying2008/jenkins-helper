@@ -303,6 +303,7 @@ import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken } from '@/models/option'
 import { MessageColor, SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
+import { defaultTheme } from '@/theme'
 
 @Component
 export default class Settings extends Vue {
@@ -377,10 +378,10 @@ export default class Settings extends Vue {
   themes: SelectionOption[] = [
     {
       text: browser.i18n.getMessage('defaultTheme'),
-      value: 'default',
+      value: defaultTheme.name,
     }
   ]
-  currentTheme = 'default'
+  currentTheme = defaultTheme.name
   enableDarkMode = false
   enableParamsStashAndRecover = true
   showDisabledJobs = true
