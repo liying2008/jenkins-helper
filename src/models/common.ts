@@ -4,5 +4,7 @@ export interface Enc<T = any> {
   // 请求 URL
   url: string
   // 返回数据
-  body: T
+  body?: T
+  // 错误信息
+  errMsg?: string
 }

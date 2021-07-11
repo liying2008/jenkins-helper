@@ -25,6 +25,8 @@ export class JobService {
 
   // 通知ID和URL的对照
   static notificationUrlMap: { [key: string]: string } = {};
+  // 请求 /api/json 使用的 tree 参数
+  static treeParams = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
 
   private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
     const jenkinsObj: JobSet = {
@@ -111,35 +113,6 @@ export class JobService {
     else if (color === undefined) JobService.errorOnFetch = true
   }
 
-  private static async fetchDataByUrl(url: string): Promise<Enc> {
-    const encodeParam = encodeURI('*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]')
-    const jsonUrl = url + 'api/json?tree=' + encodeParam
-    // console.log('queryJobStatus jsonUrl', jsonUrl);
-    const header = await Tools.getFetchOption(jsonUrl)
-    try {
-      const res = await fetch(jsonUrl, header)
-      if (res.ok) {
-        return {
-          ok: true,
-          url: url,
-          body: await res.json(),
-        }
-      } else {
-        return {
-          ok: false,
-          url: url,
-          body: await res.text(),
-        }
-      }
-    } catch (e) {
-      return {
-        ok: false,
-        url: url,
-        body: e,
-      }
-    }
-  }
-
   static queryJobStatus() {
     // console.log('jenkinsUrls', jenkinsUrls);
     // 重置 成功失败计数器
@@ -152,8 +125,9 @@ export class JobService {
     }
 
     const allFetchDataPromises: Promise<Enc>[] = []
+
     JobService.jenkinsUrls.forEach((url: string) => {
-      allFetchDataPromises.push(JobService.fetchDataByUrl(url))
+      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, JobService.treeParams))
     })
 
     Promise.all(allFetchDataPromises).then((values: Enc[]) => {
@@ -183,8 +157,8 @@ export class JobService {
             }
           })
         } else {
-          console.error('queryJobStatus: 获取Job状态失败', value.body)
-          const jenkinsObj = JobService.getErrorJenkinsObj(value.url, value.body.message || 'Unreachable')
+          console.error('queryJobStatus: 获取Job状态失败', value.errMsg)
+          const jenkinsObj = JobService.getErrorJenkinsObj(value.url, value.errMsg || 'Unreachable')
           JobService.countBadgeJobCount()
           JobService.changeBadge()
           StorageService.saveJobStatus(value.url, jenkinsObj).then(() => {
