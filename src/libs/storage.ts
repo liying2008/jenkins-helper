@@ -8,13 +8,13 @@ import { Nodes } from '@/models/node'
 import { Options } from '@/models/option'
 import { defaultTheme } from '@/theme'
 
-export interface StorageChangeWrapper {
-  [key: string]: StorageChange
+export interface StorageChangeWrapper<T = any> {
+  [key: string]: StorageChange<T>
 }
 
-export interface StorageChange {
-  oldValue?: any
-  newValue?: any
+export interface StorageChange<T> {
+  oldValue?: T
+  newValue?: T
 }
 
 export class StorageService {
@@ -174,8 +174,8 @@ export class StorageService {
   }
 
   static async set<T>(object: T) {
-    // 清空 localStorage 缓存，以免缓存不同步
-    localStorage.clear()
+    // 删除 localStorage 缓存，以免缓存不同步
+    localStorage.removeItem(StorageService.keyForOptions)
     return browser.storage.local.set(object)
   }
 
