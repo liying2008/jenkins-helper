@@ -83,9 +83,31 @@ export class StorageService {
     }
   }
 
+  private static async getAndCacheOptionsFromStorage(): Promise<any> {
+    const result = await browser.storage.local.get(StorageService.keyForOptions)
+    const options = result['options'] || {}
+    localStorage.setItem(StorageService.keyForOptions, JSON.stringify(options))
+    return options
+  }
+
   static async getOptions(): Promise<Options> {
-    const result = await browser.storage.local.get('options')
-    const options: any = result['options'] || {}
+    let options: Options | any
+    // 先从 localStorage 获取
+    const optionsStr = localStorage.getItem(StorageService.keyForOptions)
+    // localStorage 获取不到
+    if (optionsStr == null) {
+      // 从 storage 获取，并保存到 localStorage
+      options = await StorageService.getAndCacheOptionsFromStorage()
+    } else {
+      try {
+        options = JSON.parse(optionsStr)
+      } catch (e) {
+        console.error('getOptions', e)
+        // 从 storage 获取，并保存到 localStorage
+        options = await StorageService.getAndCacheOptionsFromStorage()
+      }
+    }
+
     // 逐个检查各配置属性，不存在则给予默认值
     if (options.defaultTab == undefined) {
       options.defaultTab = 'monitor'
@@ -128,10 +150,32 @@ export class StorageService {
   }
 
   static async saveOptions(options: Options) {
-    return browser.storage.local.set({ 'options': JSON.parse(JSON.stringify(options)) })
+    let value: any | undefined = undefined
+    let reason: any | undefined = undefined
+    try {
+      // 存储到 storage
+      const optionsStr = JSON.stringify(options)
+      value = await browser.storage.local.set({
+        'options': JSON.parse(optionsStr)
+      })
+      // 存储到 localStorage，作为缓存
+      localStorage.setItem(StorageService.keyForOptions, optionsStr)
+    } catch (e) {
+      console.error(e)
+      reason = e
+    }
+    return new Promise((resolve, reject) => {
+      if (reason != undefined) {
+        reject(reason)
+      } else {
+        resolve(value)
+      }
+    })
   }
 
   static async set<T>(object: T) {
+    // 清空 localStorage 缓存，以免缓存不同步
+    localStorage.clear()
     return browser.storage.local.set(object)
   }
 
