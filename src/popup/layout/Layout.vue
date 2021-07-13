@@ -73,7 +73,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
-import { Options } from '@/models/option'
+import { defaultOptionsValue, Options, PopupTab } from '@/models/option'
 
 @Component({
   name: 'Layout'
@@ -86,9 +86,9 @@ export default class Layout extends Vue {
     computer: browser.i18n.getMessage('computer'),
   }
 
-  defaultTab = 'monitor'
+  defaultTab = defaultOptionsValue.defaultTab
   activeTab = this.defaultTab
-  allowTabs = ['monitor', 'params', 'computer']
+  allowTabs: PopupTab[] = ['monitor', 'params', 'computer']
 
   created() {
     StorageService.getOptions().then((option: Options) => {

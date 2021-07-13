@@ -1,7 +1,7 @@
 import { Tools } from '@/libs/tools'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { JobRoot, JobSet, JobStatus } from '@/models/job'
-import { Options } from '@/models/option'
+import { NotificationShowing, Options } from '@/models/option'
 import { Omnibox } from '@/background/omnibox'
 import { JenkinsCompletedBuild, JenkinsJob } from '@/models/jenkins/job'
 import { JenkinsView } from '@/models/jenkins/view'
@@ -10,7 +10,7 @@ import { Enc } from '@/models/common'
 export class JobService {
   private static jenkinsUrls: string[] = [];
   private static lastInterval: number | undefined = undefined;
-  private static showNotificationOption: string;
+  private static showNotificationOption: NotificationShowing;
   // 失败Job数量
   private static failureJobCount = 0;
   // 不稳定Job数量
@@ -47,7 +47,7 @@ export class JobService {
       JobService.jenkinsUrls = result
       StorageService.getOptions().then((options: Options) => {
         JobService.showNotificationOption = options.showNotificationOption
-        JobService.refreshJobStatus(options.refreshTime || '60')
+        JobService.refreshJobStatus(options.refreshTime)
         // TODO 仅测试使用
         // JobService.refreshJobStatus(5)
       })

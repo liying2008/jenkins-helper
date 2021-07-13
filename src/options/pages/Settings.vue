@@ -300,7 +300,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
-import { Options, JenkinsToken } from '@/models/option'
+import { Options, JenkinsToken, defaultOptionsValue, PopupTab, NotificationShowing } from '@/models/option'
 import { MessageColor, SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
 import { defaultTheme } from '@/theme'
@@ -339,10 +339,10 @@ export default class Settings extends Vue {
     enableParamsStashAndRecover: browser.i18n.getMessage('enableParamsStashAndRecover'),
     paramsStashAndRecoverTips: browser.i18n.getMessage('paramsStashAndRecoverTips'),
   }
-  refreshTime = '60'
-  nodeRefreshTime = '2'
-  defaultTab = 'monitor'
-  defaultTabs: SelectionOption[] = [
+  refreshTime = defaultOptionsValue.refreshTime
+  nodeRefreshTime = defaultOptionsValue.nodeRefreshTime
+  defaultTab = defaultOptionsValue.defaultTab
+  defaultTabs: SelectionOption<PopupTab>[] = [
     {
       text: browser.i18n.getMessage('monitor'),
       value: 'monitor',
@@ -356,8 +356,8 @@ export default class Settings extends Vue {
       value: 'computer',
     },
   ]
-  showNotificationOption = 'all'
-  showNotificationOptions: SelectionOption[] = [
+  showNotificationOption = defaultOptionsValue.showNotificationOption
+  showNotificationOptions: SelectionOption<NotificationShowing>[] = [
     {
       text: browser.i18n.getMessage('showNotificationOption_all'),
       value: 'all'
@@ -371,20 +371,20 @@ export default class Settings extends Vue {
       value: 'none'
     },
   ]
-  omniboxJenkinsUrl = ''
-  nodeParam = ''
-  jobStatsJenkinsUrl = ''
-  jenkinsTokens: JenkinsToken[] = []
+  omniboxJenkinsUrl = defaultOptionsValue.omniboxJenkinsUrl
+  nodeParam = defaultOptionsValue.nodeParam
+  jobStatsJenkinsUrl = defaultOptionsValue.jobStatsJenkinsUrl
+  jenkinsTokens: JenkinsToken[] = defaultOptionsValue.jenkinsTokens
   themes: SelectionOption[] = [
     {
       text: browser.i18n.getMessage('defaultTheme'),
       value: defaultTheme.name,
     }
   ]
-  currentTheme = defaultTheme.name
-  enableDarkMode = false
-  enableParamsStashAndRecover = true
-  showDisabledJobs = true
+  currentTheme = defaultOptionsValue.currentTheme
+  enableDarkMode = defaultOptionsValue.enableDarkMode
+  enableParamsStashAndRecover = defaultOptionsValue.enableParamsStashAndRecover
+  showDisabledJobs = defaultOptionsValue.showDisabledJobs
   optionsJson = ''
   isJsonView = false
   constants = {
@@ -453,7 +453,7 @@ export default class Settings extends Vue {
   optionsToData(options: Options) {
     //// refreshTime
     if (options.refreshTime === undefined) {
-      this.refreshTime = '60'
+      this.refreshTime = defaultOptionsValue.refreshTime
     } else if (parseInt(options.refreshTime) > this.constants.monitorMaxRefreshTime) {
       this.refreshTime = this.constants.monitorMaxRefreshTime.toString()
     } else if (parseInt(options.refreshTime) < this.constants.monitorMinRefreshTime) {
@@ -464,7 +464,7 @@ export default class Settings extends Vue {
 
     //// nodeRefreshTime
     if (options.nodeRefreshTime === undefined) {
-      this.nodeRefreshTime = '2'
+      this.nodeRefreshTime = defaultOptionsValue.nodeRefreshTime
     } else if (parseInt(options.nodeRefreshTime) > this.constants.nodeMaxRefreshTime) {
       this.nodeRefreshTime = this.constants.nodeMaxRefreshTime.toString()
     } else if (parseInt(options.nodeRefreshTime) < this.constants.nodeMinRefreshTime) {
@@ -475,14 +475,14 @@ export default class Settings extends Vue {
 
     //// showNotificationOption
     const allShowNotificationOptions = this.showNotificationOptions.map((value) => value.value)
-    // console.log('allShowNotificationOptions', allShowNotificationOptions);
+    // console.log('allShowNotificationOptions', allShowNotificationOptions)
     if (allShowNotificationOptions.indexOf(options.showNotificationOption) >= 0) {
       this.showNotificationOption = options.showNotificationOption
     }
 
     //// defaultTab
     const allDefaultTabs = this.defaultTabs.map((value) => value.value)
-    // console.log('allDefaultTabs', allDefaultTabs);
+    // console.log('allDefaultTabs', allDefaultTabs)
     if (allDefaultTabs.indexOf(options.defaultTab) >= 0) {
       this.defaultTab = options.defaultTab
     }
@@ -493,14 +493,30 @@ export default class Settings extends Vue {
     this.jobStatsJenkinsUrl = options.jobStatsJenkinsUrl
 
     //// theme
-    this.currentTheme = options.currentTheme
-    this.enableDarkMode = options.enableDarkMode
+    const allThemes = this.themes.map((value) => value.value)
+    // console.log('allThemes', allThemes)
+    if (allThemes.indexOf(options.currentTheme) >= 0) {
+      this.currentTheme = options.currentTheme
+    }
+    if (options.enableDarkMode === undefined) {
+      this.enableDarkMode = defaultOptionsValue.enableDarkMode
+    } else {
+      this.enableDarkMode = !!options.enableDarkMode
+    }
 
     //// enableParamsStashAndRecover
-    this.enableParamsStashAndRecover = options.enableParamsStashAndRecover
+    if (options.enableParamsStashAndRecover === undefined) {
+      this.enableParamsStashAndRecover = defaultOptionsValue.enableParamsStashAndRecover
+    } else {
+      this.enableParamsStashAndRecover = !!options.enableParamsStashAndRecover
+    }
 
     //// showDisabledJobs
-    this.showDisabledJobs = options.showDisabledJobs
+    if (options.showDisabledJobs === undefined) {
+      this.showDisabledJobs = defaultOptionsValue.showDisabledJobs
+    } else {
+      this.showDisabledJobs = !!options.showDisabledJobs
+    }
   }
 
   saveOptions() {

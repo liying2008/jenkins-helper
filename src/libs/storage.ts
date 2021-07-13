@@ -5,8 +5,7 @@
 import { JobRoot, JobSet } from '@/models/job'
 import { JenkinsUrlRoot } from '@/models/jenkins-url'
 import { Nodes } from '@/models/node'
-import { Options } from '@/models/option'
-import { defaultTheme } from '@/theme'
+import { defaultOptionsValue, Options } from '@/models/option'
 
 export interface StorageChangeWrapper<T = any> {
   [key: string]: StorageChange<T>
@@ -110,40 +109,40 @@ export class StorageService {
 
     // 逐个检查各配置属性，不存在则给予默认值
     if (options.defaultTab == undefined) {
-      options.defaultTab = 'monitor'
+      options.defaultTab = defaultOptionsValue.defaultTab
     }
     if (options.jenkinsTokens == undefined) {
-      options.jenkinsTokens = []
+      options.jenkinsTokens = defaultOptionsValue.jenkinsTokens
     }
     if (options.refreshTime == undefined) {
-      options.refreshTime = '60'
+      options.refreshTime = defaultOptionsValue.refreshTime
     }
     if (options.nodeRefreshTime == undefined) {
-      options.nodeRefreshTime = '2'
+      options.nodeRefreshTime = defaultOptionsValue.nodeRefreshTime
     }
     if (options.showNotificationOption == undefined) {
-      options.showNotificationOption = 'all'
+      options.showNotificationOption = defaultOptionsValue.showNotificationOption
     }
     if (options.omniboxJenkinsUrl == undefined) {
-      options.omniboxJenkinsUrl = ''
+      options.omniboxJenkinsUrl = defaultOptionsValue.omniboxJenkinsUrl
     }
     if (options.nodeParam == undefined) {
-      options.nodeParam = ''
+      options.nodeParam = defaultOptionsValue.nodeParam
     }
     if (options.jobStatsJenkinsUrl == undefined) {
-      options.jobStatsJenkinsUrl = ''
+      options.jobStatsJenkinsUrl = defaultOptionsValue.jobStatsJenkinsUrl
     }
     if (options.currentTheme == undefined) {
-      options.currentTheme = defaultTheme.name
+      options.currentTheme = defaultOptionsValue.currentTheme
     }
     if (options.enableDarkMode == undefined) {
-      options.enableDarkMode = false
+      options.enableDarkMode = defaultOptionsValue.enableDarkMode
     }
     if (options.showDisabledJobs == undefined) {
-      options.showDisabledJobs = true
+      options.showDisabledJobs = defaultOptionsValue.showDisabledJobs
     }
     if (options.enableParamsStashAndRecover == undefined) {
-      options.enableParamsStashAndRecover = true
+      options.enableParamsStashAndRecover = defaultOptionsValue.enableParamsStashAndRecover
     }
 
     return options as Options
