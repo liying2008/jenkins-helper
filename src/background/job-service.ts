@@ -24,9 +24,9 @@ export class JobService {
   private static labelClass = Tools.labelClass;
 
   // 通知ID和URL的对照
-  static notificationUrlMap: { [key: string]: string } = {};
+  private static notificationUrlMap: { [key: string]: string } = {};
   // 请求 /api/json 使用的 tree 参数
-  static treeParams = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
+  private static treeParams = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
 
   private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
     const jenkinsObj: JobSet = {
@@ -127,7 +127,7 @@ export class JobService {
     const allFetchDataPromises: Promise<Enc>[] = []
 
     JobService.jenkinsUrls.forEach((url: string) => {
-      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, JobService.treeParams))
+      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.treeParams))
     })
 
     Promise.all(allFetchDataPromises).then((values: Enc[]) => {
@@ -167,6 +167,7 @@ export class JobService {
         }
       })
     }).catch((e: Error) => {
+      // 原则上不应该走到这里
       console.log('queryJobStatus:e', e)
     })
   }

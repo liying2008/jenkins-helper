@@ -6,8 +6,11 @@ export interface Nodes {
   [jenkinsUrl: string]: NodeStatus
 }
 
+export type NodeStatusType = 'ok' | 'error'
+
 export interface NodeStatus {
-  status: string
+  status: NodeStatusType
+  error?: string
   monitoredNodes: MonitoredNodes
 }
 

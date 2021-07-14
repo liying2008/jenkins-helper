@@ -2,13 +2,15 @@ export interface JobRoot {
   [setUrl: string]: JobSet
 }
 
+export type JobSetStatusType = 'ok' | 'error'
+
 export class JobSet {
   jobs?: JobStatus = undefined
   name: string = ''
-  status: string = ''
+  status: JobSetStatusType = 'ok'
   error?: string = undefined
 
-  constructor(name: string, status: string, error = '') {
+  constructor(name: string, status: JobSetStatusType, error = '') {
     this.name = name
     this.status = status
     this.error = error

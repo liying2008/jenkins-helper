@@ -73,13 +73,14 @@ export class Tools {
 
   /**
    * 根据传入的 URL 和 参数请求 Jenkins 数据
-   * @param url 请求的 Jenkins Base URL
+   * @param baseUrl 请求的 Jenkins Base URL
+   * @param path 请求的 Jenkins URL path
    * @param params JSON tree 参数
    * @returns 请求结果 Enc 对象
    */
-  static async fetchJenkinsDataByUrl(url: string, params: string): Promise<Enc> {
+  static async fetchJenkinsDataByUrl(baseUrl: string, path: string, params: string): Promise<Enc> {
     const encodedParams = encodeURI(params)
-    const jsonUrl = url + 'api/json?tree=' + encodedParams
+    const jsonUrl = baseUrl + path + '?tree=' + encodedParams
     // console.log('fetchDataByUrl:jsonUrl', jsonUrl)
     const header = await Tools.getFetchOption(jsonUrl)
     try {
@@ -87,25 +88,25 @@ export class Tools {
       if (res.ok) {
         return {
           ok: true,
-          url: url,
+          url: baseUrl,
           body: await res.json(),
         }
       } else if (res.status == 401) {
         return {
           ok: false,
-          url: url,
+          url: baseUrl,
           errMsg: 'Unauthorized',
         }
       } else if (res.status == 403) {
         return {
           ok: false,
-          url: url,
+          url: baseUrl,
           errMsg: 'Forbidden',
         }
       } else {
         return {
           ok: false,
-          url: url,
+          url: baseUrl,
           errMsg: await res.text(),
         }
       }
@@ -114,13 +115,13 @@ export class Tools {
       if (e.name == 'SyntaxError') {
         return {
           ok: false,
-          url: url,
+          url: baseUrl,
           errMsg: 'NOT JSON',
         }
       } else {
         return {
           ok: false,
-          url: url,
+          url: baseUrl,
           errMsg: e.message,
         }
       }

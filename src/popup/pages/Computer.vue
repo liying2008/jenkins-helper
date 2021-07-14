@@ -59,6 +59,7 @@
               depressed
               small
               :href="jenkinsUrl"
+              :title="jenkinsNodes.error||''"
               target="_blank"
               color="error"
               class="card-title-err-btn"
