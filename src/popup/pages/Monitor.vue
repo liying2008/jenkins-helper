@@ -290,12 +290,7 @@ export default class Monitor extends Vue {
 
   jobStatusChange(changes: StorageChangeWrapper) {
     console.log('00-jobStatusChange', changes)
-    const copied = Object.assign({}, changes)
-    delete copied[StorageService.keyForJenkinsUrl]
-    delete copied[StorageService.keyForOptions]
-    delete copied[StorageService.keyForNodes]
-    console.log('01-jobStatusChange', copied)
-    if (Object.getOwnPropertyNames(copied).length > 0) {
+    if (StorageService.keyForJenkinsJobData in changes) {
       // Job Status 有变动
       // 刷新页面
       this.getAllJobStatus()
@@ -310,15 +305,11 @@ export default class Monitor extends Vue {
         this.showDisabledJobs = options.showDisabledJobs
       }
     })
-    StorageService.getJenkinsUrls().then((result: string[]) => {
-      this.jenkinsData.jenkinsUrls = result
-      // console.log('result', result)
-      StorageService.getJobStatus(result).then((jobResult: JobRoot) => {
-        // console.log('jobResult', jobResult)
-        this.jenkinsData.jobStatus = jobResult
-        // 过滤数据
-        this.filterData()
-      })
+    StorageService.getJobsStatus().then((jobResult: JobRoot) => {
+      // console.log('jobResult', jobResult)
+      this.jenkinsData.jobStatus = jobResult
+      // 过滤数据
+      this.filterData()
     })
   }
 

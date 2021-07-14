@@ -19,6 +19,8 @@ export class JobService {
   private static successJobCount = 0;
   // 是否Jenkins URL无法访问
   private static errorOnFetch = false;
+  // 是否正在查询Job状态数据
+  private static querying = false;
 
   private static status = Tools.jobStatus;
   private static labelClass = Tools.labelClass;
@@ -114,14 +116,19 @@ export class JobService {
   }
 
   static queryJobStatus() {
-    // console.log('jenkinsUrls', jenkinsUrls);
-    // 重置 成功失败计数器
-    while (!JobService.resetBadgeJobCount()) {
-      console.log('resetBadgeJobCount failed!!! Retry...')
-      console.log('queryJobStatus#resetBadgeJobCount')
+    console.log('jenkinsUrls', JobService.jenkinsUrls)
+    if (JobService.querying) {
+      console.log('上次的查询未结束，跳过此次查询')
+      return
     }
+    JobService.querying = true
+    // 重置 成功失败计数器
+    JobService.resetBadgeJobCount()
+
     if (JobService.jenkinsUrls.length === 0) {
       JobService.changeBadge()
+      JobService.querying = false
+      return
     }
 
     const allFetchDataPromises: Promise<Enc>[] = []
@@ -130,49 +137,61 @@ export class JobService {
       allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.treeParams))
     })
 
-    Promise.all(allFetchDataPromises).then((values: Enc[]) => {
-      console.log('queryJobStatus:values', values)
-      values.forEach((value: Enc) => {
-        if (value.ok) {
-          const data = value.body
-          const url = value.url
-          StorageService.getJobStatus(url).then((result: JobSet | {}) => {
-            // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length);
+    StorageService.getJobsStatus().then((result: JobRoot) => {
+      // console.log('00-queryJobStatus::result', result)
+      Promise.all(allFetchDataPromises).then((values: Enc[]) => {
+        console.log('queryJobStatus:values', values)
+        const newJobsStatus: JobRoot = {}
+
+        values.forEach((value: Enc) => {
+          if (value.ok) {
+            const data = value.body
+            const url = value.url
+            // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length)
             if (Object.getOwnPropertyNames(data).length === 0) {
               console.error('queryJobStatus: 获取Job状态失败，返回数据为空')
               const jenkinsObj = JobService.getErrorJenkinsObj(url, 'No permissions or no data')
               JobService.countBadgeJobCount()
-              JobService.changeBadge()
-              StorageService.saveJobStatus(url, jenkinsObj).then(() => {
-                console.log('saveJobStatus error ok')
-              })
+              newJobsStatus[url] = jenkinsObj
             } else {
               if (data.hasOwnProperty('jobs')) {
                 // Jenkins or view data
-                JobService.parseJenkinsOrViewData(url, data, result || {})
+                const jenkinsObj = JobService.parseJenkinsOrViewData(url, data, result)
+                newJobsStatus[url] = jenkinsObj
               } else {
                 // Single job data
-                JobService.parseSingleJobData(url, data, result || {})
+                const jenkinsObj = JobService.parseSingleJobData(url, data, result)
+                newJobsStatus[url] = jenkinsObj
               }
             }
-          })
-        } else {
-          console.error('queryJobStatus: 获取Job状态失败', value.errMsg)
-          const jenkinsObj = JobService.getErrorJenkinsObj(value.url, value.errMsg || 'Unreachable')
-          JobService.countBadgeJobCount()
+          } else {
+            const url = value.url
+            const error = value.errMsg
+            console.error('queryJobStatus: 获取Job状态失败', error)
+            const jenkinsObj = JobService.getErrorJenkinsObj(url, error || 'Unreachable')
+            JobService.countBadgeJobCount()
+            newJobsStatus[url] = jenkinsObj
+          }
+        })
+        // 存储job状态
+        StorageService.saveJobsStatus(newJobsStatus).then(() => {
+          console.log('saveJobsStatus ok')
           JobService.changeBadge()
-          StorageService.saveJobStatus(value.url, jenkinsObj).then(() => {
-            console.log('saveJobStatus error ok')
-          })
-        }
+          JobService.querying = false
+        }).catch((e: Error) => {
+          // 原则上不应该走到这里
+          console.log('queryJobStatus:saveJobsStatus:e', e)
+          JobService.querying = false
+        })
+      }).catch((e: Error) => {
+        // 原则上不应该走到这里
+        console.log('queryJobStatus:e', e)
+        JobService.querying = false
       })
-    }).catch((e: Error) => {
-      // 原则上不应该走到这里
-      console.log('queryJobStatus:e', e)
     })
   }
 
-  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldStatus: any) {
+  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldStatus: any): JobSet {
     // console.log('parseJenkinsOrViewData::oldStatus', oldStatus)
     const jobs = data.jobs
     // console.log('jobs 1', jobs);
@@ -224,14 +243,11 @@ export class JobService {
         lastBuildTimestamp: job.lastBuildTimestamp!,
       }
     } // end for
-    JobService.changeBadge()
-    // console.log(jenkinsObj);
-    StorageService.saveJobStatus(url, jenkinsObj).then(() => {
-      console.log('saveJobStatus ok')
-    })
+    // console.log(jenkinsObj)
+    return jenkinsObj
   }
 
-  private static parseSingleJobData(url: string, data: JenkinsJob, oldStatus: any) {
+  private static parseSingleJobData(url: string, data: JenkinsJob, oldStatus: any): JobSet {
     // console.log('parseSingleJobData::oldStatus', oldStatus)
     const jenkinsObj: JobSet = {
       name: data.displayName || data.name || data.fullName,
@@ -269,12 +285,8 @@ export class JobService {
       lastBuildNumber: lastBuildNumber,
       lastBuildTimestamp: lastBuildTimestamp,
     }
-
-    JobService.changeBadge()
     // console.log(jenkinsObj);
-    StorageService.saveJobStatus(url, jenkinsObj).then(() => {
-      console.log('saveJobStatus ok')
-    })
+    return jenkinsObj
   }
 
   private static changeBadge() {

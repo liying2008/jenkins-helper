@@ -18,6 +18,7 @@ export interface StorageChange<T> {
 
 export class StorageService {
   static readonly keyForJenkinsUrl = 'jenkins-url'
+  static readonly keyForJenkinsJobData = 'jenkins-job-data'
   static readonly keyForOptions = 'options'
   static readonly keyForNodes = 'nodes'
 
@@ -39,24 +40,18 @@ export class StorageService {
       if (index > -1) {
         result.splice(index, 1)
         await StorageService.saveJenkinsUrls(result)
-        await StorageService.removeJobStatus(jenkinsUrl)
       }
     }
   }
 
-  static async saveJobStatus(jenkinsUrl: string, info: JobSet) {
-    const jenkinsObj: JobRoot = {}
-    jenkinsObj[jenkinsUrl] = info
-    return browser.storage.local.set(jenkinsObj)
+  static async saveJobsStatus(data: JobRoot) {
+    const finalData = { 'jenkins-job-data': data }
+    return browser.storage.local.set(finalData)
   }
 
-  static async removeJobStatus(jenkinsUrl: string) {
-    return browser.storage.local.remove(jenkinsUrl)
-  }
-
-  static async getJobStatus(jenkinsUrl: string | string[]): Promise<JobRoot> {
-    const result = await browser.storage.local.get(jenkinsUrl)
-    return result as JobRoot || {}
+  static async getJobsStatus(): Promise<JobRoot> {
+    const result = await browser.storage.local.get(StorageService.keyForJenkinsJobData)
+    return result[StorageService.keyForJenkinsJobData] as JobRoot || {}
   }
 
   static async saveNodeStatus(nodesStatus: Nodes) {
