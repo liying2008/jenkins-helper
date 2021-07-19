@@ -2,7 +2,6 @@ import { Tools } from '@/libs/tools'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { JobRoot, JobSet, JobStatus } from '@/models/job'
 import { NotificationShowing, Options } from '@/models/option'
-import { Omnibox } from '@/background/omnibox'
 import { JenkinsCompletedBuild, JenkinsJob } from '@/models/jenkins/job'
 import { JenkinsView } from '@/models/jenkins/view'
 import { Enc } from '@/models/common'
@@ -44,6 +43,7 @@ export class JobService {
     JobService.status = Tools.jobStatus
     JobService.labelClass = Tools.labelClass
 
+    // 添加 storage change 监听
     StorageService.addStorageListener(JobService.storageChange)
     StorageService.getJenkinsUrls().then((result: string[]) => {
       JobService.jenkinsUrls = result
@@ -72,8 +72,8 @@ export class JobService {
 
   private static storageChange(changes: StorageChangeWrapper) {
     if (StorageService.keyForOptions in changes) {
-      // 设置改变
-      console.log('changes', changes)
+      // 设置有改变
+      // console.log('changes', changes)
       const oldOptions = changes[StorageService.keyForOptions].oldValue
       const newOptions = changes[StorageService.keyForOptions].newValue
       JobService.showNotificationOption = newOptions.showNotificationOption
@@ -81,11 +81,6 @@ export class JobService {
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.refreshTime) {
         JobService.refreshJobStatus(newRefreshTime)
-      }
-      const newOmniboxJenkinsUrl = newOptions.omniboxJenkinsUrl
-      // omniboxJenkinsUrl 变更
-      if (oldOptions === undefined || newOmniboxJenkinsUrl !== oldOptions.omniboxJenkinsUrl) {
-        Omnibox.getAllJobs()
       }
     }
     if (StorageService.keyForJenkinsUrl in changes) {

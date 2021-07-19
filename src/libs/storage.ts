@@ -146,16 +146,23 @@ export class StorageService {
   static async saveOptions(options: Options) {
     let value: any | undefined = undefined
     let reason: any | undefined = undefined
+
+    const oldOptionsStr = localStorage.getItem(StorageService.keyForOptions) || '{}'
     try {
       // 存储到 storage
       const optionsStr = JSON.stringify(options)
+      // 先更新 localStorage ，以免 browser.storage 更新后，触发 browser.storage 更新监听，
+      // 但是从 localStorage 中获取不到更新内容。
+      localStorage.setItem(StorageService.keyForOptions, optionsStr)
+      // 更新存储到 browser.storage
       value = await browser.storage.local.set({
         'options': JSON.parse(optionsStr)
       })
       // 存储到 localStorage，作为缓存
-      localStorage.setItem(StorageService.keyForOptions, optionsStr)
     } catch (e) {
       console.error(e)
+      // browser.storage 存储失败，还原 localStorage 内容
+      localStorage.setItem(StorageService.keyForOptions, oldOptionsStr)
       reason = e
     }
     return new Promise((resolve, reject) => {

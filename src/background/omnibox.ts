@@ -1,13 +1,9 @@
-import { StorageService } from '@/libs/storage'
+import { StorageChangeWrapper, StorageService } from '@/libs/storage'
 import { Options } from '@/models/option'
 import { Tools } from '@/libs/tools'
+import { Enc } from '@/models/common'
 
 interface Job {
-  /**
-   * Job的类型。
-   * 如：org.jenkinsci.plugins.workflow.job.WorkflowJob
-   */
-  _class: string
   /**
    * Job地址。
    * 如：http://192.168.5.200:8080/jenkins/job/BigLog/
@@ -21,10 +17,14 @@ interface Job {
 }
 
 export class Omnibox {
+  // 请求 /api/json 使用的 tree 参数
+  private static treeParams = 'jobs[name,url]'
   private static allJobs: Job[] = [];
 
   static start() {
     Omnibox.getAllJobs()
+    // 添加 storage change 监听
+    StorageService.addStorageListener(Omnibox.storageChange)
 
     // 设置默认建议
     browser.omnibox.setDefaultSuggestion({
@@ -50,44 +50,61 @@ export class Omnibox {
     })
   }
 
+  private static storageChange(changes: StorageChangeWrapper) {
+    if (StorageService.keyForOptions in changes) {
+      // 设置有改变
+      console.log('omnibox::changes', changes)
+      const oldOptions = changes[StorageService.keyForOptions].oldValue
+      const newOptions = changes[StorageService.keyForOptions].newValue
+      const newOmniboxJenkinsUrl = newOptions.omniboxJenkinsUrl
+      // omniboxJenkinsUrl 变更
+      if (oldOptions === undefined || newOmniboxJenkinsUrl !== oldOptions.omniboxJenkinsUrl) {
+        Omnibox.getAllJobs()
+      }
+    }
+  }
+
   private static navigate(url: string) {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       return browser.tabs.update(tabs[0].id!, { url: url })
     })
   }
 
-  static getAllJobs() {
+  private static getAllJobs() {
+    console.log('Omnibox::getAllJobs')
     Omnibox.allJobs = []
     StorageService.getOptions().then((result: Options) => {
       const jenkinsUrls = result.omniboxJenkinsUrl.split('\n')
+      console.log('Omnibox::jenkinsUrls', jenkinsUrls)
+
+      const allFetchDataPromises: Promise<Enc>[] = []
+
       jenkinsUrls.forEach((jkUrl: string) => {
         let url = jkUrl.trim()
         if (url === '') {
           return true // continue
         }
-        url = url.charAt(url.length - 1) === '/' ? url : url + '/';
+        url = url.charAt(url.length - 1) === '/' ? url : url + '/'
+        allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', Omnibox.treeParams))
+      })
 
-        (function (url) {
-          const encodeParam = encodeURI('jobs[name,url]')
-          const jsonUrl = url + 'api/json?tree=' + encodeParam
-
-          Tools.getFetchOption(jsonUrl).then((header: RequestInit) => {
-            fetch(jsonUrl, header).then((res) => {
-              if (res.ok) {
-                return res.json()
-              } else {
-                return Promise.reject(res)
-              }
-            }).then((data) => {
-              if (data.hasOwnProperty('jobs')) {
-                Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
-                console.log('all fetched', Omnibox.allJobs)
-              }
-            }).catch((e: Error) => {
-              console.error('获取Job失败', e)
-            })
-          })
-        })(url)
+      Promise.all(allFetchDataPromises).then((values: Enc[]) => {
+        console.log('Omnibox:values', values)
+        values.forEach((value: Enc) => {
+          if (value.ok) {
+            const data = value.body
+            if (data.hasOwnProperty('jobs')) {
+              Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
+              console.log('Omnibox::all fetched', Omnibox.allJobs)
+            }
+          } else {
+            const error = value.errMsg
+            console.error('Omnibox::获取Job失败', error)
+          }
+        })
+      }).catch((e: Error) => {
+        // 原则上不应该走到这里
+        console.log('Omnibox::queryJobStatus:e', e)
       })
     })
   }
