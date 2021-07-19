@@ -36,7 +36,7 @@ export class JobService {
       status: 'error',
       error: errorMsg,
     }
-    console.log(jenkinsObj)
+    // console.log(jenkinsObj)
     return jenkinsObj
   }
 
@@ -102,10 +102,6 @@ export class JobService {
     JobService.unstableJobCount = 0
     JobService.successJobCount = 0
     JobService.errorOnFetch = false
-    return JobService.failureJobCount === 0 &&
-      JobService.unstableJobCount === 0 &&
-      JobService.successJobCount === 0 &&
-      !JobService.errorOnFetch
   }
 
   private static countBadgeJobCount(color?: string) {
@@ -191,8 +187,8 @@ export class JobService {
     })
   }
 
-  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldStatus: any): JobSet {
-    // console.log('parseJenkinsOrViewData::oldStatus', oldStatus)
+  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldData: JobRoot): JobSet {
+    // console.log('parseJenkinsOrViewData::oldData', oldData)
     const jobs = data.jobs
     // console.log('jobs 1', jobs);
     for (let i = 0; i < jobs.length; i++) {
@@ -225,8 +221,9 @@ export class JobService {
       JobService.countBadgeJobCount(jobColor)
       const buildStatus = JobService.status[jobColor]
 
-      if (oldStatus[url] && oldStatus[url].jobs) {
-        oldStatus = oldStatus[url].jobs
+      let oldStatus: JobStatus = {}
+      if (oldData[url] && oldData[url].jobs) {
+        oldStatus = oldData[url].jobs!
       }
       if (oldStatus[job.url] && job.lastBuildNumber! > oldStatus[job.url].lastBuildNumber) {
         // 新的一次构建
@@ -247,8 +244,8 @@ export class JobService {
     return jenkinsObj
   }
 
-  private static parseSingleJobData(url: string, data: JenkinsJob, oldStatus: any): JobSet {
-    // console.log('parseSingleJobData::oldStatus', oldStatus)
+  private static parseSingleJobData(url: string, data: JenkinsJob, oldData: JobRoot): JobSet {
+    // console.log('parseSingleJobData::oldData', oldData)
     const jenkinsObj: JobSet = {
       name: data.displayName || data.name || data.fullName,
       status: 'ok',
@@ -269,8 +266,9 @@ export class JobService {
     const lastBuildUrl = lastBuild.url
     const lastBuildResult = lastBuild.result
 
-    if (oldStatus[url] && oldStatus[url].jobs) {
-      oldStatus = oldStatus[url].jobs
+    let oldStatus: JobStatus = {}
+    if (oldData[url] && oldData[url].jobs) {
+      oldStatus = oldData[url].jobs!
     }
     if (oldStatus[data.url] && lastBuildNumber > oldStatus[data.url].lastBuildNumber) {
       // 新的一次构建
@@ -321,6 +319,9 @@ export class JobService {
       if (result !== 'SUCCESS') {
         JobService.show(result, jobName, url)
       }
+    } else if (JobService.showNotificationOption === 'none') {
+      // 不显示通知
+      // no op
     }
   }
 
