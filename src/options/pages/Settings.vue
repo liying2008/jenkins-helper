@@ -303,7 +303,7 @@ import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken, defaultOptionsValue, PopupTab, NotificationShowing } from '@/models/option'
 import { MessageColor, SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
-import { defaultTheme } from '@/theme'
+import { defaultTheme, initTheme } from '@/theme'
 
 @Component
 export default class Settings extends Vue {
@@ -527,6 +527,8 @@ export default class Settings extends Vue {
       option.showDisabledJobs = result.showDisabledJobs
       // console.log('option', option)
       StorageService.saveOptions(option).then(() => {
+        // 应用主题
+        initTheme(option.currentTheme, option.enableDarkMode)
         this.snackbar = {
           show: true,
           message: this.strings.optionsSaved,
