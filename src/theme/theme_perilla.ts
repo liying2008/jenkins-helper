@@ -1,13 +1,13 @@
 import { colors } from 'vuetify/lib'
 import { Theme } from './binding'
 
-// Default Theme
-export const defaultTheme: Theme = {
-  name: 'default',
+// Perilla Theme
+export const perillaTheme: Theme = {
+  name: 'perilla',
   light: {
-    primary: colors.teal.base,
-    secondary: colors.teal.lighten4,
-    accent: colors.teal.accent1,
+    primary: colors.purple.base,
+    secondary: colors.purple.lighten4,
+    accent: colors.purple.accent1,
     success: colors.green.darken2,
     error: colors.red.darken2,
     warning: colors.orange.darken2,
@@ -17,16 +17,16 @@ export const defaultTheme: Theme = {
     disabled: colors.grey.darken1,
     title: colors.grey.darken4,
     subtitle: colors.grey.base,
-    link: colors.teal.base,
+    link: colors.purple.base,
     buildingline: '#b0e0e6',
     disabledline: '#d6d6d6',
     offlineline: '#d6d6d6',
     monitoredline: '#dff0d8',
   },
   dark: {
-    primary: colors.teal.darken4,
-    secondary: colors.teal.lighten2,
-    accent: colors.teal.accent3,
+    primary: colors.purple.darken4,
+    secondary: colors.purple.lighten2,
+    accent: colors.purple.accent3,
     success: colors.green.darken4,
     error: colors.red.darken4,
     warning: colors.orange.darken4,
@@ -36,7 +36,7 @@ export const defaultTheme: Theme = {
     disabled: colors.grey.darken1,
     title: colors.grey.lighten1,
     subtitle: colors.grey.darken1,
-    link: colors.teal.base,
+    link: colors.purple.base,
     buildingline: '#2d4e52',
     disabledline: '#4a4a4a',
     offlineline: '#404040',

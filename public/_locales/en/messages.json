@@ -77,6 +77,15 @@
   "defaultTheme": {
     "message": "Default Theme"
   },
+  "sapphireTheme": {
+    "message": "Sapphire Theme"
+  },
+  "perillaTheme": {
+    "message": "Perilla Theme"
+  },
+  "coffeeTheme": {
+    "message": "Coffee Theme"
+  },
   "enableDarkMode": {
     "message": "Enable dark mode"
   },

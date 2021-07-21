@@ -316,6 +316,9 @@ import { Options, JenkinsToken, defaultOptionsValue, PopupTab, NotificationShowi
 import { MessageColor, SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
 import { defaultTheme, initTheme } from '@/theme'
+import { sapphireTheme } from '@/theme/theme_sapphire'
+import { perillaTheme } from '@/theme/theme_perilla'
+import { coffeeTheme } from '@/theme/theme_coffee'
 
 @Component
 export default class Settings extends Vue {
@@ -391,7 +394,19 @@ export default class Settings extends Vue {
     {
       text: browser.i18n.getMessage('defaultTheme'),
       value: defaultTheme.name,
-    }
+    },
+    {
+      text: browser.i18n.getMessage('sapphireTheme'),
+      value: sapphireTheme.name,
+    },
+    {
+      text: browser.i18n.getMessage('perillaTheme'),
+      value: perillaTheme.name,
+    },
+    {
+      text: browser.i18n.getMessage('coffeeTheme'),
+      value: coffeeTheme.name,
+    },
   ]
   currentTheme = defaultOptionsValue.currentTheme
   enableDarkMode = defaultOptionsValue.enableDarkMode

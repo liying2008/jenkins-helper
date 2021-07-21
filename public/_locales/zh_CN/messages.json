@@ -77,6 +77,15 @@
   "defaultTheme": {
     "message": "默认主题"
   },
+  "sapphireTheme": {
+    "message": "蓝天蓝"
+  },
+  "perillaTheme": {
+    "message": "紫苏紫"
+  },
+  "coffeeTheme": {
+    "message": "咖啡棕"
+  },
   "enableDarkMode": {
     "message": "启用暗色模式"
   },
