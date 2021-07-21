@@ -39,8 +39,12 @@ export const defaultOptionsValue: Options = {
   enableParamsStashAndRecover: true,
 }
 
-export interface JenkinsToken {
-  url: string
-  username?: string
-  token?: string
+export class JenkinsToken {
+  url: string = ''
+  username: string = ''
+  token: string = ''
+
+  static empty() {
+    return new JenkinsToken()
+  }
 }

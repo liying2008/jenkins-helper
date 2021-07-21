@@ -109,6 +109,15 @@ export class StorageService {
     if (options.jenkinsTokens == undefined) {
       options.jenkinsTokens = defaultOptionsValue.jenkinsTokens
     }
+    for (let i = 0; i < options.jenkinsTokens.length; i++) {
+      // 兼容老版本的配置文件
+      if (options.jenkinsTokens[i].username === undefined) {
+        options.jenkinsTokens[i].username = ''
+      }
+      if (options.jenkinsTokens[i].token === undefined) {
+        options.jenkinsTokens[i].token = ''
+      }
+    }
     if (options.refreshTime == undefined) {
       options.refreshTime = defaultOptionsValue.refreshTime
     }

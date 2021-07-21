@@ -44,11 +44,15 @@ export class Tools {
 
   static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET'): Promise<RequestInit> {
     const options = await StorageService.getOptions()
-    const jenkinsTokens = options.jenkinsTokens || []
+    const jenkinsTokens = options.jenkinsTokens
     // console.log('jenkinsTokens', jenkinsTokens);
     let token = undefined
     for (let i = 0; i < jenkinsTokens.length; i++) {
       const currentToken = jenkinsTokens[i]
+      if (!currentToken.url || !currentToken.username || !currentToken.token) {
+        // url 或 username 或 token 为空，则跳过匹配
+        continue
+      }
       if (url.indexOf(currentToken.url) >= 0) {
         token = currentToken
         break

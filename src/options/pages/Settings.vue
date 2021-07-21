@@ -69,16 +69,28 @@
                 </v-col>
 
                 <v-col cols="5">
-                  <v-text-field
-                    v-model="token.token"
-                    label="Token or password"
-                    outlined
-                    type="password"
-                    class="remove-text-field-mb"
-                    dense
-                  ></v-text-field>
+                  <div style="display: flex;">
+                    <v-text-field
+                      v-model="token.token"
+                      label="Token or password"
+                      outlined
+                      type="password"
+                      class="remove-text-field-mb"
+                      dense
+                    ></v-text-field>
+                    <v-btn
+                      icon
+                      class="token-delete-btn"
+                      @click="deleteToken(index)"
+                    >
+                      <v-icon color="grey lighten-1">
+                        mdi-minus-circle
+                      </v-icon>
+                    </v-btn>
+                  </div>
                 </v-col>
               </v-row>
+
               <v-row>
                 <v-col cols="12">
                   <v-btn
@@ -417,25 +429,17 @@ export default class Settings extends Vue {
   }
 
   addNewToken() {
-    this.jenkinsTokens.push({ url: '' })
+    this.jenkinsTokens.push(JenkinsToken.empty())
   }
 
-  arrangeJenkinsTokens() {
-    const arrangedJenkinsTokens = []
-    for (let i = 0; i < this.jenkinsTokens.length; i++) {
-      const token = this.jenkinsTokens[i]
-      if (token.hasOwnProperty('url') && token.url) {
-        arrangedJenkinsTokens.push(token)
-      }
-    }
-    // console.log('arrangedJenkinsTokens', arrangedJenkinsTokens);
-    return arrangedJenkinsTokens
+  deleteToken(index: number) {
+    this.jenkinsTokens.splice(index, 1)
   }
 
   dataToOptions() {
     const options: Options = {
       defaultTab: this.defaultTab,
-      jenkinsTokens: this.arrangeJenkinsTokens(),
+      jenkinsTokens: this.jenkinsTokens,
       refreshTime: this.refreshTime.toString(),
       nodeRefreshTime: this.nodeRefreshTime.toString(),
       showNotificationOption: this.showNotificationOption,
@@ -487,7 +491,7 @@ export default class Settings extends Vue {
       this.defaultTab = options.defaultTab
     }
 
-    this.jenkinsTokens = options.jenkinsTokens || []
+    this.jenkinsTokens = options.jenkinsTokens || defaultOptionsValue.jenkinsTokens
     this.omniboxJenkinsUrl = options.omniboxJenkinsUrl
     this.nodeParam = options.nodeParam
     this.jobStatsJenkinsUrl = options.jobStatsJenkinsUrl
@@ -573,6 +577,9 @@ export default class Settings extends Vue {
 
 <style lang="scss">
 #options-settings-wrapper {
+  .token-delete-btn {
+    margin-left: 6px;
+  }
   .remove-message-height {
     div.v-messages {
       height: 0;
