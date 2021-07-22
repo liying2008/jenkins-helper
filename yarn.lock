@@ -8438,10 +8438,10 @@ vuetify-loader@^1.7.2:
     file-loader "^6.2.0"
     loader-utils "^2.0.0"
 
-vuetify@^2.5.6:
-  version "2.5.6"
-  resolved "https://registry.nlark.com/vuetify/download/vuetify-2.5.6.tgz?cache=0&sync_timestamp=1625025453402&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fvuetify%2Fdownload%2Fvuetify-2.5.6.tgz#9cbb1eacece6c42028216312b9be23e35a7f5cf4"
-  integrity sha1-nLserOzmxCAoIWMSub4j41p/XPQ=
+vuetify@^2.5.7:
+  version "2.5.7"
+  resolved "https://registry.nlark.com/vuetify/download/vuetify-2.5.7.tgz?cache=0&sync_timestamp=1626775032229&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fvuetify%2Fdownload%2Fvuetify-2.5.7.tgz#0c7cfa143bffa6a14ef3ca5cfd8f2135713f4360"
+  integrity sha1-DHz6FDv/pqFO88pc/Y8hNXE/Q2A=
 
 vuex@^3.5.1:
   version "3.5.1"

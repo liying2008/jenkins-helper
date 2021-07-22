@@ -1,6 +1,6 @@
 <template>
   <div id="options-settings-wrapper">
-    <v-container>
+    <v-container class="content">
       <div
         class="mx-auto"
         style="max-width: 900px;"
@@ -254,22 +254,6 @@
             </v-card-text>
           </v-container>
         </v-card>
-        <div class="my-6" />
-        <!--保存按钮-->
-        <v-card
-          class="mx-auto"
-          flat
-          max-width="900"
-        >
-          <v-btn
-            color="primary"
-            dark
-            width="100%"
-            @click="saveOptions"
-          >
-            {{ strings.saveOptions }}
-          </v-btn>
-        </v-card>
       </div>
       <div v-show="isJsonView">
         <v-card
@@ -289,9 +273,11 @@
         </v-card>
       </div>
       <div class="my-6" />
+
       <v-snackbar
         v-model="snackbar.show"
         :color="snackbar.color"
+        top
       >
         {{ snackbar.message }}
 
@@ -306,6 +292,29 @@
         </template>
       </v-snackbar>
     </v-container>
+    <div
+      v-show="!isJsonView"
+      class="bottom-actions-area"
+    >
+      <v-card
+        class="bottom-actions-card"
+        tile
+        elevation="2"
+      >
+        <v-card-text>
+          <!--保存按钮-->
+          <v-btn
+            color="primary"
+            dark
+            max-width="900"
+            width="100%"
+            @click="saveOptions"
+          >
+            {{ strings.saveOptions }}
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -592,29 +601,45 @@ export default class Settings extends Vue {
 
 <style lang="scss">
 #options-settings-wrapper {
-  .token-delete-btn {
-    margin-left: 6px;
-  }
-  .remove-message-height {
-    div.v-messages {
-      height: 0;
-      min-height: 0;
+  position: relative;
+  .content {
+    padding-bottom: 60px;
+    .token-delete-btn {
+      margin-left: 6px;
     }
-  }
-  .remove-margin-x {
-    div.v-slider--horizontal {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-  .remove-text-field-mb {
-    div.v-text-field__details {
-      margin-bottom: 0;
-      min-height: 0;
-
+    .remove-message-height {
       div.v-messages {
+        height: 0;
         min-height: 0;
       }
+    }
+    .remove-margin-x {
+      div.v-slider--horizontal {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    .remove-text-field-mb {
+      div.v-text-field__details {
+        margin-bottom: 0;
+        min-height: 0;
+
+        div.v-messages {
+          min-height: 0;
+        }
+      }
+    }
+  }
+  .bottom-actions-area {
+    position: fixed;
+    bottom: 8px;
+    // 左侧 sidebar 宽度 256px
+    left: 256px;
+    right: 0;
+    height: 60px;
+    text-align: center;
+
+    .bottom-actions-card {
     }
   }
 }
