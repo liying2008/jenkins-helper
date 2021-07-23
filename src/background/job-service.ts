@@ -117,8 +117,16 @@ export class JobService {
     JobService.resetBadgeJobCount()
 
     if (JobService.jenkinsUrls.length === 0) {
-      JobService.changeBadge()
-      JobService.querying = false
+      // 存储job状态
+      StorageService.saveJobsStatus({}).then(() => {
+        console.log('saveJobsStatus ok')
+        JobService.changeBadge()
+        JobService.querying = false
+      }).catch((e: Error) => {
+        // 原则上不应该走到这里
+        console.log('queryJobStatus:saveJobsStatus:e', e)
+        JobService.querying = false
+      })
       return
     }
 

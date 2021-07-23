@@ -188,10 +188,7 @@ export default class Monitor extends Vue {
   isFormValid = false
   inputUrlValue = ''
   showDisabledJobs = true
-  jenkinsData: { jenkinsUrls: string[]; jobStatus: JobRoot } = {
-    jenkinsUrls: [],
-    jobStatus: {}
-  }
+  jobsData: JobRoot = {}
   data: any = {}
   filteringResult = ''
   filteringResults: SelectionOption[] = []
@@ -306,8 +303,8 @@ export default class Monitor extends Vue {
       }
     })
     StorageService.getJobsStatus().then((jobResult: JobRoot) => {
-      // console.log('jobResult', jobResult)
-      this.jenkinsData.jobStatus = jobResult
+      console.log('getAllJobStatus::jobResult', jobResult)
+      this.jobsData = jobResult
       // 过滤数据
       this.filterData()
     })
@@ -317,7 +314,8 @@ export default class Monitor extends Vue {
    * 过滤数据
    */
   filterData() {
-    const status: JobRoot = this.jenkinsData.jobStatus
+    const status: JobRoot = this.jobsData
+    console.log('filterData::status', status)
     this.data = {}
     Object.keys(status).forEach((setUrl: string) => {
       this.data[setUrl] = {}
@@ -340,7 +338,7 @@ export default class Monitor extends Vue {
         }
       })
     })
-    // console.log('filterData', this.data)
+    console.log('filterData', this.data)
   }
 
   /**
@@ -354,18 +352,10 @@ export default class Monitor extends Vue {
     let url = this.inputUrlValue
     url = url.charAt(url.length - 1) === '/' ? url : url + '/'
     console.log('url', url)
-    if (this.jenkinsData.jenkinsUrls.indexOf(url) === -1) {
-      const newUrls = this.jenkinsData.jenkinsUrls.concat(url)
-      console.log('newUrls', newUrls)
-      StorageService.saveJenkinsUrls(newUrls).then(() => {
-        this.jenkinsData.jenkinsUrls = newUrls
-        this.inputUrlValue = ''
-        this.form.resetValidation()
-      })
-    } else {
+    StorageService.addJenkinsUrl(url).then(() => {
       this.inputUrlValue = ''
       this.form.resetValidation()
-    }
+    })
   }
 
   removeJenkins(jenkinsUrl: string) {
@@ -375,8 +365,8 @@ export default class Monitor extends Vue {
       return
     }
 
-    StorageService.removeJenkinsUrls(jenkinsUrl).then(() => {
-      this.getAllJobStatus()
+    StorageService.removeJenkinsUrl(jenkinsUrl).then(() => {
+      console.log('removeJenkins::removed', jenkinsUrl)
     })
   }
 

@@ -22,25 +22,29 @@ export class StorageService {
   static readonly keyForOptions = 'options'
   static readonly keyForNodes = 'nodes'
 
+  static async addJenkinsUrl(jenkinsUrl: string) {
+    const result = await StorageService.getJenkinsUrls()
+    result.push(jenkinsUrl)
+    return StorageService.saveJenkinsUrls(result)
+  }
+
   static async saveJenkinsUrls(jenkinsUrls: string[]) {
     const jenkinsUrlRoot: JenkinsUrlRoot = { 'jenkins-url': JSON.parse(JSON.stringify(jenkinsUrls)) }
     return browser.storage.local.set(jenkinsUrlRoot)
   }
 
   static async getJenkinsUrls() {
-    const result = await browser.storage.local.get('jenkins-url')
-    return result['jenkins-url'] as string[] || []
+    const result = await browser.storage.local.get(StorageService.keyForJenkinsUrl)
+    return result[StorageService.keyForJenkinsUrl] as string[] || []
   }
 
   // 删除一个Jenkins Url
-  static async removeJenkinsUrls(jenkinsUrl: string) {
+  static async removeJenkinsUrl(jenkinsUrl: string) {
     const result = await StorageService.getJenkinsUrls()
-    if (result !== undefined) {
-      const index = result.indexOf(jenkinsUrl)
-      if (index > -1) {
-        result.splice(index, 1)
-        await StorageService.saveJenkinsUrls(result)
-      }
+    const index = result.indexOf(jenkinsUrl)
+    if (index > -1) {
+      result.splice(index, 1)
+      await StorageService.saveJenkinsUrls(result)
     }
   }
 
