@@ -60,22 +60,7 @@
           </v-col>
         </v-row>
       </div>
-      <v-snackbar
-        v-model="snackbar.show"
-        :color="snackbar.color"
-      >
-        {{ snackbar.message }}
-
-        <template v-slot:action="{ attrs }">
-          <v-btn
-            text
-            v-bind="attrs"
-            @click="snackbar.show = false"
-          >
-            {{ strings.close }}
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <j-snackbar :snackbar-data="snackbar" />
     </v-container>
     <!--隐藏的文件上传输入框-->
     <input
@@ -96,7 +81,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { SettingsFileData } from '@/models/settings-file'
-import { MessageColor, SnackbarData } from '@/models/message'
+import { SnackbarData } from '@/models/message'
 
 @Component
 export default class ImportExport extends Vue {
@@ -233,11 +218,10 @@ export default class ImportExport extends Vue {
    */
   showSuccessMessage(successText: string) {
     // console.log('showSuccessMessage')
-    this.snackbar = {
-      show: true,
-      message: successText,
-      color: MessageColor.Success
-    }
+    this.snackbar = SnackbarData.builder()
+      .message(successText)
+      .color('success')
+      .build()
   }
 
   /**
@@ -246,11 +230,10 @@ export default class ImportExport extends Vue {
    */
   showDangerMessage(dangerText: string) {
     // console.log('showDangerMessage')
-    this.snackbar = {
-      show: true,
-      message: dangerText,
-      color: MessageColor.Error
-    }
+    this.snackbar = SnackbarData.builder()
+      .message(dangerText)
+      .color('error')
+      .build()
   }
 }
 </script>

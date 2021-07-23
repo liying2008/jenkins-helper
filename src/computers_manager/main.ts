@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from '@/plugins/vuetify'
+import '@/plugins/j-snackbar'
 import { initialize } from '@/init'
 
 Vue.config.productionTip = false

@@ -274,23 +274,7 @@
       </div>
       <div class="my-6" />
 
-      <v-snackbar
-        v-model="snackbar.show"
-        :color="snackbar.color"
-        top
-      >
-        {{ snackbar.message }}
-
-        <template v-slot:action="{ attrs }">
-          <v-btn
-            text
-            v-bind="attrs"
-            @click="snackbar.show = false"
-          >
-            {{ strings.close }}
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <j-snackbar :snackbar-data="snackbar" />
     </v-container>
     <div
       v-show="!isJsonView"
@@ -322,7 +306,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken, defaultOptionsValue, PopupTab, NotificationShowing } from '@/models/option'
-import { MessageColor, SnackbarData } from '@/models/message'
+import { SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
 import { defaultTheme, initTheme } from '@/theme'
 import { sapphireTheme } from '@/theme/theme_sapphire'
@@ -557,11 +541,12 @@ export default class Settings extends Vue {
       StorageService.saveOptions(option).then(() => {
         // 应用主题
         initTheme(option.currentTheme, option.enableDarkMode)
-        this.snackbar = {
-          show: true,
-          message: this.strings.optionsSaved,
-          color: MessageColor.Success,
-        }
+
+        this.snackbar = SnackbarData.builder()
+          .message(this.strings.optionsSaved)
+          .color('success')
+          .top()
+          .build()
       })
     })
   }

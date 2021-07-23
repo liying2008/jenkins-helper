@@ -132,22 +132,7 @@
       </div>
 
       <!-- snackbar -->
-      <v-snackbar
-        v-model="snackbar.show"
-        :color="snackbar.color"
-      >
-        {{ snackbar.message }}
-
-        <template v-slot:action="{ attrs }">
-          <v-btn
-            text
-            v-bind="attrs"
-            @click="snackbar.show = false"
-          >
-            {{ strings.close }}
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <j-snackbar :snackbar-data="snackbar" />
     </v-container>
   </v-app>
 </template>
@@ -155,7 +140,7 @@
 <script lang="ts">
 import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
-import { MessageColor, SnackbarData } from '@/models/message'
+import { SnackbarData } from '@/models/message'
 import { NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
@@ -357,11 +342,10 @@ export default class App extends Vue {
     const displayName = item.displayName
     if (item.monitoring) {
       if (!item.diskSpaceThreshold || item.diskSpaceThreshold <= 0) {
-        this.snackbar = {
-          show: true,
-          message: this.strings.diskSpaceThresholdInvalid,
-          color: MessageColor.Error,
-        }
+        this.snackbar = SnackbarData.builder()
+          .message(this.strings.diskSpaceThresholdInvalid)
+          .color('error')
+          .build()
         this.queryJenkinsNodes(this.url)
         return
       }

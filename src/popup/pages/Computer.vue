@@ -129,30 +129,14 @@
     </div>
     <v-row class="my-3"></v-row>
     <!-- snackbar -->
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-    >
-      {{ snackbar.message }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="snackbar.show = false"
-        >
-          {{ strings.close }}
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
 
 <script lang="ts">
 import { NodeService } from '@/background/node-service'
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
-import { Tools } from '@/libs/tools'
-import { MessageColor, SnackbarData } from '@/models/message'
+import { SnackbarData } from '@/models/message'
 import { MonitoredNodes, NodeDetail, Nodes } from '@/models/node'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
@@ -232,11 +216,11 @@ export default class Computer extends Vue {
         delete result[jenkinsUrl]
         StorageService.saveNodeStatus(result).then(() => {
           console.log(jenkinsUrl + ' 已删除')
-          this.snackbar = {
-            show: true,
-            message: `${this.strings.monitoringCancelled}${jenkinsUrl}`,
-            color: MessageColor.Success,
-          }
+
+          this.snackbar = SnackbarData.builder()
+            .message(`${this.strings.monitoringCancelled}${jenkinsUrl}`)
+            .color('success')
+            .build()
         })
       }
     })
@@ -267,11 +251,11 @@ export default class Computer extends Vue {
         delete result[jenkinsUrl]['monitoredNodes'][nodeName]
         StorageService.saveNodeStatus(result).then(() => {
           console.log(nodeName + ' 已删除')
-          this.snackbar = {
-            show: true,
-            message: `${this.strings.monitoringCancelled}${nodeName}`,
-            color: MessageColor.Success,
-          }
+
+          this.snackbar = SnackbarData.builder()
+            .message(`${this.strings.monitoringCancelled}${nodeName}`)
+            .color('success')
+            .build()
         })
       }
     })

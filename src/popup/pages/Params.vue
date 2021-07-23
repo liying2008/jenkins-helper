@@ -217,29 +217,13 @@
     </div>
 
     <!-- snackbar -->
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      timeout="1000"
-    >
-      {{ snackbar.message }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="snackbar.show = false"
-        >
-          {{ strings.close }}
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
 
 <script lang="ts">
 import { Tools } from '@/libs/tools'
-import { MessageColor, SnackbarData } from '@/models/message'
+import { SnackbarData } from '@/models/message'
 import { Vue, Component } from 'vue-property-decorator'
 import { DataTableHeader } from 'vuetify'
 
@@ -449,11 +433,11 @@ export default class Params extends Vue {
     tempInput.select() // 选择对象
     document.execCommand('Copy') // 执行浏览器复制命令
     tempInput.style.display = 'none'
-    this.snackbar = {
-      show: true,
-      message: this.strings.copied,
-      color: MessageColor.Success,
-    }
+
+    this.snackbar = SnackbarData.builder()
+      .message(this.strings.copied)
+      .color('success')
+      .build()
   }
 
   // 下载日志
