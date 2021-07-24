@@ -157,6 +157,12 @@
   "inputUrlPlaceholder": {
     "message": "Please input Jenkins/View/Job URL"
   },
+  "addMonitorUrlTip": {
+    "message": "Created successfully, page data will be updated later."
+  },
+  "removeMonitorUrlTip": {
+    "message": "Removed successfully, page data will be updated later."
+  },
   "monitor": {
     "message": "Monitor"
   },

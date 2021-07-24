@@ -159,6 +159,9 @@
         </v-row>
       </v-container>
     </div>
+
+    <!-- snackbar -->
+    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
 
@@ -170,6 +173,7 @@ import { DisplayedJobDetail, JobRoot } from '../../models/job'
 import { SelectionOption } from '../../models/vuetify'
 import { Options } from '../../models/option'
 import { DataTableHeader } from 'vuetify'
+import { SnackbarData } from '@/models/message'
 
 @Component({
   name: 'Monitor'
@@ -184,6 +188,8 @@ export default class Monitor extends Vue {
     filterLabel: browser.i18n.getMessage('filterLabel'),
     urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
     urlInvalid: browser.i18n.getMessage('urlInvalid'),
+    addMonitorUrlTip: browser.i18n.getMessage('addMonitorUrlTip'),
+    removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
   }
   isFormValid = false
   inputUrlValue = ''
@@ -199,6 +205,7 @@ export default class Monitor extends Vue {
     { text: 'Last Build Time', align: 'center', value: 'lastBuildTimestamp', width: '24%' },
     { text: 'Result', align: 'center', value: 'status', width: '12%' },
   ]
+  snackbar = SnackbarData.empty()
 
   get form() {
     return this.$refs.form as Vue & {
@@ -355,6 +362,11 @@ export default class Monitor extends Vue {
     StorageService.addJenkinsUrl(url).then(() => {
       this.inputUrlValue = ''
       this.form.resetValidation()
+      // 显示 创建成功
+      this.snackbar = SnackbarData.builder()
+        .message(this.strings.addMonitorUrlTip)
+        .color('success')
+        .build()
     })
   }
 
@@ -367,6 +379,11 @@ export default class Monitor extends Vue {
 
     StorageService.removeJenkinsUrl(jenkinsUrl).then(() => {
       console.log('removeJenkins::removed', jenkinsUrl)
+      // 显示 删除成功
+      this.snackbar = SnackbarData.builder()
+        .message(this.strings.removeMonitorUrlTip)
+        .color('success')
+        .build()
     })
   }
 
