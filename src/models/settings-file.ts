@@ -4,7 +4,7 @@ import { Nodes } from './node'
 export interface SettingsFileData {
   name: string
   version: string
-  data: any
+  data: SettingsContent
 }
 
 export interface SettingsContent {

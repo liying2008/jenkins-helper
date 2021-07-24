@@ -82,6 +82,7 @@ import { StorageService } from '@/libs/storage'
 import { Tools } from '@/libs/tools'
 import { SettingsFileData } from '@/models/settings-file'
 import { SnackbarData } from '@/models/message'
+import { initTheme } from '@/theme'
 
 @Component
 export default class ImportExport extends Vue {
@@ -150,7 +151,7 @@ export default class ImportExport extends Vue {
    * 触发上传文件
    */
   triggerUpload() {
-    const inputElement: any = this.$refs.configFile
+    const inputElement = this.$refs.configFile as HTMLInputElement
     inputElement.value = ''
     inputElement.click()
   }
@@ -161,12 +162,12 @@ export default class ImportExport extends Vue {
    */
   readFile(event: Event) {
     // console.log('event', event)
-    const inputElement: any = this.$refs.configFile
+    const inputElement = this.$refs.configFile as HTMLInputElement
     const filePath = inputElement.value
     console.log('filePath', filePath)
     if (filePath) {
       const reader = new FileReader()
-      reader.readAsText(inputElement.files[0], 'utf-8')
+      reader.readAsText(inputElement.files![0], 'utf-8')
 
       reader.onload = () => {
         // console.log('加载成功')
@@ -204,11 +205,13 @@ export default class ImportExport extends Vue {
       return
     }
     if (!settings.data || Object.getOwnPropertyNames(settings.data).length === 0) {
-      this.showSuccessMessage(this.strings.settingContentIsEmpty)
+      this.showDangerMessage(this.strings.settingContentIsEmpty)
       return
     }
     StorageService.set(settings.data).then(() => {
       this.showSuccessMessage(this.strings.settingsImported)
+      // 应用新主题设置
+      initTheme()
     })
   }
 
