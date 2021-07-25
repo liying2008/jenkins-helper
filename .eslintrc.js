@@ -23,6 +23,7 @@ module.exports = {
       'args': 'none',
       'ignoreRestSiblings': true
     }],
+    'no-case-declarations': 'off',
     'vue/no-unused-components': 'warn',
     'vue/no-unused-vars': 'warn',
     'vue/html-self-closing': 'off',
@@ -79,6 +80,7 @@ module.exports = {
     'space-before-blocks': ['error', 'always'],
     'space-in-parens': ['error', 'never'],
     'space-infix-ops': 'error',
+    'strict': 2,
     'new-parens': 'error',
     'no-class-assign': 'error',
     'no-constant-condition': ['warn', { 'checkLoops': false }],

@@ -1,4 +1,5 @@
 import { Tools } from '@/libs/tools'
+import { ContentService } from '@/background/content-service'
 import { Omnibox } from '@/background/omnibox'
 import { JobService } from '@/background/job-service'
 import { NodeService } from '@/background/node-service'
@@ -16,7 +17,7 @@ if (Tools.isChrome) {
     console.log('PermissionLevel', level)
   })
 }
-// ContentServices.start();
+ContentService.start()
 Omnibox.start()
 JobService.start()
 NodeService.start()
