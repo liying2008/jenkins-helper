@@ -53,7 +53,15 @@ function isParametersPage() {
   const selector = 'body#jenkins div#main-panel div.row div.pane-content'
   const element = document.querySelector(selector)
   // console.log('isParametersPage', element)
-  return element
+  if (element == null) return null
+
+  const div = element.querySelector('div.tr')
+  if (div) {
+    // 新版本Jenkins页面
+    return element
+  }
+  // 老版本Jenkins页面，无需处理，直接返回 null
+  return null
 }
 
 /**

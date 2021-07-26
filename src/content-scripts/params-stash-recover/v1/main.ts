@@ -54,6 +54,7 @@ function isParametersPage() {
   const element = document.querySelector(selector)
   // console.log('isParametersPage', element)
   if (element == null) return null
+
   const div = element.querySelector('div.tr')
   if (div) {
     // 新版本Jenkins页面，使用 V2 版本解析，此处直接返回 null

@@ -27,6 +27,6 @@ browser.runtime.sendMessage(message).then((resp: ContentResp<ContentFeatures>) =
 
   if (data.enableParamNamesColor) {
     // 使能 参数名称着色 功能
-    enableParamNamesColor()
+    enableParamNamesColor(data.paramNamesColor)
   }
 })
