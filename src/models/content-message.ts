@@ -1,7 +1,13 @@
 
-export const CMD_IS_ENABLE_STASH_AND_RECOVER = 'is_enable_stash_and_recover'
+export const CMD_GET_CONTENT_FEATURES = 'get_content_features'
 export const CMD_STASH_PARAMS = 'stash_params'
 export const CMD_RECOVER_PARAMS = 'recover_params'
+
+export interface ContentFeatures {
+  enableParamsStashAndRecover: boolean
+  enableParamNamesColor: boolean
+  paramNamesColor: string
+}
 
 export class ContentMessage<T = any> {
   cmd: string

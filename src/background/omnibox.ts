@@ -18,7 +18,7 @@ interface Job {
 
 export class Omnibox {
   // 请求 /api/json 使用的 tree 参数
-  private static treeParams = 'jobs[name,url]'
+  private static readonly TREE_PARAMS = 'jobs[name,url]'
   private static allJobs: Job[] = [];
 
   static start() {
@@ -85,7 +85,7 @@ export class Omnibox {
           return true // continue
         }
         url = url.charAt(url.length - 1) === '/' ? url : url + '/'
-        allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', Omnibox.treeParams))
+        allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', Omnibox.TREE_PARAMS))
       })
 
       Promise.all(allFetchDataPromises).then((values: Enc[]) => {

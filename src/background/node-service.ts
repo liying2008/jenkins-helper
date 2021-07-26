@@ -8,7 +8,7 @@ import { Options } from '@/models/option'
 export class NodeService {
   private static lastInterval: number | undefined = undefined;
   // 请求 /api/json 使用的 tree 参数
-  private static treeParams = 'computer[displayName,offline,monitorData[*]]'
+  private static readonly TREE_PARAMS = 'computer[displayName,offline,monitorData[*]]'
 
 
   static start() {
@@ -65,7 +65,7 @@ export class NodeService {
       const allFetchDataPromises: Promise<Enc>[] = []
 
       jenkinsUrls.forEach((url: string) => {
-        allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'computer/api/json', NodeService.treeParams))
+        allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'computer/api/json', NodeService.TREE_PARAMS))
       })
 
       Promise.all(allFetchDataPromises).then((values: Enc<JenkinsNode>[]) => {

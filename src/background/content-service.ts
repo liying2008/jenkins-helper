@@ -1,13 +1,14 @@
 import { StorageChangeWrapper, StorageService } from '@/libs/storage'
-import { CMD_IS_ENABLE_STASH_AND_RECOVER, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '@/models/content-message'
+import { CMD_GET_CONTENT_FEATURES, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentFeatures, ContentResp } from '@/models/content-message'
+import { defaultOptionsValue } from '@/models/option'
 
 export class ContentService {
-  private static KEY_STASHED_PARAMS = 'stashed_params'
-  private static enableParamsStashAndRecover = false
+  private static readonly KEY_STASHED_PARAMS = 'stashed_params'
+  private static options = defaultOptionsValue
 
   static start() {
     StorageService.getOptions().then((options) => {
-      ContentService.enableParamsStashAndRecover = options.enableParamsStashAndRecover
+      ContentService.options = options
     })
     // 添加 options 变动监听
     StorageService.addStorageListener(ContentService.storageChange)
@@ -34,11 +35,15 @@ export class ContentService {
           const params = JSON.parse(paramsStr)
           sendResponse(ContentResp.fromObj({ status: 'ok', data: params }))
           break
-        case CMD_IS_ENABLE_STASH_AND_RECOVER:
-          // 是否启用 参数暂存&恢复 功能
+        case CMD_GET_CONTENT_FEATURES:
+          // 获取支持的 content features
           sendResponse(ContentResp.fromObj({
             status: 'ok',
-            data: ContentService.enableParamsStashAndRecover
+            data: {
+              enableParamsStashAndRecover: ContentService.options.enableParamsStashAndRecover,
+              enableParamNamesColor: ContentService.options.enableParamNamesColor,
+              paramNamesColor: ContentService.options.paramNamesColor,
+            } as ContentFeatures
           }))
           break
         default:
@@ -51,8 +56,7 @@ export class ContentService {
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
       // console.log('changes', changes)
-      const newOptions = changes[StorageService.keyForOptions].newValue
-      ContentService.enableParamsStashAndRecover = newOptions.enableParamsStashAndRecover
+      ContentService.options = changes[StorageService.keyForOptions].newValue
     }
   }
 }

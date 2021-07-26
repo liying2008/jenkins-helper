@@ -15,7 +15,7 @@ const RED_COLOR = '#ffb6b6'
 let currentPage = PAGE_BUILD
 
 /**
- * 启用参数暂存和参数恢复功能
+ * 启用 参数暂存&恢复 功能
  *
  * @returns true: 使能成功，false: 使能失败
  */

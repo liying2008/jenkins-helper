@@ -1,23 +1,32 @@
-import { CMD_IS_ENABLE_STASH_AND_RECOVER, ContentMessage, ContentResp } from '@/models/content-message'
+import { CMD_GET_CONTENT_FEATURES, ContentFeatures, ContentMessage, ContentResp } from '@/models/content-message'
+import { enableParamNamesColor } from './param-names-color'
 import { enableParamsStashAndRecoverV1 } from './params-stash-recover/v1'
 import { enableParamsStashAndRecoverV2 } from './params-stash-recover/v2'
 
 // console.log('Hello from the content-script')
 
-const message = new ContentMessage(CMD_IS_ENABLE_STASH_AND_RECOVER)
+const message = new ContentMessage(CMD_GET_CONTENT_FEATURES)
 
-browser.runtime.sendMessage(message).then((resp: ContentResp) => {
+browser.runtime.sendMessage(message).then((resp: ContentResp<ContentFeatures>) => {
   console.log('content-script::resp', resp)
   if (resp.status !== 'ok') {
-    console.log('是否开启stash & recover 未知！')
+    console.log('获取 content features 失败！')
     return
   }
 
-  if (resp.data) {
+  const data = resp.data!
+
+  if (data.enableParamsStashAndRecover) {
+    // 使能 参数暂存&恢复 功能
     const ok = enableParamsStashAndRecoverV1()
     console.log('content-script::contentenableParamsStashAndRecoverV1:ok', ok)
     if (!ok) {
       enableParamsStashAndRecoverV2()
     }
+  }
+
+  if (data.enableParamNamesColor) {
+    // 使能 参数名称着色 功能
+    enableParamNamesColor()
   }
 })

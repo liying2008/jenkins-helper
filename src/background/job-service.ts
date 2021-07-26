@@ -27,7 +27,7 @@ export class JobService {
   // 通知ID和URL的对照
   private static notificationUrlMap: { [key: string]: string } = {};
   // 请求 /api/json 使用的 tree 参数
-  private static treeParams = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
+  private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
 
   private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
     const jenkinsObj: JobSet = {
@@ -133,7 +133,7 @@ export class JobService {
     const allFetchDataPromises: Promise<Enc>[] = []
 
     JobService.jenkinsUrls.forEach((url: string) => {
-      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.treeParams))
+      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.TREE_PARAMS))
     })
 
     StorageService.getJobsStatus().then((result: JobRoot) => {
