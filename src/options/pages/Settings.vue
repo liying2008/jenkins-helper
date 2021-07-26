@@ -245,12 +245,33 @@
           <v-container>
             <v-card-title>{{ strings.otherTitle }}</v-card-title>
             <v-card-text class="mt-4">
+              <!-- 参数暂存&恢复 -->
               <v-checkbox
                 v-model="enableParamsStashAndRecover"
                 :label="strings.enableParamsStashAndRecover"
-                :hint="strings.paramsStashAndRecoverTips"
+                :hint="strings.enableParamsStashAndRecoverTips"
                 persistent-hint
               ></v-checkbox>
+
+              <v-divider class="mt-4"></v-divider>
+              <!-- 参数名称着色 -->
+              <v-checkbox
+                v-model="enableParamNamesColor"
+                :label="strings.enableParamNamesColor"
+                :hint="strings.enableParamNamesColorTips"
+                persistent-hint
+                class="pt-0"
+              ></v-checkbox>
+              <div class="py-4">
+                {{ strings.pickColor }}
+              </div>
+              <!-- 颜色选择器 -->
+              <v-color-picker
+                v-model="paramNamesColor"
+                mode="hexa"
+                hide-mode-switch
+                :disabled="!enableParamNamesColor"
+              ></v-color-picker>
             </v-card-text>
           </v-container>
         </v-card>
@@ -345,7 +366,10 @@ export default class Settings extends Vue {
     enableDarkMode: browser.i18n.getMessage('enableDarkMode'),
     otherTitle: browser.i18n.getMessage('otherTitle'),
     enableParamsStashAndRecover: browser.i18n.getMessage('enableParamsStashAndRecover'),
-    paramsStashAndRecoverTips: browser.i18n.getMessage('paramsStashAndRecoverTips'),
+    enableParamsStashAndRecoverTips: browser.i18n.getMessage('enableParamsStashAndRecoverTips'),
+    enableParamNamesColor: browser.i18n.getMessage('enableParamNamesColor'),
+    enableParamNamesColorTips: browser.i18n.getMessage('enableParamNamesColorTips'),
+    pickColor: browser.i18n.getMessage('pickColor'),
   }
   refreshTime = defaultOptionsValue.refreshTime
   nodeRefreshTime = defaultOptionsValue.nodeRefreshTime
@@ -404,6 +428,8 @@ export default class Settings extends Vue {
   currentTheme = defaultOptionsValue.currentTheme
   enableDarkMode = defaultOptionsValue.enableDarkMode
   enableParamsStashAndRecover = defaultOptionsValue.enableParamsStashAndRecover
+  enableParamNamesColor = defaultOptionsValue.enableParamNamesColor
+  paramNamesColor = defaultOptionsValue.paramNamesColor
   showDisabledJobs = defaultOptionsValue.showDisabledJobs
   optionsJson = ''
   isJsonView = false
@@ -458,6 +484,8 @@ export default class Settings extends Vue {
       enableDarkMode: this.enableDarkMode,
       enableParamsStashAndRecover: this.enableParamsStashAndRecover,
       showDisabledJobs: this.showDisabledJobs,
+      enableParamNamesColor: this.enableParamNamesColor,
+      paramNamesColor: this.paramNamesColor,
     }
     return options
   }
@@ -522,6 +550,14 @@ export default class Settings extends Vue {
     } else {
       this.enableParamsStashAndRecover = !!options.enableParamsStashAndRecover
     }
+
+    //// enableParamNamesColor
+    if (options.enableParamNamesColor === undefined) {
+      this.enableParamNamesColor = defaultOptionsValue.enableParamNamesColor
+    } else {
+      this.enableParamNamesColor = !!options.enableParamNamesColor
+    }
+    this.paramNamesColor = options.paramNamesColor
 
     //// showDisabledJobs
     if (options.showDisabledJobs === undefined) {

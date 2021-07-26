@@ -93,10 +93,19 @@
     "message": "其他设置"
   },
   "enableParamsStashAndRecover": {
-    "message": "启用参数暂存&恢复功能"
+    "message": "启用 参数暂存&恢复 功能"
   },
-  "paramsStashAndRecoverTips": {
-    "message": "启用此功能后，该扩展会在Build页面参数列表下方加入两个按钮，用于暂存参数和恢复参数。"
+  "enableParamsStashAndRecoverTips": {
+    "message": "启用此功能后，该扩展会在构建页面参数列表下方加入两个按钮，用于暂存参数和恢复参数。"
+  },
+  "enableParamNamesColor": {
+    "message": "启用 参数名称着色 功能"
+  },
+  "enableParamNamesColorTips": {
+    "message": "启用此功能后，新版本Jenkins的构建页面和参数页面的参数名称会被着色，方便辨认。"
+  },
+  "pickColor": {
+    "message": "选择颜色"
   },
   "saveOptions": {
     "message": "保存设置"

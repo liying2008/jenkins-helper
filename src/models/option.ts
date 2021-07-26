@@ -21,6 +21,8 @@ export interface Options {
   enableDarkMode: boolean
   showDisabledJobs: boolean
   enableParamsStashAndRecover: boolean
+  enableParamNamesColor: boolean
+  paramNamesColor: string
 }
 
 // Options 默认值
@@ -37,6 +39,8 @@ export const defaultOptionsValue: Options = {
   enableDarkMode: false,
   showDisabledJobs: true,
   enableParamsStashAndRecover: true,
+  enableParamNamesColor: true,
+  paramNamesColor: '#4a90e2',
 }
 
 export class JenkinsToken {

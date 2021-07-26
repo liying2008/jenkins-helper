@@ -95,8 +95,17 @@
   "enableParamsStashAndRecover": {
     "message": "Enable parameters Stash & Recover function"
   },
-  "paramsStashAndRecoverTips": {
+  "enableParamsStashAndRecoverTips": {
     "message": "When enabled, this extension adds two buttons at the bottom of the Build page parameter list for stashing parameters and recovering parameters."
+  },
+  "enableParamNamesColor": {
+    "message": "Enable parameter names coloring function"
+  },
+  "enableParamNamesColorTips": {
+    "message": "When enabled, the parameter names on the build and parameter pages of new versions of Jenkins are colored in for easy identification."
+  },
+  "pickColor": {
+    "message": "Pick a Color:"
   },
   "saveOptions": {
     "message": "Save Settings"

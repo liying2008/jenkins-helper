@@ -19,10 +19,10 @@ export async function initTheme(themeName?: string, enableDarkMode?: boolean) {
     console.time('initTheme:getOption')
     options = await StorageService.getOptions()
     console.timeEnd('initTheme:getOption')
-    console.time('initTheme:applyTheme')
     themeName = options.currentTheme
   }
   console.log('themeName', themeName)
+  console.time('initTheme:applyTheme')
   applyTheme(supportThemes.get(themeName) || defaultTheme)
 
   if (enableDarkMode === undefined) {

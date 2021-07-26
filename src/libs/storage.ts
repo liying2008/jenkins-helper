@@ -152,6 +152,12 @@ export class StorageService {
     if (options.enableParamsStashAndRecover == undefined) {
       options.enableParamsStashAndRecover = defaultOptionsValue.enableParamsStashAndRecover
     }
+    if (options.enableParamNamesColor == undefined) {
+      options.enableParamNamesColor = defaultOptionsValue.enableParamNamesColor
+    }
+    if (options.paramNamesColor == undefined) {
+      options.paramNamesColor = defaultOptionsValue.paramNamesColor
+    }
 
     return options as Options
   }
