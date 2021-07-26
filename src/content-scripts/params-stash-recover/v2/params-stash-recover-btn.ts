@@ -65,21 +65,19 @@ export function addBtnsForBuildPage(container: HTMLElement) {
 /////////////////////////////////////////////////////////////////////////////
 
 
-function createStashTbodyForParamsPage() {
+function createStashDivForParamsPage() {
   /*
-  <tbody>
-    <tr>
-      <td colspan="4">
-        <span style="float: right">
-          <span class="yui-button yui-submit-button submit-button primary" name="Stash">
-            <span class="first-child">
-              <button id="jenkins-helper-stash-parameters" type="button" tabindex="10">Stash Parameters</button>
-            </span>
+  <div class="tr form-group">
+    <div>
+      <span style="float: right">
+        <span class="yui-button yui-submit-button submit-button primary" name="Stash">
+          <span class="first-child">
+            <button id="jenkins-helper-stash-parameters" type="button" tabindex="10">Stash Parameters</button>
           </span>
         </span>
-      </td>
-    </tr>
-  </tbody>
+      </span>
+    </div>
+  </div>
   */
   const btn = document.createElement('button')
   btn.id = stashBtnId
@@ -100,19 +98,16 @@ function createStashTbodyForParamsPage() {
   spanL3.setAttribute('style', 'float: right')
   spanL3.appendChild(spanL2)
 
-  const td = document.createElement('td')
-  td.colSpan = 4
-  td.appendChild(spanL3)
+  const divL1 = document.createElement('div')
+  divL1.appendChild(spanL3)
 
-  const tr = document.createElement('tr')
-  tr.appendChild(td)
+  const divL2 = document.createElement('div')
+  divL2.setAttribute('class', 'tr form-group')
+  divL2.appendChild(divL1)
 
-  const tbody = document.createElement('tbody')
-  tbody.appendChild(tr)
-
-  return tbody
+  return divL2
 }
 
 export function addBtnForParamsPage(container: HTMLElement) {
-  container.appendChild(createStashTbodyForParamsPage())
+  container.appendChild(createStashDivForParamsPage())
 }

@@ -38,8 +38,8 @@ export function enable() {
  * 当前页面是否是 Build 页面 或 Rebuild 页面
  */
 function isBuildPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/table[@class='parameters']
-  const selector = 'body#jenkins div#main-panel form table.parameters'
+  // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/div[@class='parameters']
+  const selector = 'body#jenkins div#main-panel form div.parameters'
   const element = document.querySelector(selector)
   // console.log('isBuildPage', element)
   return element
@@ -49,17 +49,11 @@ function isBuildPage() {
  * 当前页面是否是 参数 页面
  */
 function isParametersPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']/div[contains(@class,"pane-content")]/table[@class='pane']
+  // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']/div[contains(@class,"pane-content")]
   const selector = 'body#jenkins div#main-panel div.row div.pane-content'
   const element = document.querySelector(selector)
   // console.log('isParametersPage', element)
-  if (element == null) return null
-  const div = element.querySelector('div.tr')
-  if (div) {
-    // 新版本Jenkins页面，使用 V2 版本解析，此处直接返回 null
-    return null
-  }
-  return element.querySelector('table.pane')
+  return element
 }
 
 /**
@@ -68,14 +62,14 @@ function isParametersPage() {
 function addStashAndRecoverButtons(table: HTMLElement) {
   if (currentPage === PAGE_BUILD) {
     // 构建页面 或 Rebuild 页面
-    const tBodies = table.getElementsByTagName('tbody')
+    const tBodies = table.querySelectorAll('div.tr')
     const size = tBodies.length
     if (size === 0) {
       return
     }
     console.log('currentPage', currentPage)
     const lastTBody = tBodies[size - 1]
-    const btnTd = lastTBody.querySelector('tr td') as HTMLElement | null
+    const btnTd = lastTBody.querySelector('div') as HTMLElement | null
     if (!btnTd) {
       return
     }
@@ -137,7 +131,7 @@ function getBuildPageParameters(table: HTMLElement) {
   const stashedParams: StashedParams = {}
   // 不能被暂存的参数
   const cannotStashed: string[] = []
-  const parameters = table.querySelectorAll('tbody tr td.setting-main div[name="parameter"]')
+  const parameters = table.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
   const size = parameters.length
   for (let i = 0; i < size; i++) {
     const parameter = parameters[i]
@@ -204,7 +198,7 @@ function getParametersPageParameters(table: HTMLElement) {
   const stashedParams: StashedParams = {}
   // 不能被暂存的参数
   const cannotStashed: string[] = []
-  const settingMains = table.querySelectorAll('tbody tr td.setting-main')
+  const settingMains = table.querySelectorAll('div.tr div.setting-main')
   const size = settingMains.length
 
   for (let i = 0; i < size; i++) {
@@ -301,7 +295,7 @@ function recoverParameters(table: HTMLElement) {
     }
     const cannotRecovered: StashedParams = {}
 
-    const parameters = table.querySelectorAll('tbody tr td.setting-main div[name="parameter"]')
+    const parameters = table.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
     const size = parameters.length
 
     for (let i = 0; i < size; i++) {
