@@ -337,6 +337,12 @@
   "content_dataSavingFailed": {
     "message": "数据保存失败！"
   },
+  "content_stashTipOnJenkinsPage": {
+    "message": "【说明】：暂存成功的参数会用 “绿色” 标记，暂存失败的参数会用 “红色” 标记。"
+  },
+  "content_recoverTipOnJenkinsPage": {
+    "message": "【说明】：恢复成功的参数会用 “绿色” 标记，恢复失败的参数会用 “红色” 标记，请特别关注下恢复失败的参数。"
+  },
   "jsonParsingFailed": {
     "message": "JSON 解析失败"
   },

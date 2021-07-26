@@ -41,6 +41,8 @@ export class ContentService {
             data: ContentService.enableParamsStashAndRecover
           }))
           break
+        default:
+          break
       }
     })
   }

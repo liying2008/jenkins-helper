@@ -1,5 +1,5 @@
 import { CMD_IS_ENABLE_STASH_AND_RECOVER, ContentMessage, ContentResp } from '@/models/content-message'
-import { enable as enableParamsStashRecover } from './params-stash-recover'
+import { enableParamsStashAndRecoverV1 } from './params-stash-recover/v1'
 
 // console.log('Hello from the content-script')
 
@@ -12,6 +12,6 @@ browser.runtime.sendMessage(message).then((resp: ContentResp) => {
     return
   }
   if (resp.data) {
-    enableParamsStashRecover()
+    enableParamsStashAndRecoverV1()
   }
 })

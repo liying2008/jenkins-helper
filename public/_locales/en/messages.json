@@ -337,6 +337,12 @@
   "content_dataSavingFailed": {
     "message": "Data saving failed!"
   },
+  "content_stashTipOnJenkinsPage": {
+    "message": "[NOTE]: Parameters that are successfully stashed will be marked in GREEN, and parameters that fail to be stashed will be marked in RED."
+  },
+  "content_recoverTipOnJenkinsPage": {
+    "message": "[NOTE]: Parameters that are successfully recovered will be marked in GREEN, and parameters that fail to be recovered will be marked in RED. Please focus on the parameters of the failed recovery."
+  },
   "jsonParsingFailed": {
     "message": "JSON parsing failed"
   },
