@@ -2,6 +2,11 @@
 const stashBtnId = 'jenkins-helper-stash-parameters'
 const recoverBtnId = 'jenkins-helper-recover-parameters'
 
+const strings = {
+  stashParameters: browser.i18n.getMessage('content_stashParameters'),
+  recoverParameters: browser.i18n.getMessage('content_recoverParameters'),
+}
+
 function createStashBtnForBuildPage() {
   /*
   <span class="yui-button yui-submit-button submit-button primary" name="Stash">
@@ -14,7 +19,7 @@ function createStashBtnForBuildPage() {
   btn.id = stashBtnId
   btn.type = 'button'
   btn.tabIndex = 10
-  btn.textContent = 'Stash Parameters'
+  btn.textContent = strings.stashParameters
 
   const spanInner = document.createElement('span')
   spanInner.setAttribute('class', 'first-child')
@@ -40,7 +45,7 @@ function createRecoverBtnForBuildPage() {
   btn.id = recoverBtnId
   btn.type = 'button'
   btn.tabIndex = 11
-  btn.textContent = 'Recover Parameters'
+  btn.textContent = strings.recoverParameters
 
   const spanInner = document.createElement('span')
   spanInner.setAttribute('class', 'first-child')
@@ -85,7 +90,7 @@ function createStashTbodyForParamsPage() {
   btn.id = stashBtnId
   btn.type = 'button'
   btn.tabIndex = 10
-  btn.textContent = 'Stash Parameters'
+  btn.textContent = strings.stashParameters
 
   const spanL1 = document.createElement('span')
   spanL1.setAttribute('class', 'first-child')

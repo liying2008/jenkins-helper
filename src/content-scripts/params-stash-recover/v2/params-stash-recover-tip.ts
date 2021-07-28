@@ -1,9 +1,11 @@
 
-const stashTipOnJenkinsPage = browser.i18n.getMessage('content_stashTipOnJenkinsPage')
-const recoverTipOnJenkinsPage = browser.i18n.getMessage('content_recoverTipOnJenkinsPage')
-
 const stashTipId = 'jenkins-helper-stash-tip'
 const recoverTipId = 'jenkins-helper-recover-tip'
+
+const strings = {
+  stashTipOnJenkinsPage: browser.i18n.getMessage('content_stashTipOnJenkinsPage'),
+  recoverTipOnJenkinsPage: browser.i18n.getMessage('content_recoverTipOnJenkinsPage'),
+}
 
 export function addStashTipOnPage(container: HTMLElement | null) {
   if (!container) return
@@ -17,7 +19,7 @@ export function addStashTipOnPage(container: HTMLElement | null) {
   if (existStashElem) return
 
   const textP = document.createElement('p')
-  textP.textContent = stashTipOnJenkinsPage
+  textP.textContent = strings.stashTipOnJenkinsPage
   textP.setAttribute('style', 'font-size: smaller; color: #0b6aa2')
 
   const tipDiv = document.createElement('div')
@@ -40,7 +42,7 @@ export function addRecoverTipOnPage(container: HTMLElement | null) {
   if (existRecoverElem) return
 
   const textP = document.createElement('p')
-  textP.textContent = recoverTipOnJenkinsPage
+  textP.textContent = strings.recoverTipOnJenkinsPage
   textP.setAttribute('style', 'font-size: smaller; color: #0b6aa2')
 
   const tipDiv = document.createElement('div')

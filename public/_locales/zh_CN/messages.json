@@ -346,6 +346,12 @@
   "content_dataSavingFailed": {
     "message": "数据保存失败！"
   },
+  "content_stashParameters": {
+    "message": "暂存参数"
+  },
+  "content_recoverParameters": {
+    "message": "恢复参数"
+  },
   "content_stashTipOnJenkinsPage": {
     "message": "【说明】：暂存成功的参数会用 “绿色” 标记，暂存失败的参数会用 “红色” 标记。"
   },

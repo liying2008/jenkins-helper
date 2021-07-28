@@ -346,6 +346,12 @@
   "content_dataSavingFailed": {
     "message": "Data saving failed!"
   },
+  "content_stashParameters": {
+    "message": "Stash Parameters"
+  },
+  "content_recoverParameters": {
+    "message": "Recover Parameters"
+  },
   "content_stashTipOnJenkinsPage": {
     "message": "[NOTE]: Parameters that are successfully stashed will be marked in GREEN, and parameters that fail to be stashed will be marked in RED."
   },
