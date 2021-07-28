@@ -257,8 +257,8 @@ export default class Params extends Vue {
     building: 'BUILDING',
   }
   headers: DataTableHeader[] = [
-    { text: 'Name', align: 'start', value: 'name' },
-    { text: 'Value', align: 'start', value: 'value' },
+    { text: 'Name', align: 'start', value: 'name', cellClass: 'param-item' },
+    { text: 'Value', align: 'start', value: 'value', cellClass: 'param-item' },
   ]
   snackbar = SnackbarData.empty()
   // status 的状态说明：
@@ -517,8 +517,9 @@ export default class Params extends Vue {
 
   #info-block {
     .info-col {
+      font-size: 0.8rem;
       padding: 0.4rem;
-      line-height: 1rem;
+      line-height: 0.875rem;
       color: var(--v-title-base);
 
       .display-name {
@@ -556,6 +557,9 @@ export default class Params extends Vue {
     }
   }
   #params-table {
+    .param-item {
+      font-size: 0.785rem;
+    }
     .hidden-param {
       font-size: 0.8em;
       color: var(--v-subtitle-base);
