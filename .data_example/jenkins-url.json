@@ -1,5 +1,7 @@
 {
   "jenkins-url": [
-    "http://127.0.0.1:8080/jenkins/"
+    "http://127.0.0.1:8080/jenkins/",
+    "http://127.0.0.1:8080/jenkins/view/liying/job/FreeJob01/",
+    "http://192.168.5.200:8080/jenkins/view/My/"
   ]
 }
