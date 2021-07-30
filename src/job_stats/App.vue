@@ -153,7 +153,7 @@ export default class App extends Vue {
 
   @Watch('settings')
   watchSettings(newValue: number[]) {
-    console.log(newValue)
+    // console.log(newValue)
     if (newValue.indexOf(0) > -1) {
       this.showEnabledJobOnly = true
     } else {

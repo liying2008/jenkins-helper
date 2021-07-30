@@ -16,13 +16,13 @@ supportThemes.set(coffeeTheme.name, coffeeTheme)
 export async function initTheme(themeName?: string, enableDarkMode?: boolean) {
   let options: Options | undefined = undefined
   if (!themeName) {
-    console.time('initTheme:getOption')
+    // console.time('initTheme:getOption')
     options = await StorageService.getOptions()
-    console.timeEnd('initTheme:getOption')
+    // console.timeEnd('initTheme:getOption')
     themeName = options.currentTheme
   }
-  console.log('themeName', themeName)
-  console.time('initTheme:applyTheme')
+  // console.log('themeName', themeName)
+  // console.time('initTheme:applyTheme')
   applyTheme(supportThemes.get(themeName) || defaultTheme)
 
   if (enableDarkMode === undefined) {
@@ -31,7 +31,7 @@ export async function initTheme(themeName?: string, enableDarkMode?: boolean) {
     }
     enableDarkMode = options.enableDarkMode
   }
-  console.log('enableDarkMode', enableDarkMode)
+  // console.log('enableDarkMode', enableDarkMode)
   setDarkMode(enableDarkMode)
-  console.timeEnd('initTheme:applyTheme')
+  // console.timeEnd('initTheme:applyTheme')
 }

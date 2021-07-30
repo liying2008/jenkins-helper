@@ -444,14 +444,14 @@ export default class Settings extends Vue {
   get refreshTimeTip() {
     const tip = browser.i18n.getMessage('refreshTimeTip_1') + this.refreshTime +
       browser.i18n.getMessage('refreshTimeTip_2')
-    console.log(tip)
+    // console.log(tip)
     return tip
   }
 
   get nodeRefreshTimeTip() {
     const tip = browser.i18n.getMessage('nodeRefreshTimeTip_1') + this.nodeRefreshTime +
       browser.i18n.getMessage('nodeRefreshTimeTip_2')
-    console.log(tip)
+    // console.log(tip)
     return tip
   }
 
@@ -568,7 +568,7 @@ export default class Settings extends Vue {
   }
 
   saveOptions() {
-    console.log('saveOptions')
+    // console.log('saveOptions')
     StorageService.getOptions().then((result: Options) => {
       const option = this.dataToOptions()
       // 使用最新的 showDisabledJobs 设置

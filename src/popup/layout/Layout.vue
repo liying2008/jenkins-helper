@@ -121,7 +121,7 @@ export default class Layout extends Vue {
       width: 1200,
       height: 800,
     }).then((window) => {
-      console.log('window', window)
+      // console.log('window', window)
     })
   }
 
@@ -129,7 +129,7 @@ export default class Layout extends Vue {
     browser.tabs.create({
       url: 'jenkins_tools.html'
     }).then((tab) => {
-      console.log('tab', tab)
+      // console.log('tab', tab)
     })
   }
 

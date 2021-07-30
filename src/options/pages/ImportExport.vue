@@ -116,13 +116,13 @@ export default class ImportExport extends Vue {
     this.disableExportBtn = true
     StorageService.get([StorageService.keyForJenkinsUrl, StorageService.keyForNodes, StorageService.keyForOptions]).then((result) => {
       browser.management.getSelf().then((extensionInfo) => {
-        console.log('extensionInfo', extensionInfo)
+        // console.log('extensionInfo', extensionInfo)
         const fileContent = {
           name: this.settingsKeyName,
           version: extensionInfo!.version,
           data: result
         }
-        console.log('fileContent', fileContent)
+        // console.log('fileContent', fileContent)
         const filename = 'jenkins-helper_settings_' + Tools.getReadableTime(Date.now(), false) + '.json'
         // 开始下载
         this.triggerDownload(filename, JSON.stringify(fileContent))
@@ -199,7 +199,7 @@ export default class ImportExport extends Vue {
       this.showDangerMessage(this.strings.settingsFileParsingFailed)
       return
     }
-    console.log('settings', settings)
+    // console.log('settings', settings)
     if (settings.name !== this.settingsKeyName) {
       this.showDangerMessage(this.strings.settingsFileContentIncorrect)
       return

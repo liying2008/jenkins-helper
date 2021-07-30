@@ -232,7 +232,7 @@ export default class App extends Vue {
 
   startQuery() {
     StorageService.getNodeStatus().then((result) => {
-      console.log('monitoredNodes', result)
+      // console.log('monitoredNodes', result)
       this.monitoredNodes = result
       this.queryJenkinsNodes()
     })
@@ -274,7 +274,7 @@ export default class App extends Vue {
       }
     }).then((data) => {
       const computers = data.computer
-      console.log(computers)
+      // console.log(computers)
       for (let i = 0; i < computers.length; i++) {
         const displayName = computers[i].displayName
         let nodeUrl = url + 'computer/' + displayName + '/'
@@ -323,7 +323,7 @@ export default class App extends Vue {
           offline
         })
       }
-      console.log('nodes', this.nodes)
+      // console.log('nodes', this.nodes)
     }).catch((e: Error) => {
       console.error('获取数据失败', e)
       alert(this.strings.fetchNodesDataFailure)
@@ -338,7 +338,7 @@ export default class App extends Vue {
   }
 
   saveEditedItem(item: NodeDetail) {
-    console.log(item)
+    // console.log(item)
     const displayName = item.displayName
     if (item.monitoring) {
       if (!item.diskSpaceThreshold || item.diskSpaceThreshold <= 0) {

@@ -21,7 +21,6 @@ export function enable(tintingColor: string) {
     table = isParametersPage() as HTMLElement | null
     if (table != null) {
       currentPage = PAGE_PARAMETERS
-      console.log('aaaa')
       tintParamNames(table, tintingColor)
     }
   }

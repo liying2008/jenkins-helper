@@ -177,7 +177,7 @@ export default class Computer extends Vue {
   }
 
   nodeStatusChange(changes: StorageChangeWrapper) {
-    console.log('00-nodeStatusChange', changes)
+    // console.log('00-nodeStatusChange', changes)
     if (StorageService.keyForNodes in changes) {
       // nodes 数据改变
       // console.log('01-nodeStatusChange', changes)
@@ -187,7 +187,7 @@ export default class Computer extends Vue {
 
   queryMonitoredNodes() {
     StorageService.getNodeStatus().then((result: Nodes) => {
-      console.log('monitoredNodes', result)
+      // console.log('monitoredNodes', result)
       this.monitoredNodes = result
     })
   }
@@ -273,7 +273,7 @@ export default class Computer extends Vue {
       width: 1000,
       height: 800,
     }).then((window) => {
-      console.log('window', window)
+      // console.log('window', window)
     })
   }
 

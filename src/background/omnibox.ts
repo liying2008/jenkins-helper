@@ -53,7 +53,7 @@ export class Omnibox {
   private static storageChange(changes: StorageChangeWrapper) {
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
-      console.log('omnibox::changes', changes)
+      // console.log('omnibox::changes', changes)
       const oldOptions = changes[StorageService.keyForOptions].oldValue
       const newOptions = changes[StorageService.keyForOptions].newValue
       const newOmniboxJenkinsUrl = newOptions.omniboxJenkinsUrl
@@ -71,11 +71,11 @@ export class Omnibox {
   }
 
   private static getAllJobs() {
-    console.log('Omnibox::getAllJobs')
+    // console.log('Omnibox::getAllJobs')
     Omnibox.allJobs = []
     StorageService.getOptions().then((result: Options) => {
       const jenkinsUrls = result.omniboxJenkinsUrl.split('\n')
-      console.log('Omnibox::jenkinsUrls', jenkinsUrls)
+      // console.log('Omnibox::jenkinsUrls', jenkinsUrls)
 
       const allFetchDataPromises: Promise<Enc>[] = []
 
@@ -89,13 +89,13 @@ export class Omnibox {
       })
 
       Promise.all(allFetchDataPromises).then((values: Enc[]) => {
-        console.log('Omnibox:values', values)
+        // console.log('Omnibox:values', values)
         values.forEach((value: Enc) => {
           if (value.ok) {
             const data = value.body
             if (data.hasOwnProperty('jobs')) {
               Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
-              console.log('Omnibox::all fetched', Omnibox.allJobs)
+              // console.log('Omnibox::all fetched', Omnibox.allJobs)
             }
           } else {
             const error = value.errMsg

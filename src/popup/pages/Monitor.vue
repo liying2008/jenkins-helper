@@ -293,7 +293,7 @@ export default class Monitor extends Vue {
   }
 
   jobStatusChange(changes: StorageChangeWrapper) {
-    console.log('00-jobStatusChange', changes)
+    // console.log('00-jobStatusChange', changes)
     if (StorageService.keyForJenkinsJobData in changes) {
       // Job Status 有变动
       // 刷新页面
@@ -310,7 +310,7 @@ export default class Monitor extends Vue {
       }
     })
     StorageService.getJobsStatus().then((jobResult: JobRoot) => {
-      console.log('getAllJobStatus::jobResult', jobResult)
+      // console.log('getAllJobStatus::jobResult', jobResult)
       this.jobsData = jobResult
       // 过滤数据
       this.filterData()
@@ -321,8 +321,8 @@ export default class Monitor extends Vue {
    * 过滤数据
    */
   filterData() {
-    const status: JobRoot = this.jobsData
-    console.log('filterData::status', status)
+    const status = this.jobsData
+    // console.log('filterData::status', status)
     this.data = {}
     Object.keys(status).forEach((setUrl: string) => {
       this.data[setUrl] = {}
@@ -345,7 +345,7 @@ export default class Monitor extends Vue {
         }
       })
     })
-    console.log('filterData', this.data)
+    // console.log('filterData', this.data)
   }
 
   /**
@@ -358,7 +358,7 @@ export default class Monitor extends Vue {
     }
     let url = this.inputUrlValue
     url = url.charAt(url.length - 1) === '/' ? url : url + '/'
-    console.log('url', url)
+    // console.log('url', url)
     StorageService.addJenkinsUrl(url).then(() => {
       this.inputUrlValue = ''
       this.form.resetValidation()

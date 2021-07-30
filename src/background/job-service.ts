@@ -85,9 +85,9 @@ export class JobService {
     }
     if (StorageService.keyForJenkinsUrl in changes) {
       // Jenkins Url 改变
-      console.log('changes', changes)
+      // console.log('changes', changes)
       JobService.jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue
-      // console.log('jenkinsUrls', jenkinsUrls);
+      // console.log('JobService.jenkinsUrls', JobService.jenkinsUrls)
       JobService.queryJobStatus()
     }
   }
@@ -137,9 +137,9 @@ export class JobService {
     })
 
     StorageService.getJobsStatus().then((result: JobRoot) => {
-      // console.log('00-queryJobStatus::result', result)
+      // console.log('JobService::queryJobStatus::result', result)
       Promise.all(allFetchDataPromises).then((values: Enc[]) => {
-        console.log('queryJobStatus:values', values)
+        // console.log('queryJobStatus:values', values)
         const newJobsStatus: JobRoot = {}
 
         values.forEach((value: Enc) => {

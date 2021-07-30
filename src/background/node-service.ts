@@ -33,20 +33,19 @@ export class NodeService {
     // console.log('storageChange::', changes)
     if (StorageService.keyForOptions in changes) {
       // 设置改变
-      console.log('changes', changes)
       const newOptions = changes[StorageService.keyForOptions].newValue
       const oldOptions = changes[StorageService.keyForOptions].oldValue
       const newRefreshTime = newOptions.nodeRefreshTime
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.nodeRefreshTime) {
-        console.log('refreshNodeStatus', newRefreshTime)
+        // console.log('refreshNodeStatus', newRefreshTime)
         NodeService.refreshNodeStatus(newRefreshTime)
       }
     }
   }
 
   static queryNodeStatus() {
-    console.log('queryNodeStatus', 'queryNodeStatus')
+    // console.log('NodeService::queryNodeStatus', 'queryNodeStatus')
     StorageService.getNodeStatus().then((result: Nodes) => {
       // 需要查询的节点所在Jenkins
       const jenkinsUrls: string[] = []
@@ -69,7 +68,7 @@ export class NodeService {
       })
 
       Promise.all(allFetchDataPromises).then((values: Enc<JenkinsNode>[]) => {
-        console.log('queryNodeStatus:values', values)
+        // console.log('queryNodeStatus:values', values)
         values.forEach((value: Enc<JenkinsNode>) => {
           if (value.ok) {
             const data = value.body!

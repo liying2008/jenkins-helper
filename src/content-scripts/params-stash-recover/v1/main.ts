@@ -216,7 +216,7 @@ function getParametersPageParameters(table: HTMLElement) {
       continue
     }
     const pname = settingName.textContent!
-    console.log('pname', pname)
+    // console.log('pname', pname)
     const children = settingMain.children
     // console.log('children', children)
     if (children.length === 0) {
@@ -272,7 +272,7 @@ function getParametersPageParameters(table: HTMLElement) {
 function saveParameters(stashedParams: StashedParams) {
   const message = new ContentMessage(CMD_STASH_PARAMS, stashedParams)
   browser.runtime.sendMessage(message).then((resp: ContentResp) => {
-    console.log('saveParameters::resp', resp)
+    // console.log('saveParameters::resp', resp)
     if (resp.status === 'ok') {
       console.log('saved.')
     } else {
@@ -288,7 +288,7 @@ function saveParameters(stashedParams: StashedParams) {
 function recoverParameters(table: HTMLElement) {
   const message = new ContentMessage(CMD_RECOVER_PARAMS)
   browser.runtime.sendMessage(message).then((resp: ContentResp) => {
-    console.log('recoverParameters::resp', resp)
+    // console.log('recoverParameters::resp', resp)
     if (resp.status !== 'ok') {
       console.log('recoverParameters: 读取参数失败！')
       alert(browser.i18n.getMessage('content_parametersReadFailed'))
