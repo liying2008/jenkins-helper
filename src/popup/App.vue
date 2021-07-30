@@ -24,7 +24,9 @@ export default class App extends Vue {
   .a-link-color {
     color: var(--v-link-base);
   }
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC,
+    Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei,
+    sans-serif;
   .v-card__title {
     line-height: 1.1;
     letter-spacing: inherit;

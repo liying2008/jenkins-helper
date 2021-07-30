@@ -21,6 +21,7 @@
         </v-btn>
 
         <v-btn
+          v-if="false"
           icon
           title="Open Jenkins tools page"
           @click="openTools"

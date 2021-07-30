@@ -17,7 +17,7 @@ browser.runtime.sendMessage(message).then((resp: ContentResp<ContentFeatures>) =
   if (data.enableParamsStashAndRecover) {
     // 使能 参数暂存&恢复 功能
     const ok = enableParamsStashAndRecoverV1()
-    console.log('content-script::contentenableParamsStashAndRecoverV1:ok', ok)
+    // console.log('content-script::contentenableParamsStashAndRecoverV1:ok', ok)
     if (!ok) {
       enableParamsStashAndRecoverV2()
     }
