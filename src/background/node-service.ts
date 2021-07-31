@@ -124,7 +124,7 @@ export class NodeService {
           } else {
             const errMsg = value.errMsg
             const url = value.url
-            console.error('获取数据失败', errMsg)
+            console.log('获取数据失败', errMsg)
             result[url].status = 'error'
             result[url].error = errMsg || 'Unreachable'
           }

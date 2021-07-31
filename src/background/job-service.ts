@@ -148,7 +148,7 @@ export class JobService {
             const url = value.url
             // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length)
             if (Object.getOwnPropertyNames(data).length === 0) {
-              console.error('queryJobStatus: 获取Job状态失败，返回数据为空')
+              console.log('queryJobStatus: 获取Job状态失败，返回数据为空')
               const jenkinsObj = JobService.getErrorJenkinsObj(url, 'No permissions or no data')
               JobService.countBadgeJobCount()
               newJobsStatus[url] = jenkinsObj
@@ -166,7 +166,7 @@ export class JobService {
           } else {
             const url = value.url
             const error = value.errMsg
-            console.error('queryJobStatus: 获取Job状态失败', error)
+            console.log('queryJobStatus: 获取Job状态失败', error)
             const jenkinsObj = JobService.getErrorJenkinsObj(url, error || 'Unreachable')
             JobService.countBadgeJobCount()
             newJobsStatus[url] = jenkinsObj

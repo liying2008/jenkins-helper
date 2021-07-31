@@ -115,7 +115,7 @@ export class Tools {
         }
       }
     } catch (e) {
-      // console.error('fetchDataByUrl:e', e)
+      // console.log('fetchDataByUrl:e', e)
       if (e.name == 'SyntaxError') {
         return {
           ok: false,

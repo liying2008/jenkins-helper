@@ -325,7 +325,7 @@ export default class App extends Vue {
       }
       // console.log('nodes', this.nodes)
     }).catch((e: Error) => {
-      console.error('获取数据失败', e)
+      console.log('获取数据失败', e)
       alert(this.strings.fetchNodesDataFailure)
     })
   }

@@ -280,7 +280,7 @@ export default class App extends Vue {
               context.getJobStatsByUrl(data.url)
             }
           }).catch((e: Error) => {
-            console.error('获取Job URL失败', url, e)
+            console.log('获取Job URL失败', url, e)
             context.badUrls.push(url)
           })
         })

@@ -99,7 +99,7 @@ export class Omnibox {
             }
           } else {
             const error = value.errMsg
-            console.error('Omnibox::获取Job失败', error)
+            console.log('Omnibox::获取Job失败', error)
           }
         })
       }).catch((e: Error) => {

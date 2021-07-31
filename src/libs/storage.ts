@@ -100,7 +100,7 @@ export class StorageService {
       try {
         options = JSON.parse(optionsStr)
       } catch (e) {
-        console.error('getOptions', e)
+        console.log('getOptions', e)
         // 从 storage 获取，并保存到 localStorage
         options = await StorageService.getAndCacheOptionsFromStorage()
       }
@@ -179,7 +179,7 @@ export class StorageService {
       })
       // 存储到 localStorage，作为缓存
     } catch (e) {
-      console.error(e)
+      console.log(e)
       // browser.storage 存储失败，还原 localStorage 内容
       localStorage.setItem(StorageService.keyForOptions, oldOptionsStr)
       reason = e

@@ -277,7 +277,7 @@ function saveParameters(stashedParams: StashedParams) {
     if (resp.status === 'ok') {
       console.log('saved.')
     } else {
-      console.error('error in saving.')
+      console.log('error in saving.')
       alert('Stash parameters failed!')
     }
   })

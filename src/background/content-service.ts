@@ -18,34 +18,31 @@ export class ContentService {
     browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // console.log('message', message)
       // console.log('sender', sender)
+      // NOTE: Returning a Promise is the preferred way to send a reply from an onMessage/onMessageExternal listener, as the sendResponse will be removed from the specs (See https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage) Error
       const cmd = message.cmd
       switch (cmd) {
         case CMD_STASH_PARAMS:
           // 保存参数
           localStorage.setItem(ContentService.KEY_STASHED_PARAMS, JSON.stringify(message.data))
-          sendResponse(ContentResp.fromObj({ status: 'ok' }))
-          break
+          return Promise.resolve((ContentResp.fromObj({ status: 'ok' })))
         case CMD_RECOVER_PARAMS:
           // 读取参数
           const paramsStr = localStorage.getItem(ContentService.KEY_STASHED_PARAMS)
           if (paramsStr === null) {
-            sendResponse(ContentResp.fromObj({ status: 'error', message: 'Stashed parameters do not exist.' }))
-            break
+            return Promise.resolve((ContentResp.fromObj({ status: 'error', message: 'Stashed parameters do not exist.' })))
           }
           const params = JSON.parse(paramsStr)
-          sendResponse(ContentResp.fromObj({ status: 'ok', data: params }))
-          break
+          return Promise.resolve((ContentResp.fromObj({ status: 'ok', data: params })))
         case CMD_GET_CONTENT_FEATURES:
           // 获取支持的 content features
-          sendResponse(ContentResp.fromObj({
+          return Promise.resolve((ContentResp.fromObj({
             status: 'ok',
             data: {
               enableParamsStashAndRecover: ContentService.options.enableParamsStashAndRecover,
               enableParamNamesColor: ContentService.options.enableParamNamesColor,
               paramNamesColor: ContentService.options.paramNamesColor,
             } as ContentFeatures
-          }))
-          break
+          })))
         default:
           break
       }

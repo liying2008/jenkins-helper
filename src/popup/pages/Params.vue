@@ -308,7 +308,7 @@ export default class Params extends Vue {
       // console.log(tab)
       // const title = tab.title
       if (!tab) {
-        console.error('tab is null!')
+        console.log('tab is null!')
         return
       }
       const url = tab.url
@@ -412,7 +412,7 @@ export default class Params extends Vue {
           }
         }
       }).catch((e: Error) => {
-        console.error('获取参数失败', e)
+        console.log('获取参数失败', e)
         this.status = this.preStatus
         alert(this.strings.noData)
       })
