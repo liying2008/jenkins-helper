@@ -87,11 +87,6 @@
 ![Jenkins Token Settings](screenshots/jenkins_token_settings.png)
 
 
-## Thanks
-
-监视器界面（Monitor Page）布局参考了 [ggirou/yet-another-jenkins-notifier](https://github.com/ggirou/yet-another-jenkins-notifier) ，在此感谢。
-
-
 ## License
 
 [MIT LICENSE](LICENSE)

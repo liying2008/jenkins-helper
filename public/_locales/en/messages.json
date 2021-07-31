@@ -1,0 +1,406 @@
+{
+  "extName": {
+    "message": "Jenkins Helper"
+  },
+  "extShortName": {
+    "message": "Jenkins Helper"
+  },
+  "extDesc": {
+    "message": "Monitor Jenkins build state and node state, and provide some convenient services."
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "editing": {
+    "message": "Editing"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "baiduSearch": {
+    "message": "Baidu Search"
+  },
+  "actions": {
+    "message": "Actions"
+  },
+  "globalOptionTitle": {
+    "message": "Global Settings"
+  },
+  "defaultTab": {
+    "message": "Default Tab:"
+  },
+  "jenkinsToken": {
+    "message": "Jenkins Tokens:"
+  },
+  "addNewTokenBtn": {
+    "message": "Add New"
+  },
+  "omniboxOptionTitle": {
+    "message": "Omnibox Intelligent Search"
+  },
+  "searchFromJenkins": {
+    "message": "Search from the following Jenkins"
+  },
+  "searchFromJenkinsPlaceholder": {
+    "message": "Enter the Jenkins URLs, one per line, for example: http://127.0.0.1:8080"
+  },
+  "searchFromJenkinsTips": {
+    "message": "Tips: Type `jk` in the omnibox, press the space key and enter intelligent search mode. Enter the job name to quickly match the corresponding Jenkins Job link."
+  },
+  "jobStatsTitle": {
+    "message": "Job Statistics Settings"
+  },
+  "jobStatsTitleTip": {
+    "message": "Statistics Job information from the following Jenkins."
+  },
+  "jobStatsJenkinsPlaceholder": {
+    "message": "Enter the Jenkins/View/Job URLs, one per line, for example: http://127.0.0.1:8080/view/My/"
+  },
+  "jobStatsNodeParamTip": {
+    "message": "If the Job node is null, it will obtain from the following parameters"
+  },
+  "jobStatsNodeParamPlaceholder": {
+    "message": "Multiple parameters can be entered, separated by comma (,)"
+  },
+  "themeTitle": {
+    "message": "Theme Settings"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "defaultTheme": {
+    "message": "Default Theme"
+  },
+  "sapphireTheme": {
+    "message": "Sapphire Theme"
+  },
+  "perillaTheme": {
+    "message": "Perilla Theme"
+  },
+  "coffeeTheme": {
+    "message": "Coffee Theme"
+  },
+  "enableDarkMode": {
+    "message": "Enable dark mode"
+  },
+  "otherTitle": {
+    "message": "Other Settings"
+  },
+  "enableParamsStashAndRecover": {
+    "message": "Enable parameters Stash & Recover function"
+  },
+  "enableParamsStashAndRecoverTips": {
+    "message": "When enabled, this extension adds two buttons at the bottom of the Build page parameter list for stashing parameters and recovering parameters."
+  },
+  "enableParamNamesColor": {
+    "message": "Enable parameter names coloring function"
+  },
+  "enableParamNamesColorTips": {
+    "message": "When enabled, the parameter names on the build and parameter pages of new versions of Jenkins are colored in for easy identification."
+  },
+  "pickColor": {
+    "message": "Pick a Color:"
+  },
+  "saveOptions": {
+    "message": "Save Settings"
+  },
+  "monitorOptionTitle": {
+    "message": "Monitor Settings"
+  },
+  "showNotification": {
+    "message": "Show Popup Notifications:"
+  },
+  "refreshTime": {
+    "message": "Refresh Time:"
+  },
+  "nodeRefreshTime": {
+    "message": "Refresh Time:"
+  },
+  "optionsSaved": {
+    "message": "Options Saved."
+  },
+  "showNotificationOption_all": {
+    "message": "On every build"
+  },
+  "showNotificationOption_unstable": {
+    "message": "On every unstable build"
+  },
+  "showNotificationOption_none": {
+    "message": "Never"
+  },
+  "refreshTimeTip_1": {
+    "message": "Check server for changes every  <b>"
+  },
+  "refreshTimeTip_2": {
+    "message": " seconds</b>"
+  },
+  "nodeOptionTitle": {
+    "message": "Node Settings"
+  },
+  "nodeRefreshTimeTip_1": {
+    "message": "Check server for changes every  <b>"
+  },
+  "nodeRefreshTimeTip_2": {
+    "message": " hours</b>"
+  },
+  "createMonitoringTaskTitle": {
+    "message": "Create Monitoring Task"
+  },
+  "cancelMonitoringTaskGroup": {
+    "message": "Whether to cancel this monitoring [$url$] ?",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "url": {
+    "message": "URL"
+  },
+  "inputUrlPlaceholder": {
+    "message": "Please input Jenkins/View/Job URL"
+  },
+  "addMonitorUrlTip": {
+    "message": "Created successfully, page data will be updated later."
+  },
+  "removeMonitorUrlTip": {
+    "message": "Removed successfully, page data will be updated later."
+  },
+  "monitor": {
+    "message": "Monitor"
+  },
+  "params": {
+    "message": "Parameters"
+  },
+  "computer": {
+    "message": "Nodes"
+  },
+  "tools": {
+    "message": "Tools"
+  },
+  "buildStatus_": {
+    "message": "Result:"
+  },
+  "runLabel_": {
+    "message": "BuiltOn："
+  },
+  "copied": {
+    "message": "Copied"
+  },
+  "paramsList": {
+    "message": "Parameters"
+  },
+  "noData": {
+    "message": "No data."
+  },
+  "fetching": {
+    "message": "Fetching..."
+  },
+  "noPrevBuild": {
+    "message": "There is no previous build."
+  },
+  "passwordParameter": {
+    "message": "Password"
+  },
+  "fileParameter": {
+    "message": "File"
+  },
+  "credentialsParameter": {
+    "message": "Credentials"
+  },
+  "jobStatisticsTitle": {
+    "message": "Jenkins Job Statistics"
+  },
+  "jobStatisticsDataFrom_": {
+    "message": "Data from:"
+  },
+  "jobStatisticsShowSettings_": {
+    "message": "Display settings:"
+  },
+  "jobStatisticsShowEnabledJobOnly": {
+    "message": "Display enabled jobs only."
+  },
+  "jobStatisticsShowCronTableJobOnly": {
+    "message": "Display only jobs with cron table."
+  },
+  "manageMonitoredNodes": {
+    "message": "Nodes Management"
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "openManagerPage": {
+    "message": "Open the management page"
+  },
+  "displayName": {
+    "message": "DisplayName"
+  },
+  "remainingDiskSpace": {
+    "message": "RemainingDiskSpace"
+  },
+  "diskSpaceThreshold": {
+    "message": "DiskSpaceThreshold"
+  },
+  "alarmThreshold": {
+    "message": "Threshold"
+  },
+  "monitoringCancelled": {
+    "message": "Monitoring cancelled: "
+  },
+  "cancelMonitoringNodeUrl": {
+    "message": "Whether to cancel this monitoring [$url$] ?",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "cancelMonitoringNode": {
+    "message": "Do you cancel the monitoring of this node [$name$] ?",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "workingDirectory": {
+    "message": "WorkingDirectory"
+  },
+  "responseTime": {
+    "message": "ResponseTime"
+  },
+  "isMonitoring": {
+    "message": "Monitoring?"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "enableMonitoringOrNot": {
+    "message": "Whether to enable monitoring"
+  },
+  "fetchNodesDataFailure": {
+    "message": "Failed to fetch node data!"
+  },
+  "diskSpaceThresholdInvalid": {
+    "message": "The disk space threshold is invalid!"
+  },
+  "inputJenkinsUrl": {
+    "message": "Please enter Jenkins URL"
+  },
+  "inputDiskSpaceThreshold": {
+    "message": "Please enter the disk space threshold (GB)"
+  },
+  "showDisabledJobs": {
+    "message": "Show disabled jobs"
+  },
+  "insufficientDiskSpaceNotifications": {
+    "message": "The disk space is only $num$, please clean it in time!",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
+  },
+  "nodeOfflineNotifications": {
+    "message": "Node offline!"
+  },
+  "fetchNodeInfoFailedNotifications": {
+    "message": "Fetch node information failed!"
+  },
+  "filterLabel": {
+    "message": "Filter: "
+  },
+  "urlCannotEmpty": {
+    "message": "URL cannot be empty."
+  },
+  "urlInvalid": {
+    "message": "URL is invalid."
+  },
+  "content_parametersReadFailed": {
+    "message": "Parameters read failed!"
+  },
+  "content_noStashedParams": {
+    "message": "There are no saved parameters!"
+  },
+  "content_failedToRecover": {
+    "message": "The following parameters failed to recover:"
+  },
+  "content_recoverSuccess": {
+    "message": "All parameters have been successfully recovered."
+  },
+  "content_saveSuccess": {
+    "message": "Save success:"
+  },
+  "content_supportOrSaveFail": {
+    "message": "Failed to support or save:"
+  },
+  "content_dataSavingFailed": {
+    "message": "Data saving failed!"
+  },
+  "content_stashParameters": {
+    "message": "Stash Parameters"
+  },
+  "content_recoverParameters": {
+    "message": "Recover Parameters"
+  },
+  "content_stashTipOnJenkinsPage": {
+    "message": "[NOTE]: Parameters that are successfully stashed will be marked in GREEN, and parameters that fail to be stashed will be marked in RED."
+  },
+  "content_recoverTipOnJenkinsPage": {
+    "message": "[NOTE]: Parameters that are successfully recovered will be marked in GREEN, and parameters that fail to be recovered will be marked in RED. Please focus on the parameters of the failed recovery."
+  },
+  "jsonParsingFailed": {
+    "message": "JSON parsing failed"
+  },
+  "importAndExportSettings": {
+    "message": "Import/Export Settings"
+  },
+  "about": {
+    "message": "About"
+  },
+  "importSettings": {
+    "message": "Import Settings"
+  },
+  "exportSettings": {
+    "message": "Export Settings"
+  },
+  "exportSettingsTip": {
+    "message": "Tips: The exported settings file is saved in plain text. Please encrypt it yourself if needed."
+  },
+  "settingsImported": {
+    "message": "Settings imported."
+  },
+  "settingContentIsEmpty": {
+    "message": "Settings content is empty."
+  },
+  "settingsFileParsingFailed": {
+    "message": "File content parsing failed."
+  },
+  "settingsFileContentIncorrect": {
+    "message": "The file content is incorrect."
+  },
+  "sourceCode": {
+    "message": "Source Code"
+  },
+  "contactAuthor": {
+    "message": "Contact Author"
+  },
+  "reportIssue": {
+    "message": "Report Issue"
+  },
+  "apiTool": {
+    "message": "API Tool"
+  },
+  "jobMigration": {
+    "message": "Job Migration"
+  }
+}

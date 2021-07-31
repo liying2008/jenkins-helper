@@ -4,6 +4,7 @@
       "status": "ok",
       "monitoredNodes": {
         "master": {
+          "displayName": "master",
           "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/(master)/",
           "workingDirectory": "/home/liying",
           "remainingDiskSpace": "423.94 GB",
@@ -13,6 +14,7 @@
           "offline": false
         },
         "192.168.2.108": {
+          "displayName": "192.168.2.108",
           "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
           "workingDirectory": "/home/liying",
           "remainingDiskSpace": "423.94 GB",

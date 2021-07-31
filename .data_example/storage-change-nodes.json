@@ -4,6 +4,7 @@
       "http://127.0.0.1:8080/jenkins/": {
         "monitoredNodes": {
           "192.168.2.108": {
+            "displayName": "192.168.2.108",
             "diskSpaceThreshold": 430,
             "monitoring": true,
             "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
@@ -20,6 +21,7 @@
       "http://127.0.0.1:8080/jenkins/": {
         "monitoredNodes": {
           "192.168.2.108": {
+            "displayName": "192.168.2.108",
             "diskSpaceThreshold": 430,
             "monitoring": true,
             "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/192.168.2.108/",
@@ -29,6 +31,7 @@
             "workingDirectory": "/home/liying"
           },
           "master": {
+            "displayName": "master",
             "diskSpaceThreshold": 5,
             "monitoring": true,
             "nodeUrl": "http://127.0.0.1:8080/jenkins/computer/(master)/",

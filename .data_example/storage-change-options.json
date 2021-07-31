@@ -1,24 +1,48 @@
 {
   "options": {
     "newValue": {
-      "defaultTab": "computer",
-      "jobStatsJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-      "nodeParam": "Node",
-      "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-      "refreshTime": "15",
+      "defaultTab": "monitor",
+      "jenkinsTokens": [
+        {
+          "token": "admin",
+          "url": "192.168.5.200:8080/jenkins",
+          "username": "admin"
+        }
+      ],
+      "refreshTime": "60",
       "nodeRefreshTime": "2",
-      "showNotificationOption": "all",
-      "showDisabledJobs": true
+      "showNotificationOption": "none",
+      "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins\nhttp://192.168.5.200:8080/jenkins",
+      "nodeParam": "Node,NODE",
+      "jobStatsJenkinsUrl": "http://192.168.5.200:8080/jenkins\nhttp://127.0.0.1:8080/jenkins",
+      "currentTheme": "default",
+      "enableDarkMode": false,
+      "enableParamsStashAndRecover": true,
+      "showDisabledJobs": true,
+      "enableParamNamesColor": true,
+      "paramNamesColor": "#E04D18FF"
     },
     "oldValue": {
-      "defaultTab": "computer",
-      "jobStatsJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-      "nodeParam": "Node",
-      "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-      "refreshTime": "10",
+      "defaultTab": "monitor",
+      "jenkinsTokens": [
+        {
+          "token": "admin",
+          "url": "192.168.5.200:8080/jenkins",
+          "username": "admin"
+        }
+      ],
+      "refreshTime": "80",
       "nodeRefreshTime": "2",
-      "showNotificationOption": "all",
-      "showDisabledJobs": true
+      "showNotificationOption": "none",
+      "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins\nhttp://192.168.5.200:8080/jenkins",
+      "nodeParam": "Node,NODE",
+      "jobStatsJenkinsUrl": "http://192.168.5.200:8080/jenkins\nhttp://127.0.0.1:8080/jenkins",
+      "currentTheme": "default",
+      "enableDarkMode": false,
+      "enableParamsStashAndRecover": true,
+      "showDisabledJobs": true,
+      "enableParamNamesColor": true,
+      "paramNamesColor": "#E04D18FF"
     }
   }
 }

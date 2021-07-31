@@ -1,20 +1,22 @@
 {
-  "options": {
-    "defaultTab": "computer",
-    "jenkinsTokens": [
-      {
-        "token": "1180a64ac6896a03553fbec6e54b9edf01",
-        "url": "http://127.0.0.1:8080/jenkins/",
-        "username": "admin"
-      }
-    ],
-    "jobStatsJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-    "nodeParam": "Node",
-    "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins",
-    "refreshTime": "10",
-    "nodeRefreshTime": "2",
-    "showNotificationOption": "all",
-    "showDisabledJobs": true,
-    "enableParamsStashAndRecover": true
-  }
+  "defaultTab": "monitor",
+  "jenkinsTokens": [
+    {
+      "token": "admin",
+      "url": "192.168.5.200:8080/jenkins",
+      "username": "admin"
+    }
+  ],
+  "refreshTime": "60",
+  "nodeRefreshTime": "2",
+  "showNotificationOption": "none",
+  "omniboxJenkinsUrl": "http://127.0.0.1:8080/jenkins\nhttp://192.168.5.200:8080/jenkins",
+  "nodeParam": "Node,NODE",
+  "jobStatsJenkinsUrl": "http://192.168.5.200:8080/jenkins\nhttp://127.0.0.1:8080/jenkins",
+  "currentTheme": "default",
+  "enableDarkMode": false,
+  "enableParamsStashAndRecover": true,
+  "showDisabledJobs": true,
+  "enableParamNamesColor": true,
+  "paramNamesColor": "#E04D18FF"
 }

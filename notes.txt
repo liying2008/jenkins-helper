@@ -1,8 +1,0 @@
-1. 表格排序
-  - 使用 datatables 组件：
-    + 官网：https://datatables.net
-    + 使用Vue渲染的表格，使用 datatables 处理起来比较麻烦。
-    + 参考资料：https://stackoverflow.com/questions/32755853/implementing-vue-js-datatables-properly
-  - 使用 vue2-datatable
-    + 官网：https://github.com/OneWayTech/vue2-datatable
-    + 配置较麻烦，对当前代码结构影响较大，放弃。

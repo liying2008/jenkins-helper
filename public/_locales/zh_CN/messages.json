@@ -1,0 +1,406 @@
+{
+  "extName": {
+    "message": "Jenkins Helper"
+  },
+  "extShortName": {
+    "message": "Jenkins Helper"
+  },
+  "extDesc": {
+    "message": "监控 Jenkins 构建状态和节点状态，同时也提供一些便利功能。"
+  },
+  "ok": {
+    "message": "确定"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "editing": {
+    "message": "编辑"
+  },
+  "close": {
+    "message": "关闭"
+  },
+  "search": {
+    "message": "搜索"
+  },
+  "baiduSearch": {
+    "message": "百度搜索"
+  },
+  "actions": {
+    "message": "操作"
+  },
+  "globalOptionTitle": {
+    "message": "全局设置"
+  },
+  "defaultTab": {
+    "message": "默认标签页"
+  },
+  "jenkinsToken": {
+    "message": "Jenkins Token 设置"
+  },
+  "addNewTokenBtn": {
+    "message": "增加"
+  },
+  "omniboxOptionTitle": {
+    "message": "地址栏智能搜索"
+  },
+  "searchFromJenkins": {
+    "message": "从以下 Jenkins 中搜索"
+  },
+  "searchFromJenkinsPlaceholder": {
+    "message": "输入 Jenkins URL，一行一个，如：http://127.0.0.1:8080"
+  },
+  "searchFromJenkinsTips": {
+    "message": "Tips: 在地址栏输入 jk，按空格键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
+  },
+  "jobStatsTitle": {
+    "message": "Job 统计设置"
+  },
+  "jobStatsTitleTip": {
+    "message": "统计以下 Jenkins URL 中的 Job 信息"
+  },
+  "jobStatsJenkinsPlaceholder": {
+    "message": "输入 Jenkins/View/Job URL，一行一个，如：http://127.0.0.1:8080/view/My/"
+  },
+  "jobStatsNodeParamTip": {
+    "message": "如果Job节点数据为空，则从以下参数中获取"
+  },
+  "jobStatsNodeParamPlaceholder": {
+    "message": "可填写多个参数名称，以英文逗号(,)分割"
+  },
+  "themeTitle": {
+    "message": "主题设置"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "defaultTheme": {
+    "message": "默认主题"
+  },
+  "sapphireTheme": {
+    "message": "蓝天蓝"
+  },
+  "perillaTheme": {
+    "message": "紫苏紫"
+  },
+  "coffeeTheme": {
+    "message": "咖啡棕"
+  },
+  "enableDarkMode": {
+    "message": "启用暗色模式"
+  },
+  "otherTitle": {
+    "message": "其他设置"
+  },
+  "enableParamsStashAndRecover": {
+    "message": "启用 参数暂存&恢复 功能"
+  },
+  "enableParamsStashAndRecoverTips": {
+    "message": "启用此功能后，该扩展会在构建页面参数列表下方加入两个按钮，用于暂存参数和恢复参数。"
+  },
+  "enableParamNamesColor": {
+    "message": "启用 参数名称着色 功能"
+  },
+  "enableParamNamesColorTips": {
+    "message": "启用此功能后，新版本Jenkins的构建页面和参数页面的参数名称会被着色，方便辨认。"
+  },
+  "pickColor": {
+    "message": "选择颜色"
+  },
+  "saveOptions": {
+    "message": "保存设置"
+  },
+  "monitorOptionTitle": {
+    "message": "监视器设置"
+  },
+  "showNotification": {
+    "message": "显示通知"
+  },
+  "refreshTime": {
+    "message": "刷新时间间隔"
+  },
+  "nodeRefreshTime": {
+    "message": "刷新时间间隔"
+  },
+  "optionsSaved": {
+    "message": "设置已保存"
+  },
+  "showNotificationOption_all": {
+    "message": "每次构建"
+  },
+  "showNotificationOption_unstable": {
+    "message": "每次不稳定构建"
+  },
+  "showNotificationOption_none": {
+    "message": "从不"
+  },
+  "refreshTimeTip_1": {
+    "message": "每隔  <b>"
+  },
+  "refreshTimeTip_2": {
+    "message": " 秒</b> 获取一次最新状态"
+  },
+  "nodeOptionTitle": {
+    "message": "节点监控设置"
+  },
+  "nodeRefreshTimeTip_1": {
+    "message": "每隔  <b>"
+  },
+  "nodeRefreshTimeTip_2": {
+    "message": " 小时</b> 获取一次最新状态"
+  },
+  "createMonitoringTaskTitle": {
+    "message": "创建监控任务"
+  },
+  "cancelMonitoringTaskGroup": {
+    "message": "是否删除该监控任务 [$url$]？",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "url": {
+    "message": "URL"
+  },
+  "inputUrlPlaceholder": {
+    "message": "请输入 Jenkins/View/Job URL"
+  },
+  "addMonitorUrlTip": {
+    "message": "创建成功，页面数据稍后更新。"
+  },
+  "removeMonitorUrlTip": {
+    "message": "删除成功，页面数据稍后更新。"
+  },
+  "monitor": {
+    "message": "监视器"
+  },
+  "params": {
+    "message": "参数"
+  },
+  "computer": {
+    "message": "节点"
+  },
+  "tools": {
+    "message": "工具"
+  },
+  "buildStatus_": {
+    "message": "构建状态："
+  },
+  "runLabel_": {
+    "message": "运行节点："
+  },
+  "copied": {
+    "message": "已复制"
+  },
+  "paramsList": {
+    "message": "参数列表"
+  },
+  "noData": {
+    "message": "无数据"
+  },
+  "fetching": {
+    "message": "正在获取..."
+  },
+  "noPrevBuild": {
+    "message": "没有前一次构建了。"
+  },
+  "passwordParameter": {
+    "message": "密码参数"
+  },
+  "fileParameter": {
+    "message": "文件参数"
+  },
+  "credentialsParameter": {
+    "message": "凭据参数"
+  },
+  "jobStatisticsTitle": {
+    "message": "Jenkins Job 统计"
+  },
+  "jobStatisticsDataFrom_": {
+    "message": "数据来源："
+  },
+  "jobStatisticsShowSettings_": {
+    "message": "显示设置："
+  },
+  "jobStatisticsShowEnabledJobOnly": {
+    "message": "不显示禁用的Job"
+  },
+  "jobStatisticsShowCronTableJobOnly": {
+    "message": "不显示无定时器的Job"
+  },
+  "manageMonitoredNodes": {
+    "message": "管理监控节点"
+  },
+  "refresh": {
+    "message": "刷新"
+  },
+  "openManagerPage": {
+    "message": "打开管理页面"
+  },
+  "displayName": {
+    "message": "名称"
+  },
+  "remainingDiskSpace": {
+    "message": "剩余磁盘空间"
+  },
+  "diskSpaceThreshold": {
+    "message": "磁盘空间告警阈值"
+  },
+  "alarmThreshold": {
+    "message": "告警阈值"
+  },
+  "monitoringCancelled": {
+    "message": "已取消监控："
+  },
+  "cancelMonitoringNodeUrl": {
+    "message": "是否不再监控该Jenkins的节点 [$url$]？",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "cancelMonitoringNode": {
+    "message": "是否不再监控此节点 [$name$]？",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "workingDirectory": {
+    "message": "工作目录"
+  },
+  "responseTime": {
+    "message": "响应时间"
+  },
+  "isMonitoring": {
+    "message": "监控？"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "enableMonitoringOrNot": {
+    "message": "是否开启监控"
+  },
+  "fetchNodesDataFailure": {
+    "message": "获取节点数据失败！"
+  },
+  "diskSpaceThresholdInvalid": {
+    "message": "磁盘空间告警阈值无效！"
+  },
+  "inputJenkinsUrl": {
+    "message": "请输入Jenkins URL"
+  },
+  "inputDiskSpaceThreshold": {
+    "message": "请输入磁盘剩余空间告警阈值（GB）"
+  },
+  "showDisabledJobs": {
+    "message": "显示禁用的Job"
+  },
+  "insufficientDiskSpaceNotifications": {
+    "message": "磁盘空间仅剩 $num$ ，请及时清理！",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
+  },
+  "nodeOfflineNotifications": {
+    "message": "节点离线！"
+  },
+  "fetchNodeInfoFailedNotifications": {
+    "message": "获取节点信息失败！"
+  },
+  "filterLabel": {
+    "message": "过滤："
+  },
+  "urlCannotEmpty": {
+    "message": "URL不能为空。"
+  },
+  "urlInvalid": {
+    "message": "URL格式不正确。"
+  },
+  "content_parametersReadFailed": {
+    "message": "读取参数失败！"
+  },
+  "content_noStashedParams": {
+    "message": "没有已保存的参数！"
+  },
+  "content_failedToRecover": {
+    "message": "如下参数无法恢复："
+  },
+  "content_recoverSuccess": {
+    "message": "所有参数已成功恢复。"
+  },
+  "content_saveSuccess": {
+    "message": "保存成功的参数如下："
+  },
+  "content_supportOrSaveFail": {
+    "message": "保存失败的参数如下："
+  },
+  "content_dataSavingFailed": {
+    "message": "数据保存失败！"
+  },
+  "content_stashParameters": {
+    "message": "暂存参数"
+  },
+  "content_recoverParameters": {
+    "message": "恢复参数"
+  },
+  "content_stashTipOnJenkinsPage": {
+    "message": "【说明】：暂存成功的参数会用 “绿色” 标记，暂存失败的参数会用 “红色” 标记。"
+  },
+  "content_recoverTipOnJenkinsPage": {
+    "message": "【说明】：恢复成功的参数会用 “绿色” 标记，恢复失败的参数会用 “红色” 标记，请特别关注下恢复失败的参数。"
+  },
+  "jsonParsingFailed": {
+    "message": "JSON 解析失败"
+  },
+  "importAndExportSettings": {
+    "message": "导入/导出设置"
+  },
+  "about": {
+    "message": "关于"
+  },
+  "importSettings": {
+    "message": "导入设置"
+  },
+  "exportSettings": {
+    "message": "导出设置"
+  },
+  "exportSettingsTip": {
+    "message": "提示：导出的配置文件是明文保存的，对安全性有要求的请自行加密。"
+  },
+  "settingsImported": {
+    "message": "设置已导入。"
+  },
+  "settingContentIsEmpty": {
+    "message": "设置内容为空。"
+  },
+  "settingsFileParsingFailed": {
+    "message": "文件解析失败。"
+  },
+  "settingsFileContentIncorrect": {
+    "message": "文件内容不正确。"
+  },
+  "sourceCode": {
+    "message": "项目源代码"
+  },
+  "contactAuthor": {
+    "message": "联系作者"
+  },
+  "reportIssue": {
+    "message": "反馈问题"
+  },
+  "apiTool": {
+    "message": "API工具"
+  },
+  "jobMigration": {
+    "message": "任务迁移"
+  }
+}
