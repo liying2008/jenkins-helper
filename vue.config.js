@@ -53,7 +53,21 @@ module.exports = {
             ]
           }
         }
+      },
+      artifactFilename: ({ name, version, mode }) => {
+        if (mode === 'production') {
+          return `${name}-v${version}-${process.env.BROWSER}.zip`
+        }
+        return `${name}-v${version}-${process.env.BROWSER}-${mode}.zip`
+      },
+      manifestTransformer: (manifest) => {
+        if (process.env.BROWSER === 'chrome') {
+          delete manifest.applications
+        } else if (process.env.BROWSER === 'firefox') {
+          delete manifest.minimum_chrome_version
+        }
+        return manifest
       }
     }
-  }
+  },
 }
