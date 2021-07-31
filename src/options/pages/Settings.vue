@@ -329,10 +329,11 @@ import { StorageService } from '@/libs/storage'
 import { Options, JenkinsToken, defaultOptionsValue, PopupTab, NotificationShowing } from '@/models/option'
 import { SnackbarData } from '@/models/message'
 import { SelectionOption } from '@/models/vuetify'
-import { defaultTheme, initTheme } from '@/theme'
+import { initTheme } from '@/theme'
 import { sapphireTheme } from '@/theme/theme_sapphire'
 import { perillaTheme } from '@/theme/theme_perilla'
 import { coffeeTheme } from '@/theme/theme_coffee'
+import { defaultTheme } from '@/theme/theme_default'
 
 @Component
 export default class Settings extends Vue {

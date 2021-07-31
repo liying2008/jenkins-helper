@@ -1,4 +1,4 @@
-import { defaultTheme } from '@/theme'
+import { defaultTheme } from '@/theme/theme_default'
 
 export interface OptionsRoot {
   options: Options
