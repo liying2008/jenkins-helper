@@ -37,3 +37,24 @@ This extension can:
 
 Source code:
 https://github.com/liying2008/jenkins-helper
+
+
+==========================================================================================================
+单一用途说明
+Monitoring Jenkins build state and node state and helping Ops use Jenkins.
+
+
+需请求storage的理由
+Used to store this extension configuration information.
+
+需请求notifications的理由
+Notify Ops of build status and node status.
+
+需请求tabs的理由
+Determine if the current page is a Jenkins build page.
+
+需请求downloads的理由
+Download the Jenkins build log.
+
+需请求主机权限的理由
+Since Jenkins is an open source and self-deployable site, the extension cannot determine the URL of Jenkins used by the user.
