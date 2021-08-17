@@ -14,7 +14,7 @@
 
 ### 在线安装
 
-[Chrome Web Store](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh) / [Firefox Add-ons](https://addons.mozilla.org/addon/jenkins-helper/) / [Opera Addons](https://addons.opera.com/extensions/details/jenkins-helper/)
+[Chrome Web Store](https://chrome.google.com/webstore/detail/jenkins-helper/lkjoiakaidioklnfdejmnoebfbjcbemh) / [Firefox Add-ons](https://addons.mozilla.org/addon/jenkins-helper/) / [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/pelamneechdnppiophlmioibcjkidifc)
 
 ### 下载文件离线安装
 
