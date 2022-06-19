@@ -1,27 +1,22 @@
 .DS_Store
+.idea/
+.vite-ssg-dist
+.vite-ssg-temp
+*.crx
+*.local
+*.log
+*.pem
+*.xpi
+*.zip
+dist
+dist-ssr
+extension/manifest.json
 node_modules
-/dist
-
-# local env files
-.env.local
-.env.*.local
+src/auto-imports.d.ts
+src/components.d.ts
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Vue Browser Extension Output
-*.pem
-*.pub
-*.zip
-/artifacts
