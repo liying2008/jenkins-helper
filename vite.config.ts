@@ -9,6 +9,8 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import WindiCSS from 'vite-plugin-windicss'
+// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
+import vuetify from 'vite-plugin-vuetify'
 import windiConfig from './windi.config'
 import { isDev, port, r } from './scripts/utils'
 
@@ -24,7 +26,7 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     Vue(),
-
+    vuetify({ autoImport: true }),
     AutoImport({
       imports: [
         'vue',

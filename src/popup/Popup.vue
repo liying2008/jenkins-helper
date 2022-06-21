@@ -1,23 +1,40 @@
-<script setup lang="ts">
-import { storageDemo } from '~/logic/storage'
-
-function openOptionsPage() {
-  browser.runtime.openOptionsPage()
-}
+<script lang="ts" setup>
 </script>
 
 <template>
-  <main class="w-[300px] px-4 py-5 text-center text-gray-700">
-    <Logo />
-    <div>Popup</div>
-    <p class="mt-2 opacity-50">
-      This is the popup page
-    </p>
-    <button class="btn mt-2" @click="openOptionsPage">
-      Open Options
-    </button>
-    <div class="mt-2">
-      <span class="opacity-50">Storage:</span> {{ storageDemo }}
-    </div>
-  </main>
+  <div
+    id="app"
+    class="app"
+  >
+    <router-view />
+  </div>
 </template>
+
+
+<style lang="scss">
+.app {
+  // min-height: 200px;
+  /*设置 min-width 之后，Firefox上会有横向滚动条*/
+  /*min-width: 700;*/
+  width: 700px;
+  margin: auto;
+  // a 链接文本颜色
+  .a-link-color {
+    color: var(--v-link-base);
+  }
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC,
+    Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei,
+    sans-serif;
+  .v-card__title {
+    line-height: 1.1;
+    letter-spacing: inherit;
+  }
+  .v-btn {
+    letter-spacing: inherit;
+    text-transform: initial;
+  }
+  .v-btn-toggle > .v-btn.v-btn--active {
+    opacity: inherit;
+  }
+}
+</style>

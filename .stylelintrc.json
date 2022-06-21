@@ -1,0 +1,16 @@
+{
+  "plugin": [
+    "stylelint-order"
+  ],
+  "extends": [
+    "stylelint-config-recommended-vue/scss"
+  ],
+  "rules": {
+    "color-hex-length": "long",
+    "max-empty-lines": 1,
+    "block-no-empty": null,
+    "selector-class-pattern": null,
+    "no-empty-source": null,
+    "declaration-block-no-redundant-longhand-properties": null
+  }
+}

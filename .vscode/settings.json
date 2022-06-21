@@ -3,6 +3,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "volar.tsPlugin": true,
   "volar.tsPluginStatus": false,
+  "volar.autoCompleteRefs": true,
   "vite.autoStart": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
@@ -21,14 +22,12 @@
   "standard.enable": false,
   "editor.formatOnSave": false,
   "stylelint.validate": [
-    "css",
-    "less",
+    "css",    
     "postcss",
     "scss",
-    "vue",
     "sass"
   ],
   "scss.lint.emptyRules": "ignore",
-  "scss.lint.idSelector": "error",
+  "scss.lint.idSelector": "ignore",
   "git.ignoreLimitWarning": true
 }

@@ -20,8 +20,27 @@ module.exports = {
     'no-case-declarations': 'off',
     'vue/no-unused-components': 'warn',
     'vue/no-unused-vars': 'warn',
+    'vue/no-multi-spaces': 'error',
     'vue/html-self-closing': 'off',
     'vue/no-v-html': 'off',
+    'vue/mustache-interpolation-spacing': 'error',
+    'vue/max-attributes-per-line': ['warn', {
+      singleline: {
+        max: 1,
+      },
+      multiline: {
+        max: 1,
+      },
+    }],
+    'vue/first-attribute-linebreak': ['warn', {
+      singleline: 'beside',
+      multiline: 'below',
+    }],
+    'vue/html-closing-bracket-spacing': ['error', {
+      startTag: 'never',
+      endTag: 'never',
+      selfClosingTag: 'always',
+    }],
     'no-trailing-spaces': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-this-alias': 'warn',
@@ -39,6 +58,9 @@ module.exports = {
         delimiter: 'semi',
         requireLast: false,
       },
+    }],
+    '@typescript-eslint/brace-style': ['warn', '1tbs', {
+      allowSingleLine: false,
     }],
     'semi': ['error', 'never'],
     'array-bracket-spacing': ['warn', 'never'],
@@ -95,7 +117,7 @@ module.exports = {
     'no-template-curly-in-string': 'error',
     'no-unreachable': 'warn',
     'no-control-regex': 'error',
-    'no-use-before-define': ['error', { functions: false, classes: false, variables: false }],
+    'no-use-before-define': 'off',
     'no-redeclare': 'error',
     'no-useless-escape': 'warn',
     'no-useless-rename': 'error',

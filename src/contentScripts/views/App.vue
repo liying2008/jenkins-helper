@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useToggle } from '@vueuse/core'
 import 'virtual:windi.css'
 
