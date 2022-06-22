@@ -1,5 +1,5 @@
-import { Options } from './option'
-import { Nodes } from './node'
+import type { Options } from './option'
+import type { Nodes } from './node'
 
 export interface SettingsFileData {
   name: string

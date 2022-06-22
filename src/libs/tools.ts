@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { StorageService } from '~/libs/storage'
 import type { Enc } from '~/models/common'
 

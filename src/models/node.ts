@@ -2,9 +2,11 @@ export interface NodesRoot {
   nodes: Nodes
 }
 
-export interface Nodes {
-  [jenkinsUrl: string]: NodeStatus
-}
+// export interface Nodes {
+//   [jenkinsUrl: string]: NodeStatus
+// }
+
+export type Nodes = Record<string, NodeStatus>
 
 export type NodeStatusType = 'ok' | 'error'
 
@@ -14,9 +16,11 @@ export interface NodeStatus {
   monitoredNodes: MonitoredNodes
 }
 
-export interface MonitoredNodes {
-  [nodeName: string]: NodeDetail
-}
+// export interface MonitoredNodes {
+//   [nodeName: string]: NodeDetail
+// }
+
+export type MonitoredNodes = Record<string, NodeDetail>
 
 export interface NodeDetail {
   displayName: string

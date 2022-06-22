@@ -4,7 +4,8 @@ specifiers:
   '@antfu/eslint-config': ^0.25.1
   '@ffflorian/jszip-cli': ^3.1.6
   '@iconify/json': ^2.1.30
-  '@mdi/font': 5.9.55
+  '@mdi/font': ^6.7.96
+  '@mdi/js': ^6.7.96
   '@nodelib/fs.scandir': ^2.1.5
   '@types/fs-extra': ^9.0.13
   '@types/node': ^17.0.25
@@ -57,7 +58,8 @@ devDependencies:
   '@antfu/eslint-config': registry.npmmirror.com/@antfu/eslint-config/0.25.1_jzhokl4shvj5szf5bgr66kln2a
   '@ffflorian/jszip-cli': 3.1.6
   '@iconify/json': 2.1.30
-  '@mdi/font': registry.npmmirror.com/@mdi/font/5.9.55
+  '@mdi/font': registry.npmmirror.com/@mdi/font/6.7.96
+  '@mdi/js': registry.npmmirror.com/@mdi/js/6.7.96
   '@nodelib/fs.scandir': registry.npmmirror.com/@nodelib/fs.scandir/2.1.5
   '@types/fs-extra': 9.0.13
   '@types/node': 17.0.25
@@ -4458,10 +4460,16 @@ packages:
       - supports-color
     dev: true
 
-  registry.npmmirror.com/@mdi/font/5.9.55:
-    resolution: {integrity: sha512-jswRF6q3eq8NWpWiqct6q+6Fg/I7nUhrxYJfiEM8JJpap0wVJLQdbKtyS65GdlK7S7Ytnx3TTi/bmw+tBhkGmg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@mdi/font/-/font-5.9.55.tgz}
+  registry.npmmirror.com/@mdi/font/6.7.96:
+    resolution: {integrity: sha512-M68vlRhtmA/SpDjo2dV3SUZus20jrU9Zp2ggslfzh0cbFpygPukcVpBIA3pErwsukhYt4RfbgXpFi74SjixOrQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@mdi/font/-/font-6.7.96.tgz}
     name: '@mdi/font'
-    version: 5.9.55
+    version: 6.7.96
+    dev: true
+
+  registry.npmmirror.com/@mdi/js/6.7.96:
+    resolution: {integrity: sha512-vZvhFrNN9LQx+Awu3nU6ESfXXDpRA/CA4mwikzU5g8uf9NpAocK43ecQvVNntwiXlLKpyplas8d4lsfpqjtXLA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@mdi/js/-/js-6.7.96.tgz}
+    name: '@mdi/js'
+    version: 6.7.96
     dev: true
 
   registry.npmmirror.com/@nodelib/fs.scandir/2.1.5:

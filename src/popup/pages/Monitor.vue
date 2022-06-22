@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
 import { useTheme } from 'vuetify/lib/framework.mjs'
+import { VForm } from 'vuetify/lib/components/index'
+import { mdiCloseCircleOutline, mdiLinkVariant, mdiPlus } from '@mdi/js'
 import type { DisplayedJobDetail, JobRoot } from '../../models/job'
 import type { SelectionOption } from '../../models/vuetify'
 import type { Options } from '../../models/option'
@@ -28,10 +30,10 @@ const isFormValid = false
 const inputUrlValue = ref('')
 const showDisabledJobs = ref(true)
 const jobsData = ref<JobRoot>({})
-const data = ref<any>({})
+const data = ref<Record<string, any>>({})
 const filteringResult = ref('')
 const filteringResults: SelectionOption[] = []
-const form = ref<any>()
+const form = ref<VForm>()
 
 const search = ''
 const headers = [
@@ -246,10 +248,10 @@ function getStyledTime(timestamp: number) {
     <!-- 创建监控任务面板 -->
     <v-expansion-panels class="my-3">
       <v-expansion-panel>
-        <v-expansion-panel-header>
+        <v-expansion-panel-title>
           {{ strings.createMonitoringTaskTitle }}
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
           <!-- 添加URL的表单 -->
           <v-form
             ref="form"
@@ -260,17 +262,17 @@ function getStyledTime(timestamp: number) {
               <v-col cols="12">
                 <v-text-field
                   v-model="inputUrlValue"
-                  :append-outer-icon="isFormValid ? 'mdi-plus' : ''"
-                  prepend-icon="mdi-link-variant"
+                  :append-icon="isFormValid ? mdiPlus : ''"
+                  :prepend-icon="mdiLinkVariant"
                   :label="strings.inputUrlPlaceholder"
                   type="text"
                   :rules="[required(), isValidURL()]"
-                  @click:append-outer="addJenkinsUrl"
+                  @click:append="addJenkinsUrl"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-form>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -330,11 +332,11 @@ function getStyledTime(timestamp: number) {
               class="card-title-remove-btn"
               @click="removeJenkins(jenkinsUrl)"
             >
-              <v-icon>mdi-close-circle-outline</v-icon>
+              <v-icon>{{ mdiCloseCircleOutline }}</v-icon>
             </v-btn>
           </div>
         </v-card-title>
-        <v-data-table
+        <v-table
           v-show="jenkins.hasOwnProperty('jobs')"
           :headers="headers"
           :items="jenkins.jobs"
@@ -376,7 +378,7 @@ function getStyledTime(timestamp: number) {
               <span class="monitor-table-result-chip-text">{{ item.status }}</span>
             </v-chip>
           </template>
-        </v-data-table>
+        </v-table>
       </v-card>
     </div>
 

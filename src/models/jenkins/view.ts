@@ -1,4 +1,4 @@
-import { JenkinsJob } from './job'
+import type { JenkinsJob } from './job'
 
 export interface JenkinsView {
   _class: string

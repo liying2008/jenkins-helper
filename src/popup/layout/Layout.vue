@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { mdiCog, mdiToolbox, mdiViewList } from '@mdi/js'
 import { StorageService } from '~/libs/storage'
 import type { Options, PopupTab } from '~/models/option'
 import { defaultOptionsValue } from '~/models/option'
@@ -84,7 +85,8 @@ function openTools() {
           title="Open job statistics page"
           @click="openJobList"
         >
-          <v-icon>mdi-view-list</v-icon>
+          <v-icon>{{ mdiViewList }}</v-icon>
+          <!-- <v-icon>mdi-view-list</v-icon> -->
         </v-btn>
 
         <v-btn
@@ -93,7 +95,7 @@ function openTools() {
           title="Open Jenkins tools page"
           @click="openTools"
         >
-          <v-icon>mdi-toolbox</v-icon>
+          <v-icon>{{ mdiToolbox }}</v-icon>
         </v-btn>
 
         <v-btn
@@ -101,7 +103,7 @@ function openTools() {
           title="Open options page"
           @click="openOptions"
         >
-          <v-icon>mdi-cog</v-icon>
+          <v-icon>{{ mdiCog }}</v-icon>
         </v-btn>
 
         <template #extension>
@@ -112,7 +114,8 @@ function openTools() {
             color="white"
             align-with-title
           >
-            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <!-- Vuetify 3 删除了 v-tabs-slider -->
+            <!-- <v-tabs-slider color="yellow"></v-tabs-slider> -->
 
             <v-tab to="/monitor">
               {{ strings.monitor }}
