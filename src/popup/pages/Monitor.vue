@@ -6,6 +6,7 @@ import { mdiCloseCircleOutline, mdiLinkVariant, mdiPlus } from '@mdi/js'
 import type { DisplayedJobDetail, JobRoot } from '../../models/job'
 import type { SelectionOption } from '../../models/vuetify'
 import type { Options } from '../../models/option'
+import jenkinsIcon from '~/assets/img/icon48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
@@ -286,7 +287,7 @@ function getStyledTime(timestamp: number) {
           <img
             class="img-rounded avatar"
             alt="Jenkins"
-            src="img/icon48.png"
+            :src="jenkinsIcon"
           >
           <div class="ml-5 card-title-job">
             <span

@@ -49,7 +49,7 @@ export async function getManifest() {
       48: 'img/icon48.png',
       128: 'img/icon128.png',
     },
-    content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    content_security_policy: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'',
     permissions: [
       'http://*/*',
       'https://*/*',

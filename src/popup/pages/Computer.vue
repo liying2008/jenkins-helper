@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import computerIcon from '~/assets/img/computer48.png'
 import { NodeService } from '~/background/node-service'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -178,7 +179,7 @@ function openNodesManager(jenkinsUrl: string) {
           <img
             class="img-rounded avatar"
             alt="Computer"
-            src="img/computer48.png"
+            :src="computerIcon"
           >
           <div class="ml-5 card-title-node">
             <span

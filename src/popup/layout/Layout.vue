@@ -85,8 +85,8 @@ function openTools() {
           title="Open job statistics page"
           @click="openJobList"
         >
-          <v-icon>{{ mdiViewList }}</v-icon>
-          <!-- <v-icon>mdi-view-list</v-icon> -->
+          <!-- <v-icon>{{ mdiViewList }}</v-icon> -->
+          <v-icon>mdi-view-list</v-icon>
         </v-btn>
 
         <v-btn
