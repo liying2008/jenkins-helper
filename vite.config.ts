@@ -81,6 +81,7 @@ export default defineConfig(({ command }) => ({
   ...sharedConfig,
   base: command === 'serve' ? `http://localhost:${port}/` : '/dist/',
   server: {
+    origin: `http://localhost:${port}`, // 避免开发模式下 css url(xxx) 请求失败
     port,
     hmr: {
       host: 'localhost',

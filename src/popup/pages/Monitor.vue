@@ -2,7 +2,6 @@
 import { onMounted, ref, watch } from 'vue'
 import { useTheme } from 'vuetify/lib/framework.mjs'
 import { VForm } from 'vuetify/lib/components/index'
-import { mdiCloseCircleOutline, mdiLinkVariant, mdiPlus } from '@mdi/js'
 import type { DisplayedJobDetail, JobRoot } from '../../models/job'
 import type { SelectionOption } from '../../models/vuetify'
 import type { Options } from '../../models/option'
@@ -263,8 +262,8 @@ function getStyledTime(timestamp: number) {
               <v-col cols="12">
                 <v-text-field
                   v-model="inputUrlValue"
-                  :append-icon="isFormValid ? mdiPlus : ''"
-                  :prepend-icon="mdiLinkVariant"
+                  :append-icon="isFormValid ? 'mdi-plus' : ''"
+                  prepend-icon="mdi-link-variant"
                   :label="strings.inputUrlPlaceholder"
                   type="text"
                   :rules="[required(), isValidURL()]"
@@ -333,7 +332,7 @@ function getStyledTime(timestamp: number) {
               class="card-title-remove-btn"
               @click="removeJenkins(jenkinsUrl)"
             >
-              <v-icon>{{ mdiCloseCircleOutline }}</v-icon>
+              <v-icon>mdi-close-circle-outline</v-icon>
             </v-btn>
           </div>
         </v-card-title>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { mdiCog, mdiToolbox, mdiViewList } from '@mdi/js'
 import { StorageService } from '~/libs/storage'
 import type { Options, PopupTab } from '~/models/option'
 import { defaultOptionsValue } from '~/models/option'
@@ -95,7 +94,7 @@ function openTools() {
           title="Open Jenkins tools page"
           @click="openTools"
         >
-          <v-icon>{{ mdiToolbox }}</v-icon>
+          <v-icon>mdi-toolbox</v-icon>
         </v-btn>
 
         <v-btn
@@ -103,7 +102,7 @@ function openTools() {
           title="Open options page"
           @click="openOptions"
         >
-          <v-icon>{{ mdiCog }}</v-icon>
+          <v-icon>mdi-cog</v-icon>
         </v-btn>
 
         <template #extension>
