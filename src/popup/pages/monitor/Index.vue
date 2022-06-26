@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
 import type { SelectionOption } from '../../../models/vuetify'
 import type { Options } from '../../../models/option'
+import CreationModal from './CreationModal.vue'
 import jenkinsIcon from '~/assets/img/icon48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -21,6 +22,7 @@ const strings = {
   addMonitorUrlTip: browser.i18n.getMessage('addMonitorUrlTip'),
   removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
 }
+const creationModalVisible = ref(false)
 const isFormValid = false
 const inputUrlValue = ref('')
 const showDisabledJobs = ref(true)
@@ -103,6 +105,10 @@ function getRowClass(item: DisplayedJobDetail) {
   } else {
     return ''
   }
+}
+
+function creationModalVisibleUpdate(value: boolean) {
+  creationModalVisible.value = value
 }
 
 /**
@@ -239,13 +245,29 @@ function getStyledTime(timestamp: number) {
 </script>
 
 <template>
-  <div id="monitor-wrapper">
+  <div class="monitor-wrapper">
+    <div class="top-op">
+      <n-space justify="end">
+        <n-button
+          quaternary
+          type="primary"
+          @click="creationModalVisible = true"
+        >
+          {{ strings.createMonitoringTaskTitle }}
+        </n-button>
+      </n-space>
+    </div>
+    <!-- 创建监控任务的对话框 -->
+    <CreationModal
+      :show="creationModalVisible"
+      @visible-update="creationModalVisibleUpdate"
+    />
   </div>
 </template>
 
 
 <style lang="scss">
-#monitor-wrapper {
+.monitor-wrapper {
   .card {
     .card-title-job {
       width: 460px;
