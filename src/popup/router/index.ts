@@ -13,17 +13,17 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/monitor',
         name: 'Monitor',
-        component: () => import('../pages/Monitor.vue'),
+        component: () => import('../pages/monitor/Index.vue'),
       },
       {
         path: '/params',
         name: 'Params',
-        component: () => import('../pages/Params.vue'),
+        component: () => import('../pages/params/Index.vue'),
       },
       {
         path: '/computer',
         name: 'Computer',
-        component: () => import('../pages/Computer.vue'),
+        component: () => import('../pages/computer/Index.vue'),
       },
     ],
   },

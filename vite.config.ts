@@ -7,10 +7,9 @@ import Vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
 import WindiCSS from 'vite-plugin-windicss'
-// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-import vuetify from 'vite-plugin-vuetify'
 import windiConfig from './windi.config'
 import { isDev, port, r } from './scripts/utils'
 
@@ -26,7 +25,6 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     Vue(),
-    vuetify({ autoImport: true }),
     AutoImport({
       imports: [
         'vue',
@@ -45,6 +43,7 @@ export const sharedConfig: UserConfig = {
       // generate `components.d.ts` for ts support with Volar
       dts: r('src/components.d.ts'),
       resolvers: [
+        NaiveUiResolver(),
         // auto import icons
         IconsResolver({
           componentPrefix: '',

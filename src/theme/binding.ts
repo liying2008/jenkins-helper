@@ -1,7 +1,3 @@
-// import { createVuetify } from 'vuetify/lib/framework.mjs'
-// import vuetify from '~/plugins/vuetify'
-
-
 export interface ModeColor {
   primary: string
   secondary: string

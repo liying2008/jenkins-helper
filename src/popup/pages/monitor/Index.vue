@@ -1,18 +1,13 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
-import { useTheme } from 'vuetify/lib/framework.mjs'
-import { VForm } from 'vuetify/lib/components/index'
-import type { DisplayedJobDetail, JobRoot } from '../../models/job'
-import type { SelectionOption } from '../../models/vuetify'
-import type { Options } from '../../models/option'
+import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
+import type { SelectionOption } from '../../../models/vuetify'
+import type { Options } from '../../../models/option'
 import jenkinsIcon from '~/assets/img/icon48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import { SnackbarData } from '~/models/message'
-
-
-const theme = useTheme()
 
 const strings = {
   noFilterValue: '-',
@@ -33,7 +28,7 @@ const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
 const filteringResult = ref('')
 const filteringResults: SelectionOption[] = []
-const form = ref<VForm>()
+const form = ref<any>()
 
 const search = ''
 const headers = [
@@ -245,170 +240,6 @@ function getStyledTime(timestamp: number) {
 
 <template>
   <div id="monitor-wrapper">
-    <!-- 创建监控任务面板 -->
-    <v-expansion-panels class="my-3">
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          {{ strings.createMonitoringTaskTitle }}
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <!-- 添加URL的表单 -->
-          <v-form
-            ref="form"
-            v-model="isFormValid"
-            @submit.prevent="addJenkinsUrl"
-          >
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="inputUrlValue"
-                  :append-icon="isFormValid ? 'mdi-plus' : ''"
-                  prepend-icon="mdi-link-variant"
-                  :label="strings.inputUrlPlaceholder"
-                  type="text"
-                  :rules="[required(), isValidURL()]"
-                  @click:append="addJenkinsUrl"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <div>
-      <v-card
-        v-for="(jenkins, jenkinsUrl, index) in data"
-        :key="index"
-        class="card my-3"
-      >
-        <v-card-title>
-          <img
-            class="img-rounded avatar"
-            alt="Jenkins"
-            :src="jenkinsIcon"
-          >
-          <div class="ml-5 card-title-job">
-            <span
-              :title="decodeURIComponent(jenkins.name)"
-              color="title"
-              class="card-title-job-name"
-            >
-              {{ decodeURIComponent(jenkins.name) }}
-            </span>
-            <br style="height: 10px;">
-            <a
-              class="card-title-job-url a-link-color"
-              target="_blank"
-              :href="jenkinsUrl"
-            >
-              <span
-                class="no-wrap"
-                :title="decodeURIComponent(jenkinsUrl)"
-              >{{ decodeURIComponent(jenkinsUrl) }}</span>
-            </a>
-          </div>
-          <v-spacer></v-spacer>
-          <div v-show="jenkins.status !== 'ok'">
-            <v-btn
-              depressed
-              small
-              :href="jenkinsUrl"
-              :title="jenkins.error"
-              target="_blank"
-              color="error"
-              class="card-title-err-btn"
-            >
-              <span v-if="jenkins.status === 'cctray'">CCtray Error</span>
-              <span v-else>ERROR</span>
-            </v-btn>
-          </div>
-          <div class="ml-2">
-            <v-btn
-              icon
-              title="Remove monitoring for this task"
-              x-small
-              color="grey"
-              class="card-title-remove-btn"
-              @click="removeJenkins(jenkinsUrl)"
-            >
-              <v-icon>mdi-close-circle-outline</v-icon>
-            </v-btn>
-          </div>
-        </v-card-title>
-        <v-table
-          v-show="jenkins.hasOwnProperty('jobs')"
-          :headers="headers"
-          :items="jenkins.jobs"
-          :item-class="getRowClass"
-          :search="search"
-          dense
-          hide-default-footer
-          disable-pagination
-        >
-          <!-- name -->
-          <template #[`item.name`]="{ item }">
-            <a
-              :href="item.jobUrl"
-              target="_blank"
-              class="monitor-table-job-name a-link-color"
-              :class="[{ building: item.building }]"
-            >{{ item.name }}</a>
-          </template>
-
-          <!-- lastBuildTimestamp -->
-          <template #[`item.lastBuildTimestamp`]="{ item }">
-            <span
-              :class="[{ building: item.building }]"
-              v-html="getStyledTime(item.lastBuildTimestamp)"
-            ></span>
-          </template>
-
-          <!-- status -->
-          <template #[`item.status`]="{ item }">
-            <v-chip
-              small
-              label
-              text-color="white"
-              pill
-              :color="getResultColor(item.color)"
-              class="monitor-table-result-chip"
-              :class="[{ building: item.building }]"
-            >
-              <span class="monitor-table-result-chip-text">{{ item.status }}</span>
-            </v-chip>
-          </template>
-        </v-table>
-      </v-card>
-    </div>
-
-    <!-- 底部设置 -->
-    <div v-show="Object.keys(data).length > 0">
-      <v-container fluid>
-        <v-row class="pt-3 bottom-toolbar-row">
-          <!-- 是否显示禁用的Job -->
-          <v-checkbox
-            v-model="showDisabledJobs"
-            dense
-            :label="strings.showDisabledJobs"
-            class="bottom-show-disabled"
-          ></v-checkbox>
-
-          <!-- 过滤Job -->
-          <v-select
-            v-model="filteringResult"
-            :items="filteringResults"
-            :label="strings.filterLabel"
-            dense
-            outlined
-            class="ml-12 bottom-filter"
-          ></v-select>
-        </v-row>
-      </v-container>
-    </div>
-
-    <!-- snackbar -->
-    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
 

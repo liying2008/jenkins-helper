@@ -1,4 +1,4 @@
-import colors from 'vuetify/lib/util/colors'
+import colors from './colors'
 import type { Theme } from './binding'
 
 // Default Theme

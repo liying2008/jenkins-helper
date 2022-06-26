@@ -15,11 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "types": [
       "vite/client",
-      "vuetify",
-    ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/vuetify/types"
+      "naive-ui/volar",
     ],
     "paths": {
       "~/*": ["src/*"]
