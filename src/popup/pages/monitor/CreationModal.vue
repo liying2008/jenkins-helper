@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import type { FormInst } from 'naive-ui'
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 
 const props = defineProps<{
@@ -14,6 +14,8 @@ const emit = defineEmits<{
 
 const strings = {
   noFilterValue: '-',
+  ok: browser.i18n.getMessage('ok'),
+  cancel: browser.i18n.getMessage('cancel'),
   createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
   url: browser.i18n.getMessage('url'),
   inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
@@ -37,42 +39,46 @@ const modalVisible = computed({
 
 const formRef = ref<FormInst>()
 const formValue = ref({
-  user: {
-    name: '',
-    age: '',
-  },
-  phone: '',
+  inputUrlValue: '',
 })
-const rules = {
-  user: {
-    name: {
+
+const rules: FormRules = {
+  inputUrlValue: [
+    {
       required: true,
-      message: '请输入姓名',
-      trigger: 'blur',
-    },
-    age: {
-      required: true,
-      message: '请输入年龄',
+      validator(rule: FormItemRule, value: string) {
+        if (!value) {
+          // 不能为空
+          return new Error(strings.urlCannotEmpty)
+        } else {
+          const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+          const regex = new RegExp(expression)
+          if (!regex.test(value)) {
+            // 需要是一个合法的URL
+            return new Error(strings.urlInvalid)
+          }
+        }
+        return true
+      },
       trigger: ['input', 'blur'],
     },
-  },
-  phone: {
-    required: true,
-    message: '请输入电话号码',
-    trigger: ['input'],
-  },
+  ],
 }
 
-function handleValidateClick(e: MouseEvent) {
-  e.preventDefault()
-  formRef.value?.validate((errors) => {
+function submit() {
+  formRef.value!.validate((errors) => {
     if (!errors) {
       message.success('Valid')
     } else {
-      console.log(errors)
+      console.log('validate errors', errors)
       message.error('Invalid')
+      return false
     }
   })
+}
+
+function cancel() {
+  modalVisible.value = false
 }
 </script>
 
@@ -82,43 +88,26 @@ function handleValidateClick(e: MouseEvent) {
     class="creation-modal"
     preset="dialog"
     :title="strings.createMonitoringTaskTitle"
-    positive-text="确认"
-    negative-text="算了"
+    :positive-text="strings.ok"
+    :negative-text="strings.cancel"
     style="width: 80%"
+    @positive-click="submit"
+    @negative-click="cancel"
   >
-    <!-- <template #header-extra>
-        <n-button
-          text
-          @click="modalVisible = false"
-        >
-          <n-icon>
-            <CloseOutline class="close-icon" />
-          </n-icon>
-        </n-button>
-      </template> -->
     <n-form
       ref="formRef"
-      inline
       :label-width="80"
       :model="formValue"
       :rules="rules"
     >
       <n-form-item
-        label="姓名"
-        path="user.name"
+        label="URL"
+        path="inputUrlValue"
       >
         <n-input
-          v-model:value="formValue.user.name"
-          placeholder="输入姓名"
+          v-model:value="formValue.inputUrlValue"
+          :placeholder="strings.inputUrlPlaceholder"
         />
-      </n-form-item>
-      <n-form-item>
-        <n-button
-          attr-type="button"
-          @click="handleValidateClick"
-        >
-          验证
-        </n-button>
       </n-form-item>
     </n-form>
   </n-modal>
