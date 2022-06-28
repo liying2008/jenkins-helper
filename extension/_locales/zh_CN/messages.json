@@ -163,8 +163,11 @@
   "url": {
     "message": "URL"
   },
+  "inputUrlLabel": {
+    "message": "请填入 Jenkins/View/Job URL"
+  },
   "inputUrlPlaceholder": {
-    "message": "请输入 Jenkins/View/Job URL"
+    "message": "例如: http://127.0.0.1:8080/view/MyView/"
   },
   "addMonitorUrlTip": {
     "message": "创建成功，页面数据稍后更新。"

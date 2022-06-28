@@ -23,8 +23,6 @@ const strings = {
   removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
 }
 const creationModalVisible = ref(false)
-const isFormValid = false
-const inputUrlValue = ref('')
 const showDisabledJobs = ref(true)
 const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
@@ -66,22 +64,6 @@ onMounted(() => {
   getAllJobStatus()
   StorageService.addStorageListener(jobStatusChange)
 })
-
-function required() {
-  return (v: string) => (v && v.length > 0) || strings.urlCannotEmpty
-}
-
-function isValidURL() {
-  const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
-  const regex = new RegExp(expression)
-  return (v: string) => {
-    if (!v || v.length === 0) {
-      return true
-    } else {
-      return (regex.test(v)) || strings.urlInvalid
-    }
-  }
-}
 
 function getResultColor(jobColor: string) {
   switch (jobColor) {
@@ -183,28 +165,6 @@ function filterData() {
     })
   })
   // console.log('filterData', this.data)
-}
-
-/**
-   * 添加新 Jenkins URL
-   */
-function addJenkinsUrl() {
-  // 先验证输入
-  if (!inputUrlValue.value || !isFormValid) {
-    return
-  }
-  let url = inputUrlValue.value
-  url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
-  // console.log('url', url)
-  StorageService.addJenkinsUrl(url).then(() => {
-    inputUrlValue.value = ''
-    form.value.resetValidation()
-    // 显示 创建成功
-    snackbar.value = SnackbarData.builder()
-      .message(strings.addMonitorUrlTip)
-      .color('success')
-      .build()
-  })
 }
 
 function removeJenkins(jenkinsUrl: string) {

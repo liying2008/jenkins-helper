@@ -72,74 +72,72 @@ function openTools() {
 
 <template>
   <div class="layout-wrapper">
-    <n-message-provider>
-      <n-page-header class="page-header">
-        <template #title>
-          <div>{{ strings.extName }}</div>
-        </template>
-        <template #avatar>
-          <n-avatar
-            :src="jenkinsIcon"
-            class="ext-avatar"
-          />
-        </template>
-        <template #extra>
-          <n-space class="header-extra">
-            <n-button
-              text
-              class="header-icon"
-              title="Open job statistics page"
-              @click="openJobList"
-            >
-              <n-icon><Leaf /></n-icon>
-            </n-button>
+    <n-page-header class="page-header">
+      <template #title>
+        <div>{{ strings.extName }}</div>
+      </template>
+      <template #avatar>
+        <n-avatar
+          :src="jenkinsIcon"
+          class="ext-avatar"
+        />
+      </template>
+      <template #extra>
+        <n-space class="header-extra">
+          <n-button
+            text
+            class="header-icon"
+            title="Open job statistics page"
+            @click="openJobList"
+          >
+            <n-icon><Leaf /></n-icon>
+          </n-button>
 
-            <n-button
-              text
-              class="header-icon"
-              title="Open Jenkins tools page"
-              @click="openTools"
-            >
-              <n-icon><Briefcase /></n-icon>
-            </n-button>
+          <n-button
+            text
+            class="header-icon"
+            title="Open Jenkins tools page"
+            @click="openTools"
+          >
+            <n-icon><Briefcase /></n-icon>
+          </n-button>
 
-            <n-button
-              text
-              class="header-icon"
-              title="Open options page"
-              @click="openOptions"
-            >
-              <n-icon><OptionsIcon /></n-icon>
-            </n-button>
-          </n-space>
-        </template>
-      </n-page-header>
-      <n-tabs
-        class="tabs"
-        :default-value="activeTab"
-        animated
-        type="segment"
+          <n-button
+            text
+            class="header-icon"
+            title="Open options page"
+            @click="openOptions"
+          >
+            <n-icon><OptionsIcon /></n-icon>
+          </n-button>
+        </n-space>
+      </template>
+    </n-page-header>
+    <n-tabs
+      class="tabs"
+      :default-value="activeTab"
+      animated
+      type="segment"
+    >
+      <n-tab-pane
+        name="monitor"
+        :tab="strings.monitor"
       >
-        <n-tab-pane
-          name="monitor"
-          :tab="strings.monitor"
-        >
-          <MonitorPage />
-        </n-tab-pane>
-        <n-tab-pane
-          name="params"
-          :tab="strings.params"
-        >
-          <ParamsPage />
-        </n-tab-pane>
-        <n-tab-pane
-          name="computer"
-          :tab="strings.computer"
-        >
-          <ComputerPage />
-        </n-tab-pane>
-      </n-tabs>
-    </n-message-provider>
+        <MonitorPage />
+      </n-tab-pane>
+      <n-tab-pane
+        name="params"
+        :tab="strings.params"
+      >
+        <ParamsPage />
+      </n-tab-pane>
+      <n-tab-pane
+        name="computer"
+        :tab="strings.computer"
+      >
+        <ComputerPage />
+      </n-tab-pane>
+    </n-tabs>
   </div>
 </template>
 

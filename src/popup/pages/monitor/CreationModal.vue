@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
+import { StorageService } from '~/libs/storage'
 
 const props = defineProps<{
   show: boolean
@@ -18,6 +19,7 @@ const strings = {
   cancel: browser.i18n.getMessage('cancel'),
   createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
   url: browser.i18n.getMessage('url'),
+  inputUrlLabel: browser.i18n.getMessage('inputUrlLabel'),
   inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
   showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
   filterLabel: browser.i18n.getMessage('filterLabel'),
@@ -35,6 +37,14 @@ const modalVisible = computed({
   set(newVal) {
     emit('visibleUpdate', newVal)
   },
+})
+
+watch(modalVisible, (newVal: boolean) => {
+  if (newVal) {
+    // modal dialog 打开时，清空表单数据，重置表单验证状态
+    formRef.value?.restoreValidation()
+    formValue.value.inputUrlValue = ''
+  }
 })
 
 const formRef = ref<FormInst>()
@@ -65,16 +75,28 @@ const rules: FormRules = {
   ],
 }
 
-function submit() {
-  formRef.value!.validate((errors) => {
-    if (!errors) {
-      message.success('Valid')
-    } else {
-      console.log('validate errors', errors)
-      message.error('Invalid')
-      return false
-    }
-  })
+/**
+ * 添加新 Jenkins URL
+ */
+async function addJenkinsUrl() {
+  let url = formValue.value.inputUrlValue
+  url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
+  // console.log('url', url)
+  await StorageService.addJenkinsUrl(url)
+  console.log('addJenkinsUrl success')
+}
+
+async function submit() {
+  try {
+    await formRef.value!.validate()
+    // 添加 Jenkins URL
+    await addJenkinsUrl()
+    message.success(strings.addMonitorUrlTip)
+    return true
+  } catch (e: unknown) {
+    console.log('validate error', e)
+    return false
+  }
 }
 
 function cancel() {
@@ -91,6 +113,7 @@ function cancel() {
     :positive-text="strings.ok"
     :negative-text="strings.cancel"
     style="width: 80%"
+    type="info"
     @positive-click="submit"
     @negative-click="cancel"
   >
@@ -101,7 +124,7 @@ function cancel() {
       :rules="rules"
     >
       <n-form-item
-        label="URL"
+        :label="strings.inputUrlLabel"
         path="inputUrlValue"
       >
         <n-input

@@ -163,8 +163,11 @@
   "url": {
     "message": "URL"
   },
+  "inputUrlLabel": {
+    "message": "Please fill in the Jenkins/View/Job URL"
+  },
   "inputUrlPlaceholder": {
-    "message": "Please input Jenkins/View/Job URL"
+    "message": "For example: http://127.0.0.1:8080/view/MyView/"
   },
   "addMonitorUrlTip": {
     "message": "Created successfully, page data will be updated later."
