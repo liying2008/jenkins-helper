@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { h, onMounted, ref, watch } from 'vue'
 import { Add, CloseCircleOutline, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
+import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import { NA, NTag, NText } from 'naive-ui/es/components'
 import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
 import type { Options } from '../../../models/option'
 import CreationModal from './CreationModal.vue'
@@ -33,10 +35,60 @@ const filteringResults: SelectMixedOption[] = []
 const form = ref<any>()
 
 const search = ''
-const headers = [
-  { text: 'Job Name', align: 'start', value: 'name' },
-  { text: 'Last Build Time', align: 'center', value: 'lastBuildTimestamp', width: '24%' },
-  { text: 'Result', align: 'center', value: 'status', width: '12%' },
+const headers: TableColumns = [
+  {
+    title: 'Job Name',
+    align: 'left',
+    key: 'name',
+    render(row) {
+      return h(
+        NA,
+        {
+          href: row.jobUrl,
+          target: '_blank',
+          class: `monitor-table-job-name a-link-color ${row.building ? 'building' : ''}`,
+        },
+        { default: () => row.name },
+      )
+    },
+  },
+  {
+    title: 'Last Build Time',
+    align: 'center',
+    key: 'lastBuildTimestamp',
+    width: '24%',
+    render(row) {
+      return h(
+        NText,
+        {
+          class: `${row.building ? 'building' : ''}`,
+        },
+        // TODO
+        { default: () => row.lastBuildTimestamp },
+      )
+    },
+  },
+  {
+    title: 'Result',
+    align: 'center',
+    key: 'status',
+    width: '12%',
+    render(row) {
+      return h(
+        NTag,
+        {
+          size: 'small',
+          color: {
+            // TODO
+            color: getResultColor(row.color),
+          },
+          class: `monitor-table-result-chip ${row.building ? 'building' : ''}`,
+        },
+        // TODO
+        { default: () => row.status },
+      )
+    },
+  },
 ]
 const snackbar = ref(SnackbarData.empty())
 
@@ -198,7 +250,8 @@ function getStyledTime(timestamp: number) {
   const arr = s.split(' ')
   let dateColor = '#444444'
   let timeColor = '#888888'
-  if (theme.current.value.dark) {
+  // TODO isDark
+  if (false) {
     dateColor = '#bbbbbb'
     timeColor = '#888888'
   }
@@ -312,6 +365,15 @@ function getStyledTime(timestamp: number) {
             </div>
           </div>
         </div>
+        <n-data-table
+          v-show="jenkins.hasOwnProperty('jobs')"
+          class="mt-4"
+          size="small"
+          :columns="headers"
+          :data="jenkins.jobs"
+          :row-class-name="getRowClass"
+          :search="search"
+        />
       </n-card>
     </div>
     <!-- 创建监控任务的对话框 -->
@@ -383,7 +445,9 @@ function getStyledTime(timestamp: number) {
         }
 
         .card-title-remove-btn {
-          align-items: baseline;
+          font-size: 16px;
+          opacity: 0.5;
+          vertical-align: text-top;
         }
       }
 
