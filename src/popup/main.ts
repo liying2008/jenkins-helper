@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import router from './router'
 import App from './Popup.vue'
+import '../styles'
 
 const app = createApp(App)
 app.use(router)
