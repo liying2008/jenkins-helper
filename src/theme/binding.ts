@@ -31,7 +31,7 @@ export interface Theme {
 
 export function applyTheme(theme: Theme) {
   for (const key in theme.light) {
-    console.log('vuetify')
+    document.documentElement.style.setProperty(`--${key}`, theme.light[key])
     // vuetify.framework.theme.themes.light[key] = theme.light[key]
   }
   for (const key in theme.dark) {

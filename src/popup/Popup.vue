@@ -1,17 +1,22 @@
 <script lang="ts" setup>
+import { darkTheme, lightTheme } from 'naive-ui'
 </script>
 
 <template>
-  <div
-    id="app"
-    class="app"
-  >
+  <n-config-provider :theme="lightTheme">
+    <!-- 使用 n-global-style 组件，将主题应用到全局 -->
+    <n-global-style />
     <n-dialog-provider>
       <n-message-provider>
-        <router-view />
+        <div
+          id="app"
+          class="app"
+        >
+          <router-view />
+        </div>
       </n-message-provider>
     </n-dialog-provider>
-  </div>
+  </n-config-provider>
 </template>
 
 
@@ -21,10 +26,5 @@
   /*min-width: 700;*/
   width: 700px;
   margin: auto;
-  // a 链接文本颜色
-  .a-link-color {
-    color: var(--v-link-base);
-  }
-  font-family: system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif;
 }
 </style>

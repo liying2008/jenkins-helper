@@ -46,7 +46,7 @@ const headers: TableColumns = [
         {
           href: row.jobUrl,
           target: '_blank',
-          class: `monitor-table-job-name a-link-color ${row.building ? 'building' : ''}`,
+          class: ['monitor-table-job-name', 'a-link-color', row.building ? 'building' : ''],
         },
         { default: () => row.name },
       )
@@ -56,15 +56,14 @@ const headers: TableColumns = [
     title: 'Last Build Time',
     align: 'center',
     key: 'lastBuildTimestamp',
-    width: '24%',
+    width: '25%',
     render(row) {
       return h(
         NText,
         {
-          class: `${row.building ? 'building' : ''}`,
+          class: ['monitor-table-build-time', row.building ? 'building' : ''],
+          innerHTML: getStyledTime(row.lastBuildTimestamp),
         },
-        // TODO
-        { default: () => row.lastBuildTimestamp },
       )
     },
   },
@@ -80,9 +79,10 @@ const headers: TableColumns = [
           size: 'small',
           color: {
             // TODO
-            color: getResultColor(row.color),
+            color: `var(--${getResultColor(row.color)})`,
+            textColor: '#FFFFFF',
           },
-          class: `monitor-table-result-chip ${row.building ? 'building' : ''}`,
+          class: ['monitor-table-result-chip', row.building ? 'building' : ''],
         },
         // TODO
         { default: () => row.status },
@@ -91,13 +91,6 @@ const headers: TableColumns = [
   },
 ]
 const snackbar = ref(SnackbarData.empty())
-
-// const form = computed(() => {
-//   return this.$refs.form as Vue & {
-//     validate: () => boolean
-//     resetValidation: () => void
-//   }
-// })
 
 watch(showDisabledJobs, (newVal: boolean) => {
   StorageService.getOptions().then((options: Options) => {
@@ -456,32 +449,24 @@ function getStyledTime(timestamp: number) {
         word-break: break-all;
         word-wrap: break-word;
       }
-
+      .monitor-table-build-time {
+        font-size: 13px;
+      }
       .monitor-table-result-chip {
-        .monitor-table-result-chip-text {
-          width: 46px;
-          text-align: center;
-          justify-content: center;
-        }
+        width: 100%;
+        text-align: center;
+        justify-content: center;
       }
-
-      .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
-        padding: 0 10px;
-      }
-      .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-        padding: 0 10px;
-      }
-
       .gone-row {
         display: none;
       }
 
-      .building-row {
-        background-color: var(--v-buildingline-base);
+      .building-row > td {
+        background-color: var(--buildingline);
       }
 
-      .disabled-row {
-        background-color: var(--v-disabledline-base);
+      .disabled-row > td {
+        background-color: var(--disabledline);
       }
 
       .building {

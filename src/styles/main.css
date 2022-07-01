@@ -1,0 +1,6 @@
+// a 链接文本颜色
+.a-link-color {
+  color: var(--link);
+}
+
+font-family: system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif;
