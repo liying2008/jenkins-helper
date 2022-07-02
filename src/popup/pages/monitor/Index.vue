@@ -40,6 +40,7 @@ const headers: TableColumns = [
     title: 'Job Name',
     align: 'left',
     key: 'name',
+    sorter: 'default',
     render(row) {
       return h(
         NA,
@@ -57,6 +58,7 @@ const headers: TableColumns = [
     align: 'center',
     key: 'lastBuildTimestamp',
     width: '25%',
+    sorter: 'default',
     render(row) {
       return h(
         NText,
@@ -72,11 +74,14 @@ const headers: TableColumns = [
     align: 'center',
     key: 'status',
     width: '12%',
+    sorter: 'default',
     render(row) {
       return h(
         NTag,
         {
           size: 'small',
+          round: true,
+          bordered: false,
           color: {
             // TODO
             color: `var(--${getResultColor(row.color)})`,
@@ -366,6 +371,7 @@ function getStyledTime(timestamp: number) {
           :data="jenkins.jobs"
           :row-class-name="getRowClass"
           :search="search"
+          :bordered="false"
         />
       </n-card>
     </div>
@@ -403,10 +409,11 @@ function getStyledTime(timestamp: number) {
     .card {
       margin-bottom: 8px;
       .n-card__content {
-        padding: 12px;
+        padding: 0px;
       }
       .card-title {
         display: flex;
+        padding: 12px;
         .img-rounded {
           width: 48px;
           height: 48px;
@@ -487,6 +494,9 @@ function getStyledTime(timestamp: number) {
           opacity: 0.3;
         }
       }
+    }
+    .n-data-table.n-data-table--bottom-bordered .n-data-table-td.n-data-table-td--last-row {
+      border-bottom: 0px solid var(--n-merged-border-color);
     }
   }
 }
