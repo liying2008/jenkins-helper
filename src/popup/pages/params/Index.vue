@@ -297,7 +297,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       font-size: 0.8rem;
       padding: 0.4rem;
       line-height: 0.875rem;
-      color: var(--v-title-base);
+      color: var(--jk-title);
 
       .display-name {
         text-decoration-line: none;
@@ -339,7 +339,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
     }
     .hidden-param {
       font-size: 0.8em;
-      color: var(--v-subtitle-base);
+      color: var(--jk-subtitle);
       font-style: italic;
     }
   }

@@ -84,7 +84,7 @@ const headers: TableColumns = [
           bordered: false,
           color: {
             // TODO
-            color: `var(--${getResultColor(row.color)})`,
+            color: `var(--jk-${getResultColor(row.color)})`,
             textColor: '#FFFFFF',
           },
           class: ['monitor-table-result-chip', row.building ? 'building' : ''],
@@ -119,10 +119,10 @@ onMounted(() => {
 
 function getResultColor(jobColor: string) {
   switch (jobColor) {
-    case 'blue': return 'success'
-    case 'red': return 'error'
+    case 'blue': return 'successColor'
+    case 'red': return 'errorColor'
     case 'notbuilt': return 'notbuilt'
-    case 'yellow': return 'warning'
+    case 'yellow': return 'warningColor'
     case 'aborted': return 'aborted'
     case 'disabled': return 'disabled'
     default: return 'orange darken-2'
@@ -469,11 +469,11 @@ function getStyledTime(timestamp: number) {
       }
 
       .building-row > td {
-        background-color: var(--buildingline);
+        background-color: var(--jk-buildingline);
       }
 
       .disabled-row > td {
-        background-color: var(--disabledline);
+        background-color: var(--jk-disabledline);
       }
 
       .building {

@@ -184,7 +184,7 @@ function openNodesManager(jenkinsUrl: string) {
     }
 
     .disabled-row {
-      background-color: var(--v-disabledline-base);
+      background-color: var(--jk-disabledline);
     }
   }
 }

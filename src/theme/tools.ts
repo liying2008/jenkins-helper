@@ -1,5 +1,5 @@
 import type { Theme } from './binding'
-import { applyTheme, setDarkMode } from './binding'
+import { applyTheme } from './binding'
 import { coffeeTheme } from './theme_coffee'
 import { defaultTheme } from './theme_default'
 import { perillaTheme } from './theme_perilla'
@@ -23,9 +23,6 @@ export async function initTheme(themeName?: string, enableDarkMode?: boolean) {
     themeName = options.currentTheme
   }
   // console.log('themeName', themeName)
-  // console.time('initTheme:applyTheme')
-  applyTheme(supportThemes.get(themeName) || defaultTheme)
-
   if (enableDarkMode === undefined) {
     if (options === undefined) {
       options = await StorageService.getOptions()
@@ -33,6 +30,9 @@ export async function initTheme(themeName?: string, enableDarkMode?: boolean) {
     enableDarkMode = options.enableDarkMode
   }
   // console.log('enableDarkMode', enableDarkMode)
-  setDarkMode(enableDarkMode)
+
+  // console.time('initTheme:applyTheme')
+  const theme = supportThemes.get(themeName) || defaultTheme
+  applyTheme(theme, enableDarkMode)
   // console.timeEnd('initTheme:applyTheme')
 }
