@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { h, onMounted, ref, watch } from 'vue'
-import { Add, CloseCircleOutline, SearchOutline } from '@vicons/ionicons5'
-import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
+import { CloseCircleOutline } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NTag, NText, useMessage } from 'naive-ui/es/components'
 import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
 import type { Options } from '../../../models/option'
-import CreationModal from './CreationModal.vue'
+import OpArea from './OpArea.vue'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -15,23 +14,14 @@ import { useThemeStore } from '~/store'
 
 const strings = {
   noFilterValue: '-',
-  createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
   search: browser.i18n.getMessage('search'),
-  url: browser.i18n.getMessage('url'),
-  inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
-  showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
-  filterLabel: browser.i18n.getMessage('filterLabel'),
-  urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
-  urlInvalid: browser.i18n.getMessage('urlInvalid'),
-  addMonitorUrlTip: browser.i18n.getMessage('addMonitorUrlTip'),
   removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
+  noData: browser.i18n.getMessage('noData'),
 }
-const creationModalVisible = ref(false)
 const showDisabledJobs = ref(true)
+const filteringResult = ref(strings.noFilterValue)
 const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
-const filteringResult = ref('')
-const filteringResults: SelectMixedOption[] = []
 
 const message = useMessage()
 const themeStore = useThemeStore()
@@ -98,19 +88,9 @@ const headers: TableColumns = [
   },
 ]
 
-watch(showDisabledJobs, (newVal: boolean) => {
-  StorageService.getOptions().then((options: Options) => {
-    // console.log('showDisabledJobsChanged', options)
-    options.showDisabledJobs = newVal
-    StorageService.saveOptions(options)
-  })
-})
-
 watch(filteringResult, () => {
   filterData()
 })
-
-initResultFilter()
 
 onMounted(() => {
   getAllJobStatus()
@@ -141,28 +121,6 @@ function getRowClass(item: DisplayedJobDetail) {
   }
 }
 
-function creationModalVisibleUpdate(value: boolean) {
-  creationModalVisible.value = value
-}
-
-/**
- * 初始化页面
- */
-function initResultFilter() {
-  // 默认不过滤
-  filteringResult.value = strings.noFilterValue
-  filteringResults.push({
-    value: strings.noFilterValue,
-    label: strings.noFilterValue,
-  })
-  Object.keys(Tools.jobStatus).forEach((value) => {
-    filteringResults.push({
-      value,
-      label: Tools.jobStatus[value],
-    })
-  })
-}
-
 function jobStatusChange(changes: StorageChangeWrapper) {
   // console.log('00-jobStatusChange', changes)
   if (StorageService.keyForJenkinsJobData in changes) {
@@ -186,6 +144,14 @@ function getAllJobStatus() {
     // 过滤数据
     filterData()
   })
+}
+
+function onResultFilterChange(newVal: string) {
+  filteringResult.value = newVal
+}
+
+function onShowDisabledJobsChange(newVal: boolean) {
+  showDisabledJobs.value = newVal
 }
 
 /**
@@ -255,50 +221,12 @@ function getStyledTime(timestamp: number) {
 
 <template>
   <div class="monitor-wrapper">
-    <div class="top-op">
-      <!-- 按Job名称过滤Job -->
-      <n-input
-        :placeholder="strings.search"
-        class="search-input"
-        size="small"
-      >
-        <template #prefix>
-          <n-icon :component="SearchOutline" />
-        </template>
-      </n-input>
-      <!-- 按构建结果过滤Job -->
-      <n-select
-        v-model:value="filteringResult"
-        size="small"
-        class="filter-select"
-        :placeholder="strings.filterLabel"
-        :options="filteringResults"
-      />
-      <!-- 是否显示禁用的Job -->
-      <n-checkbox
-        v-model:checked="showDisabledJobs"
-        size="small"
-        class="show-disabled-checkbox items-center flex-1"
-      >
-        {{ strings.showDisabledJobs }}
-      </n-checkbox>
-      <!-- 创建新的监控任务 -->
-      <div>
-        <n-button
-          circle
-          size="small"
-          type="primary"
-          class="create-task-button"
-          :title="strings.createMonitoringTaskTitle"
-          @click="creationModalVisible = true"
-        >
-          <template #icon>
-            <n-icon><add /></n-icon>
-          </template>
-        </n-button>
-      </div>
-    </div>
-
+    <!-- 顶部操作区域 -->
+    <OpArea
+      @result-filter-change="onResultFilterChange"
+      @show-disabled-jobs-change="onShowDisabledJobsChange"
+    />
+    <!-- 数据表格区域 -->
     <div class="data-area">
       <n-card
         v-for="(jenkins, jenkinsUrl, index) in data"
@@ -361,21 +289,22 @@ function getStyledTime(timestamp: number) {
         </div>
         <n-data-table
           v-show="jenkins.hasOwnProperty('jobs')"
-          class="mt-4"
+          class="data-table mt-4"
           size="small"
           :columns="headers"
           :data="jenkins.jobs"
           :row-class-name="getRowClass"
           :search="search"
           :bordered="false"
-        />
+        >
+          <template #empty>
+            <div class="data-table-no-data">
+              {{ strings.noData }}
+            </div>
+          </template>
+        </n-data-table>
       </n-card>
     </div>
-    <!-- 创建监控任务的对话框 -->
-    <CreationModal
-      :show="creationModalVisible"
-      @visible-update="creationModalVisibleUpdate"
-    />
   </div>
 </template>
 
@@ -384,29 +313,20 @@ function getStyledTime(timestamp: number) {
 .monitor-wrapper {
   min-height: 500px;
 
-  .top-op {
-    display: flex;
-
-    .search-input {
-      width: 50%;
-    }
-
-    .filter-select {
-      margin-left: 10px;
-      width: 20%;
-    }
-
-    .show-disabled-checkbox {
-      margin-left: 10px;
-    }
-
-    .create-task-button {
-      margin-left: 10px;
-    }
-  }
-
   .data-area {
     margin-top: 10px;
+
+    .data-table {
+      .n-data-table-empty {
+        padding: 0;
+      }
+
+      .data-table-no-data {
+        text-align: center;
+        padding: 8px 0;
+        color: #88888888;
+      }
+    }
 
     .card {
       margin-bottom: 8px;

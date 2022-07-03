@@ -7,6 +7,7 @@ import { initTheme } from '~/theme'
 const themeStore = useThemeStore()
 const keys = useMagicKeys()
 
+// TODO 测试用，正式发布前删除
 whenever(keys.shift_w, () => {
   // toggle dark theme
   initTheme(undefined, !themeStore.darkMode)

@@ -14,19 +14,15 @@ const emit = defineEmits<{
 }>()
 
 const strings = {
-  noFilterValue: '-',
   ok: browser.i18n.getMessage('ok'),
   cancel: browser.i18n.getMessage('cancel'),
   createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
   url: browser.i18n.getMessage('url'),
   inputUrlLabel: browser.i18n.getMessage('inputUrlLabel'),
   inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
-  showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
-  filterLabel: browser.i18n.getMessage('filterLabel'),
   urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
   urlInvalid: browser.i18n.getMessage('urlInvalid'),
   addMonitorUrlTip: browser.i18n.getMessage('addMonitorUrlTip'),
-  removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
 }
 const message = useMessage()
 
