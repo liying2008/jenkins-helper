@@ -3,7 +3,7 @@ import { h, onMounted, ref, watch } from 'vue'
 import { Add, CloseCircleOutline, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NTag, NText } from 'naive-ui/es/components'
+import { NA, NTag, NText, useMessage } from 'naive-ui/es/components'
 import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
 import type { Options } from '../../../models/option'
 import CreationModal from './CreationModal.vue'
@@ -11,7 +11,7 @@ import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
-import { SnackbarData } from '~/models/message'
+import { useThemeStore } from '~/store'
 
 const strings = {
   noFilterValue: '-',
@@ -32,7 +32,9 @@ const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
 const filteringResult = ref('')
 const filteringResults: SelectMixedOption[] = []
-const form = ref<any>()
+
+const message = useMessage()
+const themeStore = useThemeStore()
 
 const search = ''
 const headers: TableColumns = [
@@ -64,7 +66,7 @@ const headers: TableColumns = [
         NText,
         {
           class: ['monitor-table-build-time', row.building ? 'building' : ''],
-          innerHTML: getStyledTime(row.lastBuildTimestamp),
+          innerHTML: getStyledTime(row.lastBuildTimestamp as number),
         },
       )
     },
@@ -84,7 +86,7 @@ const headers: TableColumns = [
           bordered: false,
           color: {
             // TODO
-            color: `var(--jk-${getResultColor(row.color)})`,
+            color: `var(--jk-${getResultColor(row.color as string)})`,
             textColor: '#FFFFFF',
           },
           class: ['monitor-table-result-chip', row.building ? 'building' : ''],
@@ -95,7 +97,6 @@ const headers: TableColumns = [
     },
   },
 ]
-const snackbar = ref(SnackbarData.empty())
 
 watch(showDisabledJobs, (newVal: boolean) => {
   StorageService.getOptions().then((options: Options) => {
@@ -109,10 +110,9 @@ watch(filteringResult, () => {
   filterData()
 })
 
+initResultFilter()
 
 onMounted(() => {
-  console.log('form', form.value)
-  initPage()
   getAllJobStatus()
   StorageService.addStorageListener(jobStatusChange)
 })
@@ -146,9 +146,9 @@ function creationModalVisibleUpdate(value: boolean) {
 }
 
 /**
-   * 初始化页面
-   */
-function initPage() {
+ * 初始化页面
+ */
+function initResultFilter() {
   // 默认不过滤
   filteringResult.value = strings.noFilterValue
   filteringResults.push({
@@ -189,8 +189,8 @@ function getAllJobStatus() {
 }
 
 /**
-   * 过滤数据
-   */
+ * 过滤数据
+ */
 function filterData() {
   const status = jobsData.value
   // console.log('filterData::status', status)
@@ -229,17 +229,14 @@ function removeJenkins(jenkinsUrl: string) {
   StorageService.removeJenkinsUrl(jenkinsUrl).then(() => {
     console.log('removeJenkins::removed', jenkinsUrl)
     // 显示 删除成功
-    snackbar.value = SnackbarData.builder()
-      .message(strings.removeMonitorUrlTip)
-      .color('success')
-      .build()
+    message.success(strings.removeMonitorUrlTip)
   })
 }
 
 /**
-   * 获取有样式的时间字符串
-   * @returns {string}
-   */
+ * 获取有样式的时间字符串
+ * @returns {string}
+ */
 function getStyledTime(timestamp: number) {
   const s = Tools.getReadableTime(timestamp, true)
   if (s === '') {
@@ -248,8 +245,7 @@ function getStyledTime(timestamp: number) {
   const arr = s.split(' ')
   let dateColor = '#444444'
   let timeColor = '#888888'
-  // TODO isDark
-  if (false) {
+  if (themeStore.darkMode) {
     dateColor = '#bbbbbb'
     timeColor = '#888888'
   }

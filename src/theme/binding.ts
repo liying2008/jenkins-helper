@@ -28,6 +28,7 @@ export interface Theme {
 }
 
 export function applyTheme(theme: Theme, darkMode: boolean) {
+  // console.log('applyTheme::theme=', theme, 'darkMode=', darkMode)
   const themeStore = useThemeStore()
 
   if (darkMode) {

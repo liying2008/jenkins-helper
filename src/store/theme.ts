@@ -14,5 +14,8 @@ export const useThemeStore = defineStore('theme', {
   getters: {
   },
   actions: {
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode
+    },
   },
 })

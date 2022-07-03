@@ -112,7 +112,7 @@ function cancel() {
     :title="strings.createMonitoringTaskTitle"
     :positive-text="strings.ok"
     :negative-text="strings.cancel"
-    style="width: 80%"
+    style="width: 80%;"
     type="info"
     @positive-click="submit"
     @negative-click="cancel"
