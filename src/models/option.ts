@@ -27,7 +27,8 @@ export interface Options {
 
 // Options 默认值
 export const defaultOptionsValue: Options = {
-  defaultTab: 'monitor',
+  // TODO need to change to 'monitor'
+  defaultTab: 'params',
   jenkinsTokens: [],
   jobStatsJenkinsUrl: '',
   nodeParam: '',

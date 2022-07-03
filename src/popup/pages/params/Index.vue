@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlashSharp, PricetagSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
+import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { Tools } from '~/libs/tools'
 import { SnackbarData } from '~/models/message'
+import { useThemeStore } from '~/store'
 
 
 interface BuildCause {
@@ -28,9 +31,9 @@ const strings = {
   credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
   building: 'BUILDING',
 }
-const headers = [
-  { text: 'Name', align: 'start', value: 'name', cellClass: 'param-item' },
-  { text: 'Value', align: 'start', value: 'value', cellClass: 'param-item' },
+const headers: TableColumns = [
+  { title: 'Name', align: 'left', key: 'name', cellClass: 'param-item' },
+  { title: 'Value', align: 'left', key: 'value', cellClass: 'param-item' },
 ]
 const snackbar = ref(SnackbarData.empty())
 // status 的状态说明：
@@ -54,25 +57,27 @@ const parameters = ref<BuildParameter[]>([])
 const disableDownload = ref(false)
 const builtOnSpan = ref<HTMLSpanElement>()
 
+const themeStore = useThemeStore()
+
 onMounted(() => {
   getParameters()
 })
 
 function getResultColor(label: string) {
   switch (label) {
-    case 'SUCCESS': return 'success'
-    case 'FAILURE': return 'error'
-    case 'UNSTABLE': return 'warning'
+    case 'SUCCESS': return 'successColorPressed'
+    case 'FAILURE': return 'errorColorPressed'
+    case 'UNSTABLE': return 'warningColorPressed'
     case 'ABORTED': return 'aborted'
     default: return 'orange darken-2'
   }
 }
 
 function getBuildingChipColor() {
-  if (theme.current.value.dark) {
-    return 'light-blue darken-3'
+  if (themeStore.darkMode) {
+    return 'infoColorPressed'
   } else {
-    return 'light-blue'
+    return 'infoColor'
   }
 }
 
@@ -137,15 +142,16 @@ function getParametersByUrl(url: string) {
       causes.value = []
       parameters.value = []
       const actions = data.actions
+      console.log('actions', actions)
       for (let i = 0; i < actions.length; i++) {
         if (actions[i].hasOwnProperty('parameters')) {
-          const parameters = actions[i].parameters
-          for (let pIndex = 0; pIndex < parameters.length; pIndex++) {
-            const _class = parameters[pIndex]._class
+          const _parameters = actions[i].parameters
+          for (let pIndex = 0; pIndex < _parameters.length; pIndex++) {
+            const _class = _parameters[pIndex]._class
             const param = {
               hidden: false,
-              name: parameters[pIndex].name,
-              value: parameters[pIndex].value,
+              name: _parameters[pIndex].name,
+              value: _parameters[pIndex].value,
             }
             // 额外处理几个特殊类型的参数
             if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
@@ -162,22 +168,22 @@ function getParametersByUrl(url: string) {
               param.value = `<${strings.fileParameter}>`
             } else if (_class === 'hudson.model.RunParameterValue') {
               // 运行时参数
-              param.value = `${parameters[pIndex].jobName} #${parameters[pIndex].number}`
+              param.value = `${_parameters[pIndex].jobName} #${_parameters[pIndex].number}`
             }
-            parameters.push(param)
+            parameters.value.push(param)
           }
         } else if (actions[i].hasOwnProperty('causes')) {
-          const causes = actions[i].causes
-          for (let cIndex = 0; cIndex < causes.length; cIndex++) {
-            const shortDescription = causes[cIndex].shortDescription
+          const _causes = actions[i].causes
+          for (let cIndex = 0; cIndex < _causes.length; cIndex++) {
+            const shortDescription = _causes[cIndex].shortDescription
             let upstreamUrl = ''
-            if (causes[cIndex].upstreamUrl && causes[cIndex].upstreamBuild) {
+            if (_causes[cIndex].upstreamUrl && _causes[cIndex].upstreamBuild) {
               const rootUrl = getJenkinsRootUrl(data.url, data.fullDisplayName)
               if (rootUrl) {
-                upstreamUrl = `${rootUrl}/${causes[cIndex].upstreamUrl}${causes[cIndex].upstreamBuild}/`
+                upstreamUrl = `${rootUrl}/${_causes[cIndex].upstreamUrl}${_causes[cIndex].upstreamBuild}/`
               }
             }
-            causes.push({
+            causes.value.push({
               shortDescription,
               url: upstreamUrl,
             })
@@ -281,32 +287,246 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
 </script>
 
 <template>
-  <div id="params-wrapper">
+  <div class="params-wrapper">
+    <n-card
+      v-show="status === 2"
+      class="info-block"
+    >
+      <!-- Display name & 构建状态 -->
+      <n-grid
+        x-gap="12"
+        :cols="2"
+      >
+        <n-gi class="info-col">
+          <n-icon
+            title="Full DisplayName"
+            size="16"
+          >
+            <PricetagSharp />
+          </n-icon>
+          <a
+            :href="url"
+            target="_blank"
+            style="margin-left: 8px;"
+            class="display-name a-link-color"
+          >{{ fullDisplayName }}</a>
+        </n-gi>
+        <n-gi class="info-col">
+          {{ strings.buildStatus_ }}
+          <!-- 构建中 -->
+          <n-tag
+            v-if="building"
+            :color="{ color: `var(--jk-${getBuildingChipColor()})`, textColor: 'white' }"
+            class="building"
+            size="small"
+            round
+            strong
+            :bordered="false"
+          >
+            {{ strings.building }}
+          </n-tag>
+          <!-- 构建已完成 -->
+          <n-tag
+            v-else
+            :color="{ color: `var(--jk-${getResultColor(result)})`, textColor: 'white' }"
+            size="small"
+            round
+            strong
+            :bordered="false"
+          >
+            {{ result }}
+          </n-tag>
+        </n-gi>
+      </n-grid>
+      <!-- 构建时间 & 执行节点 -->
+      <n-grid
+        x-gap="12"
+        :cols="2"
+      >
+        <n-gi class="info-col">
+          <n-icon
+            size="16"
+            title="Build Timestamp"
+          >
+            <TimeSharp />
+          </n-icon>
+          <span style="margin-left: 8px;">{{ buildTime }}</span>
+        </n-gi>
+        <n-gi
+          v-show="builtOn"
+          class="info-col"
+        >
+          {{ strings.runLabel_ }}<span ref="builtOnSpan">{{ builtOn }}</span>
+          <n-button
+            text
+            class="info-icon-btn ml-2"
+            title="Copy"
+            @click="copyBuiltOn"
+          >
+            <template #icon>
+              <n-icon size="16">
+                <CopyOutline />
+              </n-icon>
+            </template>
+          </n-button>
+        </n-gi>
+      </n-grid>
+      <!-- Build Causes -->
+      <n-grid
+        v-for="cause in causes"
+        :key="cause.url"
+        :cols="1"
+      >
+        <n-gi
+          cols="12"
+          class="info-col"
+        >
+          <n-icon
+            size="16"
+            title="Build Cause"
+          >
+            <FlashSharp />
+          </n-icon>
+          <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
+          <n-button
+            v-if="cause.url"
+            class="info-icon-btn ml-2"
+            title="Go"
+            tag="a"
+            :href="cause.url"
+            target="_blank"
+          >
+            <n-icon size="16px">
+              <ArrowForwardCircleSharp />
+            </n-icon>
+          </n-button>
+        </n-gi>
+      </n-grid>
+    </n-card>
+
+    <!-- 参数列表 -->
+    <div
+      v-show="status === 2 && parameters.length > 0"
+      class="params-table"
+    >
+      <div>{{ strings.paramsList }}</div>
+      <n-data-table
+        :columns="headers"
+        :data="parameters"
+      >
+        <template #[`item.value`]="{ item }">
+          <div :class="[{ 'hidden-param': item.hidden }]">
+            {{ item.value }}
+          </div>
+        </template>
+      </n-data-table>
+    </div>
+
+    <!-- Prev/Next Button -->
+    <div
+      v-show="status === 2"
+      class="flex my-3"
+    >
+      <n-button-group>
+        <n-button
+          type="default"
+          round
+          title="Previous Build"
+          :retain-focus-on-click="false"
+          @click="prevBuild"
+        >
+          <template #icon>
+            <n-icon><ArrowBackSharp /></n-icon>
+          </template>
+        </n-button>
+        <n-button
+          type="default"
+          round
+          title="Next Build"
+          :retain-focus-on-click="false"
+          @click="nextBuild"
+        >
+          <template #icon>
+            <n-icon><ArrowForwardSharp /></n-icon>
+          </template>
+        </n-button>
+      </n-button-group>
+      <div class="flex-1"></div>
+      <!-- 下载日志 -->
+      <n-button
+        type="default"
+        title="Download Console Log"
+        :disabled="disableDownload"
+        @click="downloadConsoleLog"
+      >
+        <template #icon>
+          <n-icon>
+            <CloudDownloadSharp />
+          </n-icon>
+        </template>
+      </n-button>
+      <!-- 打开Job配置页面 -->
+      <n-button
+        type="default"
+        class="mx-2"
+        title="Configure"
+        @click="goToConfigure"
+      >
+        <template #icon>
+          <n-icon>
+            <SettingsSharp />
+          </n-icon>
+        </template>
+      </n-button>
+      <!-- 打开 Rebuild 页面 -->
+      <n-button
+        type="default"
+        title="Rebuild"
+        @click="rebuild"
+      >
+        <template #icon>
+          <n-icon size="20">
+            <RefreshCircleSharp />
+          </n-icon>
+        </template>
+      </n-button>
+    </div>
+
+    <!-- No Data -->
+    <div v-show="status === 0">
+      <n-empty :description="strings.noData ">
+      </n-empty>
+    </div>
+    <!-- Fetching -->
+    <div v-show="status === 1">
+      <n-empty :description="strings.fetching">
+        <template #icon>
+          <n-icon>
+            <Reload class="is-loading" />
+          </n-icon>
+        </template>
+      </n-empty>
+    </div>
   </div>
 </template>
 
 
 <style lang="scss">
-#params-wrapper {
-  .v-btn:not(.v-btn--text):not(.v-btn--outlined).v-btn--active::before {
-    opacity: 0;
+.params-wrapper {
+  .n-card > .n-card__content {
+    padding: 0;
   }
 
-  #info-block {
+  .info-block {
     .info-col {
-      font-size: 0.8rem;
-      padding: 0.4rem;
-      line-height: 0.875rem;
+      font-size: 12px;
+      padding: 6px 14px;
       color: var(--jk-title);
 
       .display-name {
         text-decoration-line: none;
         word-break: break-all;
         word-wrap: break-word;
-      }
-
-      .dense-chip {
-        height: inherit;
       }
 
       .building {
@@ -335,13 +555,13 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
     }
   }
 
-  #params-table {
+  .params-table {
     .param-item {
-      font-size: 0.785rem;
+      font-size: 12px;
     }
 
     .hidden-param {
-      font-size: 0.8em;
+      font-size: 12px;
       color: var(--jk-subtitle);
       font-style: italic;
     }

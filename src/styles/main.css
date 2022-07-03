@@ -3,4 +3,18 @@
   color: var(--jk-link);
 }
 
-font-family: system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif;
+.is-loading {
+  animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+font-family: system-ui, "—apple-system", "Segoe UI", Rototo, Emoji, Helvetica, Arial, sans-serif;
