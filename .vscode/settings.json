@@ -25,7 +25,8 @@
     "css",    
     "postcss",
     "scss",
-    "sass"
+    "sass",
+    "vue"
   ],
   "scss.lint.emptyRules": "ignore",
   "scss.lint.idSelector": "ignore",

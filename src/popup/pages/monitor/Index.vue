@@ -387,37 +387,47 @@ function getStyledTime(timestamp: number) {
 <style lang="scss">
 .monitor-wrapper {
   min-height: 500px;
+
   .top-op {
     display: flex;
+
     .search-input {
       width: 50%;
     }
+
     .filter-select {
       margin-left: 10px;
       width: 20%;
     }
+
     .show-disabled-checkbox {
       margin-left: 10px;
     }
+
     .create-task-button {
       margin-left: 10px;
-
     }
   }
+
   .data-area {
     margin-top: 10px;
+
     .card {
       margin-bottom: 8px;
+
       .n-card__content {
-        padding: 0px;
+        padding: 0;
       }
+
       .card-title {
         display: flex;
         padding: 12px;
+
         .img-rounded {
           width: 48px;
           height: 48px;
         }
+
         .card-title-job {
           overflow: hidden;
           text-overflow: ellipsis;
@@ -438,6 +448,7 @@ function getStyledTime(timestamp: number) {
           width: 60px;
           height: 26px;
           font-size: 12px;
+
           .n-button__content {
             // 按钮文字居中
             justify-content: center;
@@ -456,14 +467,17 @@ function getStyledTime(timestamp: number) {
         word-break: break-all;
         word-wrap: break-word;
       }
+
       .monitor-table-build-time {
         font-size: 13px;
       }
+
       .monitor-table-result-chip {
         width: 100%;
         text-align: center;
         justify-content: center;
       }
+
       .gone-row {
         display: none;
       }
@@ -490,13 +504,15 @@ function getStyledTime(timestamp: number) {
         0% {
           opacity: 1;
         }
+
         100% {
           opacity: 0.3;
         }
       }
     }
+
     .n-data-table.n-data-table--bottom-bordered .n-data-table-td.n-data-table-td--last-row {
-      border-bottom: 0px solid var(--n-merged-border-color);
+      border-bottom: 0 solid var(--n-merged-border-color);
     }
   }
 }

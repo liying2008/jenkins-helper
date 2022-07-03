@@ -145,17 +145,21 @@ function openTools() {
 <style lang="scss">
 .layout-wrapper {
   margin: 20px;
+
   .page-header {
     .ext-avatar {
       background-color: inherit;
     }
+
     .header-icon {
       font-size: 20px;
     }
+
     .header-extra {
 
     }
   }
+
   .tabs {
     margin-top: 20px;
   }

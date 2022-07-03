@@ -288,7 +288,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
 
 <style lang="scss">
 #params-wrapper {
-  .v-btn:not(.v-btn--text):not(.v-btn--outlined).v-btn--active:before {
+  .v-btn:not(.v-btn--text):not(.v-btn--outlined).v-btn--active::before {
     opacity: 0;
   }
 
@@ -323,6 +323,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
         0% {
           opacity: 1;
         }
+
         100% {
           opacity: 0.3;
         }
@@ -333,10 +334,12 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       }
     }
   }
+
   #params-table {
     .param-item {
       font-size: 0.785rem;
     }
+
     .hidden-param {
       font-size: 0.8em;
       color: var(--jk-subtitle);

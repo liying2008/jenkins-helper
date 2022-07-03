@@ -28,8 +28,10 @@ const themeStore = useThemeStore()
 
 <style lang="scss">
 .app {
-  /*设置 min-width 之后，Firefox上会有横向滚动条*/
-  /*min-width: 700;*/
+  /* 设置 min-width 之后，Firefox上会有横向滚动条 */
+
+  /* min-width: 700; */
+
   width: 700px;
   margin: auto;
 }

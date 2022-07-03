@@ -3,6 +3,7 @@
     "stylelint-order"
   ],
   "extends": [
+    "stylelint-config-standard-scss",
     "stylelint-config-recommended-vue/scss"
   ],
   "rules": {
