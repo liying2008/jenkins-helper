@@ -320,7 +320,10 @@
     "message": "Fetch node information failed!"
   },
   "filterLabel": {
-    "message": "Filter: "
+    "message": "Filter"
+  },
+  "filterByJobName": {
+    "message": "Filter by job name"
   },
   "urlCannotEmpty": {
     "message": "URL cannot be empty."

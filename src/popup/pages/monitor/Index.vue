@@ -20,6 +20,7 @@ const strings = {
 }
 const showDisabledJobs = ref(true)
 const filteringResult = ref(strings.noFilterValue)
+const filteringJobName = ref('')
 const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
 
@@ -92,6 +93,10 @@ watch(filteringResult, () => {
   filterData()
 })
 
+watch(filteringJobName, () => {
+  filterData()
+})
+
 onMounted(() => {
   getAllJobStatus()
   StorageService.addStorageListener(jobStatusChange)
@@ -99,10 +104,10 @@ onMounted(() => {
 
 function getResultColor(jobColor: string) {
   switch (jobColor) {
-    case 'blue': return 'successColor'
-    case 'red': return 'errorColor'
+    case 'blue': return 'successColorPressed'
+    case 'red': return 'errorColorPressed'
     case 'notbuilt': return 'notbuilt'
-    case 'yellow': return 'warningColor'
+    case 'yellow': return 'warningColorPressed'
     case 'aborted': return 'aborted'
     case 'disabled': return 'disabled'
     default: return 'orange darken-2'
@@ -150,6 +155,10 @@ function onResultFilterChange(newVal: string) {
   filteringResult.value = newVal
 }
 
+function onJobNameFilterChange(newVal: string) {
+  filteringJobName.value = newVal.trim()
+}
+
 function onShowDisabledJobsChange(newVal: boolean) {
   showDisabledJobs.value = newVal
 }
@@ -174,11 +183,15 @@ function filterData() {
     const jobs = status[setUrl].jobs!
     Object.keys(jobs).forEach((jobUrl: string) => {
       const jobDetail = jobs[jobUrl]
+      // 过滤结果
       if (filteringResult.value === strings.noFilterValue || jobDetail.color === filteringResult.value) {
-        data.value[setUrl].jobs.push({
-          jobUrl,
-          ...jobDetail,
-        })
+        // 过滤Job名称
+        if (filteringJobName.value === '' || jobDetail.name.includes(filteringJobName.value)) {
+          data.value[setUrl].jobs.push({
+            jobUrl,
+            ...jobDetail,
+          })
+        }
       }
     })
   })
@@ -224,6 +237,7 @@ function getStyledTime(timestamp: number) {
     <!-- 顶部操作区域 -->
     <OpArea
       @result-filter-change="onResultFilterChange"
+      @job-name-filter-change="onJobNameFilterChange"
       @show-disabled-jobs-change="onShowDisabledJobsChange"
     />
     <!-- 数据表格区域 -->
@@ -263,6 +277,9 @@ function getStyledTime(timestamp: number) {
             <div v-show="jenkins.status !== 'ok'">
               <n-button
                 type="error"
+                secondary
+                strong
+                round
                 :title="jenkins.error"
                 :href="jenkinsUrl"
                 tag="a"

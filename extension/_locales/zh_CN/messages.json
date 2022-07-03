@@ -320,7 +320,10 @@
     "message": "获取节点信息失败！"
   },
   "filterLabel": {
-    "message": "过滤："
+    "message": "过滤"
+  },
+  "filterByJobName": {
+    "message": "按Job名称过滤"
   },
   "urlCannotEmpty": {
     "message": "URL不能为空。"

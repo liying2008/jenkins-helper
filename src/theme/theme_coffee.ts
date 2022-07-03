@@ -70,7 +70,7 @@ export const coffeeTheme: Theme = {
       subtitle: colors.grey.darken1,
       link: colors.brown.base,
       buildingline: '#2d4e52',
-      disabledline: '#4a4a4a',
+      disabledline: '#3e3e3e',
       offlineline: '#404040',
       monitoredline: '#174802',
     },
