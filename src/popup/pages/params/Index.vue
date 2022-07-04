@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlashSharp, PricetagSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { useMessage } from 'naive-ui'
@@ -69,9 +69,7 @@ watch(clipboard.copied, (value) => {
   }
 })
 
-onMounted(() => {
-  getParameters()
-})
+getParameters()
 
 function getResultColor(label: string) {
   switch (label) {
@@ -111,18 +109,18 @@ function getParameters() {
       console.log('tab is null!')
       return
     }
-    const url = tab.url!
+    const _url = tab.url!
     const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
     const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
     const urlRegExpPipelineLog = /^(https*:\/\/.+\/)blue\/rest\/organizations\/jenkins\/pipelines\/([^/]+)\/runs\/(\d+)\//
-    let m = url.match(urlRegExp)
+    let m = _url.match(urlRegExp)
     let buildUrl = ''
     if (m == null) {
       // 普通Jenkins URL 没有匹配到
-      m = url.match(urlRegExpPipeline)
+      m = _url.match(urlRegExpPipeline)
       if (m == null) {
         // Jenkins Pipeline URL 没有匹配到
-        m = url.match(urlRegExpPipelineLog)
+        m = _url.match(urlRegExpPipelineLog)
         if (m == null) {
           // Jenkins Pipeline Log URL 没有匹配到
           return
@@ -140,6 +138,9 @@ function getParameters() {
   })
 }
 
+// TODO 此处有BUG需要修复。
+// http://local.net:8080/jenkins/job/FreeJob01/1/
+// Next Build -> Previous Build 会出现问题
 function getParametersByUrl(_url: string) {
   status.value = 1
   const jsonUrl = `${_url}/api/json`
@@ -287,22 +288,22 @@ function nextBuild() {
   getParametersByUrl(_url)
 }
 
-function getJenkinsRootUrl(url: string, fullDisplayName: string) {
-  if (url[url.length - 1] === '/') {
-    url = url.substring(0, url.length - 1)
+function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
+  if (_url[_url.length - 1] === '/') {
+    _url = _url.substring(0, _url.length - 1)
   }
-  fullDisplayName = encodeURIComponent(fullDisplayName)
+  _fullDisplayName = encodeURIComponent(_fullDisplayName)
   // %20%C2%BB%20: »
   // %20%23: #
-  let path = fullDisplayName.replace('%20%C2%BB%20', '/job/').replace('%20%23', '/')
+  let path = _fullDisplayName.replace('%20%C2%BB%20', '/job/').replace('%20%23', '/')
   path = `/job/${path}`
-  const index = url.lastIndexOf(path)
+  const index = _url.lastIndexOf(path)
   if (index > 0) {
-    const rootUrl = url.substring(0, index)
+    const rootUrl = _url.substring(0, index)
     console.log('rootUrl', rootUrl)
     return rootUrl
   } else {
-    console.log('error: url:', url, 'fullDisplayName', fullDisplayName, 'path:', path)
+    console.log('error: _url:', _url, '_fullDisplayName', _fullDisplayName, 'path:', path)
     return ''
   }
 }
