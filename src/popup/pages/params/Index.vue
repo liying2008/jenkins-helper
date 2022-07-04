@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlashSharp, PricetagSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import { useMessage } from 'naive-ui'
+import { useClipboard } from '@vueuse/core'
+import type { Tabs } from 'webextension-polyfill'
 import { Tools } from '~/libs/tools'
-import { SnackbarData } from '~/models/message'
 import { useThemeStore } from '~/store'
 
 
@@ -31,11 +33,10 @@ const strings = {
   credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
   building: 'BUILDING',
 }
-const headers: TableColumns = [
-  { title: 'Name', align: 'left', key: 'name', cellClass: 'param-item' },
-  { title: 'Value', align: 'left', key: 'value', cellClass: 'param-item' },
+const headers: TableColumns<BuildParameter> = [
+  { title: 'Name', align: 'left', key: 'name', className: 'param-item-key' },
+  { title: 'Value', align: 'left', key: 'value', className: 'param-item-value' },
 ]
-const snackbar = ref(SnackbarData.empty())
 // status 的状态说明：
 // 0：无数据
 // 1：正在请求数据
@@ -58,6 +59,15 @@ const disableDownload = ref(false)
 const builtOnSpan = ref<HTMLSpanElement>()
 
 const themeStore = useThemeStore()
+const message = useMessage()
+const builtOnText = ref('')
+const clipboard = useClipboard({ source: builtOnText })
+
+watch(clipboard.copied, (value) => {
+  if (value) {
+    message.success(strings.copied)
+  }
+})
 
 onMounted(() => {
   getParameters()
@@ -81,15 +91,27 @@ function getBuildingChipColor() {
   }
 }
 
+function rowProps(row: BuildParameter) {
+  if (row.hidden) {
+    return {
+      class: 'param-item hidden-param-item',
+    }
+  } else {
+    return {
+      class: 'param-item',
+    }
+  }
+}
+
 function getParameters() {
-  getCurrentTab().then((tab: any | null) => {
+  getCurrentTab().then((tab: Tabs.Tab | null) => {
     // console.log(tab)
     // const title = tab.title
     if (!tab) {
       console.log('tab is null!')
       return
     }
-    const url = tab.url
+    const url = tab.url!
     const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
     const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
     const urlRegExpPipelineLog = /^(https*:\/\/.+\/)blue\/rest\/organizations\/jenkins\/pipelines\/([^/]+)\/runs\/(\d+)\//
@@ -118,9 +140,9 @@ function getParameters() {
   })
 }
 
-function getParametersByUrl(url: string) {
+function getParametersByUrl(_url: string) {
   status.value = 1
-  const jsonUrl = `${url}/api/json`
+  const jsonUrl = `${_url}/api/json`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
     fetch(jsonUrl, header).then((res) => {
@@ -134,7 +156,7 @@ function getParametersByUrl(url: string) {
       preStatus.value = 2
       number.value = data.number
       fullDisplayName.value = data.fullDisplayName
-      url = data.url // jenkins 设置的 jenkins 网站 url
+      url.value = data.url // jenkins 设置的 jenkins 网站 url
       building.value = data.building
       result.value = data.result
       buildTime.value = new Date(data.timestamp).toLocaleString()
@@ -205,23 +227,19 @@ async function getCurrentTab() {
 
 // 复制运行节点
 function copyBuiltOn() {
+  if (!clipboard.isSupported) {
+    message.error('Your browser does not support clipboard')
+    return
+  }
   const text = builtOnSpan.value!.innerText
-  const tempInput = document.createElement('input')
-  tempInput.value = text
-  document.body.appendChild(tempInput)
-  tempInput.select() // 选择对象
-  document.execCommand('Copy') // 执行浏览器复制命令
-  tempInput.style.display = 'none'
-
-  snackbar.value = SnackbarData.builder()
-    .message(strings.copied)
-    .color('success')
-    .build()
+  builtOnText.value = text
+  clipboard.copy()
 }
 
 // 下载日志
 function downloadConsoleLog() {
   disableDownload.value = true
+  console.log('url', url.value)
   browser.downloads.download({
     url: `${url.value}logText/progressiveText?start=0`,
     filename: `${fullDisplayName.value} Console Log.log`,
@@ -229,6 +247,10 @@ function downloadConsoleLog() {
   }).then((downloadId) => {
     disableDownload.value = false
     console.log('downloadId', downloadId)
+  }).catch((e: Error) => {
+    console.log('下载失败', e)
+    message.error(`Fail to download: ${e.message}`)
+    disableDownload.value = false
   })
 }
 
@@ -236,7 +258,7 @@ function downloadConsoleLog() {
 function goToConfigure() {
   const _url = url.value.substring(0, url.value.length - 1)
   const configureUrl = `${_url.substring(0, _url.lastIndexOf('/'))}/configure`
-  // console.log('url=' + url + ', configureUrl=' + configureUrl)
+  // console.log(`url=${url.value}, configureUrl=${configureUrl}`)
   browser.tabs.create({ url: configureUrl })
 }
 
@@ -296,6 +318,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       <n-grid
         x-gap="12"
         :cols="2"
+        class="info-row"
       >
         <n-gi class="info-col">
           <n-icon
@@ -342,6 +365,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       <n-grid
         x-gap="12"
         :cols="2"
+        class="info-row"
       >
         <n-gi class="info-col">
           <n-icon
@@ -353,7 +377,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
           <span style="margin-left: 8px;">{{ buildTime }}</span>
         </n-gi>
         <n-gi
-          v-show="builtOn"
+          v-show="builtOn !== ''"
           class="info-col"
         >
           {{ strings.runLabel_ }}<span ref="builtOnSpan">{{ builtOn }}</span>
@@ -376,6 +400,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
         v-for="cause in causes"
         :key="cause.url"
         :cols="1"
+        class="info-row"
       >
         <n-gi
           cols="12"
@@ -409,23 +434,23 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       v-show="status === 2 && parameters.length > 0"
       class="params-table"
     >
-      <div>{{ strings.paramsList }}</div>
+      <div style="font-weight: bold;">
+        {{ strings.paramsList }}
+      </div>
       <n-data-table
+        class="data-table"
         :columns="headers"
         :data="parameters"
+        :row-props="rowProps"
+        size="small"
       >
-        <template #[`item.value`]="{ item }">
-          <div :class="[{ 'hidden-param': item.hidden }]">
-            {{ item.value }}
-          </div>
-        </template>
       </n-data-table>
     </div>
 
     <!-- Prev/Next Button -->
     <div
       v-show="status === 2"
-      class="flex my-3"
+      class="flex mt-4"
     >
       <n-button-group>
         <n-button
@@ -468,7 +493,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       <!-- 打开Job配置页面 -->
       <n-button
         type="default"
-        class="mx-2"
+        class="ml-2"
         title="Configure"
         @click="goToConfigure"
       >
@@ -481,6 +506,7 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
       <!-- 打开 Rebuild 页面 -->
       <n-button
         type="default"
+        class="ml-2"
         title="Rebuild"
         @click="rebuild"
       >
@@ -513,57 +539,85 @@ function getJenkinsRootUrl(url: string, fullDisplayName: string) {
 
 <style lang="scss">
 .params-wrapper {
+  font-size: 12px;
+
   .n-card > .n-card__content {
     padding: 0;
   }
 
   .info-block {
-    .info-col {
-      font-size: 12px;
-      padding: 6px 14px;
-      color: var(--jk-title);
+    .info-row {
+      align-items: center;
 
-      .display-name {
-        text-decoration-line: none;
-        word-break: break-all;
-        word-wrap: break-word;
-      }
+      .info-col {
+        font-size: 12px;
+        padding: 6px 14px;
+        color: var(--jk-title);
 
-      .building {
-        animation-name: building;
-        animation-duration: 1.4s;
-        animation-timing-function: ease-out;
-        animation-direction: alternate;
-        animation-iteration-count: infinite;
-        animation-fill-mode: none;
-        animation-play-state: running;
-      }
-
-      @keyframes building {
-        0% {
-          opacity: 1;
+        .n-icon {
+          vertical-align: top;
         }
 
-        100% {
-          opacity: 0.3;
+        .display-name {
+          text-decoration-line: none;
+          word-break: break-all;
+          word-wrap: break-word;
         }
-      }
 
-      .info-icon-btn {
-        align-items: baseline;
+        .building {
+          animation-name: building;
+          animation-duration: 1.4s;
+          animation-timing-function: ease-out;
+          animation-direction: alternate;
+          animation-iteration-count: infinite;
+          animation-fill-mode: none;
+          animation-play-state: running;
+        }
+
+        @keyframes building {
+          0% {
+            opacity: 1;
+          }
+
+          100% {
+            opacity: 0.3;
+          }
+        }
+
+        .info-icon-btn {
+          // align-items: baseline;
+          vertical-align: top;
+        }
       }
     }
   }
 
   .params-table {
-    .param-item {
-      font-size: 12px;
-    }
+    margin-top: 10px;
 
-    .hidden-param {
-      font-size: 12px;
-      color: var(--jk-subtitle);
-      font-style: italic;
+    .data-table {
+      margin-top: 6px;
+
+      .param-item {
+        .param-item-key {
+          font-size: 12px;
+          word-break: break-all;
+          word-wrap: break-word;
+        }
+
+        .param-item-value {
+          font-size: 12px;
+          word-break: break-all;
+          word-wrap: break-word;
+        }
+      }
+
+      .hidden-param-item {
+        .param-item-value {
+          color: var(--jk-subtitle);
+          font-style: italic;
+        }
+      }
     }
   }
 }
