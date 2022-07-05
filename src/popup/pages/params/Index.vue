@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlashSharp, PricetagSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
+import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlagSharp, FlashSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { useMessage } from 'naive-ui'
 import { useClipboard } from '@vueuse/core'
@@ -34,8 +34,8 @@ const strings = {
   building: 'BUILDING',
 }
 const headers: TableColumns<BuildParameter> = [
-  { title: 'Name', align: 'left', key: 'name', className: 'param-item-key' },
-  { title: 'Value', align: 'left', key: 'value', className: 'param-item-value' },
+  { title: 'Name', align: 'left', key: 'name', sorter: 'default', className: 'param-item-key' },
+  { title: 'Value', align: 'left', key: 'value', sorter: 'default', className: 'param-item-value' },
 ]
 // status 的状态说明：
 // 0：无数据
@@ -326,7 +326,7 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
             title="Full DisplayName"
             size="16"
           >
-            <PricetagSharp />
+            <FlagSharp />
           </n-icon>
           <a
             :href="url"
@@ -341,7 +341,7 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
           <n-tag
             v-if="building"
             :color="{ color: `var(--jk-${getBuildingChipColor()})`, textColor: 'white' }"
-            class="building"
+            class="build-tag building"
             size="small"
             round
             strong
@@ -357,6 +357,7 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
             round
             strong
             :bordered="false"
+            class="build-tag"
           >
             {{ result }}
           </n-tag>
@@ -389,8 +390,8 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
             @click="copyBuiltOn"
           >
             <template #icon>
-              <n-icon size="16">
-                <CopyOutline />
+              <n-icon size="16px">
+                <CopyOutline class="copy-built-on-icon" />
               </n-icon>
             </template>
           </n-button>
@@ -420,9 +421,10 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
             title="Go"
             tag="a"
             :href="cause.url"
+            text
             target="_blank"
           >
-            <n-icon size="16px">
+            <n-icon size="17px">
               <ArrowForwardCircleSharp />
             </n-icon>
           </n-button>
@@ -547,22 +549,29 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
   }
 
   .info-block {
+    padding: 10px;
+
     .info-row {
       align-items: center;
+      height: 28px;
 
       .info-col {
         font-size: 12px;
-        padding: 6px 14px;
         color: var(--jk-title);
+        align-items: center;
 
         .n-icon {
-          vertical-align: top;
+          vertical-align: middle;
         }
 
         .display-name {
           text-decoration-line: none;
           word-break: break-all;
           word-wrap: break-word;
+        }
+
+        .build-tag {
+          transform: scale(0.8);
         }
 
         .building {
@@ -586,8 +595,11 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
         }
 
         .info-icon-btn {
-          // align-items: baseline;
-          vertical-align: top;
+          vertical-align: middle;
+
+          .copy-built-on-icon {
+            font-size: 14px;
+          }
         }
       }
     }
