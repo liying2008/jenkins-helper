@@ -7,18 +7,10 @@ import { useClipboard } from '@vueuse/core'
 import type { Tabs } from 'webextension-polyfill'
 import { Tools } from '~/libs/tools'
 import { useThemeStore } from '~/store'
+import type { BuildCause, BuildParameter } from '~/models/jenkins/build'
+import { JenkinsBuild } from '~/libs/jenkins/build'
+import { BrowserUtils } from '~/libs/browser'
 
-
-interface BuildCause {
-  shortDescription: string
-  url: string
-}
-
-interface BuildParameter {
-  hidden: boolean
-  name: string
-  value: unknown
-}
 
 const strings = {
   close: browser.i18n.getMessage('close'),
@@ -31,9 +23,6 @@ const strings = {
   fetching: browser.i18n.getMessage('fetching'),
   warmTip: browser.i18n.getMessage('warmTip'),
   ok: browser.i18n.getMessage('ok'),
-  passwordParameter: browser.i18n.getMessage('passwordParameter'),
-  fileParameter: browser.i18n.getMessage('fileParameter'),
-  credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
   building: 'BUILDING',
 }
 const headers: TableColumns<BuildParameter> = [
@@ -71,6 +60,7 @@ watch(clipboard.copied, (value) => {
   }
 })
 
+// 获取构建参数
 getParameters()
 
 function getResultColor(label: string) {
@@ -104,38 +94,19 @@ function rowProps(row: BuildParameter) {
 }
 
 function getParameters() {
-  getCurrentTab().then((tab: Tabs.Tab | null) => {
+  BrowserUtils.getCurrentTab().then((tab: Tabs.Tab | null) => {
     // console.log(tab)
     // const title = tab.title
     if (!tab) {
       console.log('tab is null!')
       return
     }
-    const _url = tab.url!
-    const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
-    const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
-    const urlRegExpPipelineLog = /^(https*:\/\/.+\/)blue\/rest\/organizations\/jenkins\/pipelines\/([^/]+)\/runs\/(\d+)\//
-    let m = _url.match(urlRegExp)
-    let buildUrl = ''
-    if (m == null) {
-      // 普通Jenkins URL 没有匹配到
-      m = _url.match(urlRegExpPipeline)
-      if (m == null) {
-        // Jenkins Pipeline URL 没有匹配到
-        m = _url.match(urlRegExpPipelineLog)
-        if (m == null) {
-          // Jenkins Pipeline Log URL 没有匹配到
-          return
-        } else {
-          buildUrl = `${m[1]}job/${m[2]}/${m[3]}`
-        }
-      } else {
-        buildUrl = `${m[1]}job/${m[2]}`
-      }
-    } else {
-      buildUrl = m[0]
-    }
+    const buildUrl = JenkinsBuild.getBuildUrlIfExist(tab.url!)
     console.log('buildUrl', buildUrl)
+    if (!buildUrl) {
+      // 不是 Jenkins 构建页面或子页面，不做任何处理
+      return
+    }
     getParametersByUrl(buildUrl)
   })
 }
@@ -161,57 +132,10 @@ function getParametersByUrl(_url: string) {
       result.value = data.result
       buildTime.value = new Date(data.timestamp).toLocaleString()
       builtOn.value = data.builtOn
-      causes.value = []
-      parameters.value = []
       const actions = data.actions
-      console.log('actions', actions)
-      for (let i = 0; i < actions.length; i++) {
-        if (actions[i].hasOwnProperty('parameters')) {
-          const _parameters = actions[i].parameters
-          for (let pIndex = 0; pIndex < _parameters.length; pIndex++) {
-            const _class = _parameters[pIndex]._class
-            const param = {
-              hidden: false,
-              name: _parameters[pIndex].name,
-              value: _parameters[pIndex].value,
-            }
-            // 额外处理几个特殊类型的参数
-            if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
-              // 密码参数
-              param.hidden = true
-              param.value = `<${strings.passwordParameter}>`
-            } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
-              // 凭据参数
-              param.hidden = true
-              param.value = `<${strings.credentialsParameter}>`
-            } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
-              // 文件参数
-              param.hidden = true
-              param.value = `<${strings.fileParameter}>`
-            } else if (_class === 'hudson.model.RunParameterValue') {
-              // 运行时参数
-              param.value = `${_parameters[pIndex].jobName} #${_parameters[pIndex].number}`
-            }
-            parameters.value.push(param)
-          }
-        } else if (actions[i].hasOwnProperty('causes')) {
-          const _causes = actions[i].causes
-          for (let cIndex = 0; cIndex < _causes.length; cIndex++) {
-            const shortDescription = _causes[cIndex].shortDescription
-            let upstreamUrl = ''
-            if (_causes[cIndex].upstreamUrl && _causes[cIndex].upstreamBuild) {
-              const rootUrl = getJenkinsRootUrl(data.url, data.fullDisplayName)
-              if (rootUrl) {
-                upstreamUrl = `${rootUrl}/${_causes[cIndex].upstreamUrl}${_causes[cIndex].upstreamBuild}/`
-              }
-            }
-            causes.value.push({
-              shortDescription,
-              url: upstreamUrl,
-            })
-          }
-        }
-      }
+      // console.log('actions', actions)
+      parameters.value = JenkinsBuild.getBuildParametersFromActions(actions)
+      causes.value = JenkinsBuild.getBuildCausesFromActions(actions, data.url, data.fullDisplayName)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
@@ -222,11 +146,6 @@ function getParametersByUrl(_url: string) {
       })
     })
   })
-}
-
-async function getCurrentTab() {
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-  return tabs.length ? tabs[0] : null
 }
 
 // 复制运行节点
@@ -291,26 +210,6 @@ function nextBuild() {
   _url = _url.substring(0, _url.lastIndexOf('/'))
   _url = `${_url}/${number.value + 1}`
   getParametersByUrl(_url)
-}
-
-function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
-  if (_url[_url.length - 1] === '/') {
-    _url = _url.substring(0, _url.length - 1)
-  }
-  _fullDisplayName = encodeURIComponent(_fullDisplayName)
-  // %20%C2%BB%20: »
-  // %20%23: #
-  let path = _fullDisplayName.replace('%20%C2%BB%20', '/job/').replace('%20%23', '/')
-  path = `/job/${path}`
-  const index = _url.lastIndexOf(path)
-  if (index > 0) {
-    const rootUrl = _url.substring(0, index)
-    console.log('rootUrl', rootUrl)
-    return rootUrl
-  } else {
-    console.log('error: _url:', _url, '_fullDisplayName', _fullDisplayName, 'path:', path)
-    return ''
-  }
 }
 </script>
 
