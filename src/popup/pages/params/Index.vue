@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlagSharp, FlashSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { useMessage } from 'naive-ui'
+import { useDialog, useMessage } from 'naive-ui'
 import { useClipboard } from '@vueuse/core'
 import type { Tabs } from 'webextension-polyfill'
 import { Tools } from '~/libs/tools'
@@ -27,7 +27,10 @@ const strings = {
   copied: browser.i18n.getMessage('copied'),
   paramsList: browser.i18n.getMessage('paramsList'),
   noData: browser.i18n.getMessage('noData'),
+  noPrevBuild: browser.i18n.getMessage('noPrevBuild'),
   fetching: browser.i18n.getMessage('fetching'),
+  warmTip: browser.i18n.getMessage('warmTip'),
+  ok: browser.i18n.getMessage('ok'),
   passwordParameter: browser.i18n.getMessage('passwordParameter'),
   fileParameter: browser.i18n.getMessage('fileParameter'),
   credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
@@ -56,12 +59,11 @@ const causes = ref<BuildCause[]>([])
 const parameters = ref<BuildParameter[]>([])
 // 是否禁用下载按钮
 const disableDownload = ref(false)
-const builtOnSpan = ref<HTMLSpanElement>()
 
 const themeStore = useThemeStore()
 const message = useMessage()
-const builtOnText = ref('')
-const clipboard = useClipboard({ source: builtOnText })
+const dialog = useDialog()
+const clipboard = useClipboard({ source: builtOn })
 
 watch(clipboard.copied, (value) => {
   if (value) {
@@ -138,9 +140,6 @@ function getParameters() {
   })
 }
 
-// TODO 此处有BUG需要修复。
-// http://local.net:8080/jenkins/job/FreeJob01/1/
-// Next Build -> Previous Build 会出现问题
 function getParametersByUrl(_url: string) {
   status.value = 1
   const jsonUrl = `${_url}/api/json`
@@ -216,7 +215,11 @@ function getParametersByUrl(_url: string) {
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
-      alert(strings.noData)
+      dialog.info({
+        title: strings.warmTip,
+        content: strings.noData,
+        positiveText: strings.ok,
+      })
     })
   })
 }
@@ -232,8 +235,6 @@ function copyBuiltOn() {
     message.error('Your browser does not support clipboard')
     return
   }
-  const text = builtOnSpan.value!.innerText
-  builtOnText.value = text
   clipboard.copy()
 }
 
@@ -276,7 +277,11 @@ function prevBuild() {
     _url = `${_url}/${number.value - 1}`
     getParametersByUrl(_url)
   } else {
-    alert(browser.i18n.getMessage('noPrevBuild'))
+    dialog.info({
+      title: strings.warmTip,
+      content: strings.noPrevBuild,
+      positiveText: strings.ok,
+    })
   }
 }
 
@@ -379,11 +384,12 @@ function getJenkinsRootUrl(_url: string, _fullDisplayName: string) {
           <span style="margin-left: 8px;">{{ buildTime }}</span>
         </n-gi>
         <n-gi
-          v-show="builtOn !== ''"
+          v-show="builtOn"
           class="info-col"
         >
-          {{ strings.runLabel_ }}<span ref="builtOnSpan">{{ builtOn }}</span>
+          {{ strings.runLabel_ }}<span>{{ builtOn }}</span>
           <n-button
+            v-show="builtOn"
             text
             class="info-icon-btn ml-2"
             title="Copy"

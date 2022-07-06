@@ -217,6 +217,9 @@
   "credentialsParameter": {
     "message": "Credentials"
   },
+  "warmTip": {
+    "message": "Message"
+  },
   "jobStatisticsTitle": {
     "message": "Jenkins Job Statistics"
   },

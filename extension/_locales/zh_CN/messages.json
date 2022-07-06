@@ -217,6 +217,9 @@
   "credentialsParameter": {
     "message": "凭据参数"
   },
+  "warmTip": {
+    "message": "温馨提示"
+  },
   "jobStatisticsTitle": {
     "message": "Jenkins Job 统计"
   },
