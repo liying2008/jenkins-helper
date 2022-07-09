@@ -241,8 +241,17 @@
   "refresh": {
     "message": "Refresh"
   },
+  "refreshNodesInfo": {
+    "message": "Refresh nodes information"
+  },
   "openManagerPage": {
     "message": "Open the management page"
+  },
+  "filterByNodeDisplayName": {
+    "message": "Filter by node name"
+  },
+  "showOfflineNodes": {
+    "message": "Show offline nodes"
   },
   "displayName": {
     "message": "DisplayName"

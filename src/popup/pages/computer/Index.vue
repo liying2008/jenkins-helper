@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import OpArea from './OpArea.vue'
+import { openNodesManager } from './common'
 import computerIcon from '~/assets/img/computer48.png'
-import { NodeService } from '~/background/node-service'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { SnackbarData } from '~/models/message'
@@ -19,9 +20,13 @@ const strings = {
   remainingDiskSpace: browser.i18n.getMessage('remainingDiskSpace'),
   alarmThreshold: browser.i18n.getMessage('alarmThreshold'),
   actions: browser.i18n.getMessage('actions'),
+  noFilterValue: browser.i18n.getMessage('noFilterValue'),
   monitoringCancelled: browser.i18n.getMessage('monitoringCancelled'),
 }
 
+const showOfflineNodes = ref(true)
+const filteringResult = ref(strings.noFilterValue)
+const filteringDisplayName = ref('')
 const monitoredNodes = ref<Nodes>({})
 
 const search = ''
@@ -125,31 +130,143 @@ function deleteItem(jenkinsUrl: string, node: NodeDetail) {
   })
 }
 
-// 刷新节点信息
-function refreshNodesInfo() {
-  NodeService.queryNodeStatus()
+function onResultFilterChange(newVal: string) {
+  filteringResult.value = newVal
 }
 
-function openNodesManager(jenkinsUrl: string) {
-  browser.windows.create({
-    url: `computers_manager.html?jenkins=${jenkinsUrl}`,
-    type: 'popup',
-    width: 1000,
-    height: 800,
-  }).then((window) => {
-    // console.log('window', window)
-  })
+function onDisplayNameFilterChange(newVal: string) {
+  filteringDisplayName.value = newVal.trim()
+}
+
+function onShowOfflineNodesChange(newVal: boolean) {
+  showOfflineNodes.value = newVal
 }
 </script>
 
 <template>
-  <div id="computer-wrapper">
+  <div class="computer-wrapper">
+    <!-- 顶部操作区域 -->
+    <OpArea
+      @result-filter-change="onResultFilterChange"
+      @display-name-filter-change="onDisplayNameFilterChange"
+      @show-offline-nodes-change="onShowOfflineNodesChange"
+    />
+
+    <div class="data-area">
+      <n-card
+        v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes"
+        v-show="'monitoredNodes' in jenkinsNodes && Object.keys(jenkinsNodes.monitoredNodes).length > 0"
+        :key="index"
+        class="card my-3"
+      >
+        <v-card-title>
+          <img
+            class="img-rounded avatar"
+            alt="Computer"
+            :src="computerIcon"
+          >
+          <div class="ml-5 card-title-node">
+            <span
+              :title="decodeURIComponent(jenkinsUrl)"
+              color="title"
+              class="card-title-node-url"
+            >
+              {{ decodeURIComponent(jenkinsUrl) }}
+            </span>
+            <br style="height: 10px;">
+            <a
+              class="card-title-node-sub a-link-color"
+              @click="openNodesManager(jenkinsUrl)"
+            >
+              <span class="no-wrap">{{ strings.openManagerPage }}</span>
+            </a>
+          </div>
+          <v-spacer></v-spacer>
+          <div v-show="jenkinsNodes.status !== 'ok'">
+            <v-btn
+              depressed
+              small
+              :href="jenkinsUrl"
+              :title="jenkinsNodes.error || ''"
+              target="_blank"
+              color="error"
+              class="card-title-err-btn"
+            >
+              <span>ERROR</span>
+            </v-btn>
+          </div>
+          <div class="ml-2">
+            <v-btn
+              icon
+              title="Remove monitoring for this task"
+              x-small
+              color="grey"
+              class="card-title-remove-btn"
+              @click="removeMonitor(jenkinsUrl)"
+            >
+              <v-icon>mdi-close-circle-outline</v-icon>
+            </v-btn>
+          </div>
+        </v-card-title>
+        <v-data-table
+          v-show="jenkinsNodes.status === 'ok'"
+          :headers="headers"
+          :items="toArray(jenkinsNodes.monitoredNodes)"
+          :item-class="getRowClass"
+          :search="search"
+          dense
+          hide-default-footer
+          disable-pagination
+        >
+          <!-- displayName -->
+          <template #[`item.displayName`]="{ item }">
+            <a
+              :href="item.nodeUrl"
+              target="_blank"
+              class="monitor-table-node-url"
+              :class="[isSafe(item) ? 'success--text' : 'error--text']"
+            >{{ item.displayName }}</a>
+          </template>
+
+          <!-- remainingDiskSpace -->
+          <template #[`item.remainingDiskSpace`]="{ item }">
+            <span
+              :class="[isSafe(item) ? 'success--text' : 'error--text']"
+              v-html="item.remainingDiskSpace"
+            ></span>
+          </template>
+
+          <!-- diskSpaceThreshold -->
+          <template #[`item.diskSpaceThreshold`]="{ item }">
+            <span
+              :class="[isSafe(item) ? 'success--text' : 'error--text']"
+              v-html="`${item.diskSpaceThreshold} GB`"
+            ></span>
+          </template>
+          <!-- actions -->
+          <template #[`item.actions`]="props">
+            <v-icon
+              small
+              title="Cancel Monitoring"
+              @click="deleteItem(jenkinsUrl, props.item)"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </n-card>
+    </div>
+    <v-row class="my-3"></v-row>
+    <!-- snackbar -->
+    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
 
 
 <style lang="scss">
-#computer-wrapper {
+.computer-wrapper {
+  // min-height: 200px;
+
   .card {
     .card-title-node {
       width: 460px;

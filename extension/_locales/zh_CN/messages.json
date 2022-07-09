@@ -241,8 +241,17 @@
   "refresh": {
     "message": "刷新"
   },
+  "refreshNodesInfo": {
+    "message": "刷新节点信息"
+  },
   "openManagerPage": {
     "message": "打开管理页面"
+  },
+  "filterByNodeDisplayName": {
+    "message": "根据节点名称过滤"
+  },
+  "showOfflineNodes": {
+    "message": "显示离线的节点"
   },
   "displayName": {
     "message": "名称"
