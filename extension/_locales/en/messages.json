@@ -153,7 +153,7 @@
     "message": "Create Monitoring Task"
   },
   "cancelMonitoringTaskGroup": {
-    "message": "Whether to cancel this monitoring [$url$] ?",
+    "message": "Whether to cancel this monitoring [ $url$ ] ?",
     "placeholders": {
       "url": {
         "content": "$1"

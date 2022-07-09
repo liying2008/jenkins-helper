@@ -290,7 +290,7 @@ function nextBuild() {
           <n-button
             v-show="builtOn"
             text
-            class="info-icon-btn ml-2"
+            class="info-icon-btn ml-8px"
             title="Copy"
             @click="copyBuiltOn"
           >
@@ -322,7 +322,7 @@ function nextBuild() {
           <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
           <n-button
             v-if="cause.url"
-            class="info-icon-btn ml-2"
+            class="info-icon-btn ml-8px"
             title="Go"
             tag="a"
             :href="cause.url"
@@ -355,10 +355,10 @@ function nextBuild() {
       </n-data-table>
     </div>
 
-    <!-- Prev/Next Button -->
+    <!-- Prev/Next Button & 快捷按钮 -->
     <div
       v-show="status === 2"
-      class="flex mt-4"
+      class="flex mt-16px"
     >
       <n-button-group>
         <n-button
@@ -401,7 +401,7 @@ function nextBuild() {
       <!-- 打开Job配置页面 -->
       <n-button
         type="default"
-        class="ml-2"
+        class="ml-8px"
         title="Configure"
         @click="goToConfigure"
       >
@@ -414,7 +414,7 @@ function nextBuild() {
       <!-- 打开 Rebuild 页面 -->
       <n-button
         type="default"
-        class="ml-2"
+        class="ml-8px"
         title="Rebuild"
         @click="rebuild"
       >
@@ -461,9 +461,9 @@ function nextBuild() {
       height: 28px;
 
       .info-col {
+        align-items: center;
         font-size: 12px;
         color: var(--jk-title);
-        align-items: center;
 
         .n-icon {
           vertical-align: middle;
@@ -482,11 +482,11 @@ function nextBuild() {
         .building {
           animation-name: building;
           animation-duration: 1.4s;
-          animation-timing-function: ease-out;
-          animation-direction: alternate;
-          animation-iteration-count: infinite;
-          animation-fill-mode: none;
           animation-play-state: running;
+          animation-timing-function: ease-out;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+          animation-fill-mode: none;
         }
 
         @keyframes building {
@@ -532,8 +532,8 @@ function nextBuild() {
 
       .hidden-param-item {
         .param-item-value {
-          color: var(--jk-subtitle);
           font-style: italic;
+          color: var(--jk-subtitle);
         }
       }
     }

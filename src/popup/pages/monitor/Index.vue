@@ -17,6 +17,8 @@ const strings = {
   search: browser.i18n.getMessage('search'),
   removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
   noData: browser.i18n.getMessage('noData'),
+  cancel: browser.i18n.getMessage('cancel'),
+  ok: browser.i18n.getMessage('ok'),
 }
 const showDisabledJobs = ref(true)
 const filteringResult = ref(strings.noFilterValue)
@@ -135,6 +137,10 @@ function jobStatusChange(changes: StorageChangeWrapper) {
   }
 }
 
+function getDeletionConfirmMsg(jenkinsUrl: string) {
+  return browser.i18n.getMessage('cancelMonitoringTaskGroup', [jenkinsUrl])
+}
+
 function getAllJobStatus() {
   StorageService.getOptions().then((options: Options) => {
     if (options.showDisabledJobs === undefined) {
@@ -199,12 +205,6 @@ function filterData() {
 }
 
 function removeJenkins(jenkinsUrl: string) {
-  const ok = confirm(browser.i18n.getMessage('cancelMonitoringTaskGroup', [jenkinsUrl]))
-  if (!ok) {
-    // 点击取消
-    return
-  }
-
   StorageService.removeJenkinsUrl(jenkinsUrl).then(() => {
     console.log('removeJenkins::removed', jenkinsUrl)
     // 显示 删除成功
@@ -253,7 +253,7 @@ function getStyledTime(timestamp: number) {
             alt="Jenkins"
             :src="jenkinsIcon"
           >
-          <div class="ml-5 card-title-job flex-1">
+          <div class="ml-12px card-title-job flex-1">
             <span
               :title="decodeURIComponent(jenkins.name)"
               color="title"
@@ -290,23 +290,31 @@ function getStyledTime(timestamp: number) {
                 <span v-else>ERROR</span>
               </n-button>
             </div>
-            <div class="ml-2">
-              <n-button
-                text
-                class="card-title-remove-btn"
-                title="Remove monitoring for this task"
-                @click="removeJenkins(jenkinsUrl)"
+            <div class="ml-8px">
+              <n-popconfirm
+                :positive-text="strings.ok"
+                :negative-text="strings.cancel"
+                @positive-click="removeJenkins(jenkinsUrl)"
               >
-                <n-icon>
-                  <close-circle-outline />
-                </n-icon>
-              </n-button>
+                <template #trigger>
+                  <n-button
+                    text
+                    class="card-title-remove-btn"
+                    title="Remove monitoring for this task"
+                  >
+                    <n-icon>
+                      <close-circle-outline />
+                    </n-icon>
+                  </n-button>
+                </template>
+                {{ getDeletionConfirmMsg(jenkinsUrl) }}
+              </n-popconfirm>
             </div>
           </div>
         </div>
         <n-data-table
           v-show="jenkins.hasOwnProperty('jobs')"
-          class="data-table mt-4"
+          class="data-table"
           size="small"
           :columns="headers"
           :data="jenkins.jobs"
@@ -339,9 +347,9 @@ function getStyledTime(timestamp: number) {
       }
 
       .data-table-no-data {
-        text-align: center;
         padding: 8px 0;
         color: #88888888;
+        text-align: center;
       }
     }
 
@@ -390,8 +398,8 @@ function getStyledTime(timestamp: number) {
 
         .card-title-remove-btn {
           font-size: 16px;
-          opacity: 0.5;
           vertical-align: text-top;
+          opacity: 0.5;
         }
       }
 
@@ -406,9 +414,9 @@ function getStyledTime(timestamp: number) {
       }
 
       .monitor-table-result-chip {
+        justify-content: center;
         width: 100%;
         text-align: center;
-        justify-content: center;
       }
 
       .gone-row {
@@ -426,11 +434,11 @@ function getStyledTime(timestamp: number) {
       .building {
         animation-name: building;
         animation-duration: 1.4s;
-        animation-timing-function: ease-out;
-        animation-direction: alternate;
-        animation-iteration-count: infinite;
-        animation-fill-mode: none;
         animation-play-state: running;
+        animation-timing-function: ease-out;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-fill-mode: none;
       }
 
       @keyframes building {

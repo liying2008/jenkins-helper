@@ -153,7 +153,7 @@
     "message": "创建监控任务"
   },
   "cancelMonitoringTaskGroup": {
-    "message": "是否删除该监控任务 [$url$]？",
+    "message": "是否删除该监控任务 [ $url$ ]？",
     "placeholders": {
       "url": {
         "content": "$1"
