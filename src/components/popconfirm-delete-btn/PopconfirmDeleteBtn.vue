@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { t } from '~/libs/extension'
+
 defineProps({
   text: {
     type: String,
@@ -6,12 +8,12 @@ defineProps({
   positiveText: {
     type: String,
     required: false,
-    default: browser.i18n.getMessage('ok'),
+    default: t('ok'),
   },
   negativeText: {
     type: String,
     required: false,
-    default: browser.i18n.getMessage('cancel'),
+    default: t('cancel'),
   },
   btnClass: {
     type: String,

@@ -3,6 +3,7 @@ import { StorageService } from '~/libs/storage'
 import type { Options } from '~/models/option'
 import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
+import { t } from '~/libs/extension'
 
 interface Job {
   /**
@@ -29,7 +30,7 @@ export class Omnibox {
 
     // 设置默认建议
     browser.omnibox.setDefaultSuggestion({
-      description: `%s - ${browser.i18n.getMessage('baiduSearch')}`,
+      description: `%s - ${t('baiduSearch')}`,
     })
     // 当用户输入时触发
     browser.omnibox.onInputChanged.addListener((text, suggest) => {

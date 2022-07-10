@@ -9,15 +9,16 @@ import { StorageService } from '~/libs/storage'
 import type { Options, PopupTab } from '~/models/option'
 import { defaultOptionsValue } from '~/models/option'
 import jenkinsIcon from '~/assets/img/icon128.png'
+import { t } from '~/libs/extension'
 
 const router = useRouter()
 const route = useRoute()
 
 const strings = {
-  extName: browser.i18n.getMessage('extName'),
-  monitor: browser.i18n.getMessage('monitor'),
-  params: browser.i18n.getMessage('params'),
-  computer: browser.i18n.getMessage('computer'),
+  extName: t('extName'),
+  monitor: t('monitor'),
+  params: t('params'),
+  computer: t('computer'),
 }
 
 const defaultTab = defaultOptionsValue.defaultTab

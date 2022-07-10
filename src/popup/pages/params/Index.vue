@@ -10,19 +10,20 @@ import { useThemeStore } from '~/store'
 import type { BuildCause, BuildParameter } from '~/models/jenkins/build'
 import { JenkinsBuild } from '~/libs/jenkins/build'
 import { BrowserUtils } from '~/libs/browser'
+import { t } from '~/libs/extension'
 
 
 const strings = {
-  close: browser.i18n.getMessage('close'),
-  buildStatus_: browser.i18n.getMessage('buildStatus_'),
-  runLabel_: browser.i18n.getMessage('runLabel_'),
-  copied: browser.i18n.getMessage('copied'),
-  paramsList: browser.i18n.getMessage('paramsList'),
-  noData: browser.i18n.getMessage('noData'),
-  noPrevBuild: browser.i18n.getMessage('noPrevBuild'),
-  fetching: browser.i18n.getMessage('fetching'),
-  warmTip: browser.i18n.getMessage('warmTip'),
-  ok: browser.i18n.getMessage('ok'),
+  close: t('close'),
+  buildStatus_: t('buildStatus_'),
+  runLabel_: t('runLabel_'),
+  copied: t('copied'),
+  paramsList: t('paramsList'),
+  noData: t('noData'),
+  noPrevBuild: t('noPrevBuild'),
+  fetching: t('fetching'),
+  warmTip: t('warmTip'),
+  ok: t('ok'),
   building: 'BUILDING',
 }
 const headers: TableColumns<BuildParameter> = [

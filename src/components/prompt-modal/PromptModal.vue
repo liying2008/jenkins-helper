@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import type { FormInst } from 'naive-ui'
+import { t } from '~/libs/extension'
 
 const props = defineProps({
   show: {
@@ -13,12 +14,12 @@ const props = defineProps({
   positiveText: {
     type: String,
     required: false,
-    default: browser.i18n.getMessage('ok'),
+    default: t('ok'),
   },
   negativeText: {
     type: String,
     required: false,
-    default: browser.i18n.getMessage('cancel'),
+    default: t('cancel'),
   },
   label: {
     type: String,

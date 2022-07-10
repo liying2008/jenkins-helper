@@ -8,3 +8,8 @@ export function openNodesManager(jenkinsUrl: string) {
     // console.log('window', window)
   })
 }
+
+export enum ComputerStatus {
+  Normal,
+  Abnormal,
+}

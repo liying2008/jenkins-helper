@@ -1,10 +1,11 @@
+import { t } from '~/libs/extension'
 import type { BuildCause, BuildParameter } from '~/models/jenkins/build'
 
 
 const strings = {
-  passwordParameter: browser.i18n.getMessage('passwordParameter'),
-  fileParameter: browser.i18n.getMessage('fileParameter'),
-  credentialsParameter: browser.i18n.getMessage('credentialsParameter'),
+  passwordParameter: t('passwordParameter'),
+  fileParameter: t('fileParameter'),
+  credentialsParameter: t('credentialsParameter'),
 }
 
 export class JenkinsBuild {

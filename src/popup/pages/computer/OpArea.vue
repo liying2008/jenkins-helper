@@ -3,10 +3,11 @@ import { ref, watch } from 'vue'
 import { FlagSharp, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { watchDebounced } from '@vueuse/core'
-import { openNodesManager } from './common'
+import { ComputerStatus, openNodesManager } from './common'
 import { StorageService } from '~/libs/storage'
 import type { Options } from '~/models/option'
 import { NodeService } from '~/background/node-service'
+import { t } from '~/libs/extension'
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
@@ -17,11 +18,13 @@ const emit = defineEmits<{
 
 const strings = {
   noFilterValue: '-',
-  manageMonitoredNodes: browser.i18n.getMessage('manageMonitoredNodes'),
-  refreshNodesInfo: browser.i18n.getMessage('refreshNodesInfo'),
-  filterByNodeDisplayName: browser.i18n.getMessage('filterByNodeDisplayName'),
-  showOfflineNodes: browser.i18n.getMessage('showOfflineNodes'),
-  filterLabel: browser.i18n.getMessage('filterLabel'),
+  normal: t('normal'),
+  abnormal: t('abnormal'),
+  manageMonitoredNodes: t('manageMonitoredNodes'),
+  refreshNodesInfo: t('refreshNodesInfo'),
+  filterByNodeDisplayName: t('filterByNodeDisplayName'),
+  showOfflineNodes: t('showOfflineNodes'),
+  filterLabel: t('filterLabel'),
 }
 
 const filteringResult = ref('')
@@ -65,12 +68,12 @@ function initResultFilter() {
       label: strings.noFilterValue,
     },
     {
-      label: '正常',
-      value: '正常',
+      label: strings.normal,
+      value: ComputerStatus.Normal,
     },
     {
-      label: '异常',
-      value: '异常',
+      label: strings.abnormal,
+      value: ComputerStatus.Abnormal,
     },
   ]
   filteringResults.push(...filteringItems)

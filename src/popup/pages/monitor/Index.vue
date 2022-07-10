@@ -11,14 +11,15 @@ import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import { useThemeStore } from '~/store'
+import { t } from '~/libs/extension'
 
 const strings = {
   noFilterValue: '-',
-  search: browser.i18n.getMessage('search'),
-  removeMonitorUrlTip: browser.i18n.getMessage('removeMonitorUrlTip'),
-  noData: browser.i18n.getMessage('noData'),
-  cancel: browser.i18n.getMessage('cancel'),
-  ok: browser.i18n.getMessage('ok'),
+  search: t('search'),
+  removeMonitorUrlTip: t('removeMonitorUrlTip'),
+  noData: t('noData'),
+  cancel: t('cancel'),
+  ok: t('ok'),
 }
 const showDisabledJobs = ref(true)
 const filteringResult = ref(strings.noFilterValue)
@@ -138,7 +139,7 @@ function jobStatusChange(changes: StorageChangeWrapper) {
 }
 
 function getDeletionConfirmMsg(jenkinsUrl: string) {
-  return browser.i18n.getMessage('cancelMonitoringTaskGroup', [jenkinsUrl])
+  return t('cancelMonitoringTaskGroup', [jenkinsUrl])
 }
 
 function getAllJobStatus() {

@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import { StorageService } from '~/libs/storage'
+import { t } from '~/libs/extension'
 
 const props = defineProps<{
   show: boolean
@@ -14,15 +15,15 @@ const emit = defineEmits<{
 }>()
 
 const strings = {
-  ok: browser.i18n.getMessage('ok'),
-  cancel: browser.i18n.getMessage('cancel'),
-  createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
-  url: browser.i18n.getMessage('url'),
-  inputUrlLabel: browser.i18n.getMessage('inputUrlLabel'),
-  inputUrlPlaceholder: browser.i18n.getMessage('inputUrlPlaceholder'),
-  urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
-  urlInvalid: browser.i18n.getMessage('urlInvalid'),
-  addMonitorUrlTip: browser.i18n.getMessage('addMonitorUrlTip'),
+  ok: t('ok'),
+  cancel: t('cancel'),
+  createMonitoringTaskTitle: t('createMonitoringTaskTitle'),
+  url: t('url'),
+  inputUrlLabel: t('inputUrlLabel'),
+  inputUrlPlaceholder: t('inputUrlPlaceholder'),
+  urlCannotEmpty: t('urlCannotEmpty'),
+  urlInvalid: t('urlInvalid'),
+  addMonitorUrlTip: t('addMonitorUrlTip'),
 }
 const message = useMessage()
 

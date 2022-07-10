@@ -11,6 +11,12 @@
   "ok": {
     "message": "OK"
   },
+  "yes": {
+    "message": "Yes"
+  },
+  "no":{
+    "message": "No"
+  },
   "settings": {
     "message": "Settings"
   },
@@ -265,6 +271,9 @@
   "alarmThreshold": {
     "message": "Threshold"
   },
+  "cancelMonitoring": {
+    "message": "Cancel monitoring this node"
+  },
   "monitoringCancelled": {
     "message": "Monitoring cancelled: $name$",
     "placeholders": {
@@ -301,6 +310,21 @@
   "cancel": {
     "message": "Cancel"
   },
+  "normal": {
+    "message": "Normal"
+  },
+  "abnormal": {
+    "message": "Abnormal"
+  },
+  "monitored": {
+    "message": "Monitored"
+  },
+  "notMonitored": {
+    "message": "Not Monitored"
+  },
+  "canNotBeEmpty":{
+    "message": "Cannot be empty"
+  },
   "save": {
     "message": "Save"
   },
@@ -312,6 +336,12 @@
   },
   "diskSpaceThresholdInvalid": {
     "message": "The disk space threshold is invalid!"
+  },
+  "diskSpaceThresholdMustGreaterThan0": {
+    "message": "The disk space threshold must be greater than 0!"
+  },
+  "diskSpaceThresholdInputPlaceholder": {
+    "message": "For example: 40"
   },
   "inputJenkinsUrl": {
     "message": "Please enter Jenkins URL"

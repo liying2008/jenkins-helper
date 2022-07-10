@@ -10,23 +10,25 @@ import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
 import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
+import { t } from '~/libs/extension'
 
 
 const strings = {
-  close: browser.i18n.getMessage('close'),
-  ok: browser.i18n.getMessage('ok'),
-  cancel: browser.i18n.getMessage('cancel'),
-  save: browser.i18n.getMessage('save'),
-  noData: browser.i18n.getMessage('noData'),
-  manageMonitoredNodes: browser.i18n.getMessage('manageMonitoredNodes'),
-  refresh: browser.i18n.getMessage('refresh'),
-  openManagerPage: browser.i18n.getMessage('openManagerPage'),
-  displayName: browser.i18n.getMessage('displayName'),
-  remainingDiskSpace: browser.i18n.getMessage('remainingDiskSpace'),
-  alarmThreshold: browser.i18n.getMessage('alarmThreshold'),
-  actions: browser.i18n.getMessage('actions'),
-  noFilterValue: browser.i18n.getMessage('noFilterValue'),
-  monitoringCancelled: browser.i18n.getMessage('monitoringCancelled'),
+  close: t('close'),
+  ok: t('ok'),
+  cancel: t('cancel'),
+  save: t('save'),
+  noData: t('noData'),
+  cancelMonitoring: t('cancelMonitoring'),
+  manageMonitoredNodes: t('manageMonitoredNodes'),
+  refresh: t('refresh'),
+  openManagerPage: t('openManagerPage'),
+  displayName: t('displayName'),
+  remainingDiskSpace: t('remainingDiskSpace'),
+  alarmThreshold: t('alarmThreshold'),
+  actions: t('actions'),
+  noFilterValue: t('noFilterValue'),
+  monitoringCancelled: t('monitoringCancelled'),
 }
 
 const showOfflineNodes = ref(true)
@@ -83,9 +85,9 @@ const headers: TableColumns<NodeDetailWithJenkinsUrl> = [
       return h(
         PopconfirmDeleteBtn,
         {
-          text: browser.i18n.getMessage('cancelMonitoringNode', [row.displayName]),
+          text: t('cancelMonitoringNode', [row.displayName]),
           btnClass: 'monitor-table-action-delete',
-          btnTitle: 'Cancel Monitoring',
+          btnTitle: strings.cancelMonitoring,
           icon: CloseCircleSharp,
           iconSize: '16px',
           onPositiveClick: () => {
@@ -142,7 +144,7 @@ function toArray(jenkinsUrl: string, monitoredNodes: MonitoredNodes) {
 }
 
 function getDeletionConfirmMsg(jenkinsUrl: string) {
-  return browser.i18n.getMessage('cancelMonitoringNodeUrl', [jenkinsUrl])
+  return t('cancelMonitoringNodeUrl', [jenkinsUrl])
 }
 
 function removeMonitor(jenkinsUrl: string) {
@@ -151,7 +153,7 @@ function removeMonitor(jenkinsUrl: string) {
       delete result[jenkinsUrl]
       StorageService.saveNodeStatus(result).then(() => {
         console.log(`${jenkinsUrl} 已删除`)
-        message.success(browser.i18n.getMessage('monitoringCancelled', [jenkinsUrl]))
+        message.success(t('monitoringCancelled', [jenkinsUrl]))
       })
     }
   })
@@ -177,7 +179,7 @@ function deleteItem(jenkinsUrl: string, node: NodeDetail) {
       delete result[jenkinsUrl].monitoredNodes[nodeName]
       StorageService.saveNodeStatus(result).then(() => {
         console.log(`${nodeName} 已删除`)
-        message.success(browser.i18n.getMessage('monitoringCancelled', [nodeName]))
+        message.success(t('monitoringCancelled', [nodeName]))
       })
     }
   })

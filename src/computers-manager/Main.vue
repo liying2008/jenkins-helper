@@ -8,29 +8,35 @@ import { watchDebounced } from '@vueuse/core'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { NodeDetail, Nodes } from '~/models/node'
+import { t } from '~/libs/extension'
 
 const strings = {
-  close: browser.i18n.getMessage('close'),
-  search: browser.i18n.getMessage('search'),
-  ok: browser.i18n.getMessage('ok'),
-  cancel: browser.i18n.getMessage('cancel'),
-  save: browser.i18n.getMessage('save'),
-  warmTip: browser.i18n.getMessage('warmTip'),
-  diskSpaceThresholdInvalid: browser.i18n.getMessage('diskSpaceThresholdInvalid'),
-  enableMonitoringOrNot: browser.i18n.getMessage('enableMonitoringOrNot'),
-  fetchNodesDataFailure: browser.i18n.getMessage('fetchNodesDataFailure'),
-  diskSpaceThreshold: browser.i18n.getMessage('diskSpaceThreshold'),
-  inputJenkinsUrl: browser.i18n.getMessage('inputJenkinsUrl'),
-  inputJenkinsUrlPlaceholder: browser.i18n.getMessage('inputJenkinsUrlPlaceholder'),
-  getJenkinsNodesRawData: browser.i18n.getMessage('getJenkinsNodesRawData'),
-  inputDiskSpaceThreshold: browser.i18n.getMessage('inputDiskSpaceThreshold'),
-  displayName: browser.i18n.getMessage('displayName'),
-  workingDirectory: browser.i18n.getMessage('workingDirectory'),
-  remainingDiskSpace: browser.i18n.getMessage('remainingDiskSpace'),
-  responseTime: browser.i18n.getMessage('responseTime'),
-  isMonitoring: browser.i18n.getMessage('isMonitoring'),
-  urlCannotEmpty: browser.i18n.getMessage('urlCannotEmpty'),
-  urlInvalid: browser.i18n.getMessage('urlInvalid'),
+  close: t('close'),
+  search: t('search'),
+  yes: t('yes'),
+  no: t('no'),
+  save: t('save'),
+  warmTip: t('warmTip'),
+  monitored: t('monitored'),
+  notMonitored: t('notMonitored'),
+  diskSpaceThresholdInvalid: t('diskSpaceThresholdInvalid'),
+  enableMonitoringOrNot: t('enableMonitoringOrNot'),
+  fetchNodesDataFailure: t('fetchNodesDataFailure'),
+  diskSpaceThreshold: t('diskSpaceThreshold'),
+  inputJenkinsUrl: t('inputJenkinsUrl'),
+  inputJenkinsUrlPlaceholder: t('inputJenkinsUrlPlaceholder'),
+  getJenkinsNodesRawData: t('getJenkinsNodesRawData'),
+  inputDiskSpaceThreshold: t('inputDiskSpaceThreshold'),
+  displayName: t('displayName'),
+  workingDirectory: t('workingDirectory'),
+  remainingDiskSpace: t('remainingDiskSpace'),
+  responseTime: t('responseTime'),
+  isMonitoring: t('isMonitoring'),
+  urlCannotEmpty: t('urlCannotEmpty'),
+  urlInvalid: t('urlInvalid'),
+  canNotBeEmpty: t('canNotBeEmpty'),
+  diskSpaceThresholdMustGreaterThan0: t('diskSpaceThresholdMustGreaterThan0'),
+  diskSpaceThresholdInputPlaceholder: t('diskSpaceThresholdInputPlaceholder'),
 }
 
 const formValue = ref({
@@ -96,7 +102,7 @@ const headers: TableColumns<NodeDetail> = [
             onMonitoringChange(row, newVal)
           },
         },
-        { checked: () => '已监控', unchecked: () => '未监控' },
+        { checked: () => strings.monitored, unchecked: () => strings.notMonitored },
       )
     },
   },
@@ -136,9 +142,9 @@ const thresholdModalValueRules: FormRules = {
       validator(rule: FormItemRule, value: string) {
         value = value.trim()
         if (!value) {
-          return new Error('不能为空')
+          return new Error(strings.canNotBeEmpty)
         } else if (parseFloat(value) <= 0) {
-          return new Error('磁盘空间告警阈值必须大于0')
+          return new Error(strings.diskSpaceThresholdMustGreaterThan0)
         }
         return true
       },
@@ -308,15 +314,15 @@ function onMonitoringChange(item: NodeDetail, checked: boolean) {
     // 取消监控
     dialog.warning({
       title: strings.warmTip,
-      content: browser.i18n.getMessage('cancelMonitoringNode', [displayName]),
-      positiveText: strings.ok,
-      negativeText: strings.cancel,
+      content: t('cancelMonitoringNode', [displayName]),
+      positiveText: strings.yes,
+      negativeText: strings.no,
       onPositiveClick: () => {
         delete monitoredNodes.value[url.value].monitoredNodes[displayName]
         // 保存监控配置
         StorageService.saveNodeStatus(monitoredNodes.value).then(() => {
           item.monitoring = false
-          message.success(browser.i18n.getMessage('monitoringCancelled', [displayName]))
+          message.success(t('monitoringCancelled', [displayName]))
         })
       },
     })
@@ -428,7 +434,7 @@ function onThresholdValueCancel() {
       :show="thresholdModalVisible"
       :title="strings.diskSpaceThreshold"
       :label="strings.inputDiskSpaceThreshold"
-      placeholder="例如：40"
+      :placeholder="strings.diskSpaceThresholdInputPlaceholder"
       input-type="number"
       :rules="thresholdModalValueRules"
       @visible-update="thresholdModalVisible = $event"

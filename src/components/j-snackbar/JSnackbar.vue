@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { t } from '~/libs/extension'
 import { SnackbarData } from '~/models/message'
 
 const props = defineProps({
@@ -10,7 +11,7 @@ const props = defineProps({
 })
 
 const strings = {
-  close: browser.i18n.getMessage('close'),
+  close: t('close'),
 }
 
 const isShow = ref(props.snackbarData.show)

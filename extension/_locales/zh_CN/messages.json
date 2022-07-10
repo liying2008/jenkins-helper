@@ -11,6 +11,12 @@
   "ok": {
     "message": "确定"
   },
+  "yes": {
+    "message": "是的"
+  },
+  "no":{
+    "message": "不"
+  },
   "settings": {
     "message": "设置"
   },
@@ -265,6 +271,9 @@
   "alarmThreshold": {
     "message": "告警阈值"
   },
+  "cancelMonitoring": {
+    "message": "取消监控此节点"
+  },
   "monitoringCancelled": {
     "message": "已取消监控：$name$",
     "placeholders": {
@@ -301,6 +310,21 @@
   "cancel": {
     "message": "取消"
   },
+  "normal": {
+    "message": "正常"
+  },
+  "abnormal": {
+    "message": "异常"
+  },
+  "monitored": {
+    "message": "已监控"
+  },
+  "notMonitored": {
+    "message": "未监控"
+  },
+  "canNotBeEmpty":{
+    "message": "不能为空"
+  },
   "save": {
     "message": "保存"
   },
@@ -312,6 +336,12 @@
   },
   "diskSpaceThresholdInvalid": {
     "message": "磁盘空间告警阈值无效！"
+  },
+  "diskSpaceThresholdMustGreaterThan0": {
+    "message": "磁盘空间告警阈值必须大于0"
+  },
+  "diskSpaceThresholdInputPlaceholder": {
+    "message": "例如：40"
   },
   "inputJenkinsUrl": {
     "message": "请输入Jenkins URL"

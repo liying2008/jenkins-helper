@@ -7,6 +7,7 @@ import CreationModal from './CreationModal.vue'
 import { Tools } from '~/libs/tools'
 import { StorageService } from '~/libs/storage'
 import type { Options } from '~/models/option'
+import { t } from '~/libs/extension'
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
@@ -17,10 +18,10 @@ const emit = defineEmits<{
 
 const strings = {
   noFilterValue: '-',
-  createMonitoringTaskTitle: browser.i18n.getMessage('createMonitoringTaskTitle'),
-  filterByJobName: browser.i18n.getMessage('filterByJobName'),
-  showDisabledJobs: browser.i18n.getMessage('showDisabledJobs'),
-  filterLabel: browser.i18n.getMessage('filterLabel'),
+  createMonitoringTaskTitle: t('createMonitoringTaskTitle'),
+  filterByJobName: t('filterByJobName'),
+  showDisabledJobs: t('showDisabledJobs'),
+  filterLabel: t('filterLabel'),
 }
 
 const creationModalVisible = ref(false)

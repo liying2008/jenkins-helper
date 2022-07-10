@@ -1,3 +1,4 @@
+import { t } from '~/libs/extension'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
@@ -144,13 +145,13 @@ export class NodeService {
   private static checkDiskSpace(jenkinsUrl: string, displayName: string, remainingDiskSpace: string, diskSpaceThreshold: number, offline: boolean) {
     let message = ''
     if (offline) {
-      message = browser.i18n.getMessage('nodeOfflineNotifications')
+      message = t('nodeOfflineNotifications')
     } else if (remainingDiskSpace === 'N/A') {
-      message = browser.i18n.getMessage('fetchNodeInfoFailedNotifications')
+      message = t('fetchNodeInfoFailedNotifications')
     } else {
       const remainingDiskSpaceInt = parseFloat(remainingDiskSpace.replace('GB', '').trim())
       if (remainingDiskSpaceInt <= diskSpaceThreshold) {
-        message = browser.i18n.getMessage('insufficientDiskSpaceNotifications', [remainingDiskSpace])
+        message = t('insufficientDiskSpaceNotifications', [remainingDiskSpace])
       }
     }
 
