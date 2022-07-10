@@ -10,6 +10,7 @@ export function openNodesManager(jenkinsUrl: string) {
 }
 
 export enum ComputerStatus {
+  All,
   Normal,
   Abnormal,
 }

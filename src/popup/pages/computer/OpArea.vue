@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { FlagSharp, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
+import { NotificationsOutline, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { watchDebounced } from '@vueuse/core'
 import { ComputerStatus, openNodesManager } from './common'
@@ -11,7 +11,7 @@ import { t } from '~/libs/extension'
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
-  (e: 'resultFilterChange', value: string): void
+  (e: 'resultFilterChange', value: number): void
   (e: 'displayNameFilterChange', value: string): void
   (e: 'showOfflineNodesChange', value: boolean): void
 }>()
@@ -27,14 +27,14 @@ const strings = {
   filterLabel: t('filterLabel'),
 }
 
-const filteringResult = ref('')
+const filteringResult = ref(ComputerStatus.All)
 const filteringDisplayName = ref('')
 const filteringResults: SelectMixedOption[] = []
 const showOfflineNodes = ref(true)
 
 
 watch(showOfflineNodes, (newVal: boolean) => {
-  // TODO
+  // TODO 持久化存储此项配置
   StorageService.getOptions().then((options: Options) => {
     // console.log('showOfflineNodesChange', options)
     options.showDisabledJobs = newVal
@@ -50,7 +50,7 @@ watchDebounced(filteringDisplayName,
   { debounce: 300, maxWait: 500 },
 )
 
-watch(filteringResult, (newVal: string) => {
+watch(filteringResult, (newVal: number) => {
   emit('resultFilterChange', newVal)
 })
 
@@ -61,11 +61,11 @@ initResultFilter()
  */
 function initResultFilter() {
   // 默认不过滤
-  filteringResult.value = strings.noFilterValue
+  filteringResult.value = ComputerStatus.All
   const filteringItems = [
     {
-      value: strings.noFilterValue,
       label: strings.noFilterValue,
+      value: ComputerStatus.All,
     },
     {
       label: strings.normal,
@@ -125,7 +125,7 @@ function refreshNodesInfo() {
         @click="openNodesManager('')"
       >
         <template #icon>
-          <n-icon><FlagSharp /></n-icon>
+          <n-icon><NotificationsOutline /></n-icon>
         </template>
       </n-button>
       <n-button

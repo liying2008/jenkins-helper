@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { h, onMounted, ref } from 'vue'
+import { h, onMounted, ref, watch } from 'vue'
 import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NButton, useMessage } from 'naive-ui'
 import OpArea from './OpArea.vue'
-import { openNodesManager } from './common'
+import { ComputerStatus, openNodesManager } from './common'
 import computerIcon from '~/assets/img/computer48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -12,6 +12,7 @@ import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
 import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
 import { t } from '~/libs/extension'
 
+type NodeDetailWithJenkinsUrl = NodeDetail & { jenkinsUrl: string }
 
 const strings = {
   close: t('close'),
@@ -27,18 +28,18 @@ const strings = {
   remainingDiskSpace: t('remainingDiskSpace'),
   alarmThreshold: t('alarmThreshold'),
   actions: t('actions'),
-  noFilterValue: t('noFilterValue'),
   monitoringCancelled: t('monitoringCancelled'),
 }
 
 const showOfflineNodes = ref(true)
-const filteringResult = ref(strings.noFilterValue)
+const filteringResult = ref(ComputerStatus.All)
 const filteringDisplayName = ref('')
 const monitoredNodes = ref<Nodes>({})
+const filteredNodes = ref<Nodes>()
 
 const search = ''
 const message = useMessage()
-type NodeDetailWithJenkinsUrl = NodeDetail & { jenkinsUrl: string }
+
 const headers: TableColumns<NodeDetailWithJenkinsUrl> = [
   {
     title: strings.displayName,
@@ -101,10 +102,24 @@ const headers: TableColumns<NodeDetailWithJenkinsUrl> = [
   },
 ]
 
+watch(filteringDisplayName, () => {
+  filter()
+})
+
+watch(filteringResult, () => {
+  filter()
+})
+
+watch(showOfflineNodes, () => {
+  filter()
+})
+
 onMounted(() => {
-  queryMonitoredNodes()
+  // TODO 事件监听卸载处理
   StorageService.addStorageListener(nodeStatusChange)
 })
+
+queryMonitoredNodes()
 
 function nodeStatusChange(changes: StorageChangeWrapper) {
   // console.log('00-nodeStatusChange', changes)
@@ -119,6 +134,7 @@ function queryMonitoredNodes() {
   StorageService.getNodeStatus().then((result: Nodes) => {
     // console.log('monitoredNodes', result)
     monitoredNodes.value = result
+    filter()
   })
 }
 
@@ -185,7 +201,38 @@ function deleteItem(jenkinsUrl: string, node: NodeDetail) {
   })
 }
 
-function onResultFilterChange(newVal: string) {
+function filter() {
+  filteredNodes.value = {}
+  for (const jenkinsUrl in monitoredNodes.value) {
+    filteredNodes.value[jenkinsUrl] = {
+      status: monitoredNodes.value[jenkinsUrl].status,
+      error: monitoredNodes.value[jenkinsUrl].error,
+      monitoredNodes: {},
+    }
+    const nodes = monitoredNodes.value[jenkinsUrl].monitoredNodes
+    for (const nodeName in nodes) {
+      const node = nodes[nodeName]
+      if (filteringDisplayName.value && !node.displayName.includes(filteringDisplayName.value)) {
+        continue
+      }
+      if (node.offline && !showOfflineNodes.value) {
+        continue
+      }
+      if (filteringResult.value !== ComputerStatus.All) {
+        const safe = isSafe(node)
+        if (safe && filteringResult.value === ComputerStatus.Abnormal) {
+          continue
+        }
+        if (!safe && filteringResult.value === ComputerStatus.Normal) {
+          continue
+        }
+      }
+      filteredNodes.value[jenkinsUrl].monitoredNodes[nodeName] = node
+    }
+  }
+}
+
+function onResultFilterChange(newVal: number) {
   filteringResult.value = newVal
 }
 
@@ -209,8 +256,8 @@ function onShowOfflineNodesChange(newVal: boolean) {
 
     <div class="data-area">
       <n-card
-        v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes"
-        v-show="'monitoredNodes' in jenkinsNodes && Object.keys(jenkinsNodes.monitoredNodes).length > 0"
+        v-for="(jenkinsNodes, jenkinsUrl, index) in filteredNodes"
+        v-show="'monitoredNodes' in jenkinsNodes"
         :key="index"
         class="card"
       >
@@ -360,11 +407,35 @@ function onShowOfflineNodesChange(newVal: boolean) {
 
       .safe-row > td {
         color: var(--jk-successColorPressed);
+
+        a {
+          color: var(--jk-successColorPressed);
+        }
       }
 
       .unsafe-row > td {
         color: var(--jk-errorColorPressed);
+
+        a {
+          color: var(--jk-errorColorPressed);
+        }
       }
+    }
+
+    .data-table {
+      .n-data-table-empty {
+        padding: 0;
+      }
+
+      .data-table-no-data {
+        padding: 8px 0;
+        color: #88888888;
+        text-align: center;
+      }
+    }
+
+    .n-data-table.n-data-table--bottom-bordered .n-data-table-td.n-data-table-td--last-row {
+      border-bottom: 0 solid var(--n-merged-border-color);
     }
   }
 }
