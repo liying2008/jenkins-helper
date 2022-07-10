@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
+import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
+import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import { NA, NButton, useMessage } from 'naive-ui'
 import OpArea from './OpArea.vue'
 import { openNodesManager } from './common'
 import computerIcon from '~/assets/img/computer48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
-import { SnackbarData } from '~/models/message'
 import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
+import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
 
 
 const strings = {
   close: browser.i18n.getMessage('close'),
+  ok: browser.i18n.getMessage('ok'),
   cancel: browser.i18n.getMessage('cancel'),
   save: browser.i18n.getMessage('save'),
+  noData: browser.i18n.getMessage('noData'),
   manageMonitoredNodes: browser.i18n.getMessage('manageMonitoredNodes'),
   refresh: browser.i18n.getMessage('refresh'),
   openManagerPage: browser.i18n.getMessage('openManagerPage'),
@@ -30,20 +35,74 @@ const filteringDisplayName = ref('')
 const monitoredNodes = ref<Nodes>({})
 
 const search = ''
-const headers = [
-  { text: strings.displayName, align: 'start', value: 'displayName' },
-  { text: strings.remainingDiskSpace, align: 'start', value: 'remainingDiskSpace' },
-  { text: strings.alarmThreshold, align: 'start', value: 'diskSpaceThreshold' },
-  { text: strings.actions, value: 'actions', sortable: false },
-]
+const message = useMessage()
+type NodeDetailWithJenkinsUrl = NodeDetail & { jenkinsUrl: string }
+const headers: TableColumns<NodeDetailWithJenkinsUrl> = [
+  {
+    title: strings.displayName,
+    align: 'left',
+    key: 'displayName',
+    sorter: 'default',
+    render(row) {
+      return h(
+        NA,
+        {
+          href: row.nodeUrl,
+          target: '_blank',
+          class: 'monitor-table-node-url',
+        },
+        { default: () => row.displayName },
+      )
+    },
+  },
+  {
+    title: strings.remainingDiskSpace,
+    align: 'left',
+    key: 'remainingDiskSpace',
+    sorter: 'default',
+  },
+  {
+    title: strings.alarmThreshold,
+    align: 'left',
+    key: 'diskSpaceThreshold',
+    sorter: 'default',
+    render(row) {
+      return h(
+        'span',
+        {
+        },
+        { default: () => `${row.diskSpaceThreshold} GB` },
+      )
+    },
+  },
+  {
+    title: strings.actions,
+    align: 'center',
+    key: 'actions',
+    render(row) {
+      return h(
+        PopconfirmDeleteBtn,
+        {
+          text: browser.i18n.getMessage('cancelMonitoringNode', [row.displayName]),
+          btnClass: 'monitor-table-action-delete',
+          btnTitle: 'Cancel Monitoring',
+          icon: CloseCircleSharp,
+          iconSize: '16px',
+          onPositiveClick: () => {
+            console.log('delete node monitor', row)
+            deleteItem(row.jenkinsUrl, row)
+          },
+        },
 
-const snackbar = ref(SnackbarData.empty())
+      )
+    },
+  },
+]
 
 onMounted(() => {
   queryMonitoredNodes()
   StorageService.addStorageListener(nodeStatusChange)
 })
-
 
 function nodeStatusChange(changes: StorageChangeWrapper) {
   // console.log('00-nodeStatusChange', changes)
@@ -62,34 +121,37 @@ function queryMonitoredNodes() {
 }
 
 function getRowClass(item: NodeDetail) {
+  const classNames = []
   if (item.offline) {
-    return 'disabled-row'
-  } else {
-    return ''
+    classNames.push('disabled-row')
   }
+  if (isSafe(item)) {
+    classNames.push('safe-row')
+  } else {
+    classNames.push('unsafe-row')
+  }
+  return classNames.join(' ')
 }
 
-function toArray(monitoredNodes: MonitoredNodes) {
-  return Object.values(monitoredNodes)
+function toArray(jenkinsUrl: string, monitoredNodes: MonitoredNodes) {
+  const nodesInfo = Object.values(monitoredNodes) as NodeDetailWithJenkinsUrl[]
+  return nodesInfo.map((nodeInfo) => {
+    nodeInfo.jenkinsUrl = jenkinsUrl
+    return nodeInfo
+  })
+}
+
+function getDeletionConfirmMsg(jenkinsUrl: string) {
+  return browser.i18n.getMessage('cancelMonitoringNodeUrl', [jenkinsUrl])
 }
 
 function removeMonitor(jenkinsUrl: string) {
-  const ok = confirm(browser.i18n.getMessage('cancelMonitoringNodeUrl', [jenkinsUrl]))
-  if (!ok) {
-    // 点击取消
-    return
-  }
-
   StorageService.getNodeStatus().then((result: Nodes) => {
     if (result.hasOwnProperty(jenkinsUrl)) {
       delete result[jenkinsUrl]
       StorageService.saveNodeStatus(result).then(() => {
         console.log(`${jenkinsUrl} 已删除`)
-
-        snackbar.value = SnackbarData.builder()
-          .message(`${strings.monitoringCancelled}${jenkinsUrl}`)
-          .color('success')
-          .build()
+        message.success(browser.i18n.getMessage('monitoringCancelled', [jenkinsUrl]))
       })
     }
   })
@@ -109,22 +171,13 @@ function isSafe(node: NodeDetail) {
 function deleteItem(jenkinsUrl: string, node: NodeDetail) {
   // console.log(jenkinsUrl, node)
   const nodeName = node.displayName
-  const ok = confirm(browser.i18n.getMessage('cancelMonitoringNode', [nodeName]))
-  if (!ok) {
-    // 点击取消
-    return
-  }
   StorageService.getNodeStatus().then((result: Nodes) => {
     if (result.hasOwnProperty(jenkinsUrl)) {
       // 删除 node
       delete result[jenkinsUrl].monitoredNodes[nodeName]
       StorageService.saveNodeStatus(result).then(() => {
         console.log(`${nodeName} 已删除`)
-
-        snackbar.value = SnackbarData.builder()
-          .message(`${strings.monitoringCancelled}${nodeName}`)
-          .color('success')
-          .build()
+        message.success(browser.i18n.getMessage('monitoringCancelled', [nodeName]))
       })
     }
   })
@@ -157,15 +210,15 @@ function onShowOfflineNodesChange(newVal: boolean) {
         v-for="(jenkinsNodes, jenkinsUrl, index) in monitoredNodes"
         v-show="'monitoredNodes' in jenkinsNodes && Object.keys(jenkinsNodes.monitoredNodes).length > 0"
         :key="index"
-        class="card my-3"
+        class="card"
       >
-        <v-card-title>
+        <div class="card-title">
           <img
-            class="img-rounded avatar"
+            class="img-rounded"
             alt="Computer"
             :src="computerIcon"
           >
-          <div class="ml-5 card-title-node">
+          <div class="ml-12px card-title-node flex-1">
             <span
               :title="decodeURIComponent(jenkinsUrl)"
               color="title"
@@ -173,7 +226,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
             >
               {{ decodeURIComponent(jenkinsUrl) }}
             </span>
-            <br style="height: 10px;">
+            <br style="height: 8px;">
             <a
               class="card-title-node-sub a-link-color"
               @click="openNodesManager(jenkinsUrl)"
@@ -181,127 +234,135 @@ function onShowOfflineNodesChange(newVal: boolean) {
               <span class="no-wrap">{{ strings.openManagerPage }}</span>
             </a>
           </div>
-          <v-spacer></v-spacer>
-          <div v-show="jenkinsNodes.status !== 'ok'">
-            <v-btn
-              depressed
-              small
-              :href="jenkinsUrl"
-              :title="jenkinsNodes.error || ''"
-              target="_blank"
-              color="error"
-              class="card-title-err-btn"
-            >
-              <span>ERROR</span>
-            </v-btn>
+          <div class="flex place-items-center">
+            <div v-show="jenkinsNodes.status !== 'ok'">
+              <n-button
+                type="error"
+                secondary
+                strong
+                round
+                :href="jenkinsUrl"
+                :title="jenkinsNodes.error || ''"
+                target="_blank"
+                class="card-title-err-btn"
+                tag="a"
+              >
+                <span>ERROR</span>
+              </n-button>
+            </div>
+            <div class="ml-8px">
+              <PopconfirmDeleteBtn
+                :text="getDeletionConfirmMsg(decodeURIComponent(jenkinsUrl))"
+                btn-class="card-title-remove-btn"
+                btn-title="Remove monitoring for this task"
+                :icon="CloseCircleOutline"
+                @positive-click="removeMonitor(jenkinsUrl)"
+              />
+            </div>
           </div>
-          <div class="ml-2">
-            <v-btn
-              icon
-              title="Remove monitoring for this task"
-              x-small
-              color="grey"
-              class="card-title-remove-btn"
-              @click="removeMonitor(jenkinsUrl)"
-            >
-              <v-icon>mdi-close-circle-outline</v-icon>
-            </v-btn>
-          </div>
-        </v-card-title>
-        <v-data-table
+        </div>
+        <n-data-table
           v-show="jenkinsNodes.status === 'ok'"
-          :headers="headers"
-          :items="toArray(jenkinsNodes.monitoredNodes)"
-          :item-class="getRowClass"
+          class="data-table"
+          size="small"
+          :columns="headers"
+          :data="toArray(jenkinsUrl, jenkinsNodes.monitoredNodes)"
+          :row-class-name="getRowClass"
           :search="search"
-          dense
-          hide-default-footer
-          disable-pagination
+          :bordered="false"
         >
-          <!-- displayName -->
-          <template #[`item.displayName`]="{ item }">
-            <a
-              :href="item.nodeUrl"
-              target="_blank"
-              class="monitor-table-node-url"
-              :class="[isSafe(item) ? 'success--text' : 'error--text']"
-            >{{ item.displayName }}</a>
+          <template #empty>
+            <div class="data-table-no-data">
+              {{ strings.noData }}
+            </div>
           </template>
-
-          <!-- remainingDiskSpace -->
-          <template #[`item.remainingDiskSpace`]="{ item }">
-            <span
-              :class="[isSafe(item) ? 'success--text' : 'error--text']"
-              v-html="item.remainingDiskSpace"
-            ></span>
-          </template>
-
-          <!-- diskSpaceThreshold -->
-          <template #[`item.diskSpaceThreshold`]="{ item }">
-            <span
-              :class="[isSafe(item) ? 'success--text' : 'error--text']"
-              v-html="`${item.diskSpaceThreshold} GB`"
-            ></span>
-          </template>
-          <!-- actions -->
-          <template #[`item.actions`]="props">
-            <v-icon
-              small
-              title="Cancel Monitoring"
-              @click="deleteItem(jenkinsUrl, props.item)"
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-        </v-data-table>
+        </n-data-table>
       </n-card>
     </div>
-    <v-row class="my-3"></v-row>
-    <!-- snackbar -->
-    <j-snackbar :snackbar-data="snackbar" />
   </div>
 </template>
-
 
 <style lang="scss">
 .computer-wrapper {
   // min-height: 200px;
 
-  .card {
-    .card-title-node {
-      width: 460px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+  .data-area {
+    margin-top: 10px;
 
-      .card-title-node-url {
-        font-size: 18px;
-        font-weight: 500;
+    .card {
+      margin-bottom: 8px;
+
+      .n-card__content {
+        padding: 0;
       }
 
-      .card-title-node-sub {
+      .card-title {
+        display: flex;
+        padding: 12px;
+
+        .img-rounded {
+          width: 48px;
+          height: 48px;
+        }
+
+        .card-title-node {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+
+          .card-title-node-url {
+            font-size: 18px;
+            font-weight: 500;
+          }
+
+          .card-title-node-sub {
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+          }
+        }
+
+        .card-title-err-btn {
+          width: 60px;
+          height: 26px;
+          font-size: 12px;
+
+          .n-button__content {
+            // 按钮文字居中
+            justify-content: center;
+          }
+        }
+
+        .card-title-remove-btn {
+          font-size: 16px;
+          vertical-align: text-top;
+          opacity: 0.5;
+        }
+      }
+
+      .monitor-table-node-url {
+        text-decoration-line: none;
+        word-break: break-all;
+        word-wrap: break-word;
+      }
+
+      .monitor-table-action-delete {
         font-size: 14px;
-        text-decoration: none;
+        vertical-align: middle;
+        opacity: 0.5;
       }
-    }
 
-    .card-title-err-btn {
-      width: 4rem;
-      height: 1.6rem;
-    }
+      .disabled-row > td {
+        background-color: var(--jk-disabledline);
+      }
 
-    .card-title-remove-btn {
-      align-items: baseline;
-    }
+      .safe-row > td {
+        color: var(--jk-successColorPressed);
+      }
 
-    .monitor-table-node-url {
-      text-decoration-line: none;
-      word-break: break-all;
-      word-wrap: break-word;
-    }
-
-    .disabled-row {
-      background-color: var(--jk-disabledline);
+      .unsafe-row > td {
+        color: var(--jk-errorColorPressed);
+      }
     }
   }
 }

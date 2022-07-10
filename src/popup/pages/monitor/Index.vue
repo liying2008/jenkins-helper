@@ -291,24 +291,13 @@ function getStyledTime(timestamp: number) {
               </n-button>
             </div>
             <div class="ml-8px">
-              <n-popconfirm
-                :positive-text="strings.ok"
-                :negative-text="strings.cancel"
+              <PopconfirmDeleteBtn
+                :text="getDeletionConfirmMsg(decodeURIComponent(jenkinsUrl))"
+                btn-class="card-title-remove-btn"
+                btn-title="Remove monitoring for this task"
+                :icon="CloseCircleOutline"
                 @positive-click="removeJenkins(jenkinsUrl)"
-              >
-                <template #trigger>
-                  <n-button
-                    text
-                    class="card-title-remove-btn"
-                    title="Remove monitoring for this task"
-                  >
-                    <n-icon>
-                      <close-circle-outline />
-                    </n-icon>
-                  </n-button>
-                </template>
-                {{ getDeletionConfirmMsg(jenkinsUrl) }}
-              </n-popconfirm>
+              />
             </div>
           </div>
         </div>

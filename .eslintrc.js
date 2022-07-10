@@ -124,5 +124,6 @@ module.exports = {
     'no-useless-rename': 'error',
     'one-var': ['error', { initialized: 'never' }],
     'new-cap': ['error', { newIsCap: true, capIsNew: false }],
+    'unicorn/prefer-includes': 'warn',
   },
 }

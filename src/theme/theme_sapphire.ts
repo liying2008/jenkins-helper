@@ -34,9 +34,9 @@ export const sapphireTheme: Theme = {
       subtitle: colors.grey.base,
       link: colors.blue.base,
       buildingline: '#b0e0e6',
-      disabledline: '#d6d6d6',
-      offlineline: '#d6d6d6',
-      monitoredline: '#dff0d8',
+      disabledline: '#e6e6e6',
+      offlineline: '#e6e6e6',
+      monitoredline: '#d2e7ca',
     },
   },
   dark: {
@@ -72,7 +72,7 @@ export const sapphireTheme: Theme = {
       buildingline: '#2d4e52',
       disabledline: '#3e3e3e',
       offlineline: '#404040',
-      monitoredline: '#174802',
+      monitoredline: '#1f3b12',
     },
   },
 }

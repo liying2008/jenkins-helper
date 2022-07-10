@@ -266,10 +266,15 @@
     "message": "Threshold"
   },
   "monitoringCancelled": {
-    "message": "Monitoring cancelled: "
+    "message": "Monitoring cancelled: $name$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "cancelMonitoringNodeUrl": {
-    "message": "Whether to cancel this monitoring [$url$] ?",
+    "message": "Whether to cancel this monitoring [ $url$ ] ?",
     "placeholders": {
       "url": {
         "content": "$1"
@@ -277,7 +282,7 @@
     }
   },
   "cancelMonitoringNode": {
-    "message": "Do you cancel the monitoring of this node [$name$] ?",
+    "message": "Do you cancel the monitoring of this node [ $name$ ] ?",
     "placeholders": {
       "name": {
         "content": "$1"
@@ -311,8 +316,14 @@
   "inputJenkinsUrl": {
     "message": "Please enter Jenkins URL"
   },
+  "inputJenkinsUrlPlaceholder": {
+    "message": "For example: http://127.0.0.1:8080"
+  },
+  "getJenkinsNodesRawData": {
+    "message": "Get nodes"
+  },
   "inputDiskSpaceThreshold": {
-    "message": "Please enter the disk space threshold (GB)"
+    "message": "Please enter the disk space threshold (in GB)"
   },
   "showDisabledJobs": {
     "message": "Show disabled jobs"

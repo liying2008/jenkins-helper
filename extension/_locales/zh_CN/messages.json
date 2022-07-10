@@ -266,10 +266,15 @@
     "message": "告警阈值"
   },
   "monitoringCancelled": {
-    "message": "已取消监控："
+    "message": "已取消监控：$name$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "cancelMonitoringNodeUrl": {
-    "message": "是否不再监控该Jenkins的节点 [$url$]？",
+    "message": "是否取消监控该Jenkins的全部节点 [ $url$ ]？",
     "placeholders": {
       "url": {
         "content": "$1"
@@ -277,7 +282,7 @@
     }
   },
   "cancelMonitoringNode": {
-    "message": "是否不再监控此节点 [$name$]？",
+    "message": "是否取消监控此节点 [ $name$ ]？",
     "placeholders": {
       "name": {
         "content": "$1"
@@ -311,8 +316,14 @@
   "inputJenkinsUrl": {
     "message": "请输入Jenkins URL"
   },
+  "inputJenkinsUrlPlaceholder": {
+    "message": "例如: http://127.0.0.1:8080"
+  },
+  "getJenkinsNodesRawData": {
+    "message": "读取节点数据"
+  },
   "inputDiskSpaceThreshold": {
-    "message": "请输入磁盘剩余空间告警阈值（GB）"
+    "message": "请输入磁盘剩余空间告警阈值（单位：GB）"
   },
   "showDisabledJobs": {
     "message": "显示禁用的Job"

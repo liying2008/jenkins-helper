@@ -137,8 +137,8 @@ function creationModalVisibleUpdate(value: boolean) {
     }
 
     .filter-select {
-      margin-left: 10px;
       width: 20%;
+      margin-left: 10px;
     }
 
     .show-disabled-checkbox {

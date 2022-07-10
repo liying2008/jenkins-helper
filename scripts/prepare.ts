@@ -12,6 +12,7 @@ async function stubIndexHtml() {
     'options',
     'popup',
     'background',
+    'computers-manager',
   ]
 
   for (const view of views) {
