@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import type { Component } from 'vue'
+import { h, onMounted, ref } from 'vue'
+import { NIcon } from 'naive-ui'
+import type { MenuOption } from 'naive-ui'
+import { AtOutline, DocumentOutline, OptionsOutline } from '@vicons/ionicons5'
+import { RouterLink } from 'vue-router'
 import { t } from '~/libs/extension'
 
 const strings = {
@@ -8,63 +13,82 @@ const strings = {
   about: t('about'),
 }
 
-const drawer = ref(true)
+
+const menuOptions: MenuOption[] = [
+  {
+    label: () => h(RouterLink,
+      {
+        to: {
+          name: 'Settings',
+        },
+      },
+      { default: () => strings.settings },
+    ),
+    key: 'settings',
+    icon: renderIcon(OptionsOutline),
+  },
+  {
+    label: () => h(RouterLink,
+      {
+        to: {
+          name: 'ImportExport',
+        },
+      },
+      { default: () => strings.importAndExportSettings },
+    ),
+    key: 'importAndExportSettings',
+    icon: renderIcon(DocumentOutline),
+  },
+  {
+    label: () => h(RouterLink,
+      {
+        to: {
+          name: 'About',
+        },
+      },
+      { default: () => strings.about },
+    ),
+    key: 'about',
+    icon: renderIcon(AtOutline),
+  },
+]
+const collapsed = ref(false)
 
 onMounted(() => {
   console.log('lifecycle: ', 'Sidebar mounted!')
 })
+
+function renderIcon(icon: Component) {
+  return () => h(NIcon, null, { default: () => h(icon) })
+}
 </script>
 
 <template>
-  <v-card
-    id="options-sidebar-wrapper"
-    fill-height
-  >
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      clipped
-      permanent
-      app
+  <div class="options-sidebar-wrapper">
+    <n-layout-sider
+      bordered
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="240"
+      :collapsed="collapsed"
+      show-trigger
+      @collapse="collapsed = true"
+      @expand="collapsed = false"
     >
-      <v-list
-        nav
-        dense
-      >
-        <!-- 设置 -->
-        <v-list-item
-          link
-          to="/settings"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-cog-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ strings.settings }}</v-list-item-title>
-        </v-list-item>
-        <!-- 导入/导出设置 -->
-        <v-list-item
-          link
-          to="/import-export"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-file-import-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ strings.importAndExportSettings }}</v-list-item-title>
-        </v-list-item>
-        <!-- 关于 -->
-        <v-list-item
-          link
-          to="/about"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-information-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ strings.about }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-  </v-card>
+      <n-menu
+        :collapsed="collapsed"
+        :collapsed-width="64"
+        :collapsed-icon-size="22"
+        :options="menuOptions"
+      />
+    </n-layout-sider>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.options-sidebar-wrapper {
+  aside {
+    height: 100%;
+  }
+}
 </style>

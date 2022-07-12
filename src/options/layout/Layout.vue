@@ -9,15 +9,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app>
+  <div class="layout-wrapper">
     <Header></Header>
-    <nav>
+    <n-layout
+      has-sider
+      class="mt-56px"
+    >
       <Sidebar></Sidebar>
-    </nav>
-    <v-main>
-      <v-container fluid>
+      <n-layout>
         <router-view></router-view>
-      </v-container>
-    </v-main>
-  </v-app>
+      </n-layout>
+    </n-layout>
+  </div>
 </template>
