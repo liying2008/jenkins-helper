@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { CloudDownloadOutline, CloudUploadOutline } from '@vicons/ionicons5'
+import { useMessage } from 'naive-ui'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { SettingsFileData } from '~/models/settings-file'
-import { SnackbarData } from '~/models/message'
 import { initTheme } from '~/theme'
 import { t } from '~/libs/extension'
 
@@ -22,19 +23,19 @@ const settingsKeyName = 'jenkins-helper'
 const disableExportBtn = ref(false)
 const disableImportBtn = ref(false)
 const configFile = ref<HTMLInputElement>()
-const snackbar = ref(SnackbarData.empty())
 
+const message = useMessage()
 
 /**
-   * 导入设置
-   */
+ * 导入设置
+ */
 function importSettings() {
   triggerUpload()
 }
 
 /**
-   * 导出设置
-   */
+ * 导出设置
+ */
 function exportSettings() {
   disableExportBtn.value = true
   StorageService.get([StorageService.keyForJenkinsUrl, StorageService.keyForNodes, StorageService.keyForOptions]).then((result) => {
@@ -55,10 +56,10 @@ function exportSettings() {
 }
 
 /**
-   * 触发下载文件
-   * @param filename 文件名
-   * @param content 文件内容
-   */
+ * 触发下载文件
+ * @param filename 文件名
+ * @param content 文件内容
+ */
 function triggerDownload(filename: string, content: string) {
   const element = document.createElement('a')
   element.download = filename
@@ -71,8 +72,8 @@ function triggerDownload(filename: string, content: string) {
 }
 
 /**
-   * 触发上传文件
-   */
+ * 触发上传文件
+ */
 function triggerUpload() {
   const inputElement = configFile.value!
   inputElement.value = ''
@@ -80,9 +81,9 @@ function triggerUpload() {
 }
 
 /**
-   * 读取文件内容
-   * @param event
-   */
+ * 读取文件内容
+ * @param event
+ */
 function readFile(event: Event) {
   // console.log('event', event)
   const inputElement = configFile.value!
@@ -110,9 +111,9 @@ function readFile(event: Event) {
 }
 
 /**
-   * 开始导入
-   * @param content settings文件内容
-   */
+ * 开始导入
+ * @param content settings文件内容
+ */
 function startImport(content: string) {
   let settings: SettingsFileData
   try {
@@ -139,96 +140,76 @@ function startImport(content: string) {
 }
 
 /**
-   * 显示成功信息
-   * @param successText 信息文本
-   */
+ * 显示成功信息
+ * @param successText 信息文本
+ */
 function showSuccessMessage(successText: string) {
   // console.log('showSuccessMessage')
-  snackbar.value = SnackbarData.builder()
-    .message(successText)
-    .color('success')
-    .build()
+  message.success(successText)
 }
 
 /**
-   * 显示失败信息
-   * @param dangerText 信息文本
-   */
+ * 显示失败信息
+ * @param dangerText 信息文本
+ */
 function showDangerMessage(dangerText: string) {
   // console.log('showDangerMessage')
-  snackbar.value = SnackbarData.builder()
-    .message(dangerText)
-    .color('error')
-    .build()
+  message.error(dangerText)
 }
 </script>
 
 <template>
-  <div id="options-import-export-wrapper">
-    <v-container>
-      <div
-        class="mx-auto mt-2"
-        style="max-width: 900px;"
+  <div class="options-import-export-wrapper">
+    <div class="cards">
+      <n-grid
+        x-gap="12"
+        :cols="2"
       >
-        <v-row>
-          <v-col cols="6">
-            <v-hover v-slot="{ hover }">
-              <v-card
-                ripple
-                height="200"
-                :elevation="hover ? 6 : 2"
-                class="pointer-cursor"
-                :class="[{ 'on-hover': hover }]"
-                :disabled="disableImportBtn"
-                @click="importSettings"
-              >
-                <v-card-title>{{ strings.importSettings }}</v-card-title>
-                <v-card-text>
-                  <v-icon
-                    size="86"
-                    class="icon-center"
-                  >
-                    mdi-import
-                  </v-icon>
-                </v-card-text>
-              </v-card>
-            </v-hover>
-          </v-col>
-
-          <v-col cols="6">
-            <v-hover v-slot="{ hover }">
-              <v-card
-                ripple
-                height="200"
-                :elevation="hover ? 6 : 2"
-                class="pointer-cursor"
-                :class="[{ 'on-hover': hover }]"
-                :disabled="disableExportBtn"
-                @click="exportSettings"
-              >
-                <v-card-title>{{ strings.exportSettings }}</v-card-title>
-                <v-card-text>
-                  <v-icon
-                    size="86"
-                    class="icon-center"
-                  >
-                    mdi-export
-                  </v-icon>
-                </v-card-text>
-              </v-card>
-            </v-hover>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <p class="text--secondary">
-              {{ strings.exportSettingsTip }}
-            </p>
-          </v-col>
-        </v-row>
-      </div>
-      <j-snackbar :snackbar-data="snackbar" />
-    </v-container>
+        <!-- 导入设置 -->
+        <n-gi>
+          <n-card
+            hoverable
+            embedded
+            class="pointer-cursor"
+            :disabled="disableImportBtn"
+            :title="strings.importSettings"
+            @click="importSettings"
+          >
+            <n-icon
+              size="86"
+              class="icon-center"
+            >
+              <cloud-upload-outline />
+            </n-icon>
+          </n-card>
+        </n-gi>
+        <!-- 导出设置 -->
+        <n-gi>
+          <n-card
+            hoverable
+            embedded
+            class="pointer-cursor"
+            :disabled="disableExportBtn"
+            :title="strings.exportSettings"
+            @click="exportSettings"
+          >
+            <n-icon
+              size="86"
+              class="icon-center"
+            >
+              <cloud-download-outline />
+            </n-icon>
+          </n-card>
+        </n-gi>
+      </n-grid>
+      <n-grid :cols="1">
+        <n-gi>
+          <n-el class="tip-text">
+            {{ strings.exportSettingsTip }}
+          </n-el>
+        </n-gi>
+      </n-grid>
+    </div>
     <!-- 隐藏的文件上传输入框 -->
     <input
       id="configFile"
@@ -244,14 +225,26 @@ function showDangerMessage(dangerText: string) {
 </template>
 
 <style lang="scss">
-#options-import-export-wrapper {
-  .pointer-cursor {
-    cursor: pointer;
+.options-import-export-wrapper {
+  padding: 24px;
 
-    .icon-center {
-      width: 100%;
-      height: 100%;
-      text-align: center;
+  .cards {
+    max-width: 600px;
+    margin: auto;
+
+    .pointer-cursor {
+      cursor: pointer;
+
+      .icon-center {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+      }
+    }
+
+    .tip-text {
+      margin-top: 20px;
+      color: var(--text-color-3);
     }
   }
 }
