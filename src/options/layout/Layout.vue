@@ -13,7 +13,7 @@ onMounted(() => {
     <Header></Header>
     <n-layout
       has-sider
-      class="mt-56px"
+      class="main mt-56px"
     >
       <Sidebar></Sidebar>
       <n-layout>
@@ -22,3 +22,15 @@ onMounted(() => {
     </n-layout>
   </div>
 </template>
+
+<style lang="scss">
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .main {
+    flex: 1;
+  }
+}
+</style>

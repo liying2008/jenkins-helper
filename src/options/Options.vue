@@ -20,6 +20,7 @@ onMounted(() => {
 
 <template>
   <n-config-provider
+    style="height: 100%;"
     :theme="themeStore.darkMode ? darkTheme : lightTheme"
     :theme-overrides="themeStore.theme"
   >
@@ -37,3 +38,13 @@ onMounted(() => {
     </n-dialog-provider>
   </n-config-provider>
 </template>
+
+<style lang="scss">
+html {
+  height: 100%;
+
+  .app {
+    height: 100%;
+  }
+}
+</style>
