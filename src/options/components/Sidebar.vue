@@ -67,6 +67,7 @@ function renderIcon(icon: Component) {
   <div class="options-sidebar-wrapper">
     <n-layout-sider
       bordered
+      class="sidebar"
       collapse-mode="width"
       :collapsed-width="64"
       :width="240"
@@ -88,7 +89,15 @@ function renderIcon(icon: Component) {
 <style scoped lang="scss">
 .options-sidebar-wrapper {
   aside {
+    z-index: 9999;
+    box-sizing: border-box;
     height: 100%;
+
+    .sidebar {
+      box-sizing: border-box;
+      height: 100%;
+      border-spacing: 0;
+    }
   }
 }
 </style>

@@ -16,7 +16,7 @@ onMounted(() => {
       class="main mt-56px"
     >
       <Sidebar></Sidebar>
-      <n-layout>
+      <n-layout class="main-container">
         <router-view></router-view>
       </n-layout>
     </n-layout>
@@ -25,12 +25,22 @@ onMounted(() => {
 
 <style lang="scss">
 .layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
 
   .main {
-    flex: 1;
+    width: 100%;
+    height: 100%;
+    clear: both;
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 </style>

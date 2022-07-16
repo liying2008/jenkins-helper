@@ -13,7 +13,7 @@ specifiers:
   '@vitejs/plugin-vue': ^2.3.3
   '@vue/compiler-sfc': ^3.2.37
   '@vue/test-utils': ^2.0.2
-  '@vueuse/core': ^8.9.1
+  '@vueuse/core': ^8.9.3
   chokidar: ^3.5.3
   cross-env: ^7.0.3
   crx: ^5.0.1
@@ -64,7 +64,7 @@ devDependencies:
   '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/2.3.3_vite@2.9.14+vue@3.2.37
   '@vue/compiler-sfc': registry.npmmirror.com/@vue/compiler-sfc/3.2.37
   '@vue/test-utils': registry.npmmirror.com/@vue/test-utils/2.0.2_vue@3.2.37
-  '@vueuse/core': registry.npmmirror.com/@vueuse/core/8.9.1_vue@3.2.37
+  '@vueuse/core': registry.npmmirror.com/@vueuse/core/8.9.3_vue@3.2.37
   chokidar: 3.5.3
   cross-env: 7.0.3
   crx: 5.0.1
@@ -88,7 +88,7 @@ devDependencies:
   stylelint-config-recommended-vue: registry.npmmirror.com/stylelint-config-recommended-vue/1.4.0_5rxrxgs7sjazj2ve56ds3kmipi
   stylelint-config-standard-scss: registry.npmmirror.com/stylelint-config-standard-scss/4.0.0_uyk3cwxn3favstz4untq233szu
   typescript: registry.npmmirror.com/typescript/4.7.4
-  unplugin-auto-import: registry.npmmirror.com/unplugin-auto-import/0.9.2_jg57o3hw2g6ynl3mkvtaux3hqe
+  unplugin-auto-import: registry.npmmirror.com/unplugin-auto-import/0.9.2_brdpmzgunvbphkoao57epyxhce
   unplugin-icons: registry.npmmirror.com/unplugin-icons/0.14.7_ye7sw5nid2es3e4qmkjro6ozy4
   unplugin-vue-components: registry.npmmirror.com/unplugin-vue-components/0.21.1_vite@2.9.14+vue@3.2.37
   vfonts: registry.npmmirror.com/vfonts/0.0.3
@@ -4458,11 +4458,11 @@ packages:
       vue: registry.npmmirror.com/vue/3.2.37
     dev: true
 
-  registry.npmmirror.com/@vueuse/core/8.9.1_vue@3.2.37:
-    resolution: {integrity: sha512-a7goYb/gJxjXRBw4Fr/jEACiN33ghwM1ohJVu+Zwsr3lNL4qCQ1nU+ogta98lNg5hXJxWj7mYEmQDjjyWOu5nA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/core/-/core-8.9.1.tgz}
-    id: registry.npmmirror.com/@vueuse/core/8.9.1
+  registry.npmmirror.com/@vueuse/core/8.9.3_vue@3.2.37:
+    resolution: {integrity: sha512-q2pr3N7FPG7IBBhEXTYOJU+38VwKMLP5IfD33byzBV4Th7f1JHT4qPKvJrvr17knAefPRzNqgt9et+xFqaRlPQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/core/-/core-8.9.3.tgz}
+    id: registry.npmmirror.com/@vueuse/core/8.9.3
     name: '@vueuse/core'
-    version: 8.9.1
+    version: 8.9.3
     peerDependencies:
       '@vue/composition-api': ^1.1.0
       vue: ^2.6.0 || ^3.2.0
@@ -4473,23 +4473,23 @@ packages:
         optional: true
     dependencies:
       '@types/web-bluetooth': registry.npmmirror.com/@types/web-bluetooth/0.0.14
-      '@vueuse/metadata': registry.npmmirror.com/@vueuse/metadata/8.9.1
-      '@vueuse/shared': registry.npmmirror.com/@vueuse/shared/8.9.1_vue@3.2.37
+      '@vueuse/metadata': registry.npmmirror.com/@vueuse/metadata/8.9.3
+      '@vueuse/shared': registry.npmmirror.com/@vueuse/shared/8.9.3_vue@3.2.37
       vue: registry.npmmirror.com/vue/3.2.37
       vue-demi: registry.npmmirror.com/vue-demi/0.13.2_vue@3.2.37
     dev: true
 
-  registry.npmmirror.com/@vueuse/metadata/8.9.1:
-    resolution: {integrity: sha512-6LADOlyl3oENHa9dsoY7LXjU1Mh14DnpM6ztETI3hpm5ZffOMIG5CB2Q6aEZfIvYr1lkJVmG2L82wFKk7VRfIA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/metadata/-/metadata-8.9.1.tgz}
+  registry.npmmirror.com/@vueuse/metadata/8.9.3:
+    resolution: {integrity: sha512-57gZZKtWAmcJaUBmciCohvmumVLz4+FnoVnWj7U5BWs5PC2/7gU9Z0/i1i9leDNeboAauFzAq7z1GjS8eYnT+w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/metadata/-/metadata-8.9.3.tgz}
     name: '@vueuse/metadata'
-    version: 8.9.1
+    version: 8.9.3
     dev: true
 
-  registry.npmmirror.com/@vueuse/shared/8.9.1_vue@3.2.37:
-    resolution: {integrity: sha512-klZfn7ijI3juqVgpfQVrrlBh4uTFajwSCWm8Cdt45Kg26b1LZ9jn9n7J6GhmkFay5016GnjjivQoekQSMeJNUg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/shared/-/shared-8.9.1.tgz}
-    id: registry.npmmirror.com/@vueuse/shared/8.9.1
+  registry.npmmirror.com/@vueuse/shared/8.9.3_vue@3.2.37:
+    resolution: {integrity: sha512-foorYQAU3CGknAO1w9No/rpGBJmb7L74MPltnZAYxeBRfhsajjJYYgja+D5IT2vT+/a0NciISaVp3fDwMN1ocA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/shared/-/shared-8.9.3.tgz}
+    id: registry.npmmirror.com/@vueuse/shared/8.9.3
     name: '@vueuse/shared'
-    version: 8.9.1
+    version: 8.9.3
     peerDependencies:
       '@vue/composition-api': ^1.1.0
       vue: ^2.6.0 || ^3.2.0
@@ -8756,7 +8756,7 @@ packages:
       '@types/unist': registry.npmmirror.com/@types/unist/2.0.6
     dev: true
 
-  registry.npmmirror.com/unplugin-auto-import/0.9.2_jg57o3hw2g6ynl3mkvtaux3hqe:
+  registry.npmmirror.com/unplugin-auto-import/0.9.2_brdpmzgunvbphkoao57epyxhce:
     resolution: {integrity: sha512-cihfSyWtDyOvpD+bKQ77XSJF2Ix3N3ueatd59slBKgl995fbfExf2qXk/KialZE4/pPNjdGNEJl5ZwAhYj+e1g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/unplugin-auto-import/-/unplugin-auto-import-0.9.2.tgz}
     id: registry.npmmirror.com/unplugin-auto-import/0.9.2
     name: unplugin-auto-import
@@ -8770,7 +8770,7 @@ packages:
     dependencies:
       '@antfu/utils': registry.npmmirror.com/@antfu/utils/0.5.2
       '@rollup/pluginutils': registry.npmmirror.com/@rollup/pluginutils/4.2.1
-      '@vueuse/core': registry.npmmirror.com/@vueuse/core/8.9.1_vue@3.2.37
+      '@vueuse/core': registry.npmmirror.com/@vueuse/core/8.9.3_vue@3.2.37
       local-pkg: registry.npmmirror.com/local-pkg/0.4.1
       magic-string: registry.npmmirror.com/magic-string/0.26.2
       unimport: registry.npmmirror.com/unimport/0.4.4_vite@2.9.14
