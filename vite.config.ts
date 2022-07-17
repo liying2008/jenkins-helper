@@ -100,6 +100,7 @@ export default defineConfig(({ command }) => ({
         options: r('src/options/index.html'),
         popup: r('src/popup/index.html'),
         computersManager: r('src/computers-manager/index.html'),
+        jobStats: r('src/job-stats/index.html'),
       },
     },
   },

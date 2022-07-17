@@ -242,8 +242,8 @@
   "jobStatisticsDataFrom_": {
     "message": "数据来源："
   },
-  "jobStatisticsShowSettings_": {
-    "message": "显示设置："
+  "jobStatisticsShowSettings": {
+    "message": "显示设置"
   },
   "jobStatisticsShowEnabledJobOnly": {
     "message": "不显示禁用的Job"

@@ -242,8 +242,8 @@
   "jobStatisticsDataFrom_": {
     "message": "Data from:"
   },
-  "jobStatisticsShowSettings_": {
-    "message": "Display settings:"
+  "jobStatisticsShowSettings": {
+    "message": "Display Settings"
   },
   "jobStatisticsShowEnabledJobOnly": {
     "message": "Display enabled jobs only."

@@ -53,7 +53,7 @@ function openOptions() {
 
 function openJobList() {
   browser.windows.create({
-    url: 'job_stats.html',
+    url: 'dist/job-stats/index.html',
     type: 'popup',
     width: 1200,
     height: 800,
@@ -64,7 +64,7 @@ function openJobList() {
 
 function openTools() {
   browser.tabs.create({
-    url: 'jenkins_tools.html',
+    url: 'dist/jenkins-tools/index.html',
   }).then((tab) => {
     // console.log('tab', tab)
   })
