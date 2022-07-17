@@ -71,7 +71,7 @@ export const defaultTheme: Theme = {
       disabled: colors.grey.darken1,
       title: colors.grey.lighten1,
       subtitle: colors.grey.darken1,
-      link: colors.teal.base,
+      link: '#0a756b',
       buildingline: '#2d4e52',
       disabledline: '#3e3e3e',
       offlineline: '#404040',
