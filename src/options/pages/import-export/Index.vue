@@ -244,7 +244,7 @@ function showDangerMessage(dangerText: string) {
 
     .tip-text {
       margin-top: 20px;
-      color: var(--text-color-3);
+      color: #888888;
     }
   }
 }

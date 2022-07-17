@@ -7,6 +7,10 @@ import type { JenkinsJob } from '~/models/jenkins/job'
 import { JenkinsCompletedBuild } from '~/models/jenkins/job'
 import type { JenkinsView } from '~/models/jenkins/view'
 import type { Enc } from '~/models/common'
+import JenkinsGrayIcon from '~/assets/img/logo-gray.svg'
+import JenkinsGreenIcon from '~/assets/img/logo-green.svg'
+import JenkinsRedIcon from '~/assets/img/logo-red.svg'
+import JenkinsYellowIcon from '~/assets/img/logo-yellow.svg'
 
 export class JobService {
   private static jenkinsUrls: string[] = []
@@ -340,18 +344,18 @@ export class JobService {
   }
 
   private static show(result: string, jobName: string, url: string) {
-    let statusIcon = 'gray'
+    let statusIcon = JenkinsGrayIcon
     if (result === 'SUCCESS') {
-      statusIcon = 'green'
+      statusIcon = JenkinsGreenIcon
     } else if (result === 'FAILURE') {
-      statusIcon = 'red'
+      statusIcon = JenkinsRedIcon
     } else if (result === 'UNSTABLE') {
-      statusIcon = 'yellow'
+      statusIcon = JenkinsYellowIcon
     }
 
     browser.notifications.create({
       type: 'basic',
-      iconUrl: `img/logo-${statusIcon}.svg`,
+      iconUrl: statusIcon,
       title: `Build ${result} ! - ${jobName}`,
       message: decodeURIComponent(url),
       priority: 0, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default

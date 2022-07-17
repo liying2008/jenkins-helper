@@ -6,6 +6,7 @@ import type { Enc } from '~/models/common'
 import type { JenkinsNode } from '~/models/jenkins/node'
 import type { Nodes } from '~/models/node'
 import type { Options } from '~/models/option'
+import ComputerIcon from '~/assets/img/computer48.png'
 
 export class NodeService {
   private static lastInterval: number | undefined = undefined
@@ -159,7 +160,7 @@ export class NodeService {
       // 显示通知
       browser.notifications.create({
         type: 'basic',
-        iconUrl: 'img/computer48.png',
+        iconUrl: ComputerIcon,
         title: displayName,
         message,
         priority: 2,

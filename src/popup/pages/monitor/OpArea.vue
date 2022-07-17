@@ -134,7 +134,7 @@ function creationModalVisibleUpdate(value: boolean) {
     display: flex;
 
     .search-input {
-      width: 50%;
+      width: 40%;
     }
 
     .filter-select {

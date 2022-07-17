@@ -246,10 +246,10 @@
     "message": "Display Settings"
   },
   "jobStatisticsShowEnabledJobOnly": {
-    "message": "Display enabled jobs only."
+    "message": "Only display enabled jobs."
   },
   "jobStatisticsShowCronTableJobOnly": {
-    "message": "Display only jobs with cron table."
+    "message": "Only display jobs with cron table."
   },
   "manageMonitoredNodes": {
     "message": "Nodes Management"
