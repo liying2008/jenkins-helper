@@ -1,7 +1,8 @@
+import { BrowserUtils } from '~/libs/browser'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import type { ContentFeatures } from '~/models/content-message'
-import { CMD_GET_CONTENT_FEATURES, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '~/models/content-message'
+import { CMD_GET_CONTENT_FEATURES, CMD_GET_CURRENT_TAB, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '~/models/content-message'
 import { defaultOptionsValue } from '~/models/option'
 
 export class ContentService {
@@ -17,7 +18,7 @@ export class ContentService {
 
 
     // 处理来自 content_scripts 的消息
-    browser.runtime.onMessage.addListener((message, sender) => {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
       // console.log('message', message)
       // console.log('sender', sender)
       // NOTE: Returning a Promise is the preferred way to send a reply from an onMessage/onMessageExternal listener, as the sendResponse will be removed from the specs (See https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage) Error
@@ -44,6 +45,12 @@ export class ContentService {
               enableParamNamesColor: ContentService.options.enableParamNamesColor,
               paramNamesColor: ContentService.options.paramNamesColor,
             } as ContentFeatures,
+          })))
+        case CMD_GET_CURRENT_TAB:
+          // 获取当前活跃标签页
+          return Promise.resolve((ContentResp.fromObj({
+            status: 'ok',
+            data: await BrowserUtils.getCurrentTab(),
           })))
         default:
           break

@@ -1,5 +1,6 @@
 
 export const CMD_GET_CONTENT_FEATURES = 'get_content_features'
+export const CMD_GET_CURRENT_TAB = 'get_current_tab'
 export const CMD_STASH_PARAMS = 'stash_params'
 export const CMD_RECOVER_PARAMS = 'recover_params'
 
