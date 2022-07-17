@@ -57,7 +57,7 @@
     "message": "Enter the Jenkins URLs, one per line, for example: http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
-    "message": "Tips: Type `jk` in the omnibox, press the space key and enter intelligent search mode. Enter the job name to quickly match the corresponding Jenkins Job link."
+    "message": "Tips: Type <kbd>jk</kbd> in the omnibox, press the space key and enter intelligent search mode. Enter the job name to quickly match the corresponding Jenkins Job link."
   },
   "jobStatsTitle": {
     "message": "Job Statistics Settings"
@@ -66,12 +66,18 @@
     "message": "Statistics Job information from the following Jenkins."
   },
   "jobStatsJenkinsPlaceholder": {
-    "message": "Enter the Jenkins/View/Job URLs, one per line, for example: http://127.0.0.1:8080/view/My/"
+    "message": "For example: http://127.0.0.1:8080/view/MyView/"
+  },
+  "jobStatsJenkinsHint": {
+    "message": "Fill in the Jenkins/View/Job URLs, one for each line."
   },
   "jobStatsNodeParamTip": {
-    "message": "If the Job node is null, it will obtain from the following parameters"
+    "message": "If the Job node data is empty, it is obtained from the following build parameters"
   },
   "jobStatsNodeParamPlaceholder": {
+    "message": "For example: NODE,node"
+  },
+  "jobStatsNodeParamHint": {
     "message": "Multiple parameters can be entered, separated by comma (,)"
   },
   "themeTitle": {
@@ -140,20 +146,24 @@
   "showNotificationOption_none": {
     "message": "Never"
   },
-  "refreshTimeTip_1": {
-    "message": "Check server for changes every  <b>"
-  },
-  "refreshTimeTip_2": {
-    "message": " seconds</b>"
+  "refreshTimeTip": {
+    "message": "Check server for changes every  <b> $duration$  seconds</b>",
+    "placeholders": {
+      "duration": {
+        "content": "$1"
+      }
+    }
   },
   "nodeOptionTitle": {
     "message": "Node Settings"
   },
-  "nodeRefreshTimeTip_1": {
-    "message": "Check server for changes every  <b>"
-  },
-  "nodeRefreshTimeTip_2": {
-    "message": " hours</b>"
+  "nodeRefreshTimeTip": {
+    "message": "Check server for changes every  <b> $duration$  hours</b>",
+    "placeholders": {
+      "duration": {
+        "content": "$1"
+      }
+    }
   },
   "createMonitoringTaskTitle": {
     "message": "Create Monitoring Task"

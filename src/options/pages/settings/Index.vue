@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
-import { AddCircleSharp, RemoveCircleOutline } from '@vicons/ionicons5'
-import { useCssVar } from '@vueuse/core'
+import { AddCircleSharp, RemoveCircleOutline, SaveOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
 import { StorageService } from '~/libs/storage'
 import type { Options } from '~/models/option'
@@ -13,7 +12,6 @@ import { perillaTheme } from '~/theme/theme_perilla'
 import { coffeeTheme } from '~/theme/theme_coffee'
 import { defaultTheme } from '~/theme/theme_default'
 import { t } from '~/libs/extension'
-import { BrowserUtils } from '~/libs/browser'
 
 const strings = {
   editing: t('editing'),
@@ -37,8 +35,10 @@ const strings = {
   jobStatsTitle: t('jobStatsTitle'),
   jobStatsTitleTip: t('jobStatsTitleTip'),
   jobStatsJenkinsPlaceholder: t('jobStatsJenkinsPlaceholder'),
+  jobStatsJenkinsHint: t('jobStatsJenkinsHint'),
   jobStatsNodeParamTip: t('jobStatsNodeParamTip'),
   jobStatsNodeParamPlaceholder: t('jobStatsNodeParamPlaceholder'),
+  jobStatsNodeParamHint: t('jobStatsNodeParamHint'),
   themeTitle: t('themeTitle'),
   theme: t('theme'),
   defaultTheme: t('defaultTheme'),
@@ -52,11 +52,6 @@ const strings = {
 }
 
 const message = useMessage()
-
-const containerRef = ref<HTMLDivElement>()
-const bottomFixRef = ref<HTMLDivElement>()
-const bottomFixLeftCssVar = useCssVar('--bottom-fix-left', containerRef)
-const bottomFixWidthCssVar = useCssVar('--bottom-fix-width', containerRef)
 
 const refreshTime = ref(parseInt(defaultOptionsValue.refreshTime))
 const nodeRefreshTime = ref(parseInt(defaultOptionsValue.nodeRefreshTime))
@@ -127,30 +122,6 @@ const constants = {
   nodeMinRefreshTime: 1,
   nodeMaxRefreshTime: 6,
 }
-
-const refreshTimeTip = computed(() => {
-  const tip = t('refreshTimeTip_1') + refreshTime.value
-      + t('refreshTimeTip_2')
-  // console.log(tip)
-  return tip
-})
-
-
-const nodeRefreshTimeTip = computed(() => {
-  const tip = t('nodeRefreshTimeTip_1') + nodeRefreshTime.value
-      + t('nodeRefreshTimeTip_2')
-  // console.log(tip)
-  return tip
-})
-
-watch(containerRef, (newVal) => {
-  if (newVal) {
-    // console.log('newVal', newVal)
-    bottomFixWidthCssVar.value = `${newVal.offsetWidth}px`
-    const containerCoordinate = BrowserUtils.getElementCoordinate(newVal)
-    bottomFixLeftCssVar.value = `${containerCoordinate.x}px`
-  }
-})
 
 onMounted(() => {
   StorageService.getOptions().then((result: Options) => {
@@ -281,10 +252,7 @@ function saveOptions() {
 </script>
 
 <template>
-  <div
-    ref="containerRef"
-    class="options-settings-wrapper"
-  >
+  <div class="options-settings-wrapper">
     <div
       ref="contentRef"
       class="content"
@@ -301,7 +269,7 @@ function saveOptions() {
           v-model:value="defaultTab"
           :options="defaultTabs"
         />
-        <div class="control-label mt-12px">
+        <div class="control-label mt-14px">
           {{ strings.jenkinsToken }}
         </div>
         <div
@@ -384,8 +352,10 @@ function saveOptions() {
           type="textarea"
           :placeholder="strings.searchFromJenkinsPlaceholder"
         />
-        <div class="control-hint">
-          {{ strings.searchFromJenkinsTips }}
+        <div
+          class="control-hint"
+          v-html="strings.searchFromJenkinsTips"
+        >
         </div>
       </n-card>
       <!-- 监视器设置 -->
@@ -401,7 +371,7 @@ function saveOptions() {
           v-model:value="showNotificationOption"
           :options="showNotificationOptions"
         />
-        <div class="control-label">
+        <div class="control-label mt-14px">
           {{ strings.refreshTime }}
         </div>
         <n-slider
@@ -410,7 +380,10 @@ function saveOptions() {
           :max="constants.monitorMaxRefreshTime"
           :step="5"
         />
-        <i v-html="refreshTimeTip"></i>
+        <div
+          class="control-hint"
+          v-html="t('refreshTimeTip', [refreshTime.toString()])"
+        ></div>
       </n-card>
       <div class="my-6" />
       <!-- 节点监控设置 -->
@@ -428,7 +401,10 @@ function saveOptions() {
           :max="constants.nodeMaxRefreshTime"
           :step="0.5"
         />
-        <i v-html="nodeRefreshTimeTip"></i>
+        <div
+          class="control-hint"
+          v-html="t('nodeRefreshTimeTip', [nodeRefreshTime.toString()])"
+        ></div>
       </n-card>
       <div class="my-6" />
       <!-- Job统计设置 -->
@@ -445,7 +421,13 @@ function saveOptions() {
           type="textarea"
           :placeholder="strings.jobStatsJenkinsPlaceholder"
         />
-        <div class="control-label">
+        <div
+          class="control-hint"
+          v-html="strings.jobStatsJenkinsHint"
+        >
+        </div>
+
+        <div class="control-label mt-14px">
           {{ strings.jobStatsNodeParamTip }}
         </div>
         <n-input
@@ -453,6 +435,11 @@ function saveOptions() {
           type="text"
           :placeholder="strings.jobStatsNodeParamPlaceholder"
         />
+        <div
+          class="control-hint"
+          v-html="strings.jobStatsNodeParamHint"
+        >
+        </div>
       </n-card>
       <!-- 主题设置 -->
       <n-card
@@ -468,7 +455,10 @@ function saveOptions() {
           :options="themes"
         />
 
-        <n-checkbox v-model:checked="enableDarkMode">
+        <n-checkbox
+          v-model:checked="enableDarkMode"
+          class="mt-14px"
+        >
           {{ strings.enableDarkMode }}
         </n-checkbox>
       </n-card>
@@ -487,7 +477,10 @@ function saveOptions() {
         </div>
 
         <!-- 参数名称着色 -->
-        <n-checkbox v-model:checked="enableParamNamesColor">
+        <n-checkbox
+          v-model:checked="enableParamNamesColor"
+          class="mt-14px"
+        >
           {{ strings.enableParamNamesColor }}
         </n-checkbox>
         <div class="control-hint">
@@ -495,7 +488,7 @@ function saveOptions() {
         </div>
 
         <!-- 颜色选择器 -->
-        <div class="control-label">
+        <div class="control-label mt-6px">
           {{ strings.pickColor }}
         </div>
         <n-color-picker
@@ -504,21 +497,29 @@ function saveOptions() {
           :disabled="!enableParamNamesColor"
         />
       </n-card>
+      <div class="mt-40px" />
     </div>
     <n-el class="bottom-actions-area">
-      <div
-        ref="bottomFixRef"
+      <fix-area
+        position="bottom"
+        container=".options-settings-wrapper"
         class="bottom-fix"
       >
         <!-- 保存按钮 -->
         <n-button
           type="primary"
+          strong
           class="save-btn"
           @click="saveOptions"
         >
+          <template #icon>
+            <n-icon>
+              <SaveOutline />
+            </n-icon>
+          </template>
           {{ strings.saveOptions }}
         </n-button>
-      </div>
+      </fix-area>
     </n-el>
   </div>
 </template>
@@ -537,6 +538,12 @@ function saveOptions() {
       margin-bottom: 6px;
     }
 
+    .control-hint {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #888888;
+    }
+
     .token-delete-btn {
       margin-left: 6px;
     }
@@ -544,28 +551,13 @@ function saveOptions() {
 
   .bottom-actions-area {
     .bottom-fix {
-      position: fixed;
-      bottom: 0;
-      left: var(--bottom-fix-left);
+      background-color: var(--base-color);
+      border-top: 1px solid var(--divider-color);
+      box-shadow: var(--box-shadow-1);
 
-      // left: 0;
-      z-index: 90999;
-      width: var(--bottom-fix-width);
-      height: 60px;
-
-      // height: 60px;
-
-      // background-color: var(--base-color);
-      // border-top: 1px solid var(--divider-color);
-
-      // 左侧 sidebar 宽度 256px
-      // left: 0;
-
-      // width: 100%;
-
-      // height: 60px;
-      text-align: center;
-      background-color: aqua;
+      .save-btn {
+        margin: 8px auto;
+      }
     }
   }
 }

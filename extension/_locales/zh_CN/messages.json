@@ -57,7 +57,7 @@
     "message": "输入 Jenkins URL，一行一个，如：http://127.0.0.1:8080"
   },
   "searchFromJenkinsTips": {
-    "message": "Tips: 在地址栏输入 jk，按空格键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
+    "message": "Tips: 在地址栏输入 <kbd>jk</kbd>，按空格键进入 Jenkins Job 智能搜索模式，输入Job名称可快速匹配到对应的 Jenkins Job 链接。"
   },
   "jobStatsTitle": {
     "message": "Job 统计设置"
@@ -66,12 +66,18 @@
     "message": "统计以下 Jenkins URL 中的 Job 信息"
   },
   "jobStatsJenkinsPlaceholder": {
-    "message": "输入 Jenkins/View/Job URL，一行一个，如：http://127.0.0.1:8080/view/My/"
+    "message": "例如：http://127.0.0.1:8080/view/MyView/"
+  },
+  "jobStatsJenkinsHint": {
+    "message": "填入 Jenkins/View/Job URL，一行一个。"
   },
   "jobStatsNodeParamTip": {
-    "message": "如果Job节点数据为空，则从以下参数中获取"
+    "message": "如果Job节点数据为空，则从以下构建参数中获取"
   },
   "jobStatsNodeParamPlaceholder": {
+    "message": "例如：NODE,node"
+  },
+  "jobStatsNodeParamHint": {
     "message": "可填写多个参数名称，以英文逗号(,)分割"
   },
   "themeTitle": {
@@ -140,20 +146,24 @@
   "showNotificationOption_none": {
     "message": "从不"
   },
-  "refreshTimeTip_1": {
-    "message": "每隔  <b>"
-  },
-  "refreshTimeTip_2": {
-    "message": " 秒</b> 获取一次最新状态"
+  "refreshTimeTip": {
+    "message": "每隔  <b> $duration$ 秒</b> 获取一次最新状态",
+    "placeholders": {
+      "duration": {
+        "content": "$1"
+      }
+    }
   },
   "nodeOptionTitle": {
     "message": "节点监控设置"
   },
-  "nodeRefreshTimeTip_1": {
-    "message": "每隔  <b>"
-  },
-  "nodeRefreshTimeTip_2": {
-    "message": " 小时</b> 获取一次最新状态"
+  "nodeRefreshTimeTip": {
+    "message": "每隔  <b> $duration$ 小时</b> 获取一次最新状态",
+    "placeholders": {
+      "duration": {
+        "content": "$1"
+      }
+    }
   },
   "createMonitoringTaskTitle": {
     "message": "创建监控任务"

@@ -37,6 +37,9 @@ export const perillaTheme: Theme = {
       disabledline: '#e6e6e6',
       offlineline: '#e6e6e6',
       monitoredline: '#d2e7ca',
+      kbdColor: '#24292f',
+      kbdBgColor: '#f6f8fa',
+      kbdBorderColor: 'rgb(175 184 193 / 20%)',
     },
   },
   dark: {
@@ -73,6 +76,9 @@ export const perillaTheme: Theme = {
       disabledline: '#3e3e3e',
       offlineline: '#404040',
       monitoredline: '#1f3b12',
+      kbdColor: '#c9d1d9',
+      kbdBgColor: '#161b22',
+      kbdBorderColor: 'rgb(110 118 129 / 40%)',
     },
   },
 }

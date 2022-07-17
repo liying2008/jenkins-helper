@@ -30,3 +30,18 @@
     }
   }
 }
+
+//////////////////////////////////
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  line-height: 10px;
+  color: var(--jk-kbdColor);
+  vertical-align: middle;
+  background-color: var(--jk-kbdBgColor);
+  border: solid 1px var(--jk-kbdBorderColor);
+  border-bottom-color: var(--jk-kbdBorderColor);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--jk-kbdBorderColor);
+}
