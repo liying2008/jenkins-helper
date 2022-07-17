@@ -57,7 +57,6 @@ export async function getManifest() {
       'notifications',
       'tabs',
       'downloads',
-      'activeTab',
     ],
     content_scripts: [{
       matches: [
