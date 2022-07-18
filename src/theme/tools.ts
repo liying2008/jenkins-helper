@@ -1,4 +1,4 @@
-import type { Theme } from './binding'
+import type { Theme } from './theme'
 import { applyTheme } from './binding'
 import { coffeeTheme } from './theme_coffee'
 import { defaultTheme } from './theme_default'

@@ -501,7 +501,7 @@ function nextBuild() {
         }
 
         .info-icon-btn {
-          vertical-align: middle;
+          vertical-align: sub;
 
           .copy-built-on-icon {
             font-size: 14px;

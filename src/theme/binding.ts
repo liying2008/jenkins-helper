@@ -1,34 +1,6 @@
-import type { GlobalThemeOverrides } from 'naive-ui'
+import type { Theme } from './theme'
 import { useThemeStore } from '~/store'
 
-export interface CustomTheme {
-  custom: {
-    notbuilt: string
-    aborted: string
-    disabled: string
-    title: string
-    subtitle: string
-    link: string
-    buildingline: string
-    disabledline: string
-    offlineline: string
-    monitoredline: string
-    kbdColor: string
-    kbdBgColor: string
-    kbdBorderColor: string
-  }
-}
-
-export type AppTheme = GlobalThemeOverrides & CustomTheme
-
-export interface Theme {
-  // 主题名称
-  name: string
-  // 明亮配色
-  light: AppTheme
-  // 黑暗配色
-  dark: AppTheme
-}
 
 export function applyTheme(theme: Theme, darkMode: boolean) {
   // console.log('applyTheme::theme=', theme, 'darkMode=', darkMode)
