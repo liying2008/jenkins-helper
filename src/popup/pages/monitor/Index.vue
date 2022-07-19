@@ -107,13 +107,13 @@ onMounted(() => {
 
 function getResultColor(jobColor: string) {
   switch (jobColor) {
-    case 'blue': return 'successColorPressed'
-    case 'red': return 'errorColorPressed'
+    case 'blue': return 'success'
+    case 'red': return 'error'
     case 'notbuilt': return 'notbuilt'
-    case 'yellow': return 'warningColorPressed'
+    case 'yellow': return 'warning'
     case 'aborted': return 'aborted'
     case 'disabled': return 'disabled'
-    default: return 'orange darken-2'
+    default: return ''
   }
 }
 

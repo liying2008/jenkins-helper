@@ -1,6 +1,9 @@
 import type { GlobalThemeOverrides } from 'naive-ui'
 
 export interface CustomTheme {
+  success: string
+  error: string
+  warning: string
   notbuilt: string
   aborted: string
   disabled: string

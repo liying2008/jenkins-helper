@@ -66,11 +66,11 @@ getParameters()
 
 function getResultColor(label: string) {
   switch (label) {
-    case 'SUCCESS': return 'successColorPressed'
-    case 'FAILURE': return 'errorColorPressed'
-    case 'UNSTABLE': return 'warningColorPressed'
+    case 'SUCCESS': return 'success'
+    case 'FAILURE': return 'error'
+    case 'UNSTABLE': return 'warning'
     case 'ABORTED': return 'aborted'
-    default: return 'orange darken-2'
+    default: return ''
   }
 }
 

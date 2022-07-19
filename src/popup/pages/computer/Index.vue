@@ -406,18 +406,18 @@ function onShowOfflineNodesChange(newVal: boolean) {
       }
 
       .safe-row > td {
-        color: var(--jk-successColorPressed);
+        color: var(--jk-success);
 
         a {
-          color: var(--jk-successColorPressed);
+          color: var(--jk-success);
         }
       }
 
       .unsafe-row > td {
-        color: var(--jk-errorColorPressed);
+        color: var(--jk-error);
 
         a {
-          color: var(--jk-errorColorPressed);
+          color: var(--jk-error);
         }
       }
     }

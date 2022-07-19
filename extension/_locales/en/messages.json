@@ -89,6 +89,9 @@
   "defaultTheme": {
     "message": "Default Theme"
   },
+  "tealTheme": {
+    "message": "Teal Theme"
+  },
   "sapphireTheme": {
     "message": "Sapphire Theme"
   },

@@ -12,6 +12,7 @@ import { perillaTheme } from '~/theme/theme_perilla'
 import { coffeeTheme } from '~/theme/theme_coffee'
 import { defaultTheme } from '~/theme/theme_default'
 import { t } from '~/libs/extension'
+import { tealTheme } from '~/theme/theme_teal'
 
 const strings = {
   editing: t('editing'),
@@ -95,6 +96,10 @@ const themes: SelectMixedOption[] = [
   {
     label: t('defaultTheme'),
     value: defaultTheme.name,
+  },
+  {
+    label: t('tealTheme'),
+    value: tealTheme.name,
   },
   {
     label: t('sapphireTheme'),

@@ -89,6 +89,9 @@
   "defaultTheme": {
     "message": "默认主题"
   },
+  "tealTheme": {
+    "message": "水鸭青"
+  },
   "sapphireTheme": {
     "message": "蓝天蓝"
   },
