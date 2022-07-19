@@ -326,7 +326,7 @@ function getStyledTime(timestamp: number) {
 
 <style lang="scss">
 .monitor-wrapper {
-  min-height: 500px;
+  min-height: 450px;
 
   .data-area {
     margin-top: 10px;

@@ -104,7 +104,7 @@ const aboutTitles = [
 
       .item-text {
         font-size: 16px;
-        font-weight: lighter;
+        font-weight: 200;
       }
     }
   }

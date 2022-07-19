@@ -291,7 +291,7 @@ function nextBuild() {
           <n-button
             v-show="builtOn"
             text
-            class="info-icon-btn ml-8px"
+            class="copy-icon-btn ml-8px"
             title="Copy"
             @click="copyBuiltOn"
           >
@@ -323,7 +323,7 @@ function nextBuild() {
           <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
           <n-button
             v-if="cause.url"
-            class="info-icon-btn ml-8px"
+            class="go-icon-btn ml-8px"
             title="Go"
             tag="a"
             :href="cause.url"
@@ -455,16 +455,15 @@ function nextBuild() {
   }
 
   .info-block {
-    padding: 10px;
+    padding: 4px 10px;
 
     .info-row {
       align-items: center;
-      height: 28px;
+      margin: 6px 0;
 
       .info-col {
         align-items: center;
         font-size: 12px;
-        color: var(--jk-title);
 
         .n-icon {
           vertical-align: middle;
@@ -500,12 +499,16 @@ function nextBuild() {
           }
         }
 
-        .info-icon-btn {
-          vertical-align: sub;
+        .copy-icon-btn {
+          vertical-align: middle;
 
           .copy-built-on-icon {
             font-size: 14px;
           }
+        }
+
+        .go-icon-btn {
+          vertical-align: sub;
         }
       }
     }
