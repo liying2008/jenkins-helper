@@ -43,6 +43,7 @@ const formValue = ref({
   inputUrlValue: '',
 })
 const search = ref('')
+const loading = ref(false)
 const nodes = ref<NodeDetail[]>([])
 const filteredNodes = ref<NodeDetail[]>([])
 const monitoredNodes = ref<Nodes>({})
@@ -225,6 +226,7 @@ function queryJenkinsNodes(jenkinsUrl?: string | undefined) {
  * @param header
  */
 function getJenkinsNodeData(url: string, jsonUrl: string, header: any) {
+  loading.value = true
   nodes.value = []
   // TODO 给fetch添加请求超时时间配置
   fetch(jsonUrl, header).then((res) => {
@@ -234,6 +236,7 @@ function getJenkinsNodeData(url: string, jsonUrl: string, header: any) {
       return Promise.reject(res)
     }
   }).then((data) => {
+    loading.value = false
     const computers = data.computer
     // console.log(computers)
     for (let i = 0; i < computers.length; i++) {
@@ -288,6 +291,7 @@ function getJenkinsNodeData(url: string, jsonUrl: string, header: any) {
     filter()
   }).catch((e: Error) => {
     console.log('获取数据失败', e)
+    loading.value = false
     message.error(strings.fetchNodesDataFailure)
   })
 }
@@ -425,6 +429,7 @@ function onThresholdValueCancel() {
       <n-data-table
         size="small"
         class="mt-14px"
+        :loading="loading"
         :columns="headers"
         :data="filteredNodes"
         :row-class-name="getRowClass"
