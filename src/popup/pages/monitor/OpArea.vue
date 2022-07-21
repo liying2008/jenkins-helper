@@ -70,10 +70,6 @@ function initResultFilter() {
     })
   })
 }
-
-function creationModalVisibleUpdate(value: boolean) {
-  creationModalVisible.value = value
-}
 </script>
 
 <template>
@@ -124,7 +120,7 @@ function creationModalVisibleUpdate(value: boolean) {
     <!-- 创建监控任务的对话框 -->
     <CreationModal
       :show="creationModalVisible"
-      @visible-update="creationModalVisibleUpdate"
+      @close="creationModalVisible = false"
     />
   </div>
 </template>

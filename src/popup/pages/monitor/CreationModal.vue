@@ -11,7 +11,7 @@ const props = defineProps<{
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
-  (e: 'visibleUpdate', value: boolean): void
+  (e: 'close'): void
 }>()
 
 const strings = {
@@ -32,7 +32,9 @@ const modalVisible = computed({
     return props.show
   },
   set(newVal) {
-    emit('visibleUpdate', newVal)
+    if (!newVal) {
+      emit('close')
+    }
   },
 })
 
