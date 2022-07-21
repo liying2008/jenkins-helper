@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { addZeroForSingleDigit } from './common'
 import { StorageService } from '~/libs/storage'
 import type { Enc } from '~/models/common'
 
@@ -145,26 +146,15 @@ export class Tools {
     }
     const d = new Date(timestamp)
     const year = d.getFullYear()
-    const month = Tools.zeroFill(d.getMonth() + 1)
-    const day = Tools.zeroFill(d.getDate())
-    const hour = Tools.zeroFill(d.getHours())
-    const minute = Tools.zeroFill(d.getMinutes())
-    const second = Tools.zeroFill(d.getSeconds())
+    const month = addZeroForSingleDigit(d.getMonth() + 1)
+    const day = addZeroForSingleDigit(d.getDate())
+    const hour = addZeroForSingleDigit(d.getHours())
+    const minute = addZeroForSingleDigit(d.getMinutes())
+    const second = addZeroForSingleDigit(d.getSeconds())
     if (withSep) {
       return `${year}-${month}-${day} ${hour}:${minute}:${second}`
     } else {
       return `${year}${month}${day}${hour}${minute}${second}`
-    }
-  }
-
-  /**
-   * 前位补零
-   */
-  static zeroFill(i: number): string | number {
-    if (i >= 0 && i <= 9) {
-      return `0${i}`
-    } else {
-      return i
     }
   }
 }

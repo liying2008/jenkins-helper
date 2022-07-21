@@ -24,12 +24,14 @@ whenever(keys.shift_w, () => {
     <n-global-style />
     <n-dialog-provider>
       <n-message-provider>
-        <div
-          id="app"
-          class="app"
-        >
-          <Main />
-        </div>
+        <n-notification-provider>
+          <div
+            id="app"
+            class="app"
+          >
+            <Main />
+          </div>
+        </n-notification-provider>
       </n-message-provider>
     </n-dialog-provider>
   </n-config-provider>

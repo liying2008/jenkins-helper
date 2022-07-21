@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { h, onMounted, ref, watch } from 'vue'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NCheckbox, NEl, NIcon } from 'naive-ui'
+import { NA, NCheckbox, NEl, NIcon, useNotification } from 'naive-ui'
 import { CheckmarkCircleOutline } from '@vicons/ionicons5'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
+import { removeEnd } from '~/libs/common'
 
 class JobInfo {
   url: string = ''
@@ -20,12 +21,15 @@ class JobInfo {
 
 const strings = {
   noData: t('noData'),
+  extName: t('extName'),
   title: t('jobStatisticsTitle'),
   jobStatisticsDataFrom_: t('jobStatisticsDataFrom_'),
   jobStatisticsShowSettings: t('jobStatisticsShowSettings'),
   jobStatisticsShowEnabledJobOnly: t('jobStatisticsShowEnabledJobOnly'),
   jobStatisticsShowCronTableJobOnly: t('jobStatisticsShowCronTableJobOnly'),
 }
+
+const notification = useNotification()
 
 const search = ref('')
 const headers: TableColumns<JobInfo> = [
@@ -229,42 +233,82 @@ function getJobStats() {
   badUrls.value = []
   jobs.value = []
   jobUrlVisited.value = []
-  const urlLen = jenkinsUrls.value.length
 
-  for (let i = 0; i < urlLen; i++) {
-    let url = jenkinsUrls.value[i].trim()
-    if (url === '') {
-      continue
-    }
-    url = url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url
-    urls.value.push(url);
+  const allProcesses = jenkinsUrls.value.map((url) => removeEnd(url.trim(), '/'))
+    .filter((url) => url !== '').map((url) => {
+      urls.value.push(url)
+      console.log('processing url: ', url)
+      return processSingleUrl(url)
+    })
 
-    (function (url: string) {
-      const encodeParam = encodeURI('url,jobs[url]')
-      const jsonUrl = `${url}/api/json?tree=${encodeParam}`
-      Tools.getFetchOption(jsonUrl).then((header) => {
-        fetch(jsonUrl, header).then((res) => {
-          if (res.ok) {
-            return res.json()
-          } else {
-            return Promise.reject(res)
-          }
-        }).then((data) => {
-          if (data.hasOwnProperty('jobs')) {
-            const jobLen = data.jobs.length
-            for (let jobIndex = 0; jobIndex < jobLen; jobIndex++) {
-              getJobStatsByUrl(data.jobs[jobIndex].url)
-            }
-          } else {
-            // Job Url
-            getJobStatsByUrl(data.url)
-          }
-        }).catch((e: Error) => {
-          console.log('获取Job URL失败', url, e)
-          badUrls.value.push(url)
-        })
+  Promise.all(allProcesses).then(() => {
+    console.log('getJobStats done!')
+    // 获取获取成功的URL
+    const successUrls = urls.value.filter((url) => !badUrls.value.includes(url))
+
+    if (successUrls.length > 0 && badUrls.value.length === 0) {
+      // 请求全部成功
+      notification.success({
+        title: '数据获取成功',
+        description: strings.title,
+        content: '获取成功的数据来源：' + `\n${successUrls.join('\n')}`,
+        duration: 5000,
+        meta: strings.extName,
       })
-    })(url)
+    } else if (successUrls.length > 0 && badUrls.value.length > 0) {
+      // 请求部分成功
+      notification.warning({
+        title: '部分数据获取失败',
+        description: strings.title,
+        content: '获取成功的数据来源：' + `\n${successUrls.join('\n')}` + '\n\n' + '获取失败的数据来源：' + `\n${badUrls.value.join('\n')}`,
+        duration: 7000,
+        meta: strings.extName,
+      })
+    } else if (successUrls.length === 0 && badUrls.value.length > 0) {
+      // 请求全部失败
+      notification.error({
+        title: '数据获取失败',
+        description: strings.title,
+        content: '获取失败的数据来源：' + `\n${badUrls.value.join('\n')}`,
+        duration: 10000,
+        meta: strings.extName,
+      })
+    } else {
+      // 没有请求
+      notification.info({
+        title: '无数据',
+        description: strings.title,
+        content: 'Job 统计未配置',
+        duration: 3000,
+        meta: strings.extName,
+      })
+    }
+  })
+}
+
+async function processSingleUrl(url: string) {
+  const encodeParam = encodeURI('url,jobs[url]')
+  const jsonUrl = `${url}/api/json?tree=${encodeParam}`
+  try {
+    const header = await Tools.getFetchOption(jsonUrl)
+    const res = await fetch(jsonUrl, header)
+    if (res.ok) {
+      const data = await res.json()
+      if (data.hasOwnProperty('jobs')) {
+        data.jobs.forEach((job: any) => {
+          getJobStatsByUrl(job.url)
+        })
+      } else {
+        // Job Url
+        getJobStatsByUrl(data.url)
+      }
+    } else {
+      console.log('获取Job URL失败', url, res)
+      badUrls.value.push(url)
+    }
+  } catch (e) {
+    console.error('getJobStats error', e)
+    badUrls.value.push(url)
   }
 }
 
