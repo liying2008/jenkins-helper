@@ -2,7 +2,7 @@
 import { h, onMounted, ref, watch } from 'vue'
 import { CloseCircleOutline } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NTag, NText, useMessage } from 'naive-ui/es/components'
+import { NA, NTag, useMessage } from 'naive-ui/es/components'
 import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
 import type { Options } from '../../../models/option'
 import OpArea from './OpArea.vue'
@@ -10,9 +10,9 @@ import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
-import { useThemeStore } from '~/store'
 import { t } from '~/libs/extension'
 import { isNullOrEmptyRecord } from '~/libs/common'
+import StyleTime from '~/components/style-time/StyleTime.vue'
 
 const strings = {
   noFilterValue: '-',
@@ -29,7 +29,6 @@ const jobsData = ref<JobRoot>({})
 const data = ref<Record<string, any>>({})
 
 const message = useMessage()
-const themeStore = useThemeStore()
 
 const search = ''
 const headers: TableColumns = [
@@ -57,11 +56,12 @@ const headers: TableColumns = [
     width: '25%',
     sorter: 'default',
     render(row) {
+      const s = Tools.getReadableTime(row.lastBuildTimestamp as number, true)
       return h(
-        NText,
+        StyleTime,
         {
+          datetime: s,
           class: ['monitor-table-build-time', row.building ? 'building' : ''],
-          innerHTML: getStyledTime(row.lastBuildTimestamp as number),
         },
       )
     },
@@ -212,25 +212,6 @@ function removeJenkins(jenkinsUrl: string) {
     // 显示 删除成功
     message.success(strings.removeMonitorUrlTip)
   })
-}
-
-/**
- * 获取有样式的时间字符串
- * @returns {string}
- */
-function getStyledTime(timestamp: number) {
-  const s = Tools.getReadableTime(timestamp, true)
-  if (s === '') {
-    return ''
-  }
-  const arr = s.split(' ')
-  let dateColor = '#444444'
-  let timeColor = '#888888'
-  if (themeStore.darkMode) {
-    dateColor = '#bbbbbb'
-    timeColor = '#888888'
-  }
-  return `<span style="color: ${dateColor}">${arr[0]}</span> <span style="color: ${timeColor}">${arr[1]}</span>`
 }
 </script>
 

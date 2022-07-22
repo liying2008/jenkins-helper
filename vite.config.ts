@@ -27,7 +27,6 @@ export const sharedConfig: UserConfig = {
     Vue(),
     AutoImport({
       imports: [
-        'vue',
         {
           'webextension-polyfill': [
             ['*', 'browser'],

@@ -9,6 +9,7 @@ export interface CustomTheme {
   disabled: string
   title: string
   subtitle: string
+  subtitle2: string
   link: string
   buildingline: string
   disabledline: string
