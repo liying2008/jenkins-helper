@@ -27,19 +27,19 @@ export function removeEnd(s: string, end: string): string {
 }
 
 /**
- * 判断数组是否为空/undefined/null
+ * 判断数组是否为空/null/undefined
  * @param arr 数组
  * @returns 数组是否为空/null/undefined
  */
-export function isNullOrEmptyArray(arr: any[] | null | undefined): boolean {
+export function isNullOrEmptyArray(arr: unknown[] | null | undefined): boolean {
   return arr === null || arr === undefined || arr.length === 0
 }
 
 /**
- * 判断字符串是否为空/undefined/null
- * @param s 字符串
- * @returns 字符串是否为空/null/undefined
+ * 判断 Record 对象是否为空/null/undefined
+ * @param rec Record 对象
+ * @returns Record 对象是否为空/null/undefined
  */
-export function isNullOrEmptyString(s: string | null | undefined): boolean {
-  return s === null || s === undefined || s.length === 0
+export function isNullOrEmptyRecord(rec: Record<string | number | symbol, unknown> | null | undefined): boolean {
+  return rec === null || rec === undefined || Object.keys(rec).length === 0
 }

@@ -11,6 +11,7 @@ import { StorageService } from '~/libs/storage'
 import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
 import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
 import { t } from '~/libs/extension'
+import { isNullOrEmptyRecord } from '~/libs/common'
 
 type NodeDetailWithJenkinsUrl = NodeDetail & { jenkinsUrl: string }
 
@@ -249,6 +250,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
   <div class="computer-wrapper">
     <!-- 顶部操作区域 -->
     <OpArea
+      :disabled="isNullOrEmptyRecord(monitoredNodes)"
       @result-filter-change="onResultFilterChange"
       @display-name-filter-change="onDisplayNameFilterChange"
       @show-offline-nodes-change="onShowOfflineNodesChange"

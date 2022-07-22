@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addZeroForSingleDigit, isNullOrEmptyArray, isNullOrEmptyString, removeEnd } from '../common'
+import { addZeroForSingleDigit, isNullOrEmptyArray, isNullOrEmptyRecord, removeEnd } from '../common'
 
 describe('Test Common', () => {
   it('show add zero for single digit', () => {
@@ -28,10 +28,10 @@ describe('Test Common', () => {
     expect(isNullOrEmptyArray([1, 2, 3])).toEqual(false)
   })
 
-  it('show is null or empty string', () => {
-    expect(isNullOrEmptyString(null)).toEqual(true)
-    expect(isNullOrEmptyString(undefined)).toEqual(true)
-    expect(isNullOrEmptyString('')).toEqual(true)
-    expect(isNullOrEmptyString('asdf')).toEqual(false)
+  it('show is null or empty record', () => {
+    expect(isNullOrEmptyRecord(null)).toEqual(true)
+    expect(isNullOrEmptyRecord(undefined)).toEqual(true)
+    expect(isNullOrEmptyRecord({})).toEqual(true)
+    expect(isNullOrEmptyRecord({ a: 1 })).toEqual(false)
   })
 })

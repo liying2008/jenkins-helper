@@ -9,6 +9,14 @@ import type { Options } from '~/models/option'
 import { NodeService } from '~/background/node-service'
 import { t } from '~/libs/extension'
 
+defineProps({
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+})
+
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'resultFilterChange', value: number): void
@@ -93,6 +101,7 @@ function refreshNodesInfo() {
       class="search-input"
       size="small"
       clearable
+      :disabled="disabled"
     >
       <template #prefix>
         <n-icon :component="SearchOutline" />
@@ -105,11 +114,13 @@ function refreshNodesInfo() {
       class="filter-select"
       :placeholder="strings.filterLabel"
       :options="filteringResults"
+      :disabled="disabled"
     />
     <!-- 是否显示离线的节点 -->
     <n-checkbox
       v-model:checked="showOfflineNodes"
       size="small"
+      :disabled="disabled"
       class="show-offline-checkbox items-center flex-1"
     >
       {{ strings.showOfflineNodes }}

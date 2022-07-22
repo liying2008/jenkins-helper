@@ -9,6 +9,14 @@ import { StorageService } from '~/libs/storage'
 import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
 
+defineProps({
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+})
+
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'resultFilterChange', value: string): void
@@ -81,6 +89,7 @@ function initResultFilter() {
       class="search-input"
       size="small"
       clearable
+      :disabled="disabled"
     >
       <template #prefix>
         <n-icon :component="SearchOutline" />
@@ -93,11 +102,13 @@ function initResultFilter() {
       class="filter-select"
       :placeholder="strings.filterLabel"
       :options="filteringResults"
+      :disabled="disabled"
     />
     <!-- 是否显示禁用的Job -->
     <n-checkbox
       v-model:checked="showDisabledJobs"
       size="small"
+      :disabled="disabled"
       class="show-disabled-checkbox items-center flex-1"
     >
       {{ strings.showDisabledJobs }}

@@ -1,7 +1,4 @@
-// export interface JobRoot {
-//   [setUrl: string]: JobSet
-// }
-
+// [setUrl: string]: JobSet
 export type JobRoot = Record<string, JobSet>
 
 export type JobSetStatusType = 'ok' | 'error'
@@ -19,10 +16,7 @@ export class JobSet {
   }
 }
 
-// export interface JobStatus {
-//   [jobUrl: string]: JobDetail
-// }
-
+// [jobUrl: string]: JobDetail
 export type JobStatus = Record<string, JobDetail>
 
 export interface JobDetail {

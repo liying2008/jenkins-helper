@@ -12,6 +12,7 @@ import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import { useThemeStore } from '~/store'
 import { t } from '~/libs/extension'
+import { isNullOrEmptyRecord } from '~/libs/common'
 
 const strings = {
   noFilterValue: '-',
@@ -237,6 +238,7 @@ function getStyledTime(timestamp: number) {
   <div class="monitor-wrapper">
     <!-- 顶部操作区域 -->
     <OpArea
+      :disabled="isNullOrEmptyRecord(jobsData)"
       @result-filter-change="onResultFilterChange"
       @job-name-filter-change="onJobNameFilterChange"
       @show-disabled-jobs-change="onShowDisabledJobsChange"
@@ -326,7 +328,7 @@ function getStyledTime(timestamp: number) {
 
 <style lang="scss">
 .monitor-wrapper {
-  min-height: 450px;
+  min-height: 200px;
 
   .data-area {
     margin-top: 10px;
