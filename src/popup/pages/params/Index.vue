@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlagSharp, FlashSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { useDialog, useMessage } from 'naive-ui'
@@ -55,6 +55,10 @@ const message = useMessage()
 const dialog = useDialog()
 const clipboard = useClipboard({ source: builtOn })
 
+const darkMode = computed(() => {
+  return themeStore.darkMode
+})
+
 watch(clipboard.copied, (value) => {
   if (value) {
     message.success(strings.copied)
@@ -71,14 +75,6 @@ function getResultColor(label: string) {
     case 'UNSTABLE': return 'warning'
     case 'ABORTED': return 'aborted'
     default: return ''
-  }
-}
-
-function getBuildingChipColor() {
-  if (themeStore.darkMode) {
-    return 'infoColorPressed'
-  } else {
-    return 'infoColor'
   }
 }
 
@@ -245,7 +241,7 @@ function nextBuild() {
           <!-- 构建中 -->
           <n-tag
             v-if="building"
-            :color="{ color: `var(--jk-${getBuildingChipColor()})`, textColor: 'white' }"
+            :color="{ color: darkMode ? 'var(--jk-infoColorPressed)' : 'var(--jk-infoColor)', textColor: 'white' }"
             class="build-tag building"
             size="small"
             round
