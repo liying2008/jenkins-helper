@@ -1,6 +1,11 @@
 import { t } from '~/libs/extension'
-import type { BuildCause, BuildParameter } from '~/models/jenkins/build'
+import type { Action, BuildCause, BuildParameter, CauseAction, ParametersAction } from '~/models/jenkins/build'
+import { CAUSE_ACTION_CLASS, PARAMETERS_ACTION_CLASS } from '~/models/jenkins/build'
 
+
+export type DisplayedBuildParameter = BuildParameter & { hint: string }
+
+export type DisplayedBuildCause = BuildCause & { fullUpstreamUrl: string }
 
 const strings = {
   passwordParameter: t('passwordParameter'),
@@ -58,65 +63,65 @@ export class JenkinsBuild {
     return buildUrl
   }
 
-  static getBuildParametersFromActions(actions: any[]): BuildParameter[] {
+  static getBuildParametersFromActions(actions: Action[]): DisplayedBuildParameter[] {
     // console.log('actions', actions)
-    const parameters: BuildParameter[] = []
-    for (let i = 0; i < actions.length; i++) {
-      if (actions[i].hasOwnProperty('parameters')) {
-        const _parameters = actions[i].parameters
-        for (let pIndex = 0; pIndex < _parameters.length; pIndex++) {
-          const _class = _parameters[pIndex]._class
+    const parameters: DisplayedBuildParameter[] = []
+    actions.forEach((action) => {
+      if (action._class === PARAMETERS_ACTION_CLASS) {
+        const _parameters = (action as ParametersAction).parameters
+        _parameters.forEach((parameter) => {
+          const _class = parameter._class
           const param = {
-            hidden: false,
-            name: _parameters[pIndex].name,
-            value: _parameters[pIndex].value,
+            _class: parameter._class,
+            hint: '',
+            name: parameter.name,
+            value: parameter.value,
           }
           // 额外处理几个特殊类型的参数
           if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
             // 密码参数
-            param.hidden = true
-            param.value = `<${strings.passwordParameter}>`
+            param.hint = `<${strings.passwordParameter}>`
           } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
             // 凭据参数
-            param.hidden = true
-            param.value = `<${strings.credentialsParameter}>`
+            param.hint = `<${strings.credentialsParameter}>`
           } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
             // 文件参数
-            param.hidden = true
-            param.value = `<${strings.fileParameter}>`
+            param.hint = `<${strings.fileParameter}>`
           } else if (_class === 'hudson.model.RunParameterValue') {
             // 运行时参数
-            param.value = `${_parameters[pIndex].jobName} #${_parameters[pIndex].number}`
+            param.value = `${parameter.jobName} #${parameter.number}`
           }
           parameters.push(param)
-        }
+        })
       }
-    }
+    })
+
     return parameters
   }
 
-  static getBuildCausesFromActions(actions: any[], url: string, fullDisplayName: string): BuildCause[] {
+  static getBuildCausesFromActions(actions: Action[], url: string, fullDisplayName: string): DisplayedBuildCause[] {
     // console.log('actions', actions)
-    const causes: BuildCause[] = []
-    for (let i = 0; i < actions.length; i++) {
-      if (actions[i].hasOwnProperty('causes')) {
-        const _causes = actions[i].causes
-        for (let cIndex = 0; cIndex < _causes.length; cIndex++) {
-          const shortDescription = _causes[cIndex].shortDescription
-          let upstreamUrl = ''
-          if (_causes[cIndex].upstreamUrl && _causes[cIndex].upstreamBuild) {
+    const causes: DisplayedBuildCause[] = []
+    actions.forEach((action) => {
+      if (action._class === CAUSE_ACTION_CLASS) {
+        const _causes = (action as CauseAction).causes
+        _causes.forEach((cause) => {
+          const shortDescription = cause.shortDescription
+          let fullUpstreamUrl = ''
+          if (cause.upstreamUrl && cause.upstreamBuild) {
             const rootUrl = JenkinsBuild.getJenkinsRootUrl(url, fullDisplayName)
             if (rootUrl) {
-              upstreamUrl = `${rootUrl}/${_causes[cIndex].upstreamUrl}${_causes[cIndex].upstreamBuild}/`
+              fullUpstreamUrl = `${rootUrl}/${cause.upstreamUrl}${cause.upstreamBuild}/`
             }
           }
           causes.push({
+            _class: cause._class,
             shortDescription,
-            url: upstreamUrl,
+            fullUpstreamUrl,
           })
-        }
+        })
       }
-    }
+    })
     return causes
   }
 }

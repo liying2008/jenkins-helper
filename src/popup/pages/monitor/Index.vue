@@ -4,7 +4,8 @@ import { CloseCircleOutline } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NTag, useMessage } from 'naive-ui/es/components'
 import OpArea from './OpArea.vue'
-import type { DisplayedJobDetail, JobRoot } from '~/models/job'
+import type { DisplayedJobDetail, DisplayedJobRoot, JobRoot } from '~/models/job'
+import { getEmptyDisplayedJobSet } from '~/models/job'
 import type { Options } from '~/models/option'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
@@ -27,11 +28,11 @@ const showDisabledJobs = ref(true)
 const filteringResult = ref(strings.noFilterValue)
 const filteringJobName = ref('')
 const jobsData = ref<JobRoot>({})
-const data = ref<Record<string, any>>({})
+const data = ref<DisplayedJobRoot>({})
 
 const message = useMessage()
 
-const headers: TableColumns = [
+const headers: TableColumns<DisplayedJobDetail> = [
   {
     title: 'Job Name',
     align: 'left',
@@ -56,7 +57,7 @@ const headers: TableColumns = [
     width: '25%',
     sorter: 'default',
     render(row) {
-      const s = Tools.getReadableTime(row.lastBuildTimestamp as number, true)
+      const s = Tools.getReadableTime(row.lastBuildTimestamp, true)
       return h(
         StyleTime,
         {
@@ -179,7 +180,7 @@ function filterData() {
   // console.log('filterData::status', status)
   data.value = {}
   Object.keys(status).forEach((setUrl: string) => {
-    data.value[setUrl] = {}
+    data.value[setUrl] = getEmptyDisplayedJobSet()
     data.value[setUrl].name = status[setUrl].name
     data.value[setUrl].status = status[setUrl].status
     data.value[setUrl].error = status[setUrl].error
@@ -265,8 +266,7 @@ function removeJenkins(jenkinsUrl: string) {
                 :title="jenkins.error"
                 class="card-title-err-tag"
               >
-                <span v-if="jenkins.status === 'cctray'">CCtray Error</span>
-                <span v-else>ERROR</span>
+                <span>ERROR</span>
               </n-tag>
             </div>
             <div class="ml-8px">

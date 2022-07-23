@@ -22,15 +22,6 @@ export class Tools {
     disabled: 'Disabled',
   }
 
-  static readonly labelClass: { [key: string]: string } = {
-    blue: 'label-success',
-    yellow: 'label-warning',
-    red: 'label-danger',
-    aborted: 'label-default',
-    notbuilt: 'label-primary',
-    disabled: 'label-primary',
-  }
-
   static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET'): RequestInit {
     if (!headers) {
       headers = {}
@@ -140,7 +131,7 @@ export class Tools {
    * @param withSep 是否含有日期时间分隔符
    * @returns {string}
    */
-  static getReadableTime(timestamp: number, withSep = true) {
+  static getReadableTime(timestamp?: number, withSep = true) {
     if (timestamp === undefined || timestamp === null || timestamp === 0) {
       return ''
     }

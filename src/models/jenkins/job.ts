@@ -1,26 +1,17 @@
-export interface JenkinsJob {
-  _class: string
-  color: string
-  url: string
-  displayName: string
-  name: string
-  fullName: string
-  description: string
-  lastBuildNumber?: number
-  lastBuildResult?: string
-  lastBuildTimestamp?: number
-  lastBuildUrl?: string
-  lastCompletedBuild: JenkinsCompletedBuild | null
-}
+import type { JenkinsBuild } from './build'
 
-export class JenkinsCompletedBuild {
+export class JenkinsJob {
   _class: string = ''
+  color: string = ''
   url: string = ''
-  number: number = 0
-  result: string = ''
-  timestamp: number = 0
-
-  static empty() {
-    return new JenkinsCompletedBuild()
-  }
+  displayName: string = ''
+  name: string = ''
+  fullName: string = ''
+  description?: string = undefined
+  // lastBuildNumber?: number
+  // lastBuildResult?: string
+  // lastBuildTimestamp?: number
+  // lastBuildUrl?: string
+  lastCompletedBuild: JenkinsBuild | null = null
+  lastBuild: JenkinsBuild | null = null
 }

@@ -4,7 +4,6 @@ import { StorageService } from '~/libs/storage'
 import type { JobRoot, JobSet, JobStatus } from '~/models/job'
 import type { NotificationShowing, Options } from '~/models/option'
 import type { JenkinsJob } from '~/models/jenkins/job'
-import { JenkinsCompletedBuild } from '~/models/jenkins/job'
 import type { JenkinsView } from '~/models/jenkins/view'
 import type { Enc } from '~/models/common'
 import JenkinsGrayIcon from '~/assets/img/logo-gray.svg'
@@ -27,13 +26,10 @@ export class JobService {
   // 是否正在查询Job状态数据
   private static querying = false
 
-  private static status = Tools.jobStatus
-  private static labelClass = Tools.labelClass
-
   // 通知ID和URL的对照
-  private static notificationUrlMap: { [key: string]: string } = {}
+  private static notificationUrlMap = new Map<string, string>()
   // 请求 /api/json 使用的 tree 参数
-  private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url]]'
+  private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]]]'
 
   private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
     const jenkinsObj: JobSet = {
@@ -46,9 +42,6 @@ export class JobService {
   }
 
   static start() {
-    JobService.status = Tools.jobStatus
-    JobService.labelClass = Tools.labelClass
-
     // 添加 storage change 监听
     StorageService.addStorageListener(JobService.storageChange)
     StorageService.getJenkinsUrls().then((result: string[]) => {
@@ -63,8 +56,8 @@ export class JobService {
     // 点击通知
     browser.notifications.onClicked.addListener((notificationId) => {
       // 打开构建页面
-      if (notificationId in JobService.notificationUrlMap) {
-        browser.tabs.create({ url: JobService.notificationUrlMap[notificationId] })
+      if (JobService.notificationUrlMap.has(notificationId)) {
+        browser.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) })
       }
     })
   }
@@ -82,8 +75,8 @@ export class JobService {
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
       // console.log('changes', changes)
-      const oldOptions = changes[StorageService.keyForOptions].oldValue
-      const newOptions = changes[StorageService.keyForOptions].newValue
+      const oldOptions = changes[StorageService.keyForOptions].oldValue as Options
+      const newOptions = changes[StorageService.keyForOptions].newValue as Options
       JobService.showNotificationOption = newOptions.showNotificationOption
       const newRefreshTime = newOptions.refreshTime
       // refreshTime 变更
@@ -207,28 +200,17 @@ export class JobService {
     // console.log('parseJenkinsOrViewData::oldData', oldData)
     const jobs = data.jobs
     // console.log('jobs 1', jobs);
-    for (let i = 0; i < jobs.length; i++) {
-      jobs[i].lastBuildNumber = 0
-      jobs[i].lastBuildTimestamp = 0
-      jobs[i].lastBuildUrl = ''
-      jobs[i].lastBuildResult = ''
-      if (jobs[i].lastCompletedBuild) {
-        jobs[i].lastBuildNumber = jobs[i].lastCompletedBuild!.number
-        jobs[i].lastBuildTimestamp = jobs[i].lastCompletedBuild!.timestamp
-        jobs[i].lastBuildUrl = jobs[i].lastCompletedBuild!.url
-        jobs[i].lastBuildResult = jobs[i].lastCompletedBuild!.result
-      }
-    }
+
     const jenkinsObj: JobSet = {
       name: data.displayName || data.name || 'All Jobs',
       status: 'ok',
       jobs: {},
     }
-    for (let jobIndex = 0; jobIndex < jobs.length; jobIndex++) {
-      const job = jobs[jobIndex]
+
+    jobs.forEach((job) => {
       let jobColor = job.color
-      if (jobColor === undefined) {
-        continue
+      if (!jobColor) {
+        return
       }
       let building = false
       if (jobColor.endsWith('_anime')) {
@@ -237,15 +219,21 @@ export class JobService {
         jobColor = jobColor.replace(/_anime$/, '')
       }
       JobService.countBadgeJobCount(jobColor)
-      const buildStatus = JobService.status[jobColor]
+      const buildStatus = Tools.jobStatus[jobColor]
 
       let oldStatus: JobStatus = {}
       if (oldData[url] && oldData[url].jobs) {
         oldStatus = oldData[url].jobs!
       }
-      if (oldStatus[job.url] && job.lastBuildNumber! > oldStatus[job.url].lastBuildNumber) {
+
+      const lastCompletedBuildNumber = job.lastCompletedBuild?.number || 0
+      const oldLastCompletedBuildNumber = oldStatus[job.url]?.lastCompletedBuildNumber || 0
+      if (oldStatus[job.url] && oldLastCompletedBuildNumber > 0 && lastCompletedBuildNumber > oldLastCompletedBuildNumber) {
         // 新的一次构建
-        JobService.showNotification(job.lastBuildResult!, job.displayName, job.lastBuildUrl!)
+        const lastCompletedBuildResult = job.lastCompletedBuild!.result!
+        const lastCompletedBuildUrl = job.lastCompletedBuild!.url
+        // console.log('--01--showNotification', lastCompletedBuildUrl)
+        JobService.showNotification(lastCompletedBuildResult, job.displayName, lastCompletedBuildUrl)
       }
 
       jenkinsObj.jobs![job.url] = {
@@ -253,12 +241,12 @@ export class JobService {
         color: jobColor,
         status: buildStatus,
         building,
-        labelClass: JobService.labelClass[jobColor],
-        lastBuildNumber: job.lastBuildNumber!,
-        lastBuildTimestamp: job.lastBuildTimestamp!,
+        lastCompletedBuildNumber,
+        lastBuildTimestamp: job.lastBuild?.timestamp,
+        // TODO: params and badges
       }
-    } // end for
-    // console.log(jenkinsObj)
+    })
+    // console.log('parseJenkinsOrViewData::jenkinsObj', jenkinsObj)
     return jenkinsObj
   }
 
@@ -270,6 +258,9 @@ export class JobService {
       jobs: {},
     }
     let jobColor = data.color
+    if (!jobColor) {
+      return jenkinsObj
+    }
     let building = false
     if (jobColor.endsWith('_anime')) {
       // 正在构建中
@@ -277,31 +268,30 @@ export class JobService {
       jobColor = jobColor.replace(/_anime$/, '')
     }
     JobService.countBadgeJobCount(jobColor)
-    const buildStatus = JobService.status[jobColor]
-    const lastBuild = data.lastCompletedBuild || JenkinsCompletedBuild.empty()
-    const lastBuildNumber = lastBuild.number
-    const lastBuildTimestamp = lastBuild.timestamp
-    const lastBuildUrl = lastBuild.url
-    const lastBuildResult = lastBuild.result
+    const buildStatus = Tools.jobStatus[jobColor]
 
     let oldStatus: JobStatus = {}
     if (oldData[url] && oldData[url].jobs) {
       oldStatus = oldData[url].jobs!
     }
-    if (oldStatus[data.url] && lastBuildNumber > oldStatus[data.url].lastBuildNumber) {
+    const lastCompletedBuildNumber = data.lastCompletedBuild?.number || 0
+    const oldLastCompletedBuildNumber = oldStatus[data.url]?.lastCompletedBuildNumber || 0
+    if (oldStatus[data.url] && oldLastCompletedBuildNumber > 0 && lastCompletedBuildNumber > oldLastCompletedBuildNumber) {
       // 新的一次构建
-      JobService.showNotification(lastBuildResult, jenkinsObj.name, lastBuildUrl)
+      const lastCompletedBuildResult = data.lastCompletedBuild!.result!
+      const lastCompletedBuildUrl = data.lastCompletedBuild!.url
+      JobService.showNotification(lastCompletedBuildResult, jenkinsObj.name, lastCompletedBuildUrl)
     }
     jenkinsObj.jobs![data.url] = {
       name: data.displayName,
       color: jobColor,
       status: buildStatus,
       building,
-      labelClass: JobService.labelClass[jobColor],
-      lastBuildNumber,
-      lastBuildTimestamp,
+      lastCompletedBuildNumber,
+      lastBuildTimestamp: data.lastBuild?.timestamp,
+      // TODO: params and badges
     }
-    // console.log(jenkinsObj);
+    // console.log('parseSingleJobData::jenkinsObj', jenkinsObj)
     return jenkinsObj
   }
 
@@ -361,7 +351,7 @@ export class JobService {
       priority: 0, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
     }).then((notificationId) => {
       if (notificationId) {
-        JobService.notificationUrlMap[notificationId] = url
+        JobService.notificationUrlMap.set(notificationId, url)
       }
     })
   }

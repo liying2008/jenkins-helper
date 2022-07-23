@@ -14,28 +14,51 @@ export class JobSet {
     this.status = status
     this.error = error
   }
+
+  static empty() {
+    return new JobSet('', 'ok')
+  }
 }
 
 // [jobUrl: string]: JobDetail
 export type JobStatus = Record<string, JobDetail>
 
-export interface JobDetail {
-  building: boolean
-  color: string
-  labelClass: string
-  lastBuildNumber: number
-  lastBuildTimestamp: number
-  name: string
-  status: string
+export class JobDetail {
+  building: boolean = false
+  color: string = ''
+  lastCompletedBuildNumber?: number = undefined
+  lastBuildTimestamp?: number = undefined
+  // Job 名称
+  name: string = ''
+  // 当前构建状态
+  status: string = ''
+  // 构建参数
+  params?: Record<string, string> = undefined
+  // 构建徽标
+  badge?: BuildBadge[] = undefined
 }
 
-export interface DisplayedJobDetail {
-  jobUrl: string
-  building: boolean
-  color: string
-  labelClass: string
-  lastBuildNumber: number
-  lastBuildTimestamp: number
-  name: string
-  status: string
+export class BuildBadge {
+  background: string | null = null
+  border: string | null = null
+  borderColor: string | null = null
+  color: string | null = null
+  link: string | null = null
+  text: string | null = null
+  html: string | null = null
 }
+
+export type DisplayedJobDetail = JobDetail & { jobUrl: string }
+
+export type DisplayedJobSet = Omit<JobSet, 'jobs'> & { jobs: DisplayedJobDetail[] }
+
+export function getEmptyDisplayedJobSet(): DisplayedJobSet {
+  return {
+    name: '',
+    status: 'ok',
+    error: undefined,
+    jobs: [],
+  }
+}
+
+export type DisplayedJobRoot = Record<string, DisplayedJobSet>

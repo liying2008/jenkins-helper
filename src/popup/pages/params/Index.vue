@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, h, ref, watch } from 'vue'
 import { ArrowBackSharp, ArrowForwardCircleSharp, ArrowForwardSharp, CloudDownloadSharp, CopyOutline, FlagSharp, FlashSharp, RefreshCircleSharp, Reload, SettingsSharp, TimeSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { useDialog, useMessage } from 'naive-ui'
@@ -7,7 +7,7 @@ import { useClipboard } from '@vueuse/core'
 import type { Tabs } from 'webextension-polyfill'
 import { Tools } from '~/libs/tools'
 import { useThemeStore } from '~/store'
-import type { BuildCause, BuildParameter } from '~/models/jenkins/build'
+import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import { JenkinsBuild } from '~/libs/jenkins/build'
 import { BrowserUtils } from '~/libs/browser'
 import { t } from '~/libs/extension'
@@ -26,9 +26,38 @@ const strings = {
   ok: t('ok'),
   building: 'BUILDING',
 }
-const headers: TableColumns<BuildParameter> = [
-  { title: 'Name', align: 'left', key: 'name', sorter: 'default', className: 'param-item-key' },
-  { title: 'Value', align: 'left', key: 'value', sorter: 'default', className: 'param-item-value' },
+const headers: TableColumns<DisplayedBuildParameter> = [
+  {
+    title: 'Name',
+    align: 'left',
+    key: 'name',
+    sorter: 'default',
+    className: 'param-item-key',
+  },
+  {
+    title: 'Value',
+    align: 'left',
+    key: 'value',
+    sorter: 'default',
+    className: 'param-item-value',
+    render(row) {
+      return h(
+        'span',
+        {
+        },
+        {
+          default: () => {
+            if (row.value) {
+              return row.value
+            } else {
+              return row.hint
+            }
+          },
+        },
+      )
+    },
+
+  },
 ]
 // status 的状态说明：
 // 0：无数据
@@ -45,8 +74,8 @@ const building = ref(false)
 const result = ref('')
 const buildTime = ref('')
 const builtOn = ref('')
-const causes = ref<BuildCause[]>([])
-const parameters = ref<BuildParameter[]>([])
+const causes = ref<DisplayedBuildCause[]>([])
+const parameters = ref<DisplayedBuildParameter[]>([])
 // 是否禁用下载按钮
 const disableDownload = ref(false)
 
@@ -78,8 +107,8 @@ function getResultColor(label: string) {
   }
 }
 
-function rowProps(row: BuildParameter) {
-  if (row.hidden) {
+function rowProps(row: DisplayedBuildParameter) {
+  if (!row.value) {
     return {
       class: 'param-item hidden-param-item',
     }
@@ -301,8 +330,8 @@ function nextBuild() {
       </n-grid>
       <!-- Build Causes -->
       <n-grid
-        v-for="cause in causes"
-        :key="cause.url"
+        v-for="(cause, index) in causes"
+        :key="index"
         :cols="1"
         class="info-row"
       >
@@ -318,11 +347,11 @@ function nextBuild() {
           </n-icon>
           <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
           <n-button
-            v-if="cause.url"
+            v-if="cause.fullUpstreamUrl"
             class="go-icon-btn ml-8px"
             title="Go"
             tag="a"
-            :href="cause.url"
+            :href="cause.fullUpstreamUrl"
             text
             target="_blank"
           >

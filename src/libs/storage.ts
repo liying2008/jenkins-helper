@@ -14,9 +14,8 @@ export interface StorageChange<T> {
   newValue?: T
 }
 
-export interface StorageChangeWrapper<T = any> {
-  [key: string]: StorageChange<T>
-}
+// [key: string]: StorageChange<T>
+export type StorageChangeWrapper<T=any> = Record<string, StorageChange<T>>
 
 
 export class StorageService {
