@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Add, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { watchDebounced } from '@vueuse/core'
 import CreationModal from './CreationModal.vue'
 import { Tools } from '~/libs/tools'
-import { StorageService } from '~/libs/storage'
-import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
 
-defineProps({
+const props = defineProps({
+  showDisabledJobs: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
   disabled: {
     type: Boolean,
     required: false,
@@ -24,6 +27,15 @@ const emit = defineEmits<{
   (e: 'showDisabledJobsChange', value: boolean): void
 }>()
 
+const editableShowDisabledJobs = computed({
+  get() {
+    return props.showDisabledJobs
+  },
+  set(newVal: boolean) {
+    emit('showDisabledJobsChange', newVal)
+  },
+})
+
 const strings = {
   noFilterValue: '-',
   createMonitoringTaskTitle: t('createMonitoringTaskTitle'),
@@ -36,17 +48,7 @@ const creationModalVisible = ref(false)
 const filteringResult = ref('')
 const filteringJobName = ref('')
 const filteringResults: SelectMixedOption[] = []
-const showDisabledJobs = ref(true)
 
-
-watch(showDisabledJobs, (newVal: boolean) => {
-  StorageService.getOptions().then((options: Options) => {
-    // console.log('showDisabledJobsChanged', options)
-    options.showDisabledJobs = newVal
-    StorageService.saveOptions(options)
-    emit('showDisabledJobsChange', newVal)
-  })
-})
 
 watchDebounced(filteringJobName,
   () => {
@@ -106,7 +108,7 @@ function initResultFilter() {
     />
     <!-- 是否显示禁用的Job -->
     <n-checkbox
-      v-model:checked="showDisabledJobs"
+      v-model:checked="editableShowDisabledJobs"
       size="small"
       :disabled="disabled"
       class="show-disabled-checkbox items-center flex-1"

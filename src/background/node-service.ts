@@ -5,8 +5,8 @@ import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
 import type { JenkinsNode } from '~/models/jenkins/node'
 import type { Nodes } from '~/models/node'
-import type { Options } from '~/models/option'
 import ComputerIcon from '~/assets/img/computer48.png'
+import type { Options } from '~/models/option'
 
 export class NodeService {
   private static lastInterval: number | undefined = undefined
@@ -19,6 +19,7 @@ export class NodeService {
     NodeService.queryNodeStatus()
     StorageService.addStorageListener(NodeService.storageChange)
     StorageService.getOptions().then((options: Options) => {
+      // console.log('node-service::options', options)
       NodeService.refreshNodeStatus(options.nodeRefreshTime)
     })
   }

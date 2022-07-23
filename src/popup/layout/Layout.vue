@@ -6,8 +6,8 @@ import MonitorPage from '../pages/monitor/Index.vue'
 import ParamsPage from '../pages/params/Index.vue'
 import ComputerPage from '../pages/computer/Index.vue'
 import { StorageService } from '~/libs/storage'
-import type { Options, PopupTab } from '~/models/option'
-import { defaultOptionsValue } from '~/models/option'
+import type { PopupTab } from '~/models/option'
+import { Options } from '~/models/option'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import { t } from '~/libs/extension'
 
@@ -20,6 +20,8 @@ const strings = {
   params: t('params'),
   computer: t('computer'),
 }
+
+const defaultOptionsValue = Options.default()
 
 const defaultTab = defaultOptionsValue.defaultTab
 const activeTab = ref(defaultTab)

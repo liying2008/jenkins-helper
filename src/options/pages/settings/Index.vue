@@ -4,8 +4,7 @@ import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { AddCircleSharp, RemoveCircleOutline, SaveOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
 import { StorageService } from '~/libs/storage'
-import type { Options } from '~/models/option'
-import { JenkinsToken, defaultOptionsValue } from '~/models/option'
+import { JenkinsToken, Options } from '~/models/option'
 import { initTheme } from '~/theme'
 import { sapphireTheme } from '~/theme/theme_sapphire'
 import { perillaTheme } from '~/theme/theme_perilla'
@@ -13,6 +12,8 @@ import { coffeeTheme } from '~/theme/theme_coffee'
 import { defaultTheme } from '~/theme/theme_default'
 import { t } from '~/libs/extension'
 import { tealTheme } from '~/theme/theme_teal'
+
+type SettingsOptions = Pick<Options, 'defaultTab' | 'jenkinsTokens' | 'jobStatsJenkinsUrl' | 'nodeParam' | 'omniboxJenkinsUrl' | 'refreshTime' | 'nodeRefreshTime' | 'showNotificationOption' | 'currentTheme' | 'enableDarkMode' | 'enableParamsStashAndRecover' | 'enableParamNamesColor' | 'paramNamesColor'>
 
 const strings = {
   editing: t('editing'),
@@ -53,6 +54,8 @@ const strings = {
 }
 
 const message = useMessage()
+
+const defaultOptionsValue = Options.default()
 
 const refreshTime = ref(parseInt(defaultOptionsValue.refreshTime))
 const nodeRefreshTime = ref(parseInt(defaultOptionsValue.nodeRefreshTime))
@@ -120,7 +123,6 @@ const enableDarkMode = ref(defaultOptionsValue.enableDarkMode)
 const enableParamsStashAndRecover = ref(defaultOptionsValue.enableParamsStashAndRecover)
 const enableParamNamesColor = ref(defaultOptionsValue.enableParamNamesColor)
 const paramNamesColor = ref(defaultOptionsValue.paramNamesColor)
-const showDisabledJobs = ref(defaultOptionsValue.showDisabledJobs)
 const constants = {
   monitorMinRefreshTime: 5,
   monitorMaxRefreshTime: 300,
@@ -143,8 +145,8 @@ function deleteToken(index: number) {
   jenkinsTokens.value.splice(index, 1)
 }
 
-function dataToOptions() {
-  const options: Options = {
+function dataToOptions(): SettingsOptions {
+  const options = {
     defaultTab: defaultTab.value,
     jenkinsTokens: jenkinsTokens.value,
     refreshTime: refreshTime.value.toString(),
@@ -156,14 +158,13 @@ function dataToOptions() {
     currentTheme: currentTheme.value,
     enableDarkMode: enableDarkMode.value,
     enableParamsStashAndRecover: enableParamsStashAndRecover.value,
-    showDisabledJobs: showDisabledJobs.value,
     enableParamNamesColor: enableParamNamesColor.value,
     paramNamesColor: paramNamesColor.value,
   }
   return options
 }
 
-function optionsToData(options: Options) {
+function optionsToData(options: SettingsOptions) {
   /// / refreshTime
   if (options.refreshTime === undefined) {
     refreshTime.value = parseInt(defaultOptionsValue.refreshTime)
@@ -231,27 +232,15 @@ function optionsToData(options: Options) {
     enableParamNamesColor.value = !!options.enableParamNamesColor
   }
   paramNamesColor.value = options.paramNamesColor
-
-  /// / showDisabledJobs
-  if (options.showDisabledJobs === undefined) {
-    showDisabledJobs.value = defaultOptionsValue.showDisabledJobs
-  } else {
-    showDisabledJobs.value = !!options.showDisabledJobs
-  }
 }
 
 function saveOptions() {
-  // console.log('saveOptions')
-  StorageService.getOptions().then((result: Options) => {
-    const option = dataToOptions()
-    // 使用最新的 showDisabledJobs 设置
-    option.showDisabledJobs = result.showDisabledJobs
-    // console.log('option', option)
-    StorageService.saveOptions(option).then(() => {
-      // 应用主题
-      initTheme(option.currentTheme, option.enableDarkMode)
-      message.success(strings.optionsSaved)
-    })
+  const option = dataToOptions()
+  // console.log('option', JSON.parse(JSON.stringify(option)))
+  StorageService.savePartialOptions(option).then(() => {
+    // 应用主题
+    initTheme(option.currentTheme, option.enableDarkMode)
+    message.success(strings.optionsSaved)
   })
 }
 </script>

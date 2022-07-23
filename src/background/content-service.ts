@@ -3,11 +3,11 @@ import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import type { ContentFeatures } from '~/models/content-message'
 import { CMD_GET_CONTENT_FEATURES, CMD_GET_CURRENT_TAB, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '~/models/content-message'
-import { defaultOptionsValue } from '~/models/option'
+import { Options } from '~/models/option'
 
 export class ContentService {
   private static readonly KEY_STASHED_PARAMS = 'stashed_params'
-  private static options = defaultOptionsValue
+  private static options = Options.default()
 
   static start() {
     StorageService.getOptions().then((options) => {

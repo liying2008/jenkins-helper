@@ -241,6 +241,7 @@ function onDisplayNameFilterChange(newVal: string) {
 }
 
 function onShowOfflineNodesChange(newVal: boolean) {
+  // TODO: 持久化存储该项配置
   showOfflineNodes.value = newVal
 }
 </script>
@@ -249,6 +250,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
   <div class="computer-wrapper">
     <!-- 顶部操作区域 -->
     <OpArea
+      :show-offline-nodes="showOfflineNodes"
       :disabled="isNullOrEmptyRecord(monitoredNodes)"
       @result-filter-change="onResultFilterChange"
       @display-name-filter-change="onDisplayNameFilterChange"

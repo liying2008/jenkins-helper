@@ -102,8 +102,9 @@ watch(filteringJobName, () => {
   filterData()
 })
 
+getAllJobStatus()
+
 onMounted(() => {
-  getAllJobStatus()
   StorageService.addStorageListener(jobStatusChange)
 })
 
@@ -146,11 +147,7 @@ function getDeletionConfirmMsg(jenkinsUrl: string) {
 
 function getAllJobStatus() {
   StorageService.getOptions().then((options: Options) => {
-    if (options.showDisabledJobs === undefined) {
-      showDisabledJobs.value = true
-    } else {
-      showDisabledJobs.value = options.showDisabledJobs
-    }
+    showDisabledJobs.value = options.showDisabledJobs
   })
   StorageService.getJobsStatus().then((jobResult: JobRoot) => {
     // console.log('getAllJobStatus::jobResult', jobResult)
@@ -169,7 +166,10 @@ function onJobNameFilterChange(newVal: string) {
 }
 
 function onShowDisabledJobsChange(newVal: boolean) {
-  showDisabledJobs.value = newVal
+  StorageService.savePartialOptions({ showDisabledJobs: newVal }).then(() => {
+    // 保存即可，当前页面的 storage change listner 会监听 showDisabledJobs 的变化，更新数据
+    showDisabledJobs.value = newVal
+  })
 }
 
 /**
@@ -220,6 +220,7 @@ function removeJenkins(jenkinsUrl: string) {
   <div class="monitor-wrapper">
     <!-- 顶部操作区域 -->
     <OpArea
+      :show-disabled-jobs="showDisabledJobs"
       :disabled="isNullOrEmptyRecord(jobsData)"
       @result-filter-change="onResultFilterChange"
       @job-name-filter-change="onJobNameFilterChange"

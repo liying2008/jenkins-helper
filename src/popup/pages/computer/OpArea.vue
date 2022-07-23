@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { NotificationsOutline, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { watchDebounced } from '@vueuse/core'
 import { ComputerStatus, openNodesManager } from './common'
-import { StorageService } from '~/libs/storage'
-import type { Options } from '~/models/option'
 import { NodeService } from '~/background/node-service'
 import { t } from '~/libs/extension'
 
-defineProps({
+const props = defineProps({
+  showOfflineNodes: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
   disabled: {
     type: Boolean,
     required: false,
@@ -38,17 +41,14 @@ const strings = {
 const filteringResult = ref(ComputerStatus.All)
 const filteringDisplayName = ref('')
 const filteringResults: SelectMixedOption[] = []
-const showOfflineNodes = ref(true)
 
-
-watch(showOfflineNodes, (newVal: boolean) => {
-  // TODO 持久化存储此项配置
-  StorageService.getOptions().then((options: Options) => {
-    // console.log('showOfflineNodesChange', options)
-    options.showDisabledJobs = newVal
-    StorageService.saveOptions(options)
+const editableShowOfflineNodes = computed({
+  get() {
+    return props.showOfflineNodes
+  },
+  set(newVal: boolean) {
     emit('showOfflineNodesChange', newVal)
-  })
+  },
 })
 
 watchDebounced(filteringDisplayName,
@@ -118,7 +118,7 @@ function refreshNodesInfo() {
     />
     <!-- 是否显示离线的节点 -->
     <n-checkbox
-      v-model:checked="showOfflineNodes"
+      v-model:checked="editableShowOfflineNodes"
       size="small"
       :disabled="disabled"
       class="show-offline-checkbox items-center flex-1"
