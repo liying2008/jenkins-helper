@@ -38,7 +38,6 @@ const filteringDisplayName = ref('')
 const monitoredNodes = ref<Nodes>({})
 const filteredNodes = ref<Nodes>()
 
-const search = ''
 const message = useMessage()
 
 const headers: TableColumns<NodeDetailWithJenkinsUrl> = [
@@ -319,7 +318,6 @@ function onShowOfflineNodesChange(newVal: boolean) {
           :columns="headers"
           :data="toArray(jenkinsUrl, jenkinsNodes.monitoredNodes)"
           :row-class-name="getRowClass"
-          :search="search"
           :bordered="false"
         >
           <template #empty>

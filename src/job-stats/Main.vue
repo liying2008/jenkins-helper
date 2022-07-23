@@ -31,7 +31,6 @@ const strings = {
 
 const notification = useNotification()
 
-const search = ref('')
 const headers: TableColumns<JobInfo> = [
   {
     title: 'Job URL',
@@ -535,7 +534,6 @@ function getStatisticsDataFromDesc() {
       :columns="headers"
       :data="jobs"
       size="small"
-      :search="search"
       :row-class-name="getRowClass"
     >
       <template #empty>

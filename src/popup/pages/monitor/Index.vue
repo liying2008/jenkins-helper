@@ -3,9 +3,9 @@ import { h, onMounted, ref, watch } from 'vue'
 import { CloseCircleOutline } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NTag, useMessage } from 'naive-ui/es/components'
-import type { DisplayedJobDetail, JobRoot } from '../../../models/job'
-import type { Options } from '../../../models/option'
 import OpArea from './OpArea.vue'
+import type { DisplayedJobDetail, JobRoot } from '~/models/job'
+import type { Options } from '~/models/option'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -22,6 +22,7 @@ const strings = {
   cancel: t('cancel'),
   ok: t('ok'),
 }
+
 const showDisabledJobs = ref(true)
 const filteringResult = ref(strings.noFilterValue)
 const filteringJobName = ref('')
@@ -30,7 +31,6 @@ const data = ref<Record<string, any>>({})
 
 const message = useMessage()
 
-const search = ''
 const headers: TableColumns = [
   {
     title: 'Job Name',
@@ -259,20 +259,15 @@ function removeJenkins(jenkinsUrl: string) {
           </div>
           <div class="flex place-items-center">
             <div v-show="jenkins.status !== 'ok'">
-              <n-button
+              <n-tag
                 type="error"
-                secondary
-                strong
                 round
                 :title="jenkins.error"
-                :href="jenkinsUrl"
-                tag="a"
-                target="_blank"
-                class="card-title-err-btn"
+                class="card-title-err-tag"
               >
                 <span v-if="jenkins.status === 'cctray'">CCtray Error</span>
                 <span v-else>ERROR</span>
-              </n-button>
+              </n-tag>
             </div>
             <div class="ml-8px">
               <PopconfirmDeleteBtn
@@ -292,7 +287,6 @@ function removeJenkins(jenkinsUrl: string) {
           :columns="headers"
           :data="jenkins.jobs"
           :row-class-name="getRowClass"
-          :search="search"
           :bordered="false"
         >
           <template #empty>
@@ -358,15 +352,9 @@ function removeJenkins(jenkinsUrl: string) {
           }
         }
 
-        .card-title-err-btn {
-          width: 60px;
+        .card-title-err-tag {
           height: 26px;
           font-size: 12px;
-
-          .n-button__content {
-            // 按钮文字居中
-            justify-content: center;
-          }
         }
 
         .card-title-remove-btn {
