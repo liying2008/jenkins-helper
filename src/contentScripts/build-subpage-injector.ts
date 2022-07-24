@@ -27,13 +27,19 @@ export function inject() {
     // mount component to context window
     const container = document.createElement('div')
     const root = document.createElement('div')
-    const styleEl = document.createElement('link')
     const shadowDOM = container.attachShadow?.({ mode: 'open' }) || container
+    // <link rel="stylesheet" href="chrome-extension://{id}/dist/contentScripts/style.css">
+    const styleEl = document.createElement('link')
     styleEl.setAttribute('rel', 'stylesheet')
     styleEl.setAttribute('href', browser.runtime.getURL('dist/contentScripts/style.css'))
     shadowDOM.appendChild(styleEl)
+    // <meta name="naive-ui-style" />
+    const metaEl = document.createElement('meta')
+    metaEl.setAttribute('name', 'naive-ui-style')
+    shadowDOM.appendChild(metaEl)
     shadowDOM.appendChild(root)
     document.body.appendChild(container)
-    createApp(App).mount(root)
+    const app = createApp(App)
+    app.mount(root)
   })
 }
