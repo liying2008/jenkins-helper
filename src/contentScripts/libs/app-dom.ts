@@ -1,13 +1,13 @@
 import { BUILD_SUBPAGE_INJECTOR_DOM_ID } from '../constants'
 
-export function getShadowRoot() {
-  return document.querySelector(`#${BUILD_SUBPAGE_INJECTOR_DOM_ID}`)?.shadowRoot
+export function getRoot() {
+  return document.querySelector(`#${BUILD_SUBPAGE_INJECTOR_DOM_ID}`)
 }
 
 export function getAppDiv() {
-  const shadowRoot = getShadowRoot()
-  if (!shadowRoot) {
+  const root = getRoot()
+  if (!root) {
     return null
   }
-  return shadowRoot.querySelector('body div[data-v-app]')
+  return root.querySelector('div[data-v-app]')
 }

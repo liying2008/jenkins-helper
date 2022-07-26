@@ -1,11 +1,11 @@
+<!-- Popup 和 ContentScripts 共用组件，不要依赖 windicss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import { ArrowForwardCircleSharp, CopyOutline, FlagSharp, FlashSharp, TimeSharp } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
-import { computed, watch } from 'vue'
+import { watch } from 'vue'
 import { t } from '~/libs/extension'
 import type { DisplayedBuildCause } from '~/libs/jenkins/build'
-import { useThemeStore } from '~/store'
 
 const props = defineProps<{
   buildUrl: string
@@ -15,6 +15,7 @@ const props = defineProps<{
   buildResult: string
   buildTime: string
   causes: DisplayedBuildCause[]
+  darkMode: boolean
 }>()
 
 const strings = {
@@ -25,12 +26,7 @@ const strings = {
 }
 
 const message = useMessage()
-const themeStore = useThemeStore()
 const clipboard = useClipboard({ source: props.builtOn })
-
-const darkMode = computed(() => {
-  return themeStore.darkMode
-})
 
 watch(clipboard.copied, (value) => {
   if (value) {
@@ -131,7 +127,7 @@ function copyBuiltOn() {
         <n-button
           v-show="builtOn"
           text
-          class="copy-icon-btn ml-8px"
+          class="copy-icon-btn"
           title="Copy"
           @click="copyBuiltOn"
         >
@@ -163,7 +159,7 @@ function copyBuiltOn() {
         <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
         <n-button
           v-if="cause.fullUpstreamUrl"
-          class="go-icon-btn ml-8px"
+          class="go-icon-btn"
           title="Go"
           tag="a"
           :href="cause.fullUpstreamUrl"
@@ -230,6 +226,7 @@ function copyBuiltOn() {
       }
 
       .copy-icon-btn {
+        margin-left: 8px;
         vertical-align: middle;
 
         .copy-built-on-icon {
@@ -238,6 +235,7 @@ function copyBuiltOn() {
       }
 
       .go-icon-btn {
+        margin-left: 8px;
         vertical-align: sub;
       }
     }

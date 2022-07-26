@@ -1,3 +1,4 @@
+<!-- Popup 和 ContentScripts 共用组件，不要依赖 windicss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import { ArrowBackSharp, ArrowForwardSharp, CloudDownloadSharp, RefreshCircleSharp, SettingsSharp } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
@@ -23,6 +24,7 @@ const disableDownload = ref(false)
 function downloadConsoleLog() {
   disableDownload.value = true
   console.log('buildUrl', props.buildUrl)
+  // TODO 需要兼容 content-scripts
   browser.downloads.download({
     url: `${props.buildUrl}logText/progressiveText?start=0`,
     filename: `${props.fullDisplayName} Console Log.log`,
@@ -42,17 +44,18 @@ function goToConfigure() {
   const _url = props.buildUrl.substring(0, props.buildUrl.length - 1)
   const configureUrl = `${_url.substring(0, _url.lastIndexOf('/'))}/configure`
   // console.log(`url=${url.value}, configureUrl=${configureUrl}`)
+  // TODO 需要兼容 content-scripts
   browser.tabs.create({ url: configureUrl })
 }
 
 function rebuild() {
+  // TODO 需要兼容 content-scripts
   browser.tabs.create({ url: `${props.buildUrl}rebuild` })
 }
 </script>
 
 <template>
-  <!-- Prev/Next Button & 快捷按钮 -->
-  <div class="flex mt-16px">
+  <div class="action-wrapper">
     <n-button-group>
       <n-button
         type="default"
@@ -77,7 +80,7 @@ function rebuild() {
         </template>
       </n-button>
     </n-button-group>
-    <div class="flex-1"></div>
+    <div class="spacing"></div>
     <!-- 下载日志 -->
     <n-button
       type="default"
@@ -94,7 +97,7 @@ function rebuild() {
     <!-- 打开Job配置页面 -->
     <n-button
       type="default"
-      class="ml-8px"
+      class="go-to-configure-btn"
       title="Configure"
       @click="goToConfigure"
     >
@@ -107,7 +110,7 @@ function rebuild() {
     <!-- 打开 Rebuild 页面 -->
     <n-button
       type="default"
-      class="ml-8px"
+      class="rebuild-btn"
       title="Rebuild"
       @click="rebuild"
     >
@@ -121,5 +124,19 @@ function rebuild() {
 </template>
 
 <style scoped lang="scss">
+.action-wrapper {
+  display: flex;
 
+  .spacing {
+    flex: 1;
+  }
+
+  .go-to-configure-btn {
+    margin-left: 8px;
+  }
+
+  .rebuild-btn {
+    margin-left: 8px;
+  }
+}
 </style>

@@ -29,3 +29,14 @@ export function applyTheme(theme: Theme, darkMode: boolean) {
   }
   themeStore.darkMode = darkMode
 }
+
+export function applyThemeForContentScripts(theme: Theme) {
+  for (const key in theme.light.common) {
+    // @ts-expect-error subpressing No index signature with a parameter of type 'string' was found on type error
+    document.documentElement.style.setProperty(`--jk-${key}`, theme.light.common[key])
+  }
+  for (const key in theme.light.custom) {
+    // @ts-expect-error subpressing No index signature with a parameter of type 'string' was found on type error
+    document.documentElement.style.setProperty(`--jk-${key}`, theme.light.custom[key])
+  }
+}

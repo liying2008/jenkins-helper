@@ -1,11 +1,12 @@
 import { onMounted } from 'vue'
-import { getShadowRoot } from '~/contentScripts/libs/app-dom'
+import { getRoot } from '~/contentScripts/libs/app-dom'
 
+// TODO 暂时不用
 export function useMoveStyle() {
   onMounted(() => {
     const head = document.head
     const styles = head.querySelectorAll('style[cssr-id]')
-    const shadowRoot = getShadowRoot()
+    const shadowRoot = getRoot()
     if (!shadowRoot) {
       return
     }

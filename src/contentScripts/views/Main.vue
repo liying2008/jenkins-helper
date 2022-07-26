@@ -11,7 +11,7 @@ onMounted(() => {
   const mainPanelOffset = getMainPanelOffset()
   console.log('mainPanelOffset', mainPanelOffset)
   nextTick(() => {
-    wrapper.value!.style.top = `${mainPanelOffset.top + 20}px`
+    wrapper.value!.style.top = `${mainPanelOffset.top + 10}px`
   })
 })
 function showBuildInfo() {
@@ -35,10 +35,11 @@ function showBuildInfo() {
         <n-icon><NewspaperOutline /></n-icon>
       </template>
     </n-button>
-    <!-- TODO teleport 无效 -->
-    <teleport :to="wrapper">
-      <BuildInfoModal :visible="drawerVisible" />
-    </teleport>
+
+    <BuildInfoModal
+      :visible="drawerVisible"
+      @close="drawerVisible = false"
+    />
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import type { Tabs } from 'webextension-polyfill'
@@ -8,6 +8,7 @@ import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkin
 import { JenkinsBuild } from '~/libs/jenkins/build'
 import { BrowserUtils } from '~/libs/browser'
 import { t } from '~/libs/extension'
+import { useThemeStore } from '~/store'
 import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
 import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
@@ -22,6 +23,7 @@ const strings = {
 }
 
 const dialog = useDialog()
+const themeStore = useThemeStore()
 
 // status 的状态说明：
 // 0：无数据
@@ -40,6 +42,10 @@ const buildTime = ref('')
 const builtOn = ref('')
 const causes = ref<DisplayedBuildCause[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
+
+const darkMode = computed(() => {
+  return themeStore.darkMode
+})
 
 // 获取构建参数
 getParameters()
@@ -136,6 +142,7 @@ function nextBuild() {
       :build-result="result"
       :build-time="buildTime"
       :causes="causes"
+      :dark-mode="darkMode"
     />
 
     <!-- 参数列表 -->
@@ -153,6 +160,7 @@ function nextBuild() {
     </div>
 
     <!-- Prev/Next Button & 快捷按钮 -->
+    <div style="margin-top: 16px;"></div>
     <BuildParamsPageActions
       v-show="status === 2"
       :build-url="url"
