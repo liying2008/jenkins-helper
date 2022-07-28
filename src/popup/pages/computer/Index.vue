@@ -280,7 +280,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
             </span>
             <br style="height: 8px;">
             <a
-              class="card-title-node-sub a-link-color"
+              class="card-title-node-sub jk-a-link-color"
               @click="openNodesManager(jenkinsUrl)"
             >
               <span class="no-wrap">{{ strings.openManagerPage }}</span>

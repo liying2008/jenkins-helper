@@ -1,0 +1,11 @@
+// 全局设置 Naive 组件样式
+.n-popover {
+  max-width: 600px;
+
+  .n-popover__content {
+    .n-popconfirm__body {
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+  }
+}

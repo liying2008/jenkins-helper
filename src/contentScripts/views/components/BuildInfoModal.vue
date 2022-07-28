@@ -203,7 +203,7 @@ function nextBuild() {
           <n-empty :description="strings.fetching">
             <template #icon>
               <n-icon>
-                <Reload class="is-loading" />
+                <Reload class="jk-is-loading" />
               </n-icon>
             </template>
           </n-empty>

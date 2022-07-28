@@ -73,7 +73,7 @@ function copyBuiltOn() {
           :href="buildUrl"
           target="_blank"
           style="margin-left: 8px;"
-          class="display-name a-link-color"
+          class="display-name jk-a-link-color"
         >{{ fullDisplayName }}</a>
       </n-gi>
       <n-gi class="info-col">

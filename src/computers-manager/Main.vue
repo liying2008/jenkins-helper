@@ -63,7 +63,7 @@ const headers: TableColumns<NodeDetail> = [
           href: row.nodeUrl,
           target: '_blank',
           title: row.offline ? 'Offline' : '',
-          class: 'a-link-color',
+          class: 'jk-a-link-color',
         },
         { default: () => row.displayName },
       )

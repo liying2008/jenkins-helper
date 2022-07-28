@@ -44,7 +44,7 @@ const headers: TableColumns<DisplayedJobDetail> = [
         {
           href: row.jobUrl,
           target: '_blank',
-          class: ['monitor-table-job-name', 'a-link-color', row.building ? 'building' : ''],
+          class: ['monitor-table-job-name', 'jk-a-link-color', row.building ? 'building' : ''],
         },
         { default: () => row.name },
       )
@@ -249,7 +249,7 @@ function removeJenkins(jenkinsUrl: string) {
             </span>
             <br style="height: 8px;">
             <a
-              class="card-title-job-url a-link-color"
+              class="card-title-job-url jk-a-link-color"
               target="_blank"
               :href="jenkinsUrl"
             >

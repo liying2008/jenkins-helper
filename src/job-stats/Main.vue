@@ -43,7 +43,7 @@ const headers: TableColumns<JobInfo> = [
         {
           href: row.url,
           target: '_blank',
-          class: 'a-link-color jobs-table-url',
+          class: 'jk-a-link-color jobs-table-url',
         },
         { default: () => row.url },
       )
