@@ -146,7 +146,7 @@ function nextBuild() {
 <template>
   <n-modal v-model:show="editableVisible">
     <n-card
-      style="max-width: 50%;"
+      class="modal-card"
       title="构建参数"
       :bordered="false"
       size="huge"
@@ -214,14 +214,18 @@ function nextBuild() {
 </template>
 
 <style scoped lang="scss">
-.params-wrapper {
-  font-size: 12px;
+.modal-card {
+  max-width: min(800px, 50%);
 
-  .params-area {
-    margin-top: 10px;
+  .params-wrapper {
+    font-size: 12px;
 
-    .parameters-table {
-      margin-top: 6px;
+    .params-area {
+      margin-top: 10px;
+
+      .parameters-table {
+        margin-top: 6px;
+      }
     }
   }
 }

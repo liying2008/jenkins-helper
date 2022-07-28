@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { AppTheme } from '~/theme'
+import type { AppTheme } from '~/theme/theme'
 
 export interface ThemeState {
   theme: AppTheme
