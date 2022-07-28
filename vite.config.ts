@@ -9,8 +9,8 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
-import WindiCSS from 'vite-plugin-windicss'
-import windiConfig from './windi.config'
+import Unocss from 'unocss/vite'
+import presetUno from '@unocss/preset-uno'
 import { isDev, port, r } from './scripts/utils'
 
 export const sharedConfig: UserConfig = {
@@ -106,9 +106,11 @@ export default defineConfig(({ command }) => ({
   plugins: [
     ...sharedConfig.plugins!,
 
-    // https://github.com/antfu/vite-plugin-windicss
-    WindiCSS({
-      config: windiConfig,
+    // https://github.com/unocss/unocss
+    Unocss({
+      presets: [
+        presetUno(),
+      ],
     }),
   ],
   test: {

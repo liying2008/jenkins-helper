@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import 'virtual:windi.css'
 import Main from './Main.vue'
 </script>
 

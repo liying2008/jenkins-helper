@@ -1,4 +1,4 @@
-<!-- Popup 和 ContentScripts 共用组件，不要依赖 windicss、store、router 和 不支持的API -->
+<!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import { ArrowForwardCircleSharp, CopyOutline, FlagSharp, FlashSharp, TimeSharp } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
