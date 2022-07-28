@@ -2,7 +2,7 @@
 import { h, onMounted, ref, watch } from 'vue'
 import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NButton, useMessage } from 'naive-ui'
+import { NA, useMessage } from 'naive-ui'
 import OpArea from './OpArea.vue'
 import { ComputerStatus, openNodesManager } from './common'
 import computerIcon from '~/assets/img/computer48.png'
@@ -271,13 +271,15 @@ function onShowOfflineNodesChange(newVal: boolean) {
             :src="computerIcon"
           >
           <div class="ml-12px card-title-node flex-1">
-            <span
+            <a
               :title="decodeURIComponent(jenkinsUrl)"
               color="title"
+              :href="jenkinsUrl"
+              target="_blank"
               class="card-title-node-url"
             >
               {{ decodeURIComponent(jenkinsUrl) }}
-            </span>
+            </a>
             <br style="height: 8px;">
             <a
               class="card-title-node-sub jk-a-link-color"
@@ -288,19 +290,14 @@ function onShowOfflineNodesChange(newVal: boolean) {
           </div>
           <div class="flex place-items-center">
             <div v-show="jenkinsNodes.status !== 'ok'">
-              <n-button
+              <n-tag
                 type="error"
-                secondary
-                strong
                 round
-                :href="jenkinsUrl"
                 :title="jenkinsNodes.error || ''"
-                target="_blank"
-                class="card-title-err-btn"
-                tag="a"
+                class="card-title-err-tag"
               >
                 <span>ERROR</span>
-              </n-button>
+              </n-tag>
             </div>
             <div class="ml-8px">
               <PopconfirmDeleteBtn
@@ -364,6 +361,12 @@ function onShowOfflineNodesChange(newVal: boolean) {
           .card-title-node-url {
             font-size: 18px;
             font-weight: 500;
+            color: var(--jk-title);
+            text-decoration: none;
+
+            &:hover {
+              color: var(--jk-link);
+            }
           }
 
           .card-title-node-sub {
@@ -373,15 +376,9 @@ function onShowOfflineNodesChange(newVal: boolean) {
           }
         }
 
-        .card-title-err-btn {
-          width: 60px;
+        .card-title-err-tag {
           height: 26px;
           font-size: 12px;
-
-          .n-button__content {
-            // 按钮文字居中
-            justify-content: center;
-          }
         }
 
         .card-title-remove-btn {
