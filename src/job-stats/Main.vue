@@ -145,7 +145,6 @@ watch(showCronTableJobOnly, () => {
 })
 
 onMounted(() => {
-  console.log('lifecycle: ', 'App mounted!')
   init()
 })
 

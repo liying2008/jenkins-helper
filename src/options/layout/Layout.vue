@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import Header from '../components/Header.vue'
 import Sidebar from '../components/Sidebar.vue'
-
-onMounted(() => {
-  console.log('lifecycle: ', 'Layout mounted!')
-})
 </script>
 
 <template>

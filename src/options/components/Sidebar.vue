@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Component } from 'vue'
-import { h, onMounted, ref } from 'vue'
+import { h, ref } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { AtOutline, DocumentOutline, OptionsOutline } from '@vicons/ionicons5'
@@ -53,10 +53,6 @@ const menuOptions: MenuOption[] = [
   },
 ]
 const collapsed = ref(false)
-
-onMounted(() => {
-  console.log('lifecycle: ', 'Sidebar mounted!')
-})
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })

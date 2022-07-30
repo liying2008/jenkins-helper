@@ -1,15 +1,10 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import { t } from '~/libs/extension'
 import Logo from '~/assets/img/logo.svg'
 
 const strings = {
   extName: t('extName'),
 }
-
-onMounted(() => {
-  console.log('lifecycle: ', 'Header mounted!')
-})
 </script>
 
 <template>

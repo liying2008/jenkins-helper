@@ -1,21 +1,8 @@
 <script lang="ts" setup>
 import { darkTheme, lightTheme } from 'naive-ui'
-import { useMagicKeys, whenever } from '@vueuse/core'
-import { onMounted } from 'vue'
 import { useThemeStore } from '~/store'
-import { initTheme } from '~/theme'
+
 const themeStore = useThemeStore()
-const keys = useMagicKeys()
-
-// TODO 测试用，正式发布前删除
-whenever(keys.shift_w, () => {
-  // toggle dark theme
-  initTheme(undefined, !themeStore.darkMode)
-})
-
-onMounted(() => {
-  console.log('lifecycle: ', 'App mounted!')
-})
 </script>
 
 <template>
