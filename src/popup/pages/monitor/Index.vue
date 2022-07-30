@@ -44,7 +44,10 @@ const headers: TableColumns<DisplayedJobDetail> = [
         {
           href: row.jobUrl,
           target: '_blank',
-          class: ['monitor-table-job-name', 'jk-a-link-color', row.building ? 'building' : ''],
+          style: {
+            color: `var(--jk-${getResultColor(row.color)})`,
+          },
+          class: ['monitor-table-job-name', row.building ? 'building' : ''],
         },
         { default: () => row.name },
       )
@@ -81,13 +84,11 @@ const headers: TableColumns<DisplayedJobDetail> = [
           round: true,
           bordered: false,
           color: {
-            // TODO
             color: `var(--jk-${getResultColor(row.color as string)})`,
             textColor: '#FFFFFF',
           },
           class: ['monitor-table-result-chip', row.building ? 'building' : ''],
         },
-        // TODO
         { default: () => row.status },
       )
     },
@@ -121,15 +122,15 @@ function getResultColor(jobColor: string) {
 }
 
 function getRowClass(item: DisplayedJobDetail) {
+  const classNames = []
   if (!showDisabledJobs.value && item.color === 'disabled') {
-    return 'gone-row'
+    classNames.push('gone-row')
   } else if (item.color === 'disabled') {
-    return 'disabled-row'
+    classNames.push('disabled-row')
   } else if (item.building) {
-    return 'building-row'
-  } else {
-    return ''
+    classNames.push('building-row')
   }
+  return classNames.join(' ')
 }
 
 function jobStatusChange(changes: StorageChangeWrapper) {
