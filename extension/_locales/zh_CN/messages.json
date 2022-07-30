@@ -242,8 +242,14 @@
   "jobStatisticsTitle": {
     "message": "Jenkins Job 统计"
   },
-  "jobStatisticsDataFrom_": {
-    "message": "数据来源："
+  "jobStatisticsDataFrom": {
+    "message": "数据来源"
+  },
+  "jobStatisticsDataFetchSuccess": {
+    "message": "数据获取成功"
+  },
+  "jobStatisticsDataFetchFailure": {
+    "message": "数据获取失败"
   },
   "jobStatisticsShowSettings": {
     "message": "显示设置"

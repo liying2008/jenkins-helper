@@ -12,6 +12,7 @@ import { useThemeStore } from '~/store'
 import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
 import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
+import { DataStatus } from '~/models/common'
 
 const strings = {
   paramsList: t('paramsList'),
@@ -25,14 +26,9 @@ const strings = {
 const dialog = useDialog()
 const themeStore = useThemeStore()
 
-// status 的状态说明：
-// 0：无数据
-// 1：正在请求数据
-// 2：请求完成（有数据）
-// -1：请求失败
-const status = ref(0)
+const status = ref<DataStatus>(DataStatus.NoData)
 // 之前的状态（上一次的状态）
-const preStatus = ref(0)
+const preStatus = ref<DataStatus>(DataStatus.NoData)
 const number = ref(0)
 const fullDisplayName = ref('')
 const url = ref('')
@@ -69,7 +65,7 @@ function getParameters() {
 }
 
 function getParametersByUrl(_url: string) {
-  status.value = 1
+  status.value = DataStatus.Loading
   const jsonUrl = `${_url}/api/json`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
@@ -80,8 +76,8 @@ function getParametersByUrl(_url: string) {
         return Promise.reject(res)
       }
     }).then((data) => {
-      status.value = 2
-      preStatus.value = 2
+      status.value = DataStatus.Loaded
+      preStatus.value = DataStatus.Loaded
       number.value = data.number
       fullDisplayName.value = data.fullDisplayName
       url.value = data.url // jenkins 设置的 jenkins 网站 url
@@ -134,7 +130,7 @@ function nextBuild() {
 <template>
   <div class="params-wrapper">
     <BuildInfoView
-      v-show="status === 2"
+      v-show="status === DataStatus.Loaded"
       :build-url="url"
       :full-display-name="fullDisplayName"
       :built-on="builtOn"
@@ -147,7 +143,7 @@ function nextBuild() {
 
     <!-- 参数列表 -->
     <div
-      v-show="status === 2 && parameters.length > 0"
+      v-show="status === DataStatus.Loaded && parameters.length > 0"
       class="params-area"
     >
       <div style="font-weight: bold;">
@@ -162,7 +158,7 @@ function nextBuild() {
     <!-- Prev/Next Button & 快捷按钮 -->
     <div style="margin-top: 16px;"></div>
     <BuildParamsPageActions
-      v-show="status === 2"
+      v-show="status === DataStatus.Loaded"
       :build-url="url"
       :full-display-name="fullDisplayName"
       @prev-build="prevBuild"
@@ -170,12 +166,12 @@ function nextBuild() {
     />
 
     <!-- No Data -->
-    <div v-show="status === 0">
+    <div v-show="status === DataStatus.NoData">
       <n-empty :description="strings.noData ">
       </n-empty>
     </div>
     <!-- Fetching -->
-    <div v-show="status === 1">
+    <div v-show="status === DataStatus.Loading">
       <n-empty :description="strings.fetching">
         <template #icon>
           <n-icon>

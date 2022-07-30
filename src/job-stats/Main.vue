@@ -2,13 +2,14 @@
 import { h, onMounted, ref, watch } from 'vue'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NCheckbox, NEl, NIcon, useNotification } from 'naive-ui'
-import { CheckmarkCircleOutline } from '@vicons/ionicons5'
+import { CheckmarkCircleOutline, CheckmarkCircleSharp, CloseCircleSharp, SettingsOutline } from '@vicons/ionicons5'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
 import { removeEnd } from '~/libs/common'
+import { DataStatus } from '~/models/common'
 
 class JobInfo {
   url: string = ''
@@ -21,9 +22,10 @@ class JobInfo {
 
 const strings = {
   noData: t('noData'),
-  extName: t('extName'),
   title: t('jobStatisticsTitle'),
-  jobStatisticsDataFrom_: t('jobStatisticsDataFrom_'),
+  jobStatisticsDataFrom: t('jobStatisticsDataFrom'),
+  jobStatisticsDataFetchSuccess: t('jobStatisticsDataFetchSuccess'),
+  jobStatisticsDataFetchFailure: t('jobStatisticsDataFetchFailure'),
   jobStatisticsShowSettings: t('jobStatisticsShowSettings'),
   jobStatisticsShowEnabledJobOnly: t('jobStatisticsShowEnabledJobOnly'),
   jobStatisticsShowCronTableJobOnly: t('jobStatisticsShowCronTableJobOnly'),
@@ -125,8 +127,12 @@ const headers: TableColumns<JobInfo> = [
 const jenkinsUrls = ref<string[]>([])
 // 请求数据的URL
 const urls = ref<string[]>([])
+// 请求成功的URL
+const successUrls = ref<string[]>([])
 // 请求失败的URL
 const badUrls = ref<string[]>([])
+const status = ref<DataStatus>(DataStatus.NoData)
+
 const nodeParams = ref<string[]>([])
 const jobUrlVisited = ref<string[]>([])
 const jobs = ref<JobInfo[]>([])
@@ -227,7 +233,9 @@ function isCronTableComment(cronTableStr: string) {
 }
 
 function getJobStats() {
+  status.value = DataStatus.Loading
   urls.value = []
+  successUrls.value = []
   badUrls.value = []
   jobs.value = []
   jobUrlVisited.value = []
@@ -241,44 +249,35 @@ function getJobStats() {
 
   Promise.all(allProcesses).then(() => {
     console.log('getJobStats done!')
+    status.value = DataStatus.Loaded
     // 获取获取成功的URL
-    const successUrls = urls.value.filter((url) => !badUrls.value.includes(url))
+    successUrls.value = urls.value.filter((url) => !badUrls.value.includes(url))
 
-    if (successUrls.length > 0 && badUrls.value.length === 0) {
+    if (successUrls.value.length > 0 && badUrls.value.length === 0) {
       // 请求全部成功
       notification.success({
-        title: '数据获取成功',
-        description: strings.title,
-        content: '获取成功的数据来源：' + `\n${successUrls.join('\n')}`,
+        content: '数据获取成功',
         duration: 5000,
-        meta: strings.extName,
       })
-    } else if (successUrls.length > 0 && badUrls.value.length > 0) {
+    } else if (successUrls.value.length > 0 && badUrls.value.length > 0) {
       // 请求部分成功
       notification.warning({
-        title: '部分数据获取失败',
-        description: strings.title,
-        content: '获取成功的数据来源：' + `\n${successUrls.join('\n')}` + '\n\n' + '获取失败的数据来源：' + `\n${badUrls.value.join('\n')}`,
+        content: '部分数据获取失败',
         duration: 7000,
-        meta: strings.extName,
       })
-    } else if (successUrls.length === 0 && badUrls.value.length > 0) {
+    } else if (successUrls.value.length === 0 && badUrls.value.length > 0) {
       // 请求全部失败
       notification.error({
-        title: '数据获取失败',
-        description: strings.title,
-        content: '获取失败的数据来源：' + `\n${badUrls.value.join('\n')}`,
+        content: '数据获取失败',
         duration: 10000,
-        meta: strings.extName,
       })
     } else {
       // 没有请求
+      status.value = DataStatus.NoData
       notification.info({
         title: '无数据',
-        description: strings.title,
         content: 'Job 统计未配置',
         duration: 3000,
-        meta: strings.extName,
       })
     }
   })
@@ -293,12 +292,13 @@ async function processSingleUrl(url: string) {
     if (res.ok) {
       const data = await res.json()
       if (data.hasOwnProperty('jobs')) {
-        data.jobs.forEach((job: any) => {
-          getJobStatsByUrl(job.url)
-        })
+        // View Url
+        for (const job of data.jobs) {
+          await getJobStatsByUrl(job.url)
+        }
       } else {
         // Job Url
-        getJobStatsByUrl(data.url)
+        await getJobStatsByUrl(data.url)
       }
     } else {
       console.log('获取Job URL失败', url, res)
@@ -310,17 +310,18 @@ async function processSingleUrl(url: string) {
   }
 }
 
-function getJobStatsByUrl(url: string) {
+async function getJobStatsByUrl(url: string) {
   if (jobUrlVisited.value.includes(url)) {
     return
   } else {
     jobUrlVisited.value.push(url)
   }
 
-  Tools.getFetchOption(`${url}config.xml`).then((header) => {
-    fetch(`${url}config.xml`, header).then((res) => {
-      return res.ok ? res.text() : Promise.reject(res)
-    }).then((text) => {
+  const header = await Tools.getFetchOption(`${url}config.xml`)
+  try {
+    const res = await fetch(`${url}config.xml`, header)
+    if (res.ok) {
+      let text = await res.text()
       // 为了兼容Firefox，需要截取掉XML头部：<?xml version='1.1' encoding='UTF-8'?>
       // 参考：https://github.com/liying2008/jenkins-helper/issues/6
       const index = text.indexOf('<', 1)
@@ -333,29 +334,28 @@ function getJobStatsByUrl(url: string) {
 
       let job: JobInfo | undefined
       if (projectNodes.length > 0) {
-        // 自由风格项目
+      // 自由风格项目
         job = parseFreeStyleJobFromXml(projectNodes[0])
       } else {
         const flowNodes = documentNode.getElementsByTagName('flow-definition')
         if (flowNodes.length > 0) {
-          // 流水线项目
+        // 流水线项目
           job = parsePipelineJobFromXml(flowNodes[0])
         } else {
-          // 其他项目
-          // todo
+        // 其他项目
+        // todo
         }
       }
       // console.log('job', job)
-
       if (job) {
         job.url = decodeURIComponent(url)
         jobs.value.push(job)
         originJobs.value.push(job)
       }
-    }).catch((e: Error) => {
-      console.log('读取config.xml失败', e)
-    })
-  })
+    }
+  } catch (e) {
+    console.log('读取 config.xml 失败', e)
+  }
 }
 
 /**
@@ -507,26 +507,84 @@ function getParamsNode(rootNode: Element) {
   }
   return [node, param]
 }
-
-/**
- * 获取数据来源的描述
- */
-function getStatisticsDataFromDesc() {
-  const _urls = urls.value.map((item: string) => decodeURIComponent(item))
-  if (_urls.length === 0) {
-    _urls.push('NA')
-  }
-  return `${strings.jobStatisticsDataFrom_}\n\n${_urls.join('\n')}`
-}
 </script>
 
 <template>
   <div class="job-stats-wrapper">
-    <div
-      class="job-stats-title"
-      :title="getStatisticsDataFromDesc()"
-    >
+    <div class="job-stats-title">
       {{ strings.title }}
+    </div>
+    <div class="data-source">
+      <n-descriptions
+        bordered
+        size="small"
+      >
+        <n-descriptions-item>
+          <template #label>
+            <div style="display: flex;">
+              <span style="flex: 1;">{{ strings.jobStatisticsDataFrom }}</span>
+              <span>
+                <n-button
+                  text
+                  style=" font-size: 16px;vertical-align: middle;"
+                >
+                  <n-icon>
+                    <SettingsOutline />
+                  </n-icon>
+                </n-button>
+              </span>
+            </div>
+          </template>
+          <!-- 数据加载中 -->
+          <div
+            v-show="status === DataStatus.Loading"
+            class="source-loading"
+          >
+            <n-spin size="small" />
+          </div>
+          <!-- 未配置Job统计数据 -->
+          <div
+            v-show="status === DataStatus.NoData"
+            class="no-source"
+          >
+            {{ strings.noData }}
+          </div>
+          <!-- 数据加载完毕 -->
+          <div v-show="status === DataStatus.Loaded">
+            <div
+              v-for="(url, index) in successUrls"
+              :key="index"
+              class="success-urls-div"
+            >
+              <n-icon
+                size="16"
+                color="var(--jk-success)"
+                class="source-status-icon source-success-icon"
+                :title="`${url}: ${strings.jobStatisticsDataFetchSuccess}`"
+              >
+                <checkmark-circle-sharp />
+              </n-icon>
+              {{ decodeURIComponent(url) }}
+            </div>
+
+            <div
+              v-for="(url, index) in badUrls"
+              :key="index"
+              class="bad-urls-div"
+            >
+              <n-icon
+                size="16"
+                color="var(--jk-error)"
+                class="source-status-icon source-error-icon"
+                :title="`${url}: ${strings.jobStatisticsDataFetchFailure}`"
+              >
+                <close-circle-sharp />
+              </n-icon>
+              {{ decodeURIComponent(url) }}
+            </div>
+          </div>
+        </n-descriptions-item>
+      </n-descriptions>
     </div>
     <n-data-table
       class="jobs-table"
@@ -574,6 +632,35 @@ function getStatisticsDataFromDesc() {
     font-size: 20px;
     font-weight: 600;
     text-align: center;
+  }
+
+  .data-source {
+    margin-top: 24px;
+
+    .no-source {
+      padding: 8px 0;
+      color: #88888888;
+      text-align: center;
+    }
+
+    .source-loading {
+      padding-top: 6px;
+      text-align: center;
+    }
+
+    .success-urls-div {
+      color: var(--jk-success);
+    }
+
+    .bad-urls-div {
+      color: var(--jk-error);
+    }
+
+    .source-status-icon {
+      margin-right: 8px;
+      vertical-align: sub;
+      cursor: help;
+    }
   }
 
   .jobs-table {

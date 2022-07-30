@@ -242,8 +242,14 @@
   "jobStatisticsTitle": {
     "message": "Jenkins Job Statistics"
   },
-  "jobStatisticsDataFrom_": {
-    "message": "Data from:"
+  "jobStatisticsDataFrom": {
+    "message": "Data from"
+  },
+  "jobStatisticsDataFetchSuccess": {
+    "message": "Data fetch success"
+  },
+  "jobStatisticsDataFetchFailure": {
+    "message": "Data fetch failure"
   },
   "jobStatisticsShowSettings": {
     "message": "Display Settings"
