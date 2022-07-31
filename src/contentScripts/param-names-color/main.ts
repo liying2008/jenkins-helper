@@ -66,12 +66,17 @@ function isParametersPage() {
  */
 function tintParamNames(table: HTMLElement, tintingColor: string) {
   const paramNameElems = table.querySelectorAll('div.tr div.setting-name')
-  const size = paramNameElems.length
+  const boolParamNameElems = table.querySelectorAll('div.tr label.setting-checkbox')
+
+  const paramNameElemsArray = Array.from(paramNameElems)
+  paramNameElemsArray.push(...Array.from(boolParamNameElems))
+
+  const size = paramNameElemsArray.length
   if (size === 0) {
     return
   }
   console.log('currentPage', currentPage)
-  for (let i = 0; i < size; i++) {
-    paramNameElems[i].setAttribute('style', `color: ${tintingColor}; font-weight: 900`)
-  }
+  paramNameElemsArray.forEach((paramNameElem) => {
+    paramNameElem.setAttribute('style', `color: ${tintingColor}; font-weight: 900`)
+  })
 }
