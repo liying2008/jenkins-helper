@@ -436,9 +436,6 @@
   "content_recoverTipOnJenkinsPage": {
     "message": "【说明】：恢复成功的参数会用 “绿色” 标记，恢复失败的参数会用 “红色” 标记，请特别关注下恢复失败的参数。"
   },
-  "jsonParsingFailed": {
-    "message": "JSON 解析失败"
-  },
   "importAndExportSettings": {
     "message": "导入/导出设置"
   },

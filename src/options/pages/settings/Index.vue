@@ -13,12 +13,11 @@ import { defaultTheme } from '~/theme/theme_default'
 import { t } from '~/libs/extension'
 import { tealTheme } from '~/theme/theme_teal'
 
-type SettingsOptions = Pick<Options, 'defaultTab' | 'jenkinsTokens' | 'jobStatsJenkinsUrl' | 'nodeParam' | 'omniboxJenkinsUrl' | 'refreshTime' | 'nodeRefreshTime' | 'showNotificationOption' | 'currentTheme' | 'enableDarkMode' | 'enableParamsStashAndRecover' | 'enableParamNamesColor' | 'paramNamesColor'>
+type SettingsOptions = Pick<Options, 'defaultTab' | 'jenkinsTokens' | 'omniboxJenkinsUrl' | 'refreshTime' | 'nodeRefreshTime' | 'showNotificationOption' | 'currentTheme' | 'enableDarkMode' | 'enableParamsStashAndRecover' | 'enableParamNamesColor' | 'paramNamesColor'>
 
 const strings = {
   editing: t('editing'),
   close: t('close'),
-  jsonParsingFailed: t('jsonParsingFailed'),
   monitorOptionTitle: t('monitorOptionTitle'),
   showNotification: t('showNotification'),
   refreshTime: t('refreshTime'),
@@ -34,13 +33,6 @@ const strings = {
   searchFromJenkinsPlaceholder: t('searchFromJenkinsPlaceholder'),
   searchFromJenkinsTips: t('searchFromJenkinsTips'),
   saveOptions: t('saveOptions'),
-  jobStatsTitle: t('jobStatsTitle'),
-  jobStatsTitleTip: t('jobStatsTitleTip'),
-  jobStatsJenkinsPlaceholder: t('jobStatsJenkinsPlaceholder'),
-  jobStatsJenkinsHint: t('jobStatsJenkinsHint'),
-  jobStatsNodeParamTip: t('jobStatsNodeParamTip'),
-  jobStatsNodeParamPlaceholder: t('jobStatsNodeParamPlaceholder'),
-  jobStatsNodeParamHint: t('jobStatsNodeParamHint'),
   themeTitle: t('themeTitle'),
   theme: t('theme'),
   defaultTheme: t('defaultTheme'),
@@ -92,8 +84,6 @@ const showNotificationOptions: SelectMixedOption[] = [
 ]
 
 const omniboxJenkinsUrl = ref(defaultOptionsValue.omniboxJenkinsUrl)
-const nodeParam = ref(defaultOptionsValue.nodeParam)
-const jobStatsJenkinsUrl = ref(defaultOptionsValue.jobStatsJenkinsUrl)
 const jenkinsTokens = ref<JenkinsToken[]>(defaultOptionsValue.jenkinsTokens)
 const themes: SelectMixedOption[] = [
   {
@@ -153,8 +143,6 @@ function dataToOptions(): SettingsOptions {
     nodeRefreshTime: nodeRefreshTime.value.toString(),
     showNotificationOption: showNotificationOption.value,
     omniboxJenkinsUrl: omniboxJenkinsUrl.value,
-    nodeParam: nodeParam.value,
-    jobStatsJenkinsUrl: jobStatsJenkinsUrl.value,
     currentTheme: currentTheme.value,
     enableDarkMode: enableDarkMode.value,
     enableParamsStashAndRecover: enableParamsStashAndRecover.value,
@@ -203,8 +191,6 @@ function optionsToData(options: SettingsOptions) {
 
   jenkinsTokens.value = options.jenkinsTokens || defaultOptionsValue.jenkinsTokens
   omniboxJenkinsUrl.value = options.omniboxJenkinsUrl
-  nodeParam.value = options.nodeParam
-  jobStatsJenkinsUrl.value = options.jobStatsJenkinsUrl
 
   /// / theme
   const allThemes = themes.map((value) => value.value)
@@ -401,40 +387,6 @@ function saveOptions() {
         ></div>
       </n-card>
       <div class="my-6" />
-      <!-- Job统计设置 -->
-      <n-card
-        :title="strings.jobStatsTitle"
-        class="mt-16px"
-        embedded
-      >
-        <div class="control-label">
-          {{ strings.jobStatsTitleTip }}
-        </div>
-        <n-input
-          v-model:value="jobStatsJenkinsUrl"
-          type="textarea"
-          :placeholder="strings.jobStatsJenkinsPlaceholder"
-        />
-        <div
-          class="control-hint"
-          v-html="strings.jobStatsJenkinsHint"
-        >
-        </div>
-
-        <div class="control-label mt-14px">
-          {{ strings.jobStatsNodeParamTip }}
-        </div>
-        <n-input
-          v-model:value="nodeParam"
-          type="text"
-          :placeholder="strings.jobStatsNodeParamPlaceholder"
-        />
-        <div
-          class="control-hint"
-          v-html="strings.jobStatsNodeParamHint"
-        >
-        </div>
-      </n-card>
       <!-- 主题设置 -->
       <n-card
         :title="strings.themeTitle"
