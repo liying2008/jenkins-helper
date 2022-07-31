@@ -269,6 +269,9 @@
   "refreshNodesInfo": {
     "message": "Refresh nodes information"
   },
+  "notifiedRefreshService": {
+    "message": "The background has been notified to refresh node data, the page data will be updated later."
+  },
   "openManagerPage": {
     "message": "Open the management page"
   },

@@ -269,6 +269,9 @@
   "refreshNodesInfo": {
     "message": "刷新节点信息"
   },
+  "notifiedRefreshService": {
+    "message": "已通知后台刷新数据，页面数据稍后更新"
+  },
   "openManagerPage": {
     "message": "打开管理页面"
   },

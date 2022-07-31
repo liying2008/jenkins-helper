@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { NotificationsOutline, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { watchDebounced } from '@vueuse/core'
+import { useMessage } from 'naive-ui'
 import { ComputerStatus, openNodesManager } from './common'
 import { NodeService } from '~/background/node-service'
 import { t } from '~/libs/extension'
@@ -33,10 +34,13 @@ const strings = {
   abnormal: t('abnormal'),
   manageMonitoredNodes: t('manageMonitoredNodes'),
   refreshNodesInfo: t('refreshNodesInfo'),
+  notifiedRefreshService: t('notifiedRefreshService'),
   filterByNodeDisplayName: t('filterByNodeDisplayName'),
   showOfflineNodes: t('showOfflineNodes'),
   filterLabel: t('filterLabel'),
 }
+
+const message = useMessage()
 
 const filteringResult = ref(ComputerStatus.All)
 const filteringDisplayName = ref('')
@@ -89,6 +93,7 @@ function initResultFilter() {
 // 刷新节点信息
 function refreshNodesInfo() {
   NodeService.queryNodeStatus()
+  message.success(strings.notifiedRefreshService)
 }
 </script>
 
