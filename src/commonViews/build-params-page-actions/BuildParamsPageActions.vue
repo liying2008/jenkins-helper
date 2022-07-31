@@ -3,6 +3,7 @@
 import { ArrowBackSharp, ArrowForwardSharp, CloudDownloadSharp, RefreshCircleSharp, SettingsSharp } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
+import { removeEnd } from '~/libs/common'
 
 const props = defineProps<{
   buildUrl: string
@@ -24,33 +25,59 @@ const disableDownload = ref(false)
 function downloadConsoleLog() {
   disableDownload.value = true
   console.log('buildUrl', props.buildUrl)
-  // TODO 需要兼容 content-scripts
-  browser.downloads.download({
-    url: `${props.buildUrl}logText/progressiveText?start=0`,
-    filename: `${props.fullDisplayName} Console Log.log`,
-    saveAs: true,
-  }).then((downloadId) => {
-    disableDownload.value = false
-    console.log('downloadId', downloadId)
-  }).catch((e: Error) => {
-    console.log('下载失败', e)
-    message.error(`Fail to download: ${e.message}`)
-    disableDownload.value = false
-  })
+  const downloadUrl = `${props.buildUrl}logText/progressiveText?start=0`
+  const filename = `${props.fullDisplayName} Console Log.log`
+  if (browser && browser.downloads) {
+    // 使用 浏览器扩展 功能下载文件
+    console.log('download file by browser')
+    browser.downloads.download({
+      url: downloadUrl,
+      filename,
+      saveAs: true,
+    }).then((downloadId) => {
+      disableDownload.value = false
+      console.log('downloadId', downloadId)
+    }).catch((e: Error) => {
+      console.log('下载失败', e)
+      message.error(`Fail to download: ${e.message}`)
+      disableDownload.value = false
+    })
+  } else {
+    // content-scripts 无法访问 browser 对象，使用模拟点击下载文件
+    console.log('download file by content-scripts')
+    const aId = 'jk-download-log-link'
+    document.getElementById(aId)?.remove()
+    const a = document.createElement('a')
+    a.id = aId
+    a.download = filename
+    a.href = downloadUrl
+    a.click()
+  }
 }
 
 // 去“配置”页
 function goToConfigure() {
-  const _url = props.buildUrl.substring(0, props.buildUrl.length - 1)
-  const configureUrl = `${_url.substring(0, _url.lastIndexOf('/'))}/configure`
-  // console.log(`url=${url.value}, configureUrl=${configureUrl}`)
-  // TODO 需要兼容 content-scripts
-  browser.tabs.create({ url: configureUrl })
+  const url = removeEnd(props.buildUrl, '/')
+  const configureUrl = `${url.substring(0, url.lastIndexOf('/'))}/configure`
+  // console.log(`url=${url}, configureUrl=${configureUrl}`)
+  if (browser && browser.tabs) {
+    // 使用 浏览器扩展 功能新建标签页
+    browser.tabs.create({ url: configureUrl })
+  } else {
+    // content-scripts 无法访问 browser 对象，使用 window.open 新建标签页
+    window.open(configureUrl)
+  }
 }
 
 function rebuild() {
-  // TODO 需要兼容 content-scripts
-  browser.tabs.create({ url: `${props.buildUrl}rebuild` })
+  const rebuildUrl = `${props.buildUrl}rebuild`
+  if (browser && browser.tabs) {
+    // 使用 浏览器扩展 功能新建标签页
+    browser.tabs.create({ url: rebuildUrl })
+  } else {
+    // content-scripts 无法访问 browser 对象，使用 window.open 新建标签页
+    window.open(rebuildUrl)
+  }
 }
 </script>
 

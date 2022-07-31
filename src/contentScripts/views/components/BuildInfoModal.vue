@@ -215,7 +215,7 @@ function nextBuild() {
 
 <style scoped lang="scss">
 .modal-card {
-  max-width: min(800px, 50%);
+  max-width: min(800px, 60%);
 
   .params-wrapper {
     font-size: 12px;
