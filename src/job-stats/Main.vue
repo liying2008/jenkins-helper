@@ -3,6 +3,7 @@ import { h, onMounted, ref, watch } from 'vue'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { NA, NCheckbox, NEl, NIcon, useNotification } from 'naive-ui'
 import { CheckmarkCircleOutline, CheckmarkCircleSharp, CloseCircleSharp, SettingsOutline } from '@vicons/ionicons5'
+import SettingsModal from './SettingsModal.vue'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
@@ -140,6 +141,8 @@ const originJobs = ref<JobInfo[]>([])
 const xmlParser = new DOMParser()
 const showEnabledJobOnly = ref(false)
 const showCronTableJobOnly = ref(false)
+
+const modalVisible = ref(false)
 
 
 watch(showEnabledJobOnly, () => {
@@ -527,6 +530,7 @@ function getParamsNode(rootNode: Element) {
                 <n-button
                   text
                   style=" font-size: 16px;vertical-align: middle;"
+                  @click="modalVisible = true"
                 >
                   <n-icon>
                     <SettingsOutline />
@@ -620,6 +624,11 @@ function getParamsNode(rootNode: Element) {
         </div>
       </n-card>
     </div>
+    <!-- 设置对话框 -->
+    <SettingsModal
+      :show="modalVisible"
+      @close="modalVisible = false"
+    />
   </div>
 </template>
 
