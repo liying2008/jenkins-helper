@@ -11,6 +11,7 @@ import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
 import { removeEnd } from '~/libs/common'
 import { DataStatus } from '~/models/common'
+import type { JenkinsView } from '~/models/jenkins/view'
 
 class JobInfo {
   url: string = ''
@@ -301,14 +302,14 @@ async function processSingleUrl(url: string) {
       const data = await res.json()
       if (data.hasOwnProperty('jobs')) {
         // View Url
-        let success = true
-        for (const job of data.jobs) {
-          const currntSuccess = await getJobStatsByUrl(job.url)
-          if (success && !currntSuccess) {
-            success = false
-          }
-        }
-        if (!success) {
+        const allProcesses = (data.jobs as JenkinsView[]).map((job) => getJobStatsByUrl(job.url))
+        const result = await Promise.all(allProcesses)
+        console.log('result', result)
+        if (result.find((item) => item === false) === undefined) {
+          // 所有Job配置都读取成功
+          // no op
+        } else {
+          // 至少有一个Job配置读取失败
           badUrls.value.push(url)
         }
       } else {
@@ -371,6 +372,8 @@ async function getJobStatsByUrl(url: string) {
         originJobs.value.push(job)
       }
       return true
+    } else {
+      throw new Error(res.statusText)
     }
   } catch (e) {
     console.log('读取 config.xml 失败', e)
