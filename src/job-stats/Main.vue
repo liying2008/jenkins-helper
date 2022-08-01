@@ -168,12 +168,7 @@ function getRowClass(item: JobInfo) {
 function init() {
   StorageService.addStorageListener(jobStatsChange)
   StorageService.getOptions().then((result: Options) => {
-    if (result.jobStatsJenkinsUrl.trim() !== '') {
-      jenkinsUrls.value = result.jobStatsJenkinsUrl.trim().split('\n')
-    }
-    if (result.nodeParam.trim() !== '') {
-      nodeParams.value = result.nodeParam.trim().split(',')
-    }
+    refreshEssentialVars(result.jobStatsJenkinsUrl, result.nodeParam)
     getJobStats()
   })
 }
@@ -190,18 +185,28 @@ function jobStatsChange(changes: StorageChangeWrapper) {
       return
     }
     // 设置改变了，重新请求数据
-    if (newJobStatsJenkinsUrl.trim() !== '') {
-      jenkinsUrls.value = newJobStatsJenkinsUrl.trim().split('\n')
-    } else {
-      jenkinsUrls.value = []
-    }
-    if (newNodeParam.trim() !== '') {
-      nodeParams.value = newNodeParam.trim().split(',')
-    } else {
-      nodeParams.value = []
-    }
-
+    refreshEssentialVars(newJobStatsJenkinsUrl, newNodeParam)
     getJobStats()
+  }
+}
+
+function refreshEssentialVars(jobStatsJenkinsUrl: string, nodeParam: string) {
+  if (jobStatsJenkinsUrl.trim() !== '') {
+    jenkinsUrls.value = jobStatsJenkinsUrl.split('\n').map((url) => {
+      const _url = url.trim()
+      if (_url && !_url.startsWith('#')) {
+        return _url
+      } else {
+        return ''
+      }
+    }).filter((url) => url !== '')
+  } else {
+    jenkinsUrls.value = []
+  }
+  if (nodeParam.trim() !== '') {
+    nodeParams.value = nodeParam.split(',').map((param) => param.trim()).filter((param) => param !== '')
+  } else {
+    nodeParams.value = []
   }
 }
 
@@ -296,12 +301,22 @@ async function processSingleUrl(url: string) {
       const data = await res.json()
       if (data.hasOwnProperty('jobs')) {
         // View Url
+        let success = true
         for (const job of data.jobs) {
-          await getJobStatsByUrl(job.url)
+          const currntSuccess = await getJobStatsByUrl(job.url)
+          if (success && !currntSuccess) {
+            success = false
+          }
+        }
+        if (!success) {
+          badUrls.value.push(url)
         }
       } else {
         // Job Url
-        await getJobStatsByUrl(data.url)
+        const success = await getJobStatsByUrl(data.url)
+        if (!success) {
+          badUrls.value.push(url)
+        }
       }
     } else {
       console.log('获取Job URL失败', url, res)
@@ -315,7 +330,7 @@ async function processSingleUrl(url: string) {
 
 async function getJobStatsByUrl(url: string) {
   if (jobUrlVisited.value.includes(url)) {
-    return
+    return true
   } else {
     jobUrlVisited.value.push(url)
   }
@@ -355,9 +370,11 @@ async function getJobStatsByUrl(url: string) {
         jobs.value.push(job)
         originJobs.value.push(job)
       }
+      return true
     }
   } catch (e) {
     console.log('读取 config.xml 失败', e)
+    return false
   }
 }
 
