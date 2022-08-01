@@ -21,10 +21,13 @@
     "clear": "rimraf extension/dist extension/manifest.json extension.*",
     "lint": "eslint '{src,scripts}/**/*.{json,ts,js,vue}'",
     "test": "vitest test",
-    "browserslist": "browserslist --config=./.browserslistrc"
+    "browserslist": "browserslist --config=./.browserslistrc",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.25.2",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@ffflorian/jszip-cli": "^3.1.6",
     "@iconify/json": "^2.1.30",
     "@nodelib/fs.scandir": "^2.1.5",
@@ -45,6 +48,7 @@
     "eslint-plugin-vue": "^9.1.1",
     "esno": "^0.14.1",
     "fs-extra": "^10.1.0",
+    "husky": "^8.0.1",
     "jsdom": "^19.0.0",
     "kolorist": "^1.5.1",
     "naive-ui": "^2.32.1",
