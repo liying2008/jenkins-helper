@@ -23,13 +23,13 @@ const disableDownload = ref(false)
 
 // 下载日志
 function downloadConsoleLog() {
-  disableDownload.value = true
   console.log('buildUrl', props.buildUrl)
   const downloadUrl = `${props.buildUrl}logText/progressiveText?start=0`
   const filename = `${props.fullDisplayName} Console Log.log`
   if (browser && browser.downloads) {
     // 使用 浏览器扩展 功能下载文件
     console.log('download file by browser')
+    disableDownload.value = true
     browser.downloads.download({
       url: downloadUrl,
       filename,

@@ -1,11 +1,16 @@
 import { t } from '~/libs/extension'
-import type { Action, BuildCause, BuildParameter, CauseAction, ParametersAction } from '~/models/jenkins/build'
-import { CAUSE_ACTION_CLASS, PARAMETERS_ACTION_CLASS } from '~/models/jenkins/build'
+import type { Action, BuildCause, BuildParameter, CauseAction, InjectedEnvVars, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
+import { CAUSE_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
 
 
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
 
 export type DisplayedBuildCause = BuildCause & { fullUpstreamUrl: string }
+
+export class DisplayedBuildEnvVar {
+  name: string = ''
+  value: string = ''
+}
 
 const strings = {
   passwordParameter: t('passwordParameter'),
@@ -123,5 +128,35 @@ export class JenkinsBuild {
       }
     })
     return causes
+  }
+
+  static getBuildEnvVarsFromActions(actions: Action[]): DisplayedBuildEnvVar[] {
+    // console.log('actions', actions)
+    const envVars: DisplayedBuildEnvVar[] = []
+    actions.forEach((action) => {
+      if (action._class === WORKFLOW_ENV_ACTION_CLASS) {
+        const _environment = (action as WorkflowEnvAction).environment
+        for (const name in _environment) {
+          envVars.push({
+            name,
+            value: _environment[name],
+          })
+        }
+      }
+    })
+    return envVars
+  }
+
+  static getBuildEnvVarsFromInjectedEnvVars(injectedEnvVars: InjectedEnvVars): DisplayedBuildEnvVar[] {
+    // console.log('injectedEnvVars', injectedEnvVars)
+    const envVars: DisplayedBuildEnvVar[] = []
+    const _environment = injectedEnvVars.envMap
+    for (const name in _environment) {
+      envVars.push({
+        name,
+        value: _environment[name],
+      })
+    }
+    return envVars
   }
 }

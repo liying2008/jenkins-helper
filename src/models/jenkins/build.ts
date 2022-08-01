@@ -11,7 +11,7 @@ export class JenkinsBuild {
   }
 }
 
-export type Action = ParametersAction | CauseAction | BadgeAction | HtmlBadgeAction
+export type Action = ParametersAction | CauseAction | BadgeAction | HtmlBadgeAction | WorkflowEnvAction
 
 export const PARAMETERS_ACTION_CLASS = 'hudson.model.ParametersAction'
 
@@ -62,4 +62,26 @@ export class BuildParameter {
   value?: string = undefined
   jobName?: string = undefined
   number?: number = undefined
+}
+
+export const WORKFLOW_ENV_ACTION_CLASS = 'org.jenkinsci.plugins.workflow.cps.EnvActionImpl'
+
+/**
+ * workflow-cps-plugin 提供的API
+ */
+export class WorkflowEnvAction {
+  _class: string = ''
+  environment: Record<string, string> = {}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * envinject-plugin 提供的API
+ *
+ * api data from $BUILD_URL/injectedEnvVars/api/json
+ */
+export class InjectedEnvVars {
+  _class: string = 'org.jenkinsci.plugins.envinject.EnvInjectVarList'
+  envMap: Record<string, string> = {}
 }
