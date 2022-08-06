@@ -3,9 +3,15 @@ import type { Component } from 'vue'
 import { h, ref } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import { AtOutline, DocumentOutline, OptionsOutline } from '@vicons/ionicons5'
+import { AtOutline, ColorPaletteOutline, DocumentOutline, OptionsOutline } from '@vicons/ionicons5'
 import { RouterLink } from 'vue-router'
 import { t } from '~/libs/extension'
+
+interface MenuItem {
+  compName: string
+  title: string
+  icon: Component
+}
 
 const strings = {
   settings: t('settings'),
@@ -13,45 +19,52 @@ const strings = {
   about: t('about'),
 }
 
-
-const menuOptions: MenuOption[] = [
+const menuItems: MenuItem[] = [
   {
-    label: () => h(RouterLink,
-      {
-        to: {
-          name: 'Settings',
-        },
-      },
-      { default: () => strings.settings },
-    ),
-    key: 'settings',
-    icon: renderIcon(OptionsOutline),
+    compName: 'Settings',
+    title: strings.settings,
+    icon: OptionsOutline,
   },
   {
-    label: () => h(RouterLink,
-      {
-        to: {
-          name: 'ImportExport',
-        },
-      },
-      { default: () => strings.importAndExportSettings },
-    ),
-    key: 'importAndExportSettings',
-    icon: renderIcon(DocumentOutline),
+    compName: 'ImportExport',
+    title: strings.importAndExportSettings,
+    icon: DocumentOutline,
   },
   {
-    label: () => h(RouterLink,
-      {
-        to: {
-          name: 'About',
-        },
-      },
-      { default: () => strings.about },
-    ),
-    key: 'about',
-    icon: renderIcon(AtOutline),
+    compName: 'About',
+    title: strings.about,
+    icon: AtOutline,
   },
 ]
+
+// eslint-disable-next-line no-undef
+console.log('__DEV__', __DEV__)
+
+// eslint-disable-next-line no-undef
+if (__DEV__) {
+  // 开发模式下，添加 主题预览 的菜单项
+  menuItems.push({
+    compName: 'ThemePreview',
+    title: '主题预览',
+    icon: ColorPaletteOutline,
+  })
+}
+
+const menuOptions: MenuOption[] = menuItems.map((menu) => {
+  return {
+    label: () => h(RouterLink,
+      {
+        to: {
+          name: menu.compName,
+        },
+      },
+      { default: () => menu.title },
+    ),
+    key: menu.compName,
+    icon: renderIcon(menu.icon),
+  }
+})
+
 const collapsed = ref(false)
 
 function renderIcon(icon: Component) {

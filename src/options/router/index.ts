@@ -26,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'About',
         component: () => import('../pages/about/Index.vue'),
       },
+      {
+        path: '/theme-preview',
+        name: 'ThemePreview',
+        component: () => import('../pages/theme-preview/Index.vue'),
+      },
     ],
   },
 ]

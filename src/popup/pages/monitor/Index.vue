@@ -127,7 +127,8 @@ function getRowClass(item: DisplayedJobDetail) {
     classNames.push('gone-row')
   } else if (item.color === 'disabled') {
     classNames.push('disabled-row')
-  } else if (item.building) {
+  }
+  if (item.building) {
     classNames.push('building-row')
   }
   return classNames.join(' ')
@@ -205,7 +206,7 @@ function filterData() {
       }
     })
   })
-  // console.log('filterData', this.data)
+  // console.log('filterData', data.value)
 }
 
 function removeJenkins(jenkinsUrl: string) {
@@ -386,12 +387,12 @@ function removeJenkins(jenkinsUrl: string) {
         display: none;
       }
 
-      .building-row > td {
-        background-color: var(--jk-buildingline);
-      }
-
       .disabled-row > td {
         background-color: var(--jk-disabledline);
+      }
+
+      .building-row > td {
+        background-color: var(--jk-buildingline);
       }
 
       .building {
