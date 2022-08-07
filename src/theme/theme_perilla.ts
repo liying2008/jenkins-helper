@@ -73,7 +73,7 @@ export const perillaTheme: Theme = extend({
       link: '#9c27b0',
       buildingline: '#2d0b33',
       disabledline: '#3e3e3e',
-      offlineline: '#3e3e3e',
+      offlineline: '#404040',
       monitoredline: '#2d0b33',
     },
   },

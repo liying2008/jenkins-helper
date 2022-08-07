@@ -73,7 +73,7 @@ export const tealTheme: Theme = extend({
       link: '#1f756b',
       buildingline: '#0e3430',
       disabledline: '#3e3e3e',
-      offlineline: '#3e3e3e',
+      offlineline: '#404040',
       monitoredline: '#0e3430',
     },
   },
