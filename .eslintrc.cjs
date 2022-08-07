@@ -12,11 +12,7 @@ module.exports = {
     'prefer-const': 'warn',
     'no-console': 'off',
     'no-debugger': 'off',
-    'no-unused-vars': ['warn', {
-      vars: 'all',
-      args: 'none',
-      ignoreRestSiblings: true,
-    }],
+    'no-unused-vars': 'warn',
     'no-case-declarations': 'off',
     'vue/no-unused-components': 'warn',
     'vue/no-unused-vars': 'warn',

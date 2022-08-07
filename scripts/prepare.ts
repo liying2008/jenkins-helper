@@ -14,6 +14,7 @@ async function stubIndexHtml() {
     'background',
     'computers-manager',
     'job-stats',
+    'jenkins-tools',
   ]
 
   for (const view of views) {
