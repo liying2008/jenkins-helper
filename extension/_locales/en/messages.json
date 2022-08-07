@@ -194,6 +194,15 @@
   "removeMonitorUrlTip": {
     "message": "Removed successfully, page data will be updated later."
   },
+  "jobName": {
+    "message": "Job Name"
+  },
+  "lastBuildTime": {
+    "message": "Last Build Time"
+  },
+  "result": {
+    "message": "Result"
+  },
   "monitor": {
     "message": "Monitor"
   },

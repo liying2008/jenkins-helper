@@ -6,6 +6,14 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { Tools } from '~/libs/tools'
 import type { DisplayedJobDetail } from '~/models/job'
 import StyleTime from '~/components/style-time/StyleTime.vue'
+import { t } from '~/libs/extension'
+
+const strings = {
+  jobName: t('jobName'),
+  lastBuildTime: t('lastBuildTime'),
+  result: t('result'),
+
+}
 
 
 const tableData = ref<DisplayedJobDetail[]>([
@@ -117,7 +125,7 @@ const tableData = ref<DisplayedJobDetail[]>([
 
 const headers: TableColumns<DisplayedJobDetail> = [
   {
-    title: 'Job Name',
+    title: strings.jobName,
     align: 'left',
     key: 'name',
     sorter: 'default',
@@ -137,10 +145,10 @@ const headers: TableColumns<DisplayedJobDetail> = [
     },
   },
   {
-    title: 'Last Build Time',
+    title: strings.lastBuildTime,
     align: 'center',
     key: 'lastBuildTimestamp',
-    width: '25%',
+    width: '164px',
     sorter: 'default',
     render(row) {
       const s = Tools.getReadableTime(row.lastBuildTimestamp, true)
@@ -154,10 +162,10 @@ const headers: TableColumns<DisplayedJobDetail> = [
     },
   },
   {
-    title: 'Result',
+    title: strings.result,
     align: 'center',
     key: 'status',
-    width: '64px',
+    width: '78px',
     sorter: 'default',
     render(row) {
       return h(

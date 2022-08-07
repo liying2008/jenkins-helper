@@ -91,6 +91,7 @@ const aboutTitles = [
       display: flex;
       align-items: center;
       padding: 10px;
+      text-decoration: none;
 
       &:hover {
         background-color: var(--hover-color);

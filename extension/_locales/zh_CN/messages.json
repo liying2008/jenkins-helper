@@ -194,6 +194,15 @@
   "removeMonitorUrlTip": {
     "message": "删除成功，页面数据稍后更新。"
   },
+  "jobName": {
+    "message": "任务名称"
+  },
+  "lastBuildTime": {
+    "message": "最近构建时间"
+  },
+  "result": {
+    "message": "结果"
+  },
   "monitor": {
     "message": "监视器"
   },

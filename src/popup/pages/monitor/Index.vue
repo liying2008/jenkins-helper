@@ -22,6 +22,9 @@ const strings = {
   noData: t('noData'),
   cancel: t('cancel'),
   ok: t('ok'),
+  jobName: t('jobName'),
+  lastBuildTime: t('lastBuildTime'),
+  result: t('result'),
 }
 
 const showDisabledJobs = ref(true)
@@ -34,7 +37,7 @@ const message = useMessage()
 
 const headers: TableColumns<DisplayedJobDetail> = [
   {
-    title: 'Job Name',
+    title: strings.jobName,
     align: 'left',
     key: 'name',
     sorter: 'default',
@@ -54,10 +57,10 @@ const headers: TableColumns<DisplayedJobDetail> = [
     },
   },
   {
-    title: 'Last Build Time',
+    title: strings.lastBuildTime,
     align: 'center',
     key: 'lastBuildTimestamp',
-    width: '25%',
+    width: '164px',
     sorter: 'default',
     render(row) {
       const s = Tools.getReadableTime(row.lastBuildTimestamp, true)
@@ -71,10 +74,10 @@ const headers: TableColumns<DisplayedJobDetail> = [
     },
   },
   {
-    title: 'Result',
+    title: strings.result,
     align: 'center',
     key: 'status',
-    width: '12%',
+    width: '78px',
     sorter: 'default',
     render(row) {
       return h(

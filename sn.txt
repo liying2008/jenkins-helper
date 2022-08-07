@@ -58,3 +58,29 @@ Download the Jenkins build log.
 
 需请求主机权限的理由
 Since Jenkins is an open source and self-deployable site, the extension cannot determine the URL of Jenkins used by the user.
+
+
+==========================================================================================================
+色彩主题调试工具
+配色方案参考：
+https://colorhunt.co/
+https://coolors.co/
+明暗色：
+https://www.tutorialrepublic.com/html-reference/html-color-picker.php
+
+https://sass.js.org/
+示例代码：
+
+$linkcolour: #a98467;
+
+a {
+  color: $linkcolour;
+}
+
+a.darker {
+  color: darken($linkcolour, 10%);
+}
+
+a.lighter {
+  color: lighten($linkcolour, 10%);
+}
