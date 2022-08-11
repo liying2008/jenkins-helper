@@ -34,6 +34,7 @@ const httpMethods: SelectMixedOption[] = [
 ]
 const httpMetod = HTTP_METHOD_GET
 const url = ref('')
+const triggeredByParamsPanel = ref(false)
 const configTab = ref('')
 const authorizationEntity = ref(new AuthorizationEntity())
 const headers = ref<Header[]>([])
@@ -41,7 +42,14 @@ const headers = ref<Header[]>([])
 // const snackbar = SnackbarData.empty()
 
 function urlChanged(newUrl: string) {
-  // console.log('urlChanged::newUrl', newUrl)
+  console.log('urlChanged::newUrl', newUrl)
+  triggeredByParamsPanel.value = true
+  url.value = newUrl
+}
+
+function urlChangedBySelf(newUrl: string) {
+  console.log('urlChangedBySelf::newUrl', newUrl)
+  triggeredByParamsPanel.value = false
   url.value = newUrl
 }
 
@@ -72,6 +80,7 @@ function send() {
         :input-props="{ type: 'url' }"
         placeholder="Enter request URL"
         style="flex: 1;margin-right: 16px; margin-left: 8px;"
+        @update:value="urlChangedBySelf"
       />
       <n-button
         type="primary"
@@ -94,6 +103,7 @@ function send() {
         >
           <PanelParams
             :url="url"
+            :triggered-by-self="triggeredByParamsPanel"
             @url-changed="urlChanged"
           />
         </n-tab-pane>

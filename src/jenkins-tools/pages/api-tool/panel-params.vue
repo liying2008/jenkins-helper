@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { CloseCircleOutline } from '@vicons/ionicons5'
+import type { DataTableColumns } from 'naive-ui'
+import { NButton, NCheckbox, NIcon, NInput } from 'naive-ui'
+import { computed, h, ref, watch } from 'vue'
 import { QueryParam } from './models'
 
 const props = defineProps<{
   url: string
+  triggeredBySelf: boolean
 }>()
 
 // eslint-disable-next-line func-call-spacing
@@ -24,8 +28,74 @@ const editableUrl = computed({
 const params = ref<QueryParam[]>([new QueryParam()])
 const endWithEqualSign = ref(false) // url 参数部分末尾是否是 =
 
+const createColumns = (): DataTableColumns<QueryParam> => [
+  {
+    title: '',
+    key: 'enabled',
+    render(row, index) {
+      return h(NCheckbox, {
+        checked: row.enabled,
+        class: 'parameter-enabled-cb',
+        onUpdateChecked(v) {
+          params.value[index].enabled = v
+        },
+      })
+    },
+  },
+  {
+    title: 'Key',
+    key: 'key',
+    render(row, index) {
+      return h(NInput, {
+        value: row.key,
+        placeholder: 'Key',
+        disabled: !row.enabled && index !== params.value.length - 1,
+        onUpdateValue(v) {
+          params.value[index].key = v
+        },
+      })
+    },
+  },
+  {
+    title: 'Value',
+    key: 'value',
+    render(row, index) {
+      return h(NInput, {
+        value: row.value,
+        placeholder: 'Value',
+        disabled: !row.enabled && index !== params.value.length - 1,
+        onUpdateValue(v) {
+          params.value[index].value = v
+        },
+      })
+    },
+  },
+  {
+    title: 'Action',
+    key: 'actions',
+    render(row, index) {
+      if (index !== params.value.length - 1) {
+        return h(
+          NButton,
+          {
+            text: true,
+            title: 'Remove this parameter',
+
+            class: 'parameter-remove-btn',
+            onClick: () => deleteParam(index),
+          },
+          { default: () => h(NIcon, { component: CloseCircleOutline }) },
+        )
+      }
+    },
+  },
+]
+
 watch(editableUrl, (url) => {
-  console.log('watchUrl::url', url)
+  console.log('watchUrl::url', url, 'triggeredBySelf', props.triggeredBySelf)
+  if (props.triggeredBySelf) {
+    return
+  }
   const queryParams: QueryParam[] = []
   const sepIndex = url.indexOf('?')
   if (sepIndex === -1 || sepIndex === url.length - 1) {
@@ -48,21 +118,21 @@ watch(editableUrl, (url) => {
         queryParams.push({
           key: paramStr,
           value: '',
-          enable: true,
+          enabled: true,
           initialState: false,
         })
       } else if (equalSignIndex === paramStr.length - 1) {
         queryParams.push({
           key: paramStr.substring(0, paramStr.length - 1),
           value: '',
-          enable: true,
+          enabled: true,
           initialState: false,
         })
       } else {
         queryParams.push({
           key: paramStr.substring(0, equalSignIndex),
           value: paramStr.substring(equalSignIndex + 1),
-          enable: true,
+          enabled: true,
           initialState: false,
         })
       }
@@ -80,7 +150,7 @@ watch(editableUrl, (url) => {
       return
     }
     const curKey = item.key
-    if (item.enable) {
+    if (item.enabled) {
       const { matchedItem, matchedIndex } = getItemAndIndex(curKey, item.value, queryParams)
       console.log('watchUrl::matchedItem', matchedItem)
       console.log('watchUrl::matchedIndex', matchedIndex)
@@ -89,7 +159,7 @@ watch(editableUrl, (url) => {
         newParams.push({
           key: curKey,
           value: matchedItem!.value,
-          enable: true,
+          enabled: true,
           initialState: false,
         })
       }
@@ -119,7 +189,7 @@ watch(params, () => {
   const lastItem = params.value[paramsLength - 1]
   if (lastItem.key !== '' || lastItem.value !== '') {
     if (lastItem.initialState) {
-      params.value[paramsLength - 1].enable = true
+      params.value[paramsLength - 1].enabled = true
       params.value[paramsLength - 1].initialState = false
     }
     params.value.push(new QueryParam())
@@ -127,7 +197,7 @@ watch(params, () => {
   console.log('1-params', params.value)
   // 根据当前参数列表生成URL
   updateUrl()
-})
+}, { deep: true })
 
 
 function getItemAndIndex(key: string, value: string, arr: QueryParam[]) {
@@ -172,7 +242,7 @@ function updateUrl() {
 
   let isFirstParam = true
   params.value.forEach((item: QueryParam) => {
-    if (!item.enable) {
+    if (!item.enabled) {
       return
     }
     if (isFirstParam) {
@@ -214,76 +284,16 @@ function deleteParam(index: number) {
 
 <template>
   <div id="api-tool-panel-params">
-    <v-container>
-      <v-row>
-        <v-col cols="3">
-          <div class="ml-8">
-            KEY
-          </div>
-        </v-col>
-        <v-col cols="8">
-          <div>VALUE</div>
-        </v-col>
-        <v-col cols="1">
-          <div></div>
-        </v-col>
-      </v-row>
-      <v-row
-        v-for="(param, index) in params"
-        :key="index"
-        class="mt-2"
-      >
-        <v-col cols="3">
-          <div class="d-flex">
-            <!-- 最后一个条目不显示checkbox的设置方法，但有性能问题，暂不使用 -->
-            <!-- :style="{ visibility: index === params.length - 1 ? 'hidden': 'visible' }" -->
-            <v-checkbox
-              v-model="param.enable"
-              dense
-              hide-details
-              class="parameter-enable-cb"
-            ></v-checkbox>
-            <v-text-field
-              v-model="param.key"
-              dense
-              hide-details
-              :disabled="!param.enable && index !== params.length - 1"
-              placeholder="Key"
-            ></v-text-field>
-          </div>
-        </v-col>
-        <v-col cols="8">
-          <v-text-field
-            v-model="param.value"
-            dense
-            hide-details
-            :disabled="!param.enable && index !== params.length - 1"
-            placeholder="Value"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="1">
-          <v-btn
-            v-if="index !== params.length - 1"
-            dense
-            icon
-            title="Remove this parameter"
-            x-small
-            class="parameter-remove-btn"
-            color="grey"
-            @click="deleteParam(index)"
-          >
-            <v-icon>mdi-close-circle-outline</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+    <n-data-table
+      :columns="createColumns()"
+      :data="params"
+    />
   </div>
 </template>
 
 <style lang="scss">
 #api-tool-panel-params {
-  .parameter-enable-cb {
-    margin-top: 4px;
+  .parameter-enabled-cb {
   }
 }
 </style>
