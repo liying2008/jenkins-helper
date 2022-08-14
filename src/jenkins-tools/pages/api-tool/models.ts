@@ -14,8 +14,8 @@ export class AuthorizationEntity {
   username: string | null = null
   // Jenkins password or api token
   password: string | null = null
-  // 是否使用 crumb 标记
-  useCrumb: boolean = true
+  // Jenkins 是否启用了 CSRF 保护
+  crumbFlag: boolean = true
 }
 
 export class Header {

@@ -35,11 +35,10 @@ const httpMethods: SelectMixedOption[] = [
 const httpMetod = HTTP_METHOD_GET
 const url = ref('')
 const triggeredByParamsPanel = ref(false)
-const configTab = ref('')
+const tabs = ['Query Params', 'Authorization', 'Headers', 'Body']
+const configTab = ref(tabs[0])
 const authorizationEntity = ref(new AuthorizationEntity())
 const headers = ref<Header[]>([])
-
-// const snackbar = SnackbarData.empty()
 
 function urlChanged(newUrl: string) {
   console.log('urlChanged::newUrl', newUrl)
@@ -54,7 +53,7 @@ function urlChangedBySelf(newUrl: string) {
 }
 
 function authorizationChanged(newAuthorizationEntity: AuthorizationEntity) {
-  // console.log('authorizationChanged::newAuthorizationEntity', newAuthorizationEntity)
+  console.log('authorizationChanged::newAuthorizationEntity', newAuthorizationEntity)
   authorizationEntity.value = newAuthorizationEntity
 }
 
@@ -98,8 +97,8 @@ function send() {
         type="line"
       >
         <n-tab-pane
-          name="Query Params"
-          tab="Query Params"
+          :name="tabs[0]"
+          :tab="tabs[0]"
         >
           <PanelParams
             :url="url"
@@ -108,23 +107,20 @@ function send() {
           />
         </n-tab-pane>
         <n-tab-pane
-          name="Authorization"
-          tab="Authorization"
+          :name="tabs[1]"
+          :tab="tabs[1]"
         >
-          <PanelAuthorization
-            :authorization-entity="authorizationEntity"
-            @authorization-changed="authorizationChanged"
-          />
+          <PanelAuthorization @authorization-changed="authorizationChanged" />
         </n-tab-pane>
         <n-tab-pane
-          name="Headers"
-          tab="Headers"
+          :name="tabs[2]"
+          :tab="tabs[2]"
         >
           <PanelHeaders @headers-changed="headersChanged" />
         </n-tab-pane>
         <n-tab-pane
-          name="Body"
-          tab="Body"
+          :name="tabs[3]"
+          :tab="tabs[3]"
         >
           <PanelBody />
         </n-tab-pane>
