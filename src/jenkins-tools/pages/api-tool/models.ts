@@ -1,7 +1,7 @@
 export class QueryParam {
-  // 参数 Key
-  key: string = ''
-  // 参数 Value
+  // 参数名
+  name: string = ''
+  // 参数值
   value: string = ''
   // 参数是否启用
   enabled: boolean = false
@@ -19,8 +19,8 @@ export class AuthorizationEntity {
 }
 
 export class Header {
-  // Header Key
-  key: string = ''
+  // Header Name
+  name: string = ''
   // Header Value
   value: string = ''
   // Header 是否启用

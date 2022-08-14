@@ -28,7 +28,7 @@ const editableUrl = computed({
 const params = ref<QueryParam[]>([new QueryParam()])
 const endWithEqualSign = ref(false) // url 参数部分末尾是否是 =
 
-const createColumns = (): DataTableColumns<QueryParam> => [
+const columns: DataTableColumns<QueryParam> = [
   {
     title: '',
     key: 'enabled',
@@ -43,15 +43,15 @@ const createColumns = (): DataTableColumns<QueryParam> => [
     },
   },
   {
-    title: 'Key',
-    key: 'key',
+    title: 'Name',
+    key: 'name',
     render(row, index) {
       return h(NInput, {
-        value: row.key,
-        placeholder: 'Key',
+        value: row.name,
+        placeholder: 'Name',
         disabled: !row.enabled && index !== params.value.length - 1,
         onUpdateValue(v) {
-          params.value[index].key = v
+          params.value[index].name = v
         },
       })
     },
@@ -116,21 +116,21 @@ watch(editableUrl, (url) => {
       const equalSignIndex = paramStr.indexOf('=')
       if (equalSignIndex === -1) {
         queryParams.push({
-          key: paramStr,
+          name: paramStr,
           value: '',
           enabled: true,
           initialState: false,
         })
       } else if (equalSignIndex === paramStr.length - 1) {
         queryParams.push({
-          key: paramStr.substring(0, paramStr.length - 1),
+          name: paramStr.substring(0, paramStr.length - 1),
           value: '',
           enabled: true,
           initialState: false,
         })
       } else {
         queryParams.push({
-          key: paramStr.substring(0, equalSignIndex),
+          name: paramStr.substring(0, equalSignIndex),
           value: paramStr.substring(equalSignIndex + 1),
           enabled: true,
           initialState: false,
@@ -149,15 +149,15 @@ watch(editableUrl, (url) => {
     if (index === oldParamsLength - 1) {
       return
     }
-    const curKey = item.key
+    const curName = item.name
     if (item.enabled) {
-      const { matchedItem, matchedIndex } = getItemAndIndex(curKey, item.value, queryParams)
+      const { matchedItem, matchedIndex } = getItemAndIndex(curName, item.value, queryParams)
       console.log('watchUrl::matchedItem', matchedItem)
       console.log('watchUrl::matchedIndex', matchedIndex)
       if (matchedIndex !== -1) {
         queryParams.splice(matchedIndex, 1)
         newParams.push({
-          key: curKey,
+          name: curName,
           value: matchedItem!.value,
           enabled: true,
           initialState: false,
@@ -178,16 +178,16 @@ watch(params, () => {
   console.log('0-params', params.value)
 
   const paramsLength = params.value.length
-  // 处理 key 和 value 中的一些特殊字符
+  // 处理 name 和 value 中的一些特殊字符
   for (let i = 0; i < paramsLength; i++) {
-    const key = params.value[i].key
+    const name = params.value[i].name
     const value = params.value[i].value
-    params.value[i].key = key.replaceAll('=', '%3D').replaceAll('&', '%26').replaceAll('#', '%23')
+    params.value[i].name = name.replaceAll('=', '%3D').replaceAll('&', '%26').replaceAll('#', '%23')
     params.value[i].value = value.replaceAll('&', '%26').replaceAll('#', '%23')
   }
   // 判断最后一个条目是否为空，不为空则添加一个空条目
   const lastItem = params.value[paramsLength - 1]
-  if (lastItem.key !== '' || lastItem.value !== '') {
+  if (lastItem.name !== '' || lastItem.value !== '') {
     if (lastItem.initialState) {
       params.value[paramsLength - 1].enabled = true
       params.value[paramsLength - 1].initialState = false
@@ -200,14 +200,14 @@ watch(params, () => {
 }, { deep: true })
 
 
-function getItemAndIndex(key: string, value: string, arr: QueryParam[]) {
+function getItemAndIndex(name: string, value: string, arr: QueryParam[]) {
   let matchedItem: QueryParam | null = null
   let matchedIndex: number = -1
 
   let isFullMatch = false
 
   for (let index = 0; index < arr.length; index++) {
-    if (arr[index].key === key) {
+    if (arr[index].name === name) {
       if (matchedIndex === -1) {
         matchedIndex = index
         matchedItem = Object.assign({}, arr[index])
@@ -251,10 +251,10 @@ function updateUrl() {
     } else {
       newUrl += '&'
     }
-    if (item.key !== '' && item.value === '') {
-      newUrl += `${item.key}`
+    if (item.name !== '' && item.value === '') {
+      newUrl += `${item.name}`
     } else if (item.value !== '') {
-      newUrl += `${item.key}=${item.value}`
+      newUrl += `${item.name}=${item.value}`
     }
   })
   if (endWithEqualSign.value) {
@@ -285,7 +285,7 @@ function deleteParam(index: number) {
 <template>
   <div id="api-tool-panel-params">
     <n-data-table
-      :columns="createColumns()"
+      :columns="columns"
       :data="params"
     />
   </div>
