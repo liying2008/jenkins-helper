@@ -13,9 +13,6 @@ enum BodyType {
   Xml = 'xml',
 }
 
-const strings = {
-}
-
 const selectedType = ref<BodyType>(BodyType.None)
 const bodyTypes = [
   {
@@ -39,43 +36,32 @@ const bodyTypes = [
     value: BodyType.Xml,
   },
 ]
-
-function selectedTypeChange() {
-  // console.log('selectedTypeChange::', this.selectedType)
-}
 </script>
 
 <template>
   <div id="api-tool-panel-body">
-    <v-container>
-      <v-radio-group
-        v-model="selectedType"
-        dense
-        hide-details
-        row
-        class="dense-radio-group"
-        @change="selectedTypeChange"
-      >
-        <v-radio
+    <n-radio-group
+      v-model:value="selectedType"
+      name="radiogroup"
+    >
+      <n-space>
+        <n-radio
           v-for="bodyType in bodyTypes"
           :key="bodyType.value"
           :label="bodyType.label"
           :value="bodyType.value"
-        ></v-radio>
-      </v-radio-group>
-      <FormData v-show="selectedType === BodyType.FormData" />
-      <UrlEncodedForm v-show="selectedType === BodyType.UrlEncodedForm" />
-      <JsonData v-show="selectedType === BodyType.Json" />
-      <XmlData v-show="selectedType === BodyType.Xml" />
-    </v-container>
+        >
+        </n-radio>
+      </n-space>
+    </n-radio-group>
+    <FormData v-show="selectedType === BodyType.FormData" />
+    <UrlEncodedForm v-show="selectedType === BodyType.UrlEncodedForm" />
+    <JsonData v-show="selectedType === BodyType.Json" />
+    <XmlData v-show="selectedType === BodyType.Xml" />
   </div>
 </template>
 
 <style lang="scss">
 #api-tool-panel-body {
-  .dense-radio-group {
-    padding-top: 0;
-    margin-top: 0;
-  }
 }
 </style>

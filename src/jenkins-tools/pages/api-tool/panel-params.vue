@@ -293,7 +293,5 @@ function deleteParam(index: number) {
 
 <style lang="scss">
 #api-tool-panel-params {
-  .parameter-enabled-cb {
-  }
 }
 </style>

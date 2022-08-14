@@ -119,8 +119,5 @@ function deleteHeader(index: number) {
 
 <style lang="scss">
 #api-tool-panel-headers {
-  .header-enable-cb {
-    margin-top: 4px;
-  }
 }
 </style>

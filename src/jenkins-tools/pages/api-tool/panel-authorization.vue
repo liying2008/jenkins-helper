@@ -53,8 +53,5 @@ watch(authorizationEntity, (newVal: AuthorizationEntity) => {
 
 <style lang="scss">
 #api-tool-panel-authorization {
-  .full-width {
-    width: 100%;
-  }
 }
 </style>
