@@ -132,7 +132,7 @@ function startImport(content: string) {
     showDangerMessage(strings.settingContentIsEmpty)
     return
   }
-  StorageService.set(settings.data).then(() => {
+  StorageService.set(settings.data as Record<string, any>).then(() => {
     showSuccessMessage(strings.settingsImported)
     // 应用新主题设置
     initTheme()
@@ -179,7 +179,7 @@ function showDangerMessage(dangerText: string) {
               size="86"
               class="icon-center"
             >
-              <cloud-upload-outline />
+              <CloudUploadOutline />
             </n-icon>
           </n-card>
         </n-gi>
@@ -197,7 +197,7 @@ function showDangerMessage(dangerText: string) {
               size="86"
               class="icon-center"
             >
-              <cloud-download-outline />
+              <CloudDownloadOutline />
             </n-icon>
           </n-card>
         </n-gi>

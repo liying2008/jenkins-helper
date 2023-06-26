@@ -56,7 +56,7 @@ export class Tools {
     }
     // console.log('Tool.getFetchOption token', token);
     if (token) {
-      headers.Authorization = `Basic ${window.btoa(`${token.username}:${token.token}`)}`
+      headers.Authorization = `Basic ${btoa(`${token.username}:${token.token}`)}`
       return {
         method,
         mode: 'cors',

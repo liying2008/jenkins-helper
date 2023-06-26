@@ -37,6 +37,7 @@ export function inject() {
 
     document.body.appendChild(container)
 
+    // TODO: Check IT!!
     // <link rel="stylesheet" href="chrome-extension://{id}/dist/contentScripts/style.css">
     const styleEl = document.createElement('link')
     styleEl.setAttribute('rel', 'stylesheet')

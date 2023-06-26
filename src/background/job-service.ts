@@ -1,3 +1,4 @@
+import type { Alarms } from 'webextension-polyfill'
 import { Tools } from '~/libs/tools'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -6,14 +7,9 @@ import type { NotificationShowing, Options } from '~/models/option'
 import type { JenkinsJob } from '~/models/jenkins/job'
 import type { JenkinsView } from '~/models/jenkins/view'
 import type { Enc } from '~/models/common'
-import JenkinsGrayIcon from '~/assets/img/logo-gray.svg'
-import JenkinsGreenIcon from '~/assets/img/logo-green.svg'
-import JenkinsRedIcon from '~/assets/img/logo-red.svg'
-import JenkinsYellowIcon from '~/assets/img/logo-yellow.svg'
 
 export class JobService {
   private static jenkinsUrls: string[] = []
-  private static lastInterval: number | undefined = undefined
   private static showNotificationOption: NotificationShowing
   // 失败Job数量
   private static failureJobCount = 0
@@ -28,6 +24,8 @@ export class JobService {
 
   // 通知ID和URL的对照
   private static notificationUrlMap = new Map<string, string>()
+  // alarm name
+  private static readonly ALARM_NAME = 'job-service-alarm'
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]]]'
 
@@ -60,15 +58,32 @@ export class JobService {
         browser.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) })
       }
     })
+    // 监听 Alarm
+    if (browser.alarms.onAlarm.hasListener(JobService.onAlarm)) {
+      browser.alarms.onAlarm.removeListener(JobService.onAlarm)
+    }
+    browser.alarms.onAlarm.addListener(JobService.onAlarm)
   }
 
   private static refreshJobStatus(refreshTime: string) {
-    if (JobService.lastInterval !== undefined) {
-      window.clearInterval(JobService.lastInterval)
-    }
-    JobService.lastInterval = window.setInterval(() => {
+    browser.alarms.clear(JobService.ALARM_NAME).then(() => {
+      console.log('create alarm.')
+      // TODO: chrome extension 性能限制，periodInMinutes 不能小于 1
+      // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
+      browser.alarms.create(JobService.ALARM_NAME, {
+        when: Date.now() + 1,
+        periodInMinutes: Number(refreshTime) / 60, /* second to minute */
+      })
+    }).catch((e) => {
+      console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
+    })
+  }
+
+  private static onAlarm(alarm: Alarms.Alarm) {
+    // console.log('on alarm:', alarm)
+    if (alarm.name === JobService.ALARM_NAME) {
       JobService.queryJobStatus()
-    }, Number(refreshTime) * 1000)
+    }
   }
 
   private static storageChange(changes: StorageChangeWrapper) {
@@ -301,20 +316,20 @@ export class JobService {
     const _successJobCount = JobService.successJobCount
 
     if (JobService.errorOnFetch) {
-      browser.browserAction.setBadgeText({ text: 'ERR' })
-      browser.browserAction.setBadgeBackgroundColor({ color: '#df2b38' })
+      browser.action.setBadgeText({ text: 'ERR' })
+      browser.action.setBadgeBackgroundColor({ color: '#df2b38' })
     } else {
       if (_failureJobCount === 0 && _unstableJobCount === 0 && _successJobCount === 0) {
-        browser.browserAction.setBadgeText({ text: '' })
+        browser.action.setBadgeText({ text: '' })
       } else {
         const count = _failureJobCount || _unstableJobCount || _successJobCount || 0
         const color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c'
         if (count > 9999) {
-          browser.browserAction.setBadgeText({ text: 'MUCH' })
+          browser.action.setBadgeText({ text: 'MUCH' })
         } else {
-          browser.browserAction.setBadgeText({ text: count.toString() })
+          browser.action.setBadgeText({ text: count.toString() })
         }
-        browser.browserAction.setBadgeBackgroundColor({ color })
+        browser.action.setBadgeBackgroundColor({ color })
       }
     }
   }
@@ -334,19 +349,22 @@ export class JobService {
   }
 
   private static show(result: string, jobName: string, url: string) {
-    let statusIcon = JenkinsGrayIcon
+    let statusIcon = 'logo-gray.png'
     if (result === 'SUCCESS') {
-      statusIcon = JenkinsGreenIcon
+      statusIcon = 'logo-green.png'
     } else if (result === 'FAILURE') {
-      statusIcon = JenkinsRedIcon
+      statusIcon = 'logo-red.png'
     } else if (result === 'UNSTABLE') {
-      statusIcon = JenkinsYellowIcon
+      statusIcon = 'logo-yellow.png'
     }
+
+    // const statusIconUrl = browser.runtime.getURL(`img/${statusIcon}`)
+    // console.log('statusIconUrl', statusIconUrl)
 
     browser.notifications.create({
       type: 'basic',
-      iconUrl: statusIcon,
-      title: `Build ${result} ! - ${jobName}`,
+      iconUrl: `img/${statusIcon}`,
+      title: `${jobName} - ${result}`,
       message: decodeURIComponent(url),
       priority: 0, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
     }).then((notificationId) => {

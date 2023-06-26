@@ -1,21 +1,28 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import type { AppTheme } from '~/theme/theme'
 
-export interface ThemeState {
-  theme: AppTheme
-  darkMode: boolean
-}
+export const useThemeStore = defineStore('theme', () => {
+  const theme = ref<AppTheme | undefined>(undefined)
+  const darkMode = ref(false)
 
-export const useThemeStore = defineStore('theme', {
-  state: () => ({
-    theme: undefined,
-    darkMode: false,
-  } as unknown as ThemeState),
-  getters: {
-  },
-  actions: {
-    toggleDarkMode() {
-      this.darkMode = !this.darkMode
-    },
-  },
+  function setTheme(newTheme: AppTheme | undefined) {
+    theme.value = newTheme
+  }
+
+  function setDarkMode(isDarkMode: boolean) {
+    darkMode.value = isDarkMode
+  }
+
+  function toggleDarkMode() {
+    darkMode.value = !darkMode.value
+  }
+
+  return {
+    theme,
+    darkMode,
+    setTheme,
+    setDarkMode,
+    toggleDarkMode,
+  }
 })

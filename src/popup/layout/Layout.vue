@@ -47,7 +47,7 @@ onMounted(() => {
 
 function openOptions() {
   if (browser.runtime.openOptionsPage) {
-    browser.runtime.openOptionsPage() // Chrome 42+, Firefox 48
+    browser.runtime.openOptionsPage()
   } else {
     browser.tabs.create({ url: browser.runtime.getURL('options.html') })
   }
@@ -55,7 +55,7 @@ function openOptions() {
 
 function openJobList() {
   browser.windows.create({
-    url: 'dist/job-stats/index.html',
+    url: 'job-stats.html',
     type: 'popup',
     width: 1200,
     height: 800,
@@ -66,7 +66,7 @@ function openJobList() {
 
 function openTools() {
   browser.tabs.create({
-    url: 'dist/jenkins-tools/index.html',
+    url: 'jenkins-tools.html',
   }).then((tab) => {
     // console.log('tab', tab)
   })

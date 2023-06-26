@@ -1,5 +1,4 @@
 .DS_Store
-.idea/
 .vite-ssg-dist
 .vite-ssg-temp
 *.crx
@@ -9,14 +8,24 @@
 *.xpi
 *.zip
 dist
+dist-prod
 dist-ssr
-extension/manifest.json
 node_modules
 src/auto-imports.d.ts
 src/components.d.ts
+.eslintrc-auto-import.json
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

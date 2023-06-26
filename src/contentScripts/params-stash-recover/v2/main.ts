@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import type { StashedParams } from '../models/param-type'
 import { addBtnForParamsPage, addBtnsForBuildPage } from './params-stash-recover-btn'
 import { addRecoverTipOnPage, addStashTipOnPage } from './params-stash-recover-tip'

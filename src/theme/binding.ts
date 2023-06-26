@@ -15,7 +15,7 @@ export function applyTheme(theme: Theme, darkMode: boolean) {
       // @ts-expect-error subpressing No index signature with a parameter of type 'string' was found on type error
       document.documentElement.style.setProperty(`--jk-${key}`, theme.dark.custom[key])
     }
-    themeStore.theme = theme.dark
+    themeStore.setTheme(theme.dark)
   } else {
     for (const key in theme.light.common) {
       // @ts-expect-error subpressing No index signature with a parameter of type 'string' was found on type error
@@ -25,9 +25,9 @@ export function applyTheme(theme: Theme, darkMode: boolean) {
       // @ts-expect-error subpressing No index signature with a parameter of type 'string' was found on type error
       document.documentElement.style.setProperty(`--jk-${key}`, theme.light.custom[key])
     }
-    themeStore.theme = theme.light
+    themeStore.setTheme(theme.light)
   }
-  themeStore.darkMode = darkMode
+  themeStore.setDarkMode(darkMode)
 }
 
 export function applyThemeForContentScripts(theme: Theme) {

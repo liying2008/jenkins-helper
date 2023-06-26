@@ -180,7 +180,7 @@ function isSafe(node: NodeDetail) {
   if (node.offline) {
     return false
   }
-  const remainingDiskSpace = parseFloat(node.remainingDiskSpace.replace('GB', '').trim())
+  const remainingDiskSpace = Number.parseFloat(node.remainingDiskSpace.replace('GB', '').trim())
   const threshold = node.diskSpaceThreshold
   return remainingDiskSpace > threshold
 }

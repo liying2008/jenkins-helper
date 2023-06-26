@@ -144,7 +144,7 @@ const thresholdModalValueRules: FormRules = {
         value = value.trim()
         if (!value) {
           return new Error(strings.canNotBeEmpty)
-        } else if (parseFloat(value) <= 0) {
+        } else if (Number.parseFloat(value) <= 0) {
           return new Error(strings.diskSpaceThresholdMustGreaterThan0)
         }
         return true
@@ -350,7 +350,7 @@ function onThresholdValueSubmit(value: string, validation: boolean) {
     }
   }
 
-  const diskSpaceThreshold = parseFloat(value)
+  const diskSpaceThreshold = Number.parseFloat(value)
   monitoredNodes.value[url.value].monitoredNodes[displayName] = {
     displayName,
     nodeUrl: item.nodeUrl,

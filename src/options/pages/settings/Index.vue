@@ -49,8 +49,8 @@ const message = useMessage()
 
 const defaultOptionsValue = Options.default()
 
-const refreshTime = ref(parseInt(defaultOptionsValue.refreshTime))
-const nodeRefreshTime = ref(parseInt(defaultOptionsValue.nodeRefreshTime))
+const refreshTime = ref(Number.parseInt(defaultOptionsValue.refreshTime))
+const nodeRefreshTime = ref(Number.parseInt(defaultOptionsValue.nodeRefreshTime))
 const defaultTab = ref(defaultOptionsValue.defaultTab)
 const defaultTabs: SelectMixedOption[] = [
   {
@@ -155,24 +155,24 @@ function dataToOptions(): SettingsOptions {
 function optionsToData(options: SettingsOptions) {
   /// / refreshTime
   if (options.refreshTime === undefined) {
-    refreshTime.value = parseInt(defaultOptionsValue.refreshTime)
-  } else if (parseInt(options.refreshTime) > constants.monitorMaxRefreshTime) {
+    refreshTime.value = Number.parseInt(defaultOptionsValue.refreshTime)
+  } else if (Number.parseInt(options.refreshTime) > constants.monitorMaxRefreshTime) {
     refreshTime.value = constants.monitorMaxRefreshTime
-  } else if (parseInt(options.refreshTime) < constants.monitorMinRefreshTime) {
+  } else if (Number.parseInt(options.refreshTime) < constants.monitorMinRefreshTime) {
     refreshTime.value = constants.monitorMinRefreshTime
   } else {
-    refreshTime.value = parseInt(options.refreshTime)
+    refreshTime.value = Number.parseInt(options.refreshTime)
   }
 
   /// / nodeRefreshTime
   if (options.nodeRefreshTime === undefined) {
-    nodeRefreshTime.value = parseInt(defaultOptionsValue.nodeRefreshTime)
-  } else if (parseInt(options.nodeRefreshTime) > constants.nodeMaxRefreshTime) {
+    nodeRefreshTime.value = Number.parseInt(defaultOptionsValue.nodeRefreshTime)
+  } else if (Number.parseInt(options.nodeRefreshTime) > constants.nodeMaxRefreshTime) {
     nodeRefreshTime.value = constants.nodeMaxRefreshTime
-  } else if (parseInt(options.nodeRefreshTime) < constants.nodeMinRefreshTime) {
+  } else if (Number.parseInt(options.nodeRefreshTime) < constants.nodeMinRefreshTime) {
     nodeRefreshTime.value = constants.nodeMinRefreshTime
   } else {
-    nodeRefreshTime.value = parseInt(options.nodeRefreshTime)
+    nodeRefreshTime.value = Number.parseInt(options.nodeRefreshTime)
   }
 
   /// / showNotificationOption
@@ -233,10 +233,7 @@ function saveOptions() {
 
 <template>
   <div class="options-settings-wrapper">
-    <div
-      ref="contentRef"
-      class="content"
-    >
+    <div class="content">
       <!-- 全局设置 -->
       <n-card
         :title="strings.globalOptionTitle"

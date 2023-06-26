@@ -1,3 +1,4 @@
+import type { Alarms } from 'webextension-polyfill'
 import { t } from '~/libs/extension'
 import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
@@ -5,11 +6,11 @@ import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
 import type { JenkinsNode } from '~/models/jenkins/node'
 import type { Nodes } from '~/models/node'
-import ComputerIcon from '~/assets/img/computer48.png'
 import type { Options } from '~/models/option'
 
 export class NodeService {
-  private static lastInterval: number | undefined = undefined
+  // alarm name
+  private static readonly ALARM_NAME = 'node-service-alarm'
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = 'computer[displayName,offline,monitorData[*]]'
 
@@ -22,15 +23,32 @@ export class NodeService {
       // console.log('node-service::options', options)
       NodeService.refreshNodeStatus(options.nodeRefreshTime)
     })
+
+    // 监听 Alarm
+    if (browser.alarms.onAlarm.hasListener(NodeService.onAlarm)) {
+      browser.alarms.onAlarm.removeListener(NodeService.onAlarm)
+    }
+    browser.alarms.onAlarm.addListener(NodeService.onAlarm)
   }
 
   private static refreshNodeStatus(refreshTime: string) {
-    if (NodeService.lastInterval !== undefined) {
-      window.clearInterval(NodeService.lastInterval)
-    }
-    NodeService.lastInterval = window.setInterval(() => {
+    console.log('refreshNodeStatus::refresh time', refreshTime)
+    browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
+      console.log('create alarm.')
+      browser.alarms.create(NodeService.ALARM_NAME, {
+        when: Date.now() + 1,
+        periodInMinutes: Number(refreshTime) * 60, /* hour to minute */
+      })
+    }).catch((e) => {
+      console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
+    })
+  }
+
+  private static onAlarm(alarm: Alarms.Alarm) {
+    // console.log('on alarm:', alarm)
+    if (alarm.name === NodeService.ALARM_NAME) {
       NodeService.queryNodeStatus()
-    }, Number(refreshTime) * 3600 * 1000) /* hour to millisecond */
+    }
   }
 
   private static storageChange(changes: StorageChangeWrapper) {
@@ -151,7 +169,7 @@ export class NodeService {
     } else if (remainingDiskSpace === 'N/A') {
       message = t('fetchNodeInfoFailedNotifications')
     } else {
-      const remainingDiskSpaceInt = parseFloat(remainingDiskSpace.replace('GB', '').trim())
+      const remainingDiskSpaceInt = Number.parseFloat(remainingDiskSpace.replace('GB', '').trim())
       if (remainingDiskSpaceInt <= diskSpaceThreshold) {
         message = t('insufficientDiskSpaceNotifications', [remainingDiskSpace])
       }
@@ -161,10 +179,10 @@ export class NodeService {
       // 显示通知
       browser.notifications.create({
         type: 'basic',
-        iconUrl: ComputerIcon,
+        iconUrl: 'img/computer48.png',
         title: displayName,
         message,
-        priority: 2,
+        priority: 0,
       }).then((notificationId) => {
         console.log('checkDiskSpace notifications', notificationId)
       })

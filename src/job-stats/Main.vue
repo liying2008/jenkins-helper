@@ -552,9 +552,9 @@ function getParamsNode(rootNode: Element) {
                   style=" font-size: 16px;vertical-align: middle;"
                   @click="modalVisible = true"
                 >
-                  <n-icon>
+                  <NIcon>
                     <SettingsOutline />
-                  </n-icon>
+                  </NIcon>
                 </n-button>
               </span>
             </div>
@@ -580,14 +580,14 @@ function getParamsNode(rootNode: Element) {
               :key="index"
               class="success-urls-div"
             >
-              <n-icon
+              <NIcon
                 size="16"
                 color="var(--jk-success)"
                 class="source-status-icon source-success-icon"
                 :title="`${url}: ${strings.jobStatisticsDataFetchSuccess}`"
               >
-                <checkmark-circle-sharp />
-              </n-icon>
+                <CheckmarkCircleSharp />
+              </NIcon>
               {{ decodeURIComponent(url) }}
             </div>
 
@@ -596,14 +596,14 @@ function getParamsNode(rootNode: Element) {
               :key="index"
               class="bad-urls-div"
             >
-              <n-icon
+              <NIcon
                 size="16"
                 color="var(--jk-error)"
                 class="source-status-icon source-error-icon"
                 :title="`${url}: ${strings.jobStatisticsDataFetchFailure}`"
               >
-                <close-circle-sharp />
-              </n-icon>
+                <CloseCircleSharp />
+              </NIcon>
               {{ decodeURIComponent(url) }}
             </div>
           </div>
@@ -633,14 +633,14 @@ function getParamsNode(rootNode: Element) {
         size="small"
       >
         <div>
-          <n-checkbox v-model:checked="showEnabledJobOnly">
+          <NCheckbox v-model:checked="showEnabledJobOnly">
             {{ strings.jobStatisticsShowEnabledJobOnly }}
-          </n-checkbox>
+          </NCheckbox>
         </div>
         <div class="mt-4px">
-          <n-checkbox v-model:checked="showCronTableJobOnly">
+          <NCheckbox v-model:checked="showCronTableJobOnly">
             {{ strings.jobStatisticsShowCronTableJobOnly }}
-          </n-checkbox>
+          </NCheckbox>
         </div>
       </n-card>
     </div>
