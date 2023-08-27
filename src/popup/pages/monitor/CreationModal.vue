@@ -60,7 +60,7 @@ const rules: FormRules = {
           // 不能为空
           return new Error(strings.urlCannotEmpty)
         } else {
-          const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+          const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
           const regex = new RegExp(expression)
           if (!regex.test(value)) {
             // 需要是一个合法的URL

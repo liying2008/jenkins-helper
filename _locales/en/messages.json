@@ -14,7 +14,7 @@
   "yes": {
     "message": "Yes"
   },
-  "no":{
+  "no": {
     "message": "No"
   },
   "settings": {
@@ -353,7 +353,7 @@
   "notMonitored": {
     "message": "Not Monitored"
   },
-  "canNotBeEmpty":{
+  "canNotBeEmpty": {
     "message": "Cannot be empty"
   },
   "save": {

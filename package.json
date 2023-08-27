@@ -1,14 +1,18 @@
 {
   "name": "jenkins-helper",
-  "version": "3.0.0",
-  "description": "Monitor Jenkins build state and node state, and provide some convenient services.",
-  "private": true,
   "type": "module",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Monitor Jenkins build state and node state, and provide some convenient services.",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint '{src,scripts}/**/*.{json,ts,js,vue}'",
+    "lint": "eslint --cache .",
     "test": "vitest test",
     "browserslist": "browserslist --config=./.browserslistrc",
     "prepare": "husky install",
@@ -64,9 +68,5 @@
     "vitest": "^0.34.3",
     "vue-demi": "^0.14.5",
     "vue-tsc": "^1.8.8"
-  },
-  "engines": {
-    "node": ">=18",
-    "pnpm": ">=8"
   }
 }

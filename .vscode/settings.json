@@ -10,7 +10,7 @@
     "source.fixAll.stylelint": true
   },
   "files.associations": {
-    "*.css": "postcss",
+    "*.css": "postcss"
   },
   "prettier.enable": false,
   "eslint.format.enable": true,
@@ -22,7 +22,7 @@
   "standard.enable": false,
   "editor.formatOnSave": false,
   "stylelint.validate": [
-    "css",    
+    "css",
     "postcss",
     "scss",
     "sass",

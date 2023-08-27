@@ -22,7 +22,7 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "vite/client",
-      "naive-ui/volar",
+      "naive-ui/volar"
     ],
     "paths": {
       "~/*": ["src/*"]

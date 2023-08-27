@@ -11,6 +11,6 @@
     "vite.config.ts",
     "package.json",
     "./scripts/*.ts",
-    "./src/manifest.ts",
+    "./src/manifest.ts"
   ]
 }

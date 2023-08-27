@@ -14,7 +14,7 @@
   "yes": {
     "message": "是的"
   },
-  "no":{
+  "no": {
     "message": "不"
   },
   "settings": {
@@ -353,7 +353,7 @@
   "notMonitored": {
     "message": "未监控"
   },
-  "canNotBeEmpty":{
+  "canNotBeEmpty": {
     "message": "不能为空"
   },
   "save": {
