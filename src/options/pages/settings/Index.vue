@@ -114,8 +114,8 @@ const enableParamsStashAndRecover = ref(defaultOptionsValue.enableParamsStashAnd
 const enableParamNamesColor = ref(defaultOptionsValue.enableParamNamesColor)
 const paramNamesColor = ref(defaultOptionsValue.paramNamesColor)
 const constants = {
-  monitorMinRefreshTime: 5,
-  monitorMaxRefreshTime: 300,
+  monitorMinRefreshTime: 60,
+  monitorMaxRefreshTime: 480,
   nodeMinRefreshTime: 1,
   nodeMaxRefreshTime: 6,
 }
@@ -355,11 +355,11 @@ function saveOptions() {
           v-model:value="refreshTime"
           :min="constants.monitorMinRefreshTime"
           :max="constants.monitorMaxRefreshTime"
-          :step="5"
+          :step="30"
         />
         <div
           class="control-hint"
-          v-html="t('refreshTimeTip', [refreshTime.toString()])"
+          v-html="t('refreshTimeTip', [(refreshTime / 60).toString()])"
         ></div>
       </n-card>
       <div class="my-6" />

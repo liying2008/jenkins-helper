@@ -35,9 +35,17 @@ export class NodeService {
     console.log('refreshNodeStatus::refresh time', refreshTime)
     browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
       console.log('create alarm.')
+      // chrome extension 性能限制，periodInMinutes 不能小于 1
+      // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
+      let periodInMinutes = Number(refreshTime) * 60 /* hour to minute */
+      // TODO 开发模式支持 < 1
+      if (periodInMinutes < 1) {
+        periodInMinutes = 1
+      }
+
       browser.alarms.create(NodeService.ALARM_NAME, {
-        when: Date.now() + 1,
-        periodInMinutes: Number(refreshTime) * 60, /* hour to minute */
+        when: Date.now() + 100,
+        periodInMinutes,
       })
     }).catch((e) => {
       console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)

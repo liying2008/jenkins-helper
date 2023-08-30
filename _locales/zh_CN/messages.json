@@ -150,7 +150,7 @@
     "message": "从不"
   },
   "refreshTimeTip": {
-    "message": "每隔  <b> $duration$ 秒</b> 获取一次最新状态",
+    "message": "每隔  <b> $duration$ 分钟</b> 获取一次最新状态",
     "placeholders": {
       "duration": {
         "content": "$1"

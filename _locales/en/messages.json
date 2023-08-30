@@ -138,7 +138,7 @@
     "message": "Refresh Time:"
   },
   "optionsSaved": {
-    "message": "Options Saved."
+    "message": "Saved."
   },
   "showNotificationOption_all": {
     "message": "On every build"
@@ -150,7 +150,7 @@
     "message": "Never"
   },
   "refreshTimeTip": {
-    "message": "Check server for changes every  <b> $duration$  seconds</b>",
+    "message": "Check server for changes every  <b> $duration$  minute(s)</b>",
     "placeholders": {
       "duration": {
         "content": "$1"
@@ -161,7 +161,7 @@
     "message": "Node Settings"
   },
   "nodeRefreshTimeTip": {
-    "message": "Check server for changes every  <b> $duration$  hours</b>",
+    "message": "Check server for changes every  <b> $duration$  hour(s)</b>",
     "placeholders": {
       "duration": {
         "content": "$1"

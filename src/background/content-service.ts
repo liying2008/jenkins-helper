@@ -19,9 +19,8 @@ export class ContentService {
 
 
     // 处理来自 content_scripts 的消息
-    browser.runtime.onMessage.addListener(async (message, sender) => {
+    browser.runtime.onMessage.addListener(async (message) => {
       // console.log('message', message)
-      // console.log('sender', sender)
       // NOTE: Returning a Promise is the preferred way to send a reply from an onMessage/onMessageExternal listener, as the sendResponse will be removed from the specs (See https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage) Error
 
       // use local data indexeddb
