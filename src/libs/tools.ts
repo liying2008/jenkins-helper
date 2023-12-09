@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { addZeroForSingleDigit } from './common'
 import { StorageService } from '~/libs/storage'
 import type { Enc } from '~/models/common'

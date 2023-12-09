@@ -9,7 +9,6 @@ const props = defineProps<{
   show: boolean
 }>()
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
@@ -36,14 +35,6 @@ const modalVisible = computed({
       emit('close')
     }
   },
-})
-
-watch(modalVisible, (newVal: boolean) => {
-  if (newVal) {
-    // modal dialog 打开时，清空表单数据，重置表单验证状态
-    formRef.value?.restoreValidation()
-    formValue.value.inputUrlValue = ''
-  }
 })
 
 const formRef = ref<FormInst>()
@@ -73,6 +64,14 @@ const rules: FormRules = {
     },
   ],
 }
+
+watch(modalVisible, (newVal: boolean) => {
+  if (newVal) {
+    // modal dialog 打开时，清空表单数据，重置表单验证状态
+    formRef.value?.restoreValidation()
+    formValue.value.inputUrlValue = ''
+  }
+})
 
 /**
  * 添加新 Jenkins URL

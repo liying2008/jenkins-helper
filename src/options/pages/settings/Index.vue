@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, toRaw } from 'vue'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { AddCircleSharp, RemoveCircleOutline, SaveOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
@@ -138,7 +138,7 @@ function deleteToken(index: number) {
 function dataToOptions(): SettingsOptions {
   const options = {
     defaultTab: defaultTab.value,
-    jenkinsTokens: jenkinsTokens.value,
+    jenkinsTokens: toRaw(jenkinsTokens.value),
     refreshTime: refreshTime.value.toString(),
     nodeRefreshTime: nodeRefreshTime.value.toString(),
     showNotificationOption: showNotificationOption.value,
@@ -222,7 +222,7 @@ function optionsToData(options: SettingsOptions) {
 
 function saveOptions() {
   const option = dataToOptions()
-  // console.log('option', JSON.parse(JSON.stringify(option)))
+  // console.log('saveOptions', option)
   StorageService.savePartialOptions(option).then(() => {
     // 应用主题
     initTheme(option.currentTheme, option.enableDarkMode)

@@ -1,4 +1,3 @@
-
 const stashBtnId = 'jenkins-helper-stash-parameters'
 const recoverBtnId = 'jenkins-helper-recover-parameters'
 
@@ -68,7 +67,6 @@ export function addBtnsForBuildPage(container: HTMLElement) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
 
 function createStashDivForParamsPage() {
   /*

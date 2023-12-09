@@ -3,7 +3,6 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 import Layout from '~/jenkins-tools/layout/Layout.vue'
 
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

@@ -196,7 +196,8 @@ function getBuildPageParameters(table: HTMLElement) {
   // 显示说明文本
   addStashTipOnPage(table.parentElement)
   return {
-    stashedParams, cannotStashed,
+    stashedParams,
+    cannotStashed,
   }
 }
 
@@ -264,7 +265,8 @@ function getParametersPageParameters(table: HTMLElement) {
   // 显示说明文本
   addStashTipOnPage(table.parentElement)
   return {
-    stashedParams, cannotStashed,
+    stashedParams,
+    cannotStashed,
   }
 }
 

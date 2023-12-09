@@ -2,7 +2,6 @@ import { t } from '~/libs/extension'
 import type { Action, BuildCause, BuildParameter, CauseAction, InjectedEnvVars, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { CAUSE_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
 
-
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
 
 export type DisplayedBuildCause = BuildCause & { fullUpstreamUrl: string }

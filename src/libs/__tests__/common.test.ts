@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { addZeroForSingleDigit, isNullOrEmptyArray, isNullOrEmptyRecord, removeEnd } from '../common'
 
-describe('Test Common', () => {
+describe('test common', () => {
   it('show add zero for single digit', () => {
     expect(addZeroForSingleDigit(1)).toEqual('01')
     expect(addZeroForSingleDigit(10)).toEqual('10')

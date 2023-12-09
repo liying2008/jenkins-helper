@@ -9,7 +9,6 @@ const props = defineProps<{
   show: boolean
 }>()
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'close'): void
 }>()

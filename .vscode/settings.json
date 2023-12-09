@@ -1,26 +1,33 @@
 {
-  "cSpell.words": ["Vitesse"],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "volar.tsPlugin": true,
-  "volar.tsPluginStatus": false,
-  "volar.autoCompleteRefs": true,
-  "vite.autoStart": false,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.fixAll.stylelint": true
-  },
-  "files.associations": {
-    "*.css": "postcss"
-  },
+  // "typescript.tsdk": "node_modules/typescript/lib",
+  // Enable the ESlint flat config support
+  "eslint.experimental.useFlatConfig": true,
+
+  // Disable the default formatter, use eslint instead
   "prettier.enable": false,
-  "eslint.format.enable": true,
+  "standard.enable": false,
+  "editor.formatOnSave": false,
+
+  // Auto fix
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never",
+    "source.fixAll.stylelint": "explicit"
+  },
+
+  // Enable eslint for all supported languages
   "eslint.validate": [
     "javascript",
     "javascriptreact",
-    "typescript"
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
   ],
-  "standard.enable": false,
-  "editor.formatOnSave": false,
   "stylelint.validate": [
     "css",
     "postcss",
@@ -28,6 +35,11 @@
     "sass",
     "vue"
   ],
+
+  "files.associations": {
+    "*.css": "postcss"
+  },
+  // "eslint.format.enable": true,
   "scss.lint.emptyRules": "ignore",
   "scss.lint.idSelector": "ignore",
   "git.ignoreLimitWarning": true,

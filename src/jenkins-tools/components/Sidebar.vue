@@ -33,14 +33,11 @@ const menuItems: MenuItem[] = [
 
 const menuOptions: MenuOption[] = menuItems.map((menu) => {
   return {
-    label: () => h(RouterLink,
-      {
-        to: {
-          name: menu.compName,
-        },
+    label: () => h(RouterLink, {
+      to: {
+        name: menu.compName,
       },
-      { default: () => menu.title },
-    ),
+    }, { default: () => menu.title }),
     key: menu.compName,
     icon: renderIcon(menu.icon),
   }

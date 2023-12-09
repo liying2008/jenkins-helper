@@ -17,7 +17,6 @@ export class ContentService {
     // 添加 options 变动监听
     StorageService.addStorageListener(ContentService.storageChange)
 
-
     // 处理来自 content_scripts 的消息
     browser.runtime.onMessage.addListener(async (message) => {
       // console.log('message', message)

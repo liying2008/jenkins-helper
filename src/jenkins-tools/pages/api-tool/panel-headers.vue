@@ -5,7 +5,6 @@ import { NButton, NCheckbox, NIcon, NInput } from 'naive-ui'
 import { h, ref, watch } from 'vue'
 import { Header } from './models'
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'headersChanged', value: Header[]): void
 }>()

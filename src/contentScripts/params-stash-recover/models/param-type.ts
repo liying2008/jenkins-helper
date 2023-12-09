@@ -5,7 +5,6 @@ export interface ParamProp {
   value: string | boolean
 }
 
-
 export interface StashedParams {
   [pname: string]: ParamProp
 }

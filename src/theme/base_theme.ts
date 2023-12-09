@@ -9,7 +9,6 @@ export interface BaseTheme {
   dark: GlobalThemeOverrides & { custom: CustomTheme }
 }
 
-
 export const baseTheme: BaseTheme = {
   light: {
     common: {
@@ -116,7 +115,6 @@ export const baseTheme: BaseTheme = {
     },
   },
 }
-
 
 export function extend(newProps: Theme) {
   const clone = rfdc()

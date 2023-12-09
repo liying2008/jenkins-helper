@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import type { StashedParams } from '../models/param-type'
 import { addBtnForParamsPage, addBtnsForBuildPage } from './params-stash-recover-btn'
 import { addRecoverTipOnPage, addStashTipOnPage } from './params-stash-recover-tip'
@@ -198,7 +197,8 @@ function getBuildPageParameters(table: HTMLElement) {
   // 显示说明文本
   addStashTipOnPage(table.parentElement)
   return {
-    stashedParams, cannotStashed,
+    stashedParams,
+    cannotStashed,
   }
 }
 
@@ -266,7 +266,8 @@ function getParametersPageParameters(table: HTMLElement) {
   // 显示说明文本
   addStashTipOnPage(table.parentElement)
   return {
-    stashedParams, cannotStashed,
+    stashedParams,
+    cannotStashed,
   }
 }
 

@@ -8,7 +8,6 @@ import PanelBody from './panel-body.vue'
 import type { Header } from './models'
 import { AuthorizationEntity } from './models'
 
-
 const HTTP_METHOD_GET = 'GET'
 const HTTP_METHOD_POST = 'POST'
 const HTTP_METHOD_PUT = 'PUT'

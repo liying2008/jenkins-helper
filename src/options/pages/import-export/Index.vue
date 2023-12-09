@@ -39,6 +39,7 @@ function importSettings() {
 function exportSettings() {
   disableExportBtn.value = true
   StorageService.get([StorageService.keyForJenkinsUrl, StorageService.keyForNodes, StorageService.keyForOptions]).then((result) => {
+    // console.log('exportSettings', result)
     browser.management.getSelf().then((extensionInfo) => {
       // console.log('extensionInfo', extensionInfo)
       const fileContent = {

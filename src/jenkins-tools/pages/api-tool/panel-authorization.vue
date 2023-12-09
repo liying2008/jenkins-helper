@@ -3,7 +3,6 @@ import { reactive, watch } from 'vue'
 import { KeySharp, PersonSharp } from '@vicons/ionicons5'
 import { AuthorizationEntity } from './models'
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'authorizationChanged', value: AuthorizationEntity): void
 }>()

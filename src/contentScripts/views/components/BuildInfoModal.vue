@@ -11,12 +11,10 @@ import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
 import { getRoot } from '~/contentScripts/libs/app-dom'
 
-
 const props = defineProps<{
   visible: boolean
 }>()
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'close'): void
 }>()

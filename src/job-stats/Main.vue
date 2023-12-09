@@ -145,7 +145,6 @@ const showCronTableJobOnly = ref(false)
 
 const modalVisible = ref(false)
 
-
 watch(showEnabledJobOnly, () => {
   updateJobsFromOrigin()
 })
@@ -180,8 +179,8 @@ function jobStatsChange(changes: StorageChangeWrapper) {
     const newNodeParam = changes[StorageService.keyForOptions].newValue.nodeParam
     const newJobStatsJenkinsUrl = changes[StorageService.keyForOptions].newValue.jobStatsJenkinsUrl
     if (changes[StorageService.keyForOptions].oldValue !== undefined
-        && newNodeParam === changes[StorageService.keyForOptions].oldValue.nodeParam
-        && newJobStatsJenkinsUrl === changes[StorageService.keyForOptions].oldValue.jobStatsJenkinsUrl) {
+      && newNodeParam === changes[StorageService.keyForOptions].oldValue.nodeParam
+      && newJobStatsJenkinsUrl === changes[StorageService.keyForOptions].oldValue.jobStatsJenkinsUrl) {
       // Job 统计相关设置没有改变
       return
     }

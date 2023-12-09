@@ -20,7 +20,6 @@ const props = defineProps({
   },
 })
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'resultFilterChange', value: string): void
   (e: 'jobNameFilterChange', value: string): void
@@ -49,13 +48,9 @@ const filteringResult = ref('')
 const filteringJobName = ref('')
 const filteringResults: SelectMixedOption[] = []
 
-
-watchDebounced(filteringJobName,
-  () => {
-    emit('jobNameFilterChange', filteringJobName.value)
-  },
-  { debounce: 300, maxWait: 500 },
-)
+watchDebounced(filteringJobName, () => {
+  emit('jobNameFilterChange', filteringJobName.value)
+}, { debounce: 300, maxWait: 500 })
 
 watch(filteringResult, (newVal: string) => {
   emit('resultFilterChange', newVal)

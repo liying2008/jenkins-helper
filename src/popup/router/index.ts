@@ -2,7 +2,6 @@ import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '~/popup/layout/Layout.vue'
 
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -33,6 +32,5 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
-
 
 export default router

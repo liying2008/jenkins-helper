@@ -15,7 +15,6 @@ const strings = {
 
 }
 
-
 const tableData = ref<DisplayedJobDetail[]>([
   {
     building: false,

@@ -14,7 +14,6 @@ export class NodeService {
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = 'computer[displayName,offline,monitorData[*]]'
 
-
   static start() {
     // 开启浏览器后先执行一遍
     NodeService.queryNodeStatus()

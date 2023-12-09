@@ -13,12 +13,9 @@ export interface StorageChange<T> {
 }
 
 // [key: string]: StorageChange<T>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StorageChangeWrapper<T = any> = Record<string, StorageChange<T>>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StorageChangeListener<T = any> = (changes: StorageChangeWrapper<T>, areaName: string) => void
-
 
 export class StorageService {
   static readonly keyForJenkinsUrl = 'jenkins-url'

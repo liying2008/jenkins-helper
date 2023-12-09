@@ -42,9 +42,12 @@ export class Options {
       refOptions = Options.default()
     }
 
+    // defaultTab
     if (options.defaultTab === undefined || options.defaultTab === null) {
       options.defaultTab = refOptions.defaultTab
     }
+    // jenkinsTokens
+    // console.trace('normalize', options.jenkinsTokens, typeof options.jenkinsTokens)
     if (options.jenkinsTokens === undefined || options.jenkinsTokens === null) {
       options.jenkinsTokens = refOptions.jenkinsTokens
     }
@@ -57,39 +60,51 @@ export class Options {
         options.jenkinsTokens[i].token = ''
       }
     }
+    // refreshTime
     if (options.refreshTime === undefined || options.refreshTime === null) {
       options.refreshTime = refOptions.refreshTime
     }
+    // nodeRefreshTime
     if (options.nodeRefreshTime === undefined || options.nodeRefreshTime === null) {
       options.nodeRefreshTime = refOptions.nodeRefreshTime
     }
+    // showNotificationOption
     if (options.showNotificationOption === undefined || options.showNotificationOption === null) {
       options.showNotificationOption = refOptions.showNotificationOption
     }
+    // omniboxJenkinsUrl
     if (options.omniboxJenkinsUrl === undefined || options.omniboxJenkinsUrl === null) {
       options.omniboxJenkinsUrl = refOptions.omniboxJenkinsUrl
     }
+    // nodeParam
     if (options.nodeParam === undefined || options.nodeParam === null) {
       options.nodeParam = refOptions.nodeParam
     }
+    // jobStatsJenkinsUrl
     if (options.jobStatsJenkinsUrl === undefined || options.jobStatsJenkinsUrl === null) {
       options.jobStatsJenkinsUrl = refOptions.jobStatsJenkinsUrl
     }
+    // currentTheme
     if (options.currentTheme === undefined || options.currentTheme === null) {
       options.currentTheme = refOptions.currentTheme
     }
+    // enableDarkMode
     if (options.enableDarkMode === undefined || options.enableDarkMode === null) {
       options.enableDarkMode = refOptions.enableDarkMode
     }
+    // showDisabledJobs
     if (options.showDisabledJobs === undefined || options.showDisabledJobs === null) {
       options.showDisabledJobs = refOptions.showDisabledJobs
     }
+    // enableParamsStashAndRecover
     if (options.enableParamsStashAndRecover === undefined || options.enableParamsStashAndRecover === null) {
       options.enableParamsStashAndRecover = refOptions.enableParamsStashAndRecover
     }
+    // enableParamNamesColor
     if (options.enableParamNamesColor === undefined || options.enableParamNamesColor === null) {
       options.enableParamNamesColor = refOptions.enableParamNamesColor
     }
+    // paramNamesColor
     if (options.paramNamesColor === undefined || options.paramNamesColor === null) {
       options.paramNamesColor = refOptions.paramNamesColor
     }

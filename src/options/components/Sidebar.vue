@@ -37,10 +37,8 @@ const menuItems: MenuItem[] = [
   },
 ]
 
-// eslint-disable-next-line no-undef
 console.log('__DEV__', __DEV__)
 
-// eslint-disable-next-line no-undef
 if (__DEV__) {
   // 开发模式下，添加 主题预览 的菜单项
   menuItems.push({
@@ -52,14 +50,11 @@ if (__DEV__) {
 
 const menuOptions: MenuOption[] = menuItems.map((menu) => {
   return {
-    label: () => h(RouterLink,
-      {
-        to: {
-          name: menu.compName,
-        },
+    label: () => h(RouterLink, {
+      to: {
+        name: menu.compName,
       },
-      { default: () => menu.title },
-    ),
+    }, { default: () => menu.title }),
     key: menu.compName,
     icon: renderIcon(menu.icon),
   }

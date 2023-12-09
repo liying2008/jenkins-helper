@@ -25,7 +25,6 @@ const themeStore = useThemeStore()
   </n-config-provider>
 </template>
 
-
 <style lang="scss">
 .app {
   /* 设置 min-width 之后，Firefox上会有横向滚动条 */

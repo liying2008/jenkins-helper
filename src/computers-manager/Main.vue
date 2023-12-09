@@ -154,12 +154,9 @@ const thresholdModalValueRules: FormRules = {
   ],
 }
 
-watchDebounced(search,
-  () => {
-    filter()
-  },
-  { debounce: 100, maxWait: 200 },
-)
+watchDebounced(search, () => {
+  filter()
+}, { debounce: 100, maxWait: 200 })
 
 function getRowClass(item: NodeDetail) {
   const classNames = []

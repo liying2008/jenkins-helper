@@ -21,7 +21,6 @@ const props = defineProps({
   },
 })
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'resultFilterChange', value: number): void
   (e: 'displayNameFilterChange', value: string): void
@@ -55,12 +54,9 @@ const editableShowOfflineNodes = computed({
   },
 })
 
-watchDebounced(filteringDisplayName,
-  () => {
-    emit('displayNameFilterChange', filteringDisplayName.value)
-  },
-  { debounce: 300, maxWait: 500 },
-)
+watchDebounced(filteringDisplayName, () => {
+  emit('displayNameFilterChange', filteringDisplayName.value)
+}, { debounce: 300, maxWait: 500 })
 
 watch(filteringResult, (newVal: number) => {
   emit('resultFilterChange', newVal)

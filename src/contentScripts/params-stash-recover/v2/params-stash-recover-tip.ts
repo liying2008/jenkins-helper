@@ -1,4 +1,3 @@
-
 const stashTipId = 'jenkins-helper-stash-tip'
 const recoverTipId = 'jenkins-helper-recover-tip'
 

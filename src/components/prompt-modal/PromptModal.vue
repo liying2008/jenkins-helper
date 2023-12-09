@@ -47,7 +47,6 @@ const props = defineProps({
   },
 })
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'visibleUpdate', value: boolean): void
   (e: 'submit', value: string, validation: boolean): void
@@ -65,8 +64,12 @@ const modalVisible = computed({
 
 // 为了解决 NInput type 类型不匹配的问题
 const _inputType = computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return props.inputType as any
+})
+
+const promptModalFormRef = ref<FormInst>()
+const formValue = ref({
+  value: '',
 })
 
 watch(modalVisible, (newVal: boolean) => {
@@ -75,11 +78,6 @@ watch(modalVisible, (newVal: boolean) => {
     promptModalFormRef.value?.restoreValidation()
     formValue.value.value = ''
   }
-})
-
-const promptModalFormRef = ref<FormInst>()
-const formValue = ref({
-  value: '',
 })
 
 async function submit() {

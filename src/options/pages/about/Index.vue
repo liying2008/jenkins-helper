@@ -35,7 +35,8 @@ const aboutItems = [
       text: 'https://github.com/liying2008',
       target: '_blank',
     },
-  ], [
+  ],
+  [
     {
       icon: BugOutline,
       link: 'https://github.com/liying2008/jenkins-helper/issues',

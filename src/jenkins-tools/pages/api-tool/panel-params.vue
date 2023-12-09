@@ -10,11 +10,9 @@ const props = defineProps<{
   triggeredBySelf: boolean
 }>()
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'urlChanged', value: string): void
 }>()
-
 
 const editableUrl = computed({
   get() {
@@ -198,7 +196,6 @@ watch(params, () => {
   // 根据当前参数列表生成URL
   updateUrl()
 }, { deep: true })
-
 
 function getItemAndIndex(name: string, value: string, arr: QueryParam[]) {
   let matchedItem: QueryParam | null = null

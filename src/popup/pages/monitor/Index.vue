@@ -306,7 +306,6 @@ function removeJenkins(jenkinsUrl: string) {
   </div>
 </template>
 
-
 <style lang="scss">
 .monitor-wrapper {
   min-height: 200px;

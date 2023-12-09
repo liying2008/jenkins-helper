@@ -1,4 +1,3 @@
-
 const PAGE_BUILD = 'build'
 const PAGE_PARAMETERS = 'parameters'
 

@@ -5,7 +5,6 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import type { NodeDetail } from '~/models/node'
 import { t } from '~/libs/extension'
 
-
 const strings = {
   displayName: t('displayName'),
   workingDirectory: t('workingDirectory'),

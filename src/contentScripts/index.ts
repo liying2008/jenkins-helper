@@ -1,7 +1,6 @@
 import { inject as injectBuildParamsFunctions } from './build-params-injector'
 import { inject as injectBuildSubpageFunctions } from './build-subpage-injector'
 
-
 (() => {
   // console.info('[Jenkins Helper] Hello world from content script')
 

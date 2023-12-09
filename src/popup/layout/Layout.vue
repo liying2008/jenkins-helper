@@ -144,7 +144,6 @@ function openTools() {
   </div>
 </template>
 
-
 <style lang="scss">
 .layout-wrapper {
   margin: 20px;

@@ -1,4 +1,3 @@
-
 export type MessageColor = 'success' | 'info' | 'warning' | 'error' | 'primary' | 'accent'
 
 export class SnackbarData {
