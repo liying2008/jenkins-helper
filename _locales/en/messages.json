@@ -249,7 +249,7 @@
     "message": "Message"
   },
   "jobStatisticsTitle": {
-    "message": "Jenkins Job Statistics"
+    "message": "Job Statistics"
   },
   "jobStatisticsDataFrom": {
     "message": "Data from"
@@ -483,6 +483,9 @@
   },
   "reportIssue": {
     "message": "Report Issue"
+  },
+  "options": {
+    "message": "Options"
   },
   "apiTool": {
     "message": "API Tool"

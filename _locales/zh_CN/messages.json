@@ -249,7 +249,7 @@
     "message": "温馨提示"
   },
   "jobStatisticsTitle": {
-    "message": "Jenkins Job 统计"
+    "message": "Job 统计"
   },
   "jobStatisticsDataFrom": {
     "message": "数据来源"
@@ -483,6 +483,9 @@
   },
   "reportIssue": {
     "message": "反馈问题"
+  },
+  "options": {
+    "message": "选项"
   },
   "apiTool": {
     "message": "API 工具"

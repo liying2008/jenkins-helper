@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Briefcase, Leaf, Options as OptionsIcon } from '@vicons/ionicons5'
 import MonitorPage from '../pages/monitor/Index.vue'
 import ParamsPage from '../pages/params/Index.vue'
 import ComputerPage from '../pages/computer/Index.vue'
@@ -16,6 +15,9 @@ const route = useRoute()
 
 const strings = {
   extName: t('extName'),
+  jobStatisticsTitle: t('jobStatisticsTitle'),
+  tools: t('tools'),
+  options: t('options'),
   monitor: t('monitor'),
   params: t('params'),
   computer: t('computer'),
@@ -89,29 +91,29 @@ function openTools() {
         <n-space class="header-extra">
           <n-button
             text
-            class="header-icon"
+            type="primary"
             title="Open job statistics page"
             @click="openJobList"
           >
-            <n-icon><Leaf /></n-icon>
+            {{ strings.jobStatisticsTitle }}
           </n-button>
-
+          <n-divider vertical />
           <n-button
             text
-            class="header-icon"
+            type="primary"
             title="Open Jenkins tools page"
             @click="openTools"
           >
-            <n-icon><Briefcase /></n-icon>
+            {{ strings.tools }}
           </n-button>
-
+          <n-divider vertical />
           <n-button
             text
-            class="header-icon"
+            type="primary"
             title="Open options page"
             @click="openOptions"
           >
-            <n-icon><OptionsIcon /></n-icon>
+            {{ strings.options }}
           </n-button>
         </n-space>
       </template>
@@ -153,12 +155,8 @@ function openTools() {
       background-color: inherit;
     }
 
-    .header-icon {
-      font-size: 20px;
-    }
-
     .header-extra {
-
+      gap: 4px 4px !important;
     }
   }
 
