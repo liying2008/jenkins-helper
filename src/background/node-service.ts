@@ -15,8 +15,6 @@ export class NodeService {
   private static readonly TREE_PARAMS = 'computer[displayName,offline,monitorData[*]]'
 
   static start() {
-    // 开启浏览器后先执行一遍
-    NodeService.queryNodeStatus()
     StorageService.addStorageListener(NodeService.storageChange)
     StorageService.getOptions().then((options: Options) => {
       // console.log('node-service::options', options)
@@ -24,36 +22,62 @@ export class NodeService {
     })
 
     // 监听 Alarm
-    if (browser.alarms.onAlarm.hasListener(NodeService.onAlarm)) {
-      browser.alarms.onAlarm.removeListener(NodeService.onAlarm)
+    if (!browser.alarms.onAlarm.hasListener(NodeService.onAlarm)) {
+      browser.alarms.onAlarm.addListener(NodeService.onAlarm)
     }
-    browser.alarms.onAlarm.addListener(NodeService.onAlarm)
   }
 
   private static refreshNodeStatus(refreshTime: string) {
     console.log('refreshNodeStatus::refresh time', refreshTime)
-    browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
-      console.log('create alarm.')
-      // chrome extension 性能限制，periodInMinutes 不能小于 1
-      // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
-      let periodInMinutes = Number(refreshTime) * 60 /* hour to minute */
-      // TODO 开发模式支持 < 1
-      if (periodInMinutes < 1) {
-        periodInMinutes = 1
+    browser.alarms.get(NodeService.ALARM_NAME).then((alarm) => {
+      if (!alarm) {
+        console.log('node-service::create alarm.')
+        NodeService.createAlarm(refreshTime)
+      } else {
+        const isEqual = Tools.isAlarmEqual(alarm, {
+          name: NodeService.ALARM_NAME,
+          periodInMinutes: NodeService.getPeriodInMinutes(refreshTime),
+        } as Alarms.Alarm)
+        if (!isEqual) {
+          console.log('node-service::clear alarm.')
+          browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
+            NodeService.createAlarm(refreshTime)
+          }).catch((e) => {
+            console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
+          })
+        } else {
+          // 已有 alarm，不需要重复创建
+          // no op
+        }
       }
-
-      browser.alarms.create(NodeService.ALARM_NAME, {
-        when: Date.now() + 100,
-        periodInMinutes,
-      })
     }).catch((e) => {
-      console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
+      console.error(`get alarm ${NodeService.ALARM_NAME} error:`, e)
+      NodeService.createAlarm(refreshTime)
+    })
+  }
+
+  private static getPeriodInMinutes(refreshTime: string) {
+    // Chrome extension 性能限制，periodInMinutes 不能小于 0.5
+    // Chrome 120：从 Chrome 120 开始，最小闹钟间隔时间已从 1 分钟缩短到 30 秒。若要让闹钟在 30 秒后触发，请设置 periodInMinutes: 0.5。
+    // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
+    let periodInMinutes = Number(refreshTime) * 60 /* hour to minute */
+    // TODO 开发模式支持 < 1
+    if (periodInMinutes < 1) {
+      periodInMinutes = 1
+    }
+    return periodInMinutes
+  }
+
+  private static createAlarm(refreshTime: string) {
+    console.log('node-service::create alarm.')
+    browser.alarms.create(NodeService.ALARM_NAME, {
+      periodInMinutes: NodeService.getPeriodInMinutes(refreshTime),
     })
   }
 
   private static onAlarm(alarm: Alarms.Alarm) {
-    // console.log('on alarm:', alarm)
     if (alarm.name === NodeService.ALARM_NAME) {
+      console.log('node-service::onAlarm:', alarm)
       NodeService.queryNodeStatus()
     }
   }
@@ -98,7 +122,7 @@ export class NodeService {
 
       Promise.all(allFetchDataPromises).then((values: Enc<JenkinsNode>[]) => {
         // console.log('queryNodeStatus:values', values)
-        values.forEach((value: Enc<JenkinsNode>) => {
+        values.forEach((value) => {
           if (value.ok) {
             const data = value.body!
             const url = value.url

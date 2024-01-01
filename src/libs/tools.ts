@@ -1,3 +1,4 @@
+import type { Alarms } from 'webextension-polyfill'
 import { addZeroForSingleDigit } from './common'
 import { StorageService } from '~/libs/storage'
 import type { Enc } from '~/models/common'
@@ -146,5 +147,15 @@ export class Tools {
     } else {
       return `${year}${month}${day}${hour}${minute}${second}`
     }
+  }
+
+  static isAlarmEqual(oldAlarm: Alarms.Alarm, newAlarm: Alarms.Alarm) {
+    if (oldAlarm.name !== newAlarm.name) {
+      return false
+    }
+    if (oldAlarm.periodInMinutes !== newAlarm.periodInMinutes) {
+      return false
+    }
+    return true
   }
 }

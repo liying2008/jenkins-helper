@@ -30,13 +30,11 @@ export class JobService {
   private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]]]'
 
   private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
-    const jenkinsObj: JobSet = {
+    return {
       name: url,
       status: 'error',
       error: errorMsg,
     }
-    // console.log(jenkinsObj)
-    return jenkinsObj
   }
 
   static start() {
@@ -59,34 +57,62 @@ export class JobService {
       }
     })
     // 监听 Alarm
-    if (browser.alarms.onAlarm.hasListener(JobService.onAlarm)) {
-      browser.alarms.onAlarm.removeListener(JobService.onAlarm)
+    if (!browser.alarms.onAlarm.hasListener(JobService.onAlarm)) {
+      browser.alarms.onAlarm.addListener(JobService.onAlarm)
     }
-    browser.alarms.onAlarm.addListener(JobService.onAlarm)
   }
 
   private static refreshJobStatus(refreshTime: string) {
-    browser.alarms.clear(JobService.ALARM_NAME).then(() => {
-      console.log('create alarm.')
-      // chrome extension 性能限制，periodInMinutes 不能小于 1
-      // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
-      let periodInMinutes = Number(refreshTime) / 60 /* second to minute */
-      // TODO 开发模式支持 < 1
-      if (periodInMinutes < 1) {
-        periodInMinutes = 1
+    console.log('refreshJobStatus::refresh time', refreshTime)
+    browser.alarms.get(JobService.ALARM_NAME).then((alarm) => {
+      if (!alarm) {
+        console.log('job-service::create alarm.')
+        JobService.createAlarm(refreshTime)
+      } else {
+        const isEqual = Tools.isAlarmEqual(alarm, {
+          name: JobService.ALARM_NAME,
+          periodInMinutes: JobService.getPeriodInMinutes(refreshTime),
+        } as Alarms.Alarm)
+        if (!isEqual) {
+          console.log('job-service::clear alarm.')
+          browser.alarms.clear(JobService.ALARM_NAME).then(() => {
+            JobService.createAlarm(refreshTime)
+          }).catch((e) => {
+            console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
+          })
+        } else {
+          // 已有 alarm，不需要重复创建
+          // no op
+        }
       }
-      browser.alarms.create(JobService.ALARM_NAME, {
-        when: Date.now() + 100,
-        periodInMinutes,
-      })
     }).catch((e) => {
-      console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
+      console.error(`get alarm ${JobService.ALARM_NAME} error:`, e)
+      JobService.createAlarm(refreshTime)
+    })
+  }
+
+  private static getPeriodInMinutes(refreshTime: string) {
+    // Chrome extension 性能限制，periodInMinutes 不能小于 0.5
+    // Chrome 120：从 Chrome 120 开始，最小闹钟间隔时间已从 1 分钟缩短到 30 秒。若要让闹钟在 30 秒后触发，请设置 periodInMinutes: 0.5。
+    // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
+    let periodInMinutes = Number(refreshTime) / 60 /* second to minute */
+    // TODO 开发模式支持 < 1
+    if (periodInMinutes < 1) {
+      periodInMinutes = 1
+    }
+    return periodInMinutes
+  }
+
+  private static createAlarm(refreshTime: string) {
+    console.log('job-service::create alarm.')
+    browser.alarms.create(JobService.ALARM_NAME, {
+      periodInMinutes: JobService.getPeriodInMinutes(refreshTime),
     })
   }
 
   private static onAlarm(alarm: Alarms.Alarm) {
-    // console.log('on alarm:', alarm)
     if (alarm.name === JobService.ALARM_NAME) {
+      console.log('job-service::onAlarm:', alarm)
       JobService.queryJobStatus()
     }
   }
@@ -181,12 +207,10 @@ export class JobService {
             } else {
               if (data.hasOwnProperty('jobs')) {
                 // Jenkins or view data
-                const jenkinsObj = JobService.parseJenkinsOrViewData(url, data, result)
-                newJobsStatus[url] = jenkinsObj
+                newJobsStatus[url] = JobService.parseJenkinsOrViewData(url, data, result)
               } else {
                 // Single job data
-                const jenkinsObj = JobService.parseSingleJobData(url, data, result)
-                newJobsStatus[url] = jenkinsObj
+                newJobsStatus[url] = JobService.parseSingleJobData(url, data, result)
               }
             }
           } else {

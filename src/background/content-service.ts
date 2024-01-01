@@ -4,11 +4,12 @@ import { StorageService } from '~/libs/storage'
 import type { ContentFeatures } from '~/models/content-message'
 import { CMD_GET_CONTENT_FEATURES, CMD_GET_CURRENT_TAB, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '~/models/content-message'
 import { Options } from '~/models/option'
-import { configLocalDataStore } from '~/libs/idb'
+import { useLocalDataStore } from '~/composables/useLocalDataStore'
 
 export class ContentService {
   private static readonly KEY_STASHED_PARAMS = 'stashed_params'
   private static options = Options.default()
+  private static readonly localDataStore = useLocalDataStore()
 
   static start() {
     StorageService.getOptions().then((options) => {
@@ -23,13 +24,12 @@ export class ContentService {
       // NOTE: Returning a Promise is the preferred way to send a reply from an onMessage/onMessageExternal listener, as the sendResponse will be removed from the specs (See https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage) Error
 
       // use local data indexeddb
-      const idbClient = configLocalDataStore()
       const cmd = message.cmd
       switch (cmd) {
         case CMD_STASH_PARAMS:
           // 保存参数
           try {
-            await idbClient.setItem(ContentService.KEY_STASHED_PARAMS, message.data)
+            await ContentService.localDataStore.setItem(ContentService.KEY_STASHED_PARAMS, message.data)
             return Promise.resolve(ContentResp.fromObj({ status: 'ok' }))
           } catch (e) {
             return Promise.resolve(ContentResp.fromObj({ status: 'error', message: `An error occurred while stashing parameters: ${e}` }))
@@ -37,7 +37,7 @@ export class ContentService {
         case CMD_RECOVER_PARAMS:
           // 读取参数
           try {
-            const params = await idbClient.getItem(ContentService.KEY_STASHED_PARAMS)
+            const params = await ContentService.localDataStore.getItem(ContentService.KEY_STASHED_PARAMS)
             if (params) {
               return Promise.resolve(ContentResp.fromObj({ status: 'ok', data: params }))
             } else {

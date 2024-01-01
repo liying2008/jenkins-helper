@@ -24,6 +24,7 @@ export class Omnibox {
   private static allJobs: Job[] = []
 
   static start() {
+    console.log('Omnibox::start')
     Omnibox.getAllJobs()
     // 添加 storage change 监听
     StorageService.addStorageListener(Omnibox.storageChange)
