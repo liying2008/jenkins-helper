@@ -4,44 +4,54 @@ import type { StorageChangeWrapper } from '~/libs/storage'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
-import type { JenkinsNode } from '~/models/jenkins/node'
-import type { Nodes } from '~/models/node'
 import type { Options } from '~/models/option'
 
 export class NodeService {
+  private static instance?: NodeService
   // alarm name
   private static readonly ALARM_NAME = 'node-service-alarm'
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = 'computer[displayName,offline,monitorData[*]]'
 
-  static start() {
-    StorageService.addStorageListener(NodeService.storageChange)
-    StorageService.getOptions().then((options: Options) => {
-      // console.log('node-service::options', options)
-      NodeService.refreshNodeStatus(options.nodeRefreshTime)
-    })
-
-    // 监听 Alarm
-    if (!browser.alarms.onAlarm.hasListener(NodeService.onAlarm)) {
-      browser.alarms.onAlarm.addListener(NodeService.onAlarm)
+  static getInstance() {
+    if (!NodeService.instance) {
+      NodeService.instance = new NodeService()
     }
+    return NodeService.instance
   }
 
-  private static refreshNodeStatus(refreshTime: string) {
+  static launch() {
+    NodeService.getInstance().start()
+  }
+
+  private start() {
+    StorageService.addStorageListener(this.storageChange)
+    // 监听 Alarm
+    if (!browser.alarms.onAlarm.hasListener(this.onAlarm)) {
+      browser.alarms.onAlarm.addListener(this.onAlarm)
+    }
+
+    StorageService.getOptions().then((options: Options) => {
+      // console.log('node-service::options', options)
+      this.refreshNodeStatus(options.nodeRefreshTime)
+    })
+  }
+
+  private refreshNodeStatus(refreshTime: string) {
     console.log('refreshNodeStatus::refresh time', refreshTime)
     browser.alarms.get(NodeService.ALARM_NAME).then((alarm) => {
       if (!alarm) {
         console.log('node-service::create alarm.')
-        NodeService.createAlarm(refreshTime)
+        this.createAlarm(refreshTime)
       } else {
         const isEqual = Tools.isAlarmEqual(alarm, {
           name: NodeService.ALARM_NAME,
-          periodInMinutes: NodeService.getPeriodInMinutes(refreshTime),
+          periodInMinutes: this.getPeriodInMinutes(refreshTime),
         } as Alarms.Alarm)
         if (!isEqual) {
           console.log('node-service::clear alarm.')
           browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
-            NodeService.createAlarm(refreshTime)
+            this.createAlarm(refreshTime)
           }).catch((e) => {
             console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
           })
@@ -52,37 +62,41 @@ export class NodeService {
       }
     }).catch((e) => {
       console.error(`get alarm ${NodeService.ALARM_NAME} error:`, e)
-      NodeService.createAlarm(refreshTime)
+      this.createAlarm(refreshTime)
     })
   }
 
-  private static getPeriodInMinutes(refreshTime: string) {
+  private getPeriodInMinutes(refreshTime: string) {
     // Chrome extension 性能限制，periodInMinutes 不能小于 0.5
     // Chrome 120：从 Chrome 120 开始，最小闹钟间隔时间已从 1 分钟缩短到 30 秒。若要让闹钟在 30 秒后触发，请设置 periodInMinutes: 0.5。
     // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
     let periodInMinutes = Number(refreshTime) * 60 /* hour to minute */
     // TODO 开发模式支持 < 1
+    // TODO 仅测试使用
+    // periodInMinutes = 0.5
     if (periodInMinutes < 1) {
       periodInMinutes = 1
     }
     return periodInMinutes
   }
 
-  private static createAlarm(refreshTime: string) {
+  private createAlarm(refreshTime: string) {
     console.log('node-service::create alarm.')
     browser.alarms.create(NodeService.ALARM_NAME, {
-      periodInMinutes: NodeService.getPeriodInMinutes(refreshTime),
+      periodInMinutes: this.getPeriodInMinutes(refreshTime),
     })
   }
 
-  private static onAlarm(alarm: Alarms.Alarm) {
+  private onAlarm = (alarm: Alarms.Alarm) => {
+    // 使用箭头函数解决 this 指向问题
     if (alarm.name === NodeService.ALARM_NAME) {
       console.log('node-service::onAlarm:', alarm)
-      NodeService.queryNodeStatus()
+      this.queryNodeStatus()
     }
   }
 
-  private static storageChange(changes: StorageChangeWrapper) {
+  private storageChange = (changes: StorageChangeWrapper) => {
+    // 使用箭头函数解决 this 指向问题
     // console.log('storageChange::', changes)
     if (StorageService.keyForOptions in changes) {
       // 设置改变
@@ -92,14 +106,15 @@ export class NodeService {
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.nodeRefreshTime) {
         // console.log('refreshNodeStatus', newRefreshTime)
-        NodeService.refreshNodeStatus(newRefreshTime)
+        this.refreshNodeStatus(newRefreshTime)
       }
     }
   }
 
-  static queryNodeStatus() {
+  async queryNodeStatus() {
     // console.log('NodeService::queryNodeStatus', 'queryNodeStatus')
-    StorageService.getNodeStatus().then((result: Nodes) => {
+    try {
+      const result = await StorageService.getNodeStatus()
       // 需要查询的节点所在Jenkins
       const jenkinsUrls: string[] = []
       for (const jenkinsUrl in result) {
@@ -120,9 +135,10 @@ export class NodeService {
         allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'computer/api/json', NodeService.TREE_PARAMS))
       })
 
-      Promise.all(allFetchDataPromises).then((values: Enc<JenkinsNode>[]) => {
+      try {
+        const values = await Promise.all(allFetchDataPromises)
         // console.log('queryNodeStatus:values', values)
-        values.forEach((value) => {
+        for (const value of values) {
           if (value.ok) {
             const data = value.body!
             const url = value.url
@@ -159,7 +175,7 @@ export class NodeService {
                 }
               }
               const diskSpaceThreshold = result[url].monitoredNodes[displayName].diskSpaceThreshold
-              NodeService.checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline)
+              await this.checkDiskSpace(url, displayName, remainingDiskSpace, diskSpaceThreshold, offline)
 
               result[url].monitoredNodes[displayName] = {
                 displayName,
@@ -181,19 +197,20 @@ export class NodeService {
             result[url].status = 'error'
             result[url].error = errMsg || 'Unreachable'
           }
-        })
+        }
         // 存储节点状态
-        StorageService.saveNodeStatus(result).then(() => {
-          // no op
-        })
-      }).catch((e: Error) => {
+        await StorageService.saveNodeStatus(result)
+      } catch (e) {
         // 原则上不应该走到这里
-        console.log('queryNodeStatus:e', e)
-      })
-    })
+        console.error('queryNodeStatus:e', e)
+      }
+    } catch (e) {
+      // 原则上不应该走到这里
+      console.error('queryNodeStatus:e', e)
+    }
   }
 
-  private static checkDiskSpace(jenkinsUrl: string, displayName: string, remainingDiskSpace: string, diskSpaceThreshold: number, offline: boolean) {
+  private async checkDiskSpace(jenkinsUrl: string, displayName: string, remainingDiskSpace: string, diskSpaceThreshold: number, offline: boolean) {
     let message = ''
     if (offline) {
       message = t('nodeOfflineNotifications')
@@ -208,15 +225,18 @@ export class NodeService {
 
     if (message) {
       // 显示通知
-      browser.notifications.create({
-        type: 'basic',
-        iconUrl: 'img/computer48.png',
-        title: displayName,
-        message,
-        priority: 0,
-      }).then((notificationId) => {
+      try {
+        const notificationId = await browser.notifications.create({
+          type: 'basic',
+          iconUrl: 'img/computer48.png',
+          title: displayName,
+          message,
+          priority: 2,
+        })
         console.log('checkDiskSpace notifications', notificationId)
-      })
+      } catch (e) {
+        console.error('checkDiskSpace notifications error', e)
+      }
     }
   }
 }

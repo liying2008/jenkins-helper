@@ -9,74 +9,78 @@ import type { JenkinsView } from '~/models/jenkins/view'
 import type { Enc } from '~/models/common'
 
 export class JobService {
-  private static jenkinsUrls: string[] = []
-  private static showNotificationOption: NotificationShowing
+  private static instance?: JobService
+  private jenkinsUrls: string[] = []
+  private showNotificationOption?: NotificationShowing
   // 失败Job数量
-  private static failureJobCount = 0
+  private failureJobCount = 0
   // 不稳定Job数量
-  private static unstableJobCount = 0
+  private unstableJobCount = 0
   // 成功Job数量
-  private static successJobCount = 0
+  private successJobCount = 0
   // 是否Jenkins URL无法访问
-  private static errorOnFetch = false
+  private errorOnFetch = false
   // 是否正在查询Job状态数据
-  private static querying = false
+  private querying = false
 
   // 通知ID和URL的对照
-  private static notificationUrlMap = new Map<string, string>()
+  private notificationUrlMap = new Map<string, string>()
   // alarm name
   private static readonly ALARM_NAME = 'job-service-alarm'
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = '*,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]],jobs[name,displayName,url,color,lastCompletedBuild[number,result,timestamp,url],lastBuild[number,result,timestamp,url,actions[*,parameters[*]]]]'
 
-  private static getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
-    return {
-      name: url,
-      status: 'error',
-      error: errorMsg,
+  private static getInstance() {
+    if (!JobService.instance) {
+      JobService.instance = new JobService()
     }
+    return JobService.instance
   }
 
-  static start() {
+  static launch() {
+    JobService.getInstance().start()
+  }
+
+  private start() {
+    // console.log('--this', this)
     // 添加 storage change 监听
-    StorageService.addStorageListener(JobService.storageChange)
-    StorageService.getJenkinsUrls().then((result: string[]) => {
-      JobService.jenkinsUrls = result
-      StorageService.getOptions().then((options: Options) => {
-        JobService.showNotificationOption = options.showNotificationOption
-        JobService.refreshJobStatus(options.refreshTime)
-        // TODO 仅测试使用
-        // JobService.refreshJobStatus(5)
-      })
-    })
+    StorageService.addStorageListener(this.storageChange)
     // 点击通知
     browser.notifications.onClicked.addListener((notificationId) => {
       // 打开构建页面
-      if (JobService.notificationUrlMap.has(notificationId)) {
-        browser.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) })
+      if (this.notificationUrlMap.has(notificationId)) {
+        browser.tabs.create({ url: this.notificationUrlMap.get(notificationId) })
       }
     })
     // 监听 Alarm
-    if (!browser.alarms.onAlarm.hasListener(JobService.onAlarm)) {
-      browser.alarms.onAlarm.addListener(JobService.onAlarm)
+    if (!browser.alarms.onAlarm.hasListener(this.onAlarm)) {
+      browser.alarms.onAlarm.addListener(this.onAlarm)
     }
+
+    StorageService.getJenkinsUrls().then((result: string[]) => {
+      this.jenkinsUrls = result
+      StorageService.getOptions().then((options: Options) => {
+        this.showNotificationOption = options.showNotificationOption
+        this.refreshJobStatus(options.refreshTime)
+      })
+    })
   }
 
-  private static refreshJobStatus(refreshTime: string) {
+  private refreshJobStatus(refreshTime: string) {
     console.log('refreshJobStatus::refresh time', refreshTime)
     browser.alarms.get(JobService.ALARM_NAME).then((alarm) => {
       if (!alarm) {
         console.log('job-service::create alarm.')
-        JobService.createAlarm(refreshTime)
+        this.createAlarm(refreshTime)
       } else {
         const isEqual = Tools.isAlarmEqual(alarm, {
           name: JobService.ALARM_NAME,
-          periodInMinutes: JobService.getPeriodInMinutes(refreshTime),
+          periodInMinutes: this.getPeriodInMinutes(refreshTime),
         } as Alarms.Alarm)
         if (!isEqual) {
           console.log('job-service::clear alarm.')
           browser.alarms.clear(JobService.ALARM_NAME).then(() => {
-            JobService.createAlarm(refreshTime)
+            this.createAlarm(refreshTime)
           }).catch((e) => {
             console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
           })
@@ -87,160 +91,177 @@ export class JobService {
       }
     }).catch((e) => {
       console.error(`get alarm ${JobService.ALARM_NAME} error:`, e)
-      JobService.createAlarm(refreshTime)
+      this.createAlarm(refreshTime)
     })
   }
 
-  private static getPeriodInMinutes(refreshTime: string) {
+  private getPeriodInMinutes(refreshTime: string) {
     // Chrome extension 性能限制，periodInMinutes 不能小于 0.5
     // Chrome 120：从 Chrome 120 开始，最小闹钟间隔时间已从 1 分钟缩短到 30 秒。若要让闹钟在 30 秒后触发，请设置 periodInMinutes: 0.5。
     // refer: https://developer.chrome.com/docs/extensions/reference/alarms/
     let periodInMinutes = Number(refreshTime) / 60 /* second to minute */
     // TODO 开发模式支持 < 1
+    // TODO 仅测试使用
+    // periodInMinutes = 0.5
     if (periodInMinutes < 1) {
       periodInMinutes = 1
     }
     return periodInMinutes
   }
 
-  private static createAlarm(refreshTime: string) {
+  private createAlarm(refreshTime: string) {
     console.log('job-service::create alarm.')
     browser.alarms.create(JobService.ALARM_NAME, {
-      periodInMinutes: JobService.getPeriodInMinutes(refreshTime),
+      periodInMinutes: this.getPeriodInMinutes(refreshTime),
     })
   }
 
-  private static onAlarm(alarm: Alarms.Alarm) {
+  private onAlarm = (alarm: Alarms.Alarm) => {
+    // 使用箭头函数解决 this 指向问题
     if (alarm.name === JobService.ALARM_NAME) {
       console.log('job-service::onAlarm:', alarm)
-      JobService.queryJobStatus()
+      // console.log('this', this)
+      this.queryJobStatus()
     }
   }
 
-  private static storageChange(changes: StorageChangeWrapper) {
+  private storageChange = async (changes: StorageChangeWrapper) => {
+    // 使用箭头函数解决 this 指向问题
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
       // console.log('changes', changes)
       const oldOptions = changes[StorageService.keyForOptions].oldValue as Options
       const newOptions = changes[StorageService.keyForOptions].newValue as Options
-      JobService.showNotificationOption = newOptions.showNotificationOption
+      this.showNotificationOption = newOptions.showNotificationOption
       const newRefreshTime = newOptions.refreshTime
       // refreshTime 变更
       if (oldOptions === undefined || newRefreshTime !== oldOptions.refreshTime) {
-        JobService.refreshJobStatus(newRefreshTime)
+        this.refreshJobStatus(newRefreshTime)
       }
     }
     if (StorageService.keyForJenkinsUrl in changes) {
       // Jenkins Url 改变
       // console.log('changes', changes)
-      JobService.jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue
-      // console.log('JobService.jenkinsUrls', JobService.jenkinsUrls)
-      JobService.queryJobStatus()
+      this.jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue
+      // console.log('this.jenkinsUrls', this.jenkinsUrls)
+      this.queryJobStatus()
     }
   }
 
-  private static resetBadgeJobCount() {
-    JobService.failureJobCount = 0
-    JobService.unstableJobCount = 0
-    JobService.successJobCount = 0
-    JobService.errorOnFetch = false
+  private getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
+    return {
+      name: url,
+      status: 'error',
+      error: errorMsg,
+    }
   }
 
-  private static countBadgeJobCount(color?: string) {
+  private resetBadgeJobCount() {
+    this.failureJobCount = 0
+    this.unstableJobCount = 0
+    this.successJobCount = 0
+    this.errorOnFetch = false
+  }
+
+  private countBadgeJobCount(color?: string) {
     if (color === 'blue') {
-      JobService.successJobCount++
+      this.successJobCount++
     } else if (color === 'red') {
-      JobService.failureJobCount++
+      this.failureJobCount++
     } else if (color === 'yellow') {
-      JobService.unstableJobCount++
+      this.unstableJobCount++
     } else if (color === undefined) {
-      JobService.errorOnFetch = true
+      this.errorOnFetch = true
     }
   }
 
-  static queryJobStatus() {
-    console.log('jenkinsUrls', JobService.jenkinsUrls)
-    if (JobService.querying) {
+  private async queryJobStatus() {
+    console.log('jenkinsUrls', this.jenkinsUrls)
+    if (this.querying) {
       console.log('上次的查询未结束，跳过此次查询')
       return
     }
-    JobService.querying = true
+    this.querying = true
     // 重置 成功失败计数器
-    JobService.resetBadgeJobCount()
+    this.resetBadgeJobCount()
 
-    if (JobService.jenkinsUrls.length === 0) {
+    if (this.jenkinsUrls.length === 0) {
       // 存储job状态
-      StorageService.saveJobsStatus({}).then(() => {
+      try {
+        await StorageService.saveJobsStatus({})
         console.log('saveJobsStatus ok')
-        JobService.changeBadge()
-        JobService.querying = false
-      }).catch((e: Error) => {
+        this.changeBadge()
+      } catch (e) {
         // 原则上不应该走到这里
         console.log('queryJobStatus:saveJobsStatus:e', e)
-        JobService.querying = false
-      })
+      }
+      this.querying = false
       return
     }
 
     const allFetchDataPromises: Promise<Enc>[] = []
 
-    JobService.jenkinsUrls.forEach((url: string) => {
+    this.jenkinsUrls.forEach((url: string) => {
       allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.TREE_PARAMS))
     })
 
-    StorageService.getJobsStatus().then((result: JobRoot) => {
+    try {
+      const result = await StorageService.getJobsStatus()
       // console.log('JobService::queryJobStatus::result', result)
-      Promise.all(allFetchDataPromises).then((values: Enc[]) => {
+      try {
+        const values = await Promise.all(allFetchDataPromises)
         // console.log('queryJobStatus:values', values)
         const newJobsStatus: JobRoot = {}
 
-        values.forEach((value: Enc) => {
+        for (const value of values) {
           if (value.ok) {
             const data = value.body
             const url = value.url
             // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length)
             if (Object.getOwnPropertyNames(data).length === 0) {
               console.log('queryJobStatus: 获取Job状态失败，返回数据为空')
-              const jenkinsObj = JobService.getErrorJenkinsObj(url, 'No permissions or no data')
-              JobService.countBadgeJobCount()
+              const jenkinsObj = this.getErrorJenkinsObj(url, 'No permissions or no data')
+              this.countBadgeJobCount()
               newJobsStatus[url] = jenkinsObj
             } else {
               if (data.hasOwnProperty('jobs')) {
                 // Jenkins or view data
-                newJobsStatus[url] = JobService.parseJenkinsOrViewData(url, data, result)
+                newJobsStatus[url] = await this.parseJenkinsOrViewData(url, data, result)
               } else {
                 // Single job data
-                newJobsStatus[url] = JobService.parseSingleJobData(url, data, result)
+                newJobsStatus[url] = await this.parseSingleJobData(url, data, result)
               }
             }
           } else {
             const url = value.url
             const error = value.errMsg
             console.log('queryJobStatus: 获取Job状态失败', error)
-            const jenkinsObj = JobService.getErrorJenkinsObj(url, error || 'Unreachable')
-            JobService.countBadgeJobCount()
+            const jenkinsObj = this.getErrorJenkinsObj(url, error || 'Unreachable')
+            this.countBadgeJobCount()
             newJobsStatus[url] = jenkinsObj
           }
-        })
+        }
         // 存储job状态
-        StorageService.saveJobsStatus(newJobsStatus).then(() => {
+        try {
+          await StorageService.saveJobsStatus(newJobsStatus)
           console.log('saveJobsStatus ok')
-          JobService.changeBadge()
-          JobService.querying = false
-        }).catch((e: Error) => {
+          this.changeBadge()
+        } catch (e) {
           // 原则上不应该走到这里
           console.log('queryJobStatus:saveJobsStatus:e', e)
-          JobService.querying = false
-        })
-      }).catch((e: Error) => {
+        }
+      } catch (e) {
         // 原则上不应该走到这里
         console.log('queryJobStatus:e', e)
-        JobService.querying = false
-      })
-    })
+      }
+    } catch (e) {
+      // 原则上不应该走到这里
+      console.error('queryJobStatus:e', e)
+    }
+    this.querying = false
   }
 
-  private static parseJenkinsOrViewData(url: string, data: JenkinsView, oldData: JobRoot): JobSet {
+  private async parseJenkinsOrViewData(url: string, data: JenkinsView, oldData: JobRoot): Promise<JobSet> {
     // console.log('parseJenkinsOrViewData::oldData', oldData)
     const jobs = data.jobs
     // console.log('jobs 1', jobs);
@@ -251,10 +272,11 @@ export class JobService {
       jobs: {},
     }
 
-    jobs.forEach((job) => {
+    for (const job of jobs) {
       let jobColor = job.color
       if (!jobColor) {
-        return
+        // TODO 什么情况下 color 为空？
+        continue
       }
       let building = false
       if (jobColor.endsWith('_anime')) {
@@ -262,7 +284,7 @@ export class JobService {
         building = true
         jobColor = jobColor.replace(/_anime$/, '')
       }
-      JobService.countBadgeJobCount(jobColor)
+      this.countBadgeJobCount(jobColor)
       const buildStatus = Tools.jobStatus[jobColor]
 
       let oldStatus: JobStatus = {}
@@ -277,7 +299,7 @@ export class JobService {
         const lastCompletedBuildResult = job.lastCompletedBuild!.result!
         const lastCompletedBuildUrl = job.lastCompletedBuild!.url
         // console.log('--01--showNotification', lastCompletedBuildUrl)
-        JobService.showNotification(lastCompletedBuildResult, job.displayName, lastCompletedBuildUrl)
+        await this.showNotification(lastCompletedBuildResult, job.displayName, lastCompletedBuildUrl)
       }
 
       jenkinsObj.jobs![job.url] = {
@@ -289,12 +311,12 @@ export class JobService {
         lastBuildTimestamp: job.lastBuild?.timestamp,
         // TODO: params and badges
       }
-    })
+    }
     // console.log('parseJenkinsOrViewData::jenkinsObj', jenkinsObj)
     return jenkinsObj
   }
 
-  private static parseSingleJobData(url: string, data: JenkinsJob, oldData: JobRoot): JobSet {
+  private async parseSingleJobData(url: string, data: JenkinsJob, oldData: JobRoot): Promise<JobSet> {
     // console.log('parseSingleJobData::oldData', oldData)
     const jenkinsObj: JobSet = {
       name: data.displayName || data.name || data.fullName,
@@ -303,6 +325,7 @@ export class JobService {
     }
     let jobColor = data.color
     if (!jobColor) {
+      // TODO 什么情况下 color 为空？
       return jenkinsObj
     }
     let building = false
@@ -311,7 +334,7 @@ export class JobService {
       building = true
       jobColor = jobColor.replace(/_anime$/, '')
     }
-    JobService.countBadgeJobCount(jobColor)
+    this.countBadgeJobCount(jobColor)
     const buildStatus = Tools.jobStatus[jobColor]
 
     let oldStatus: JobStatus = {}
@@ -324,7 +347,7 @@ export class JobService {
       // 新的一次构建
       const lastCompletedBuildResult = data.lastCompletedBuild!.result!
       const lastCompletedBuildUrl = data.lastCompletedBuild!.url
-      JobService.showNotification(lastCompletedBuildResult, jenkinsObj.name, lastCompletedBuildUrl)
+      await this.showNotification(lastCompletedBuildResult, jenkinsObj.name, lastCompletedBuildUrl)
     }
     jenkinsObj.jobs![data.url] = {
       name: data.displayName,
@@ -339,12 +362,12 @@ export class JobService {
     return jenkinsObj
   }
 
-  private static changeBadge() {
-    const _failureJobCount = JobService.failureJobCount
-    const _unstableJobCount = JobService.unstableJobCount
-    const _successJobCount = JobService.successJobCount
+  private changeBadge() {
+    const _failureJobCount = this.failureJobCount
+    const _unstableJobCount = this.unstableJobCount
+    const _successJobCount = this.successJobCount
 
-    if (JobService.errorOnFetch) {
+    if (this.errorOnFetch) {
       browser.action.setBadgeText({ text: 'ERR' })
       browser.action.setBadgeBackgroundColor({ color: '#df2b38' })
     } else {
@@ -364,20 +387,20 @@ export class JobService {
   }
 
   // 显示通知
-  private static showNotification(result: string, jobName: string, url: string) {
-    if (JobService.showNotificationOption === 'all') {
-      JobService.show(result, jobName, url)
-    } else if (JobService.showNotificationOption === 'unstable') {
+  private async showNotification(result: string, jobName: string, url: string) {
+    if (this.showNotificationOption === 'all') {
+      await this.show(result, jobName, url)
+    } else if (this.showNotificationOption === 'unstable') {
       if (result !== 'SUCCESS') {
-        JobService.show(result, jobName, url)
+        await this.show(result, jobName, url)
       }
-    } else if (JobService.showNotificationOption === 'none') {
+    } else if (this.showNotificationOption === 'none') {
       // 不显示通知
       // no op
     }
   }
 
-  private static show(result: string, jobName: string, url: string) {
+  private async show(result: string, jobName: string, url: string) {
     let statusIcon = 'logo-gray.png'
     if (result === 'SUCCESS') {
       statusIcon = 'logo-green.png'
@@ -387,19 +410,19 @@ export class JobService {
       statusIcon = 'logo-yellow.png'
     }
 
-    // const statusIconUrl = browser.runtime.getURL(`img/${statusIcon}`)
-    // console.log('statusIconUrl', statusIconUrl)
-
-    browser.notifications.create({
-      type: 'basic',
-      iconUrl: `img/${statusIcon}`,
-      title: `${jobName} - ${result}`,
-      message: decodeURIComponent(url),
-      priority: 0, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
-    }).then((notificationId) => {
+    try {
+      const notificationId = await browser.notifications.create({
+        type: 'basic',
+        iconUrl: `img/${statusIcon}`,
+        title: `${jobName} - ${result}`,
+        message: decodeURIComponent(url),
+        priority: 2, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
+      })
       if (notificationId) {
-        JobService.notificationUrlMap.set(notificationId, url)
+        this.notificationUrlMap.set(notificationId, url)
       }
-    })
+    } catch (e) {
+      console.error('show notifications error', e)
+    }
   }
 }

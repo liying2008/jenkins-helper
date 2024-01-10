@@ -7,16 +7,29 @@ import { Options } from '~/models/option'
 import { useLocalDataStore } from '~/composables/useLocalDataStore'
 
 export class ContentService {
+  private static instance?: ContentService
   private static readonly KEY_STASHED_PARAMS = 'stashed_params'
-  private static options = Options.default()
-  private static readonly localDataStore = useLocalDataStore()
+  private options = Options.default()
+  private readonly localDataStore = useLocalDataStore()
 
-  static start() {
-    StorageService.getOptions().then((options) => {
-      ContentService.options = options
-    })
+  private static getInstance() {
+    if (!ContentService.instance) {
+      ContentService.instance = new ContentService()
+    }
+    return ContentService.instance
+  }
+
+  static launch() {
+    ContentService.getInstance().start()
+  }
+
+  private start() {
     // 添加 options 变动监听
-    StorageService.addStorageListener(ContentService.storageChange)
+    StorageService.addStorageListener(this.storageChange)
+
+    StorageService.getOptions().then((options) => {
+      this.options = options
+    })
 
     // 处理来自 content_scripts 的消息
     browser.runtime.onMessage.addListener(async (message) => {
@@ -29,7 +42,7 @@ export class ContentService {
         case CMD_STASH_PARAMS:
           // 保存参数
           try {
-            await ContentService.localDataStore.setItem(ContentService.KEY_STASHED_PARAMS, message.data)
+            await this.localDataStore.setItem(ContentService.KEY_STASHED_PARAMS, message.data)
             return Promise.resolve(ContentResp.fromObj({ status: 'ok' }))
           } catch (e) {
             return Promise.resolve(ContentResp.fromObj({ status: 'error', message: `An error occurred while stashing parameters: ${e}` }))
@@ -37,7 +50,7 @@ export class ContentService {
         case CMD_RECOVER_PARAMS:
           // 读取参数
           try {
-            const params = await ContentService.localDataStore.getItem(ContentService.KEY_STASHED_PARAMS)
+            const params = await this.localDataStore.getItem(ContentService.KEY_STASHED_PARAMS)
             if (params) {
               return Promise.resolve(ContentResp.fromObj({ status: 'ok', data: params }))
             } else {
@@ -51,9 +64,9 @@ export class ContentService {
           return Promise.resolve(ContentResp.fromObj({
             status: 'ok',
             data: {
-              enableParamsStashAndRecover: ContentService.options.enableParamsStashAndRecover,
-              enableParamNamesColor: ContentService.options.enableParamNamesColor,
-              paramNamesColor: ContentService.options.paramNamesColor,
+              enableParamsStashAndRecover: this.options.enableParamsStashAndRecover,
+              enableParamNamesColor: this.options.enableParamNamesColor,
+              paramNamesColor: this.options.paramNamesColor,
             } as ContentFeatures,
           }))
         case CMD_GET_CURRENT_TAB:
@@ -68,11 +81,13 @@ export class ContentService {
     })
   }
 
-  private static storageChange(changes: StorageChangeWrapper) {
+  private storageChange = (changes: StorageChangeWrapper) => {
+    // 使用箭头函数解决 this 指向问题
+    // console.log('this', this)
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
       // console.log('changes', changes)
-      ContentService.options = changes[StorageService.keyForOptions].newValue
+      this.options = changes[StorageService.keyForOptions].newValue
     }
   }
 }

@@ -14,7 +14,7 @@ browser.runtime.onInstalled.addListener((): void => {
   console.log('Extension installed')
 })
 
-ContentService.start()
-Omnibox.start()
-JobService.start()
-NodeService.start()
+ContentService.launch()
+Omnibox.launch()
+JobService.launch()
+NodeService.launch()

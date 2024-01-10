@@ -19,15 +19,27 @@ interface Job {
 }
 
 export class Omnibox {
+  private static instance?: Omnibox
   // 请求 /api/json 使用的 tree 参数
   private static readonly TREE_PARAMS = 'jobs[name,url]'
-  private static allJobs: Job[] = []
+  private allJobs: Job[] = []
 
-  static start() {
+  private static getInstance() {
+    if (!Omnibox.instance) {
+      Omnibox.instance = new Omnibox()
+    }
+    return Omnibox.instance
+  }
+
+  static launch() {
+    Omnibox.getInstance().start()
+  }
+
+  private start() {
     console.log('Omnibox::start')
-    Omnibox.getAllJobs()
+    this.getAllJobs()
     // 添加 storage change 监听
-    StorageService.addStorageListener(Omnibox.storageChange)
+    StorageService.addStorageListener(this.storageChange)
 
     // 设置默认建议
     browser.omnibox.setDefaultSuggestion({
@@ -39,7 +51,7 @@ export class Omnibox {
       if (!text) {
         return
       }
-      const suggestContent = Omnibox.filterJobs(text)
+      const suggestContent = this.filterJobs(text)
       // console.log('suggestContent', suggestContent)
       return suggest(suggestContent)
     })
@@ -53,11 +65,13 @@ export class Omnibox {
       if (text.indexOf('http') !== 0) {
         text = `https://www.baidu.com/s?wd=${text}`
       }
-      Omnibox.navigate(text)
+      this.navigate(text)
     })
   }
 
-  private static storageChange(changes: StorageChangeWrapper) {
+  private storageChange = (changes: StorageChangeWrapper) => {
+    // 使用箭头函数解决 this 指向问题
+    // console.log('this', this)
     if (StorageService.keyForOptions in changes) {
       // 设置有改变
       // console.log('omnibox::changes', changes)
@@ -66,20 +80,20 @@ export class Omnibox {
       const newOmniboxJenkinsUrl = newOptions.omniboxJenkinsUrl
       // omniboxJenkinsUrl 变更
       if (oldOptions === undefined || newOmniboxJenkinsUrl !== oldOptions.omniboxJenkinsUrl) {
-        Omnibox.getAllJobs()
+        this.getAllJobs()
       }
     }
   }
 
-  private static navigate(url: string) {
+  private navigate(url: string) {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       return browser.tabs.update(tabs[0].id!, { url })
     })
   }
 
-  private static getAllJobs() {
+  private getAllJobs() {
     // console.log('Omnibox::getAllJobs')
-    Omnibox.allJobs = []
+    this.allJobs = []
     StorageService.getOptions().then((result: Options) => {
       const jenkinsUrls = result.omniboxJenkinsUrl.split('\n')
       // console.log('Omnibox::jenkinsUrls', jenkinsUrls)
@@ -96,13 +110,14 @@ export class Omnibox {
       })
 
       Promise.all(allFetchDataPromises).then((values: Enc[]) => {
+        // console.log('this', this)
         // console.log('Omnibox:values', values)
         values.forEach((value: Enc) => {
           if (value.ok) {
             const data = value.body
             if (data.hasOwnProperty('jobs')) {
-              Omnibox.allJobs = Omnibox.allJobs.concat(data.jobs)
-              // console.log('Omnibox::all fetched', Omnibox.allJobs)
+              this.allJobs = this.allJobs.concat(data.jobs)
+              // console.log('Omnibox::all fetched', this.allJobs)
             }
           } else {
             const error = value.errMsg
@@ -117,8 +132,8 @@ export class Omnibox {
   }
 
   // 过滤符合输入的 Job
-  private static filterJobs(text: string) {
-    return Omnibox.allJobs
+  private filterJobs(text: string) {
+    return this.allJobs
       .filter((job: Job) => job.name.toLowerCase().includes(text.toLowerCase()))
       .map((job: Job) => {
         return {

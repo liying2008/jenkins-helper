@@ -88,7 +88,7 @@ function initResultFilter() {
 }
 // 刷新节点信息
 function refreshNodesInfo() {
-  NodeService.queryNodeStatus()
+  NodeService.getInstance().queryNodeStatus()
   message.success(strings.notifiedRefreshService)
 }
 </script>
