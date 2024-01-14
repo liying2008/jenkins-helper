@@ -1,7 +1,10 @@
 // [setUrl: string]: JobSet
 export type JobRoot = Record<string, JobSet>
 
-export type JobSetStatusType = 'ok' | 'error'
+// ok: 表示 Job 信息获取成功
+// error: 表示 Job 信息获取失败
+// new: 表示新添加的监控URL，尚未来得及获取Job信息
+export type JobSetStatusType = 'ok' | 'error' | 'new'
 
 export class JobSet {
   jobs?: JobStatus = undefined

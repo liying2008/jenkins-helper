@@ -18,7 +18,9 @@ import StyleTime from '~/components/style-time/StyleTime.vue'
 const strings = {
   noFilterValue: '-',
   search: t('search'),
+  newMonitoringTask: t('newMonitoringTask'),
   removeMonitorUrlTip: t('removeMonitorUrlTip'),
+  dataIsBeingFetched: t('dataIsBeingFetched'),
   noData: t('noData'),
   cancel: t('cancel'),
   ok: t('ok'),
@@ -247,7 +249,6 @@ function removeJenkins(jenkinsUrl: string) {
           <div class="ml-12px card-title-job flex-1">
             <span
               :title="decodeURIComponent(jenkins.name)"
-              color="title"
               class="card-title-job-name"
             >
               {{ decodeURIComponent(jenkins.name) }}
@@ -265,14 +266,24 @@ function removeJenkins(jenkinsUrl: string) {
             </a>
           </div>
           <div class="flex place-items-center">
-            <div v-show="jenkins.status !== 'ok'">
+            <div v-if="jenkins.status === 'error'">
               <n-tag
                 type="error"
                 round
                 :title="jenkins.error"
-                class="card-title-err-tag"
+                class="card-title-right-tag"
               >
                 <span>ERROR</span>
+              </n-tag>
+            </div>
+            <div v-else-if="jenkins.status === 'new'">
+              <n-tag
+                type="info"
+                round
+                :title="strings.newMonitoringTask"
+                class="card-title-right-tag"
+              >
+                <span>NEW</span>
               </n-tag>
             </div>
             <div class="ml-8px">
@@ -287,7 +298,7 @@ function removeJenkins(jenkinsUrl: string) {
           </div>
         </div>
         <n-data-table
-          v-show="jenkins.hasOwnProperty('jobs')"
+          v-show="jenkins.status !== 'error' && jenkins.hasOwnProperty('jobs')"
           class="data-table"
           size="small"
           :columns="headers"
@@ -297,7 +308,8 @@ function removeJenkins(jenkinsUrl: string) {
         >
           <template #empty>
             <div class="data-table-no-data">
-              {{ strings.noData }}
+              <span v-if="jenkins.status === 'new'">{{ strings.dataIsBeingFetched }}</span>
+              <span v-else>{{ strings.noData }}</span>
             </div>
           </template>
         </n-data-table>
@@ -357,7 +369,7 @@ function removeJenkins(jenkinsUrl: string) {
           }
         }
 
-        .card-title-err-tag {
+        .card-title-right-tag {
           height: 26px;
           font-size: 12px;
         }

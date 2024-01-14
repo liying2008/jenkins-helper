@@ -188,11 +188,17 @@
   "inputUrlPlaceholder": {
     "message": "For example: http://127.0.0.1:8080/view/MyView/"
   },
+  "newMonitoringTask": {
+    "message": "New monitoring task"
+  },
   "addMonitorUrlTip": {
     "message": "Created successfully, page data will be updated later."
   },
   "removeMonitorUrlTip": {
     "message": "Removed successfully, page data will be updated later."
+  },
+  "dataIsBeingFetched": {
+    "message": "Data is being fetched, please check it later."
   },
   "jobName": {
     "message": "Job Name"

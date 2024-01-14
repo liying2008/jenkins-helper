@@ -2,7 +2,7 @@
  * storage apis
  * https://developer.chrome.com/apps/storage#property-local
  */
-import type { JobRoot } from '~/models/job'
+import type { JobRoot, JobSet } from '~/models/job'
 import type { JenkinsUrlRoot } from '~/models/jenkins-url'
 import type { Nodes } from '~/models/node'
 import { Options } from '~/models/option'
@@ -54,9 +54,56 @@ export class StorageService {
     return browser.storage.local.set(finalData)
   }
 
+  private static createNewJenkinsObj(url: string): JobSet {
+    return {
+      name: url,
+      status: 'new',
+      error: undefined,
+    }
+  }
+
+  static async saveJobStatusReferToJenkinsUrls(data: JobRoot) {
+    try {
+      const jenkinsUrls = await StorageService.getJenkinsUrls()
+      const oldUrls: string[] = []
+      for (const oldUrl in data) {
+        oldUrls.push(oldUrl)
+      }
+
+      oldUrls.forEach((oldUrl) => {
+        if (!jenkinsUrls.includes(oldUrl)) {
+          console.log('delete::oldUrl', oldUrl)
+          delete data[oldUrl]
+        }
+      })
+
+      jenkinsUrls.forEach((newUrl) => {
+        if (!oldUrls.includes(newUrl)) {
+          console.log('add::newUrl', newUrl)
+          data[newUrl] = this.createNewJenkinsObj(newUrl)
+        }
+      })
+      // 保存
+      return await StorageService.saveJobsStatus(data)
+    } catch (e) {
+      console.error('saveJobStatusReferToJenkinsUrls error:', e)
+      return Promise.reject(e)
+    }
+  }
+
   static async getJobsStatus(): Promise<JobRoot> {
     const result = await browser.storage.local.get(StorageService.keyForJenkinsJobData)
     return result[StorageService.keyForJenkinsJobData] as JobRoot || {}
+  }
+
+  static async tidyJobStatusReferToJenkinsUrls() {
+    try {
+      const oldJobRoot = await StorageService.getJobsStatus()
+      return await StorageService.saveJobStatusReferToJenkinsUrls(oldJobRoot)
+    } catch (e) {
+      console.error('tidyJobStatusReferToJenkinsUrls error:', e)
+      return Promise.reject(e)
+    }
   }
 
   static async saveNodeStatus(nodesStatus: Nodes) {

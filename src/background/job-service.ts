@@ -6,11 +6,9 @@ import type { JobRoot, JobSet, JobStatus } from '~/models/job'
 import type { NotificationShowing, Options } from '~/models/option'
 import type { JenkinsJob } from '~/models/jenkins/job'
 import type { JenkinsView } from '~/models/jenkins/view'
-import type { Enc } from '~/models/common'
 
 export class JobService {
   private static instance?: JobService
-  private jenkinsUrls: string[] = []
   private showNotificationOption?: NotificationShowing
   // 失败Job数量
   private failureJobCount = 0
@@ -24,7 +22,7 @@ export class JobService {
   private querying = false
 
   // 通知ID和URL的对照
-  private notificationUrlMap = new Map<string, string>()
+  private static notificationUrlMap = new Map<string, string>()
   // alarm name
   private static readonly ALARM_NAME = 'job-service-alarm'
   // 请求 /api/json 使用的 tree 参数
@@ -48,8 +46,12 @@ export class JobService {
     // 点击通知
     browser.notifications.onClicked.addListener((notificationId) => {
       // 打开构建页面
-      if (this.notificationUrlMap.has(notificationId)) {
-        browser.tabs.create({ url: this.notificationUrlMap.get(notificationId) })
+      if (JobService.notificationUrlMap.has(notificationId)) {
+        browser.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) }).then((tab) => {
+          console.log('open tab', tab)
+        }).catch((err) => {
+          console.error('open tab error', err)
+        })
       }
     })
     // 监听 Alarm
@@ -57,18 +59,16 @@ export class JobService {
       browser.alarms.onAlarm.addListener(this.onAlarm)
     }
 
-    StorageService.getJenkinsUrls().then((result: string[]) => {
-      this.jenkinsUrls = result
-      StorageService.getOptions().then((options: Options) => {
-        this.showNotificationOption = options.showNotificationOption
-        this.refreshJobStatus(options.refreshTime)
-      })
+    StorageService.getOptions().then((options: Options) => {
+      this.showNotificationOption = options.showNotificationOption
+      this.refreshJobStatus(options.refreshTime)
     })
   }
 
-  private refreshJobStatus(refreshTime: string) {
+  private async refreshJobStatus(refreshTime: string) {
     console.log('refreshJobStatus::refresh time', refreshTime)
-    browser.alarms.get(JobService.ALARM_NAME).then((alarm) => {
+    try {
+      const alarm = await browser.alarms.get(JobService.ALARM_NAME)
       if (!alarm) {
         console.log('job-service::create alarm.')
         this.createAlarm(refreshTime)
@@ -79,20 +79,21 @@ export class JobService {
         } as Alarms.Alarm)
         if (!isEqual) {
           console.log('job-service::clear alarm.')
-          browser.alarms.clear(JobService.ALARM_NAME).then(() => {
+          try {
+            await browser.alarms.clear(JobService.ALARM_NAME)
             this.createAlarm(refreshTime)
-          }).catch((e) => {
+          } catch (e) {
             console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
-          })
+          }
         } else {
           // 已有 alarm，不需要重复创建
           // no op
         }
       }
-    }).catch((e) => {
+    } catch (e) {
       console.error(`get alarm ${JobService.ALARM_NAME} error:`, e)
       this.createAlarm(refreshTime)
-    })
+    }
   }
 
   private getPeriodInMinutes(refreshTime: string) {
@@ -142,13 +143,13 @@ export class JobService {
     if (StorageService.keyForJenkinsUrl in changes) {
       // Jenkins Url 改变
       // console.log('changes', changes)
-      this.jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue
-      // console.log('this.jenkinsUrls', this.jenkinsUrls)
+      // const jenkinsUrls = changes[StorageService.keyForJenkinsUrl].newValue
+      await StorageService.tidyJobStatusReferToJenkinsUrls()
       this.queryJobStatus()
     }
   }
 
-  private getErrorJenkinsObj(url: string, errorMsg: string): JobSet {
+  private createErrorJenkinsObj(url: string, errorMsg: string): JobSet {
     return {
       name: url,
       status: 'error',
@@ -160,23 +161,19 @@ export class JobService {
     this.failureJobCount = 0
     this.unstableJobCount = 0
     this.successJobCount = 0
-    this.errorOnFetch = false
   }
 
-  private countBadgeJobCount(color?: string) {
+  private countBadgeJobCount(color: string) {
     if (color === 'blue') {
       this.successJobCount++
     } else if (color === 'red') {
       this.failureJobCount++
     } else if (color === 'yellow') {
       this.unstableJobCount++
-    } else if (color === undefined) {
-      this.errorOnFetch = true
     }
   }
 
   private async queryJobStatus() {
-    console.log('jenkinsUrls', this.jenkinsUrls)
     if (this.querying) {
       console.log('上次的查询未结束，跳过此次查询')
       return
@@ -184,79 +181,77 @@ export class JobService {
     this.querying = true
     // 重置 成功失败计数器
     this.resetBadgeJobCount()
+    this.errorOnFetch = false
 
-    if (this.jenkinsUrls.length === 0) {
-      // 存储job状态
+    let jenkinsUrls: string[] | undefined
+    try {
+      jenkinsUrls = await StorageService.getJenkinsUrls()
+    } catch (e) {
+      console.error('queryJobStatus:getJenkinsUrls error:', e)
+      this.querying = false
+      return
+    }
+
+    if (jenkinsUrls.length === 0) {
       try {
         await StorageService.saveJobsStatus({})
+        console.log('save empty job status ok')
+        this.changeBadge()
+      } catch (e) {
+        console.error('queryJobStatus:saveJobsStatus error:', e)
+      }
+      this.querying = false
+      return
+    }
+
+    const allFetchDataPromises = jenkinsUrls.map((url: string) => {
+      return Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.TREE_PARAMS)
+    })
+
+    try {
+      const values = await Promise.all(allFetchDataPromises)
+      // console.log('queryJobStatus:values', values)
+      const result = await StorageService.getJobsStatus()
+      // console.log('JobService::queryJobStatus::result', result)
+
+      for (const value of values) {
+        if (value.ok) {
+          const data = value.body
+          const url = value.url
+          // console.log('queryJobStatus::data', data, Object.getOwnPropertyNames(data).length)
+          if (Object.getOwnPropertyNames(data).length === 0) {
+            console.log('queryJobStatus: 获取Job状态失败，返回数据为空')
+            this.errorOnFetch = true
+            result[url] = this.createErrorJenkinsObj(url, 'No permissions or no data')
+          } else {
+            if (data.hasOwnProperty('jobs')) {
+              // Jenkins or view data
+              result[url] = await this.parseJenkinsOrViewData(url, data, result)
+            } else {
+              // Single job data
+              result[url] = await this.parseSingleJobData(url, data, result)
+            }
+          }
+        } else {
+          const url = value.url
+          const error = value.errMsg
+          console.log('queryJobStatus: 获取Job状态失败', error)
+          this.errorOnFetch = true
+          result[url] = this.createErrorJenkinsObj(url, error || 'Unreachable')
+        }
+      }
+      // 存储job状态
+      try {
+        await StorageService.saveJobStatusReferToJenkinsUrls(result)
         console.log('saveJobsStatus ok')
         this.changeBadge()
       } catch (e) {
         // 原则上不应该走到这里
         console.log('queryJobStatus:saveJobsStatus:e', e)
       }
-      this.querying = false
-      return
-    }
-
-    const allFetchDataPromises: Promise<Enc>[] = []
-
-    this.jenkinsUrls.forEach((url: string) => {
-      allFetchDataPromises.push(Tools.fetchJenkinsDataByUrl(url, 'api/json', JobService.TREE_PARAMS))
-    })
-
-    try {
-      const result = await StorageService.getJobsStatus()
-      // console.log('JobService::queryJobStatus::result', result)
-      try {
-        const values = await Promise.all(allFetchDataPromises)
-        // console.log('queryJobStatus:values', values)
-        const newJobsStatus: JobRoot = {}
-
-        for (const value of values) {
-          if (value.ok) {
-            const data = value.body
-            const url = value.url
-            // console.log('queryJobStatus#data', data, Object.getOwnPropertyNames(data).length)
-            if (Object.getOwnPropertyNames(data).length === 0) {
-              console.log('queryJobStatus: 获取Job状态失败，返回数据为空')
-              const jenkinsObj = this.getErrorJenkinsObj(url, 'No permissions or no data')
-              this.countBadgeJobCount()
-              newJobsStatus[url] = jenkinsObj
-            } else {
-              if (data.hasOwnProperty('jobs')) {
-                // Jenkins or view data
-                newJobsStatus[url] = await this.parseJenkinsOrViewData(url, data, result)
-              } else {
-                // Single job data
-                newJobsStatus[url] = await this.parseSingleJobData(url, data, result)
-              }
-            }
-          } else {
-            const url = value.url
-            const error = value.errMsg
-            console.log('queryJobStatus: 获取Job状态失败', error)
-            const jenkinsObj = this.getErrorJenkinsObj(url, error || 'Unreachable')
-            this.countBadgeJobCount()
-            newJobsStatus[url] = jenkinsObj
-          }
-        }
-        // 存储job状态
-        try {
-          await StorageService.saveJobsStatus(newJobsStatus)
-          console.log('saveJobsStatus ok')
-          this.changeBadge()
-        } catch (e) {
-          // 原则上不应该走到这里
-          console.log('queryJobStatus:saveJobsStatus:e', e)
-        }
-      } catch (e) {
-        // 原则上不应该走到这里
-        console.log('queryJobStatus:e', e)
-      }
     } catch (e) {
       // 原则上不应该走到这里
-      console.error('queryJobStatus:e', e)
+      console.log('getJobsStatus:e', e)
     }
     this.querying = false
   }
@@ -388,6 +383,17 @@ export class JobService {
 
   // 显示通知
   private async showNotification(result: string, jobName: string, url: string) {
+    if (!this.showNotificationOption) {
+      try {
+        const options = await StorageService.getOptions()
+        this.showNotificationOption = options.showNotificationOption
+      } catch (e) {
+        // 原则上不应该走到这里
+        console.error('getOptions error', e)
+        this.showNotificationOption = 'all'
+      }
+    }
+
     if (this.showNotificationOption === 'all') {
       await this.show(result, jobName, url)
     } else if (this.showNotificationOption === 'unstable') {
@@ -419,7 +425,7 @@ export class JobService {
         priority: 2, // Priority ranges from -2 to 2. -2 is lowest priority. 2 is highest. Zero is default
       })
       if (notificationId) {
-        this.notificationUrlMap.set(notificationId, url)
+        JobService.notificationUrlMap.set(notificationId, url)
       }
     } catch (e) {
       console.error('show notifications error', e)

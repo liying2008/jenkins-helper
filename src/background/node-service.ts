@@ -37,9 +37,10 @@ export class NodeService {
     })
   }
 
-  private refreshNodeStatus(refreshTime: string) {
+  private async refreshNodeStatus(refreshTime: string) {
     console.log('refreshNodeStatus::refresh time', refreshTime)
-    browser.alarms.get(NodeService.ALARM_NAME).then((alarm) => {
+    try {
+      const alarm = await browser.alarms.get(NodeService.ALARM_NAME)
       if (!alarm) {
         console.log('node-service::create alarm.')
         this.createAlarm(refreshTime)
@@ -50,20 +51,21 @@ export class NodeService {
         } as Alarms.Alarm)
         if (!isEqual) {
           console.log('node-service::clear alarm.')
-          browser.alarms.clear(NodeService.ALARM_NAME).then(() => {
+          try {
+            await browser.alarms.clear(NodeService.ALARM_NAME)
             this.createAlarm(refreshTime)
-          }).catch((e) => {
+          } catch (e) {
             console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
-          })
+          }
         } else {
           // 已有 alarm，不需要重复创建
           // no op
         }
       }
-    }).catch((e) => {
+    } catch (e) {
       console.error(`get alarm ${NodeService.ALARM_NAME} error:`, e)
       this.createAlarm(refreshTime)
-    })
+    }
   }
 
   private getPeriodInMinutes(refreshTime: string) {

@@ -188,11 +188,17 @@
   "inputUrlPlaceholder": {
     "message": "例如: http://127.0.0.1:8080/view/MyView/"
   },
+  "newMonitoringTask": {
+    "message": "新的监控任务"
+  },
   "addMonitorUrlTip": {
     "message": "创建成功，页面数据稍后更新。"
   },
   "removeMonitorUrlTip": {
     "message": "删除成功，页面数据稍后更新。"
+  },
+  "dataIsBeingFetched": {
+    "message": "数据正在获取中，请稍后查看。"
   },
   "jobName": {
     "message": "任务名称"
