@@ -13,6 +13,7 @@ import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
 import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
 import { DataStatus } from '~/models/common'
+import { fetch2 } from '~/libs/fetch2'
 
 const strings = {
   paramsList: t('paramsList'),
@@ -69,7 +70,7 @@ function getParametersByUrl(_url: string) {
   const jsonUrl = `${_url}/api/json`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
-    fetch(jsonUrl, header).then((res) => {
+    fetch2(jsonUrl, header).then((res) => {
       if (res.ok) {
         return res.json()
       } else {

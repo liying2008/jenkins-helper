@@ -2,8 +2,8 @@ import type { Alarms } from 'webextension-polyfill'
 import { addZeroForSingleDigit } from './common'
 import { StorageService } from '~/libs/storage'
 import type { Enc } from '~/models/common'
-
-// export type JobResultType = 'blue' | 'yellow' | 'red' | 'aborted' | 'notbuilt' | 'disabled'
+import type { Fetch2Options } from '~/libs/fetch2'
+import { fetch2 } from '~/libs/fetch2'
 
 export class Tools {
   // 是否是 Chrome 浏览器
@@ -22,7 +22,7 @@ export class Tools {
     disabled: 'Disabled',
   }
 
-  static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET'): RequestInit {
+  static getDefaultFetchOption(headers: Record<string, string> = {}, method = 'GET'): Fetch2Options {
     if (!headers) {
       headers = {}
     }
@@ -35,7 +35,7 @@ export class Tools {
     }
   }
 
-  static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET'): Promise<RequestInit> {
+  static async getFetchOption(url: string, headers: Record<string, string> = {}, method = 'GET'): Promise<Fetch2Options> {
     const options = await StorageService.getOptions()
     const jenkinsTokens = options.jenkinsTokens
     // console.log('jenkinsTokens', jenkinsTokens);
@@ -81,7 +81,7 @@ export class Tools {
     // console.log('fetchDataByUrl:jsonUrl', jsonUrl)
     const header = await Tools.getFetchOption(jsonUrl)
     try {
-      const res = await fetch(jsonUrl, header)
+      const res = await fetch2(jsonUrl, header)
       if (res.ok) {
         return {
           ok: true,
@@ -108,12 +108,18 @@ export class Tools {
         }
       }
     } catch (e) {
-      // console.log('fetchDataByUrl:e', e)
+      console.log('fetchDataByUrl:e', e)
       if ((e as Error).name === 'SyntaxError') {
         return {
           ok: false,
           url: baseUrl,
           errMsg: 'NOT JSON',
+        }
+      } else if ((e as Error).name === 'AbortError') {
+        return {
+          ok: false,
+          url: baseUrl,
+          errMsg: 'TIMEOUT',
         }
       } else {
         return {

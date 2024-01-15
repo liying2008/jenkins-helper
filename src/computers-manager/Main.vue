@@ -9,6 +9,7 @@ import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
 import type { NodeDetail, Nodes } from '~/models/node'
 import { t } from '~/libs/extension'
+import { fetch2 } from '~/libs/fetch2'
 
 const strings = {
   close: t('close'),
@@ -226,7 +227,7 @@ function getJenkinsNodeData(url: string, jsonUrl: string, header: any) {
   loading.value = true
   nodes.value = []
   // TODO 给fetch添加请求超时时间配置
-  fetch(jsonUrl, header).then((res) => {
+  fetch2(jsonUrl, header).then((res) => {
     if (res.ok) {
       return res.json()
     } else {

@@ -12,6 +12,7 @@ import { t } from '~/libs/extension'
 import { removeEnd } from '~/libs/common'
 import { DataStatus } from '~/models/common'
 import type { JenkinsView } from '~/models/jenkins/view'
+import { fetch2 } from '~/libs/fetch2'
 
 class JobInfo {
   url: string = ''
@@ -296,7 +297,7 @@ async function processSingleUrl(url: string) {
   const jsonUrl = `${url}/api/json?tree=${encodeParam}`
   try {
     const header = await Tools.getFetchOption(jsonUrl)
-    const res = await fetch(jsonUrl, header)
+    const res = await fetch2(jsonUrl, header)
     if (res.ok) {
       const data = await res.json()
       if (data.hasOwnProperty('jobs')) {
@@ -337,7 +338,7 @@ async function getJobStatsByUrl(url: string) {
 
   const header = await Tools.getFetchOption(`${url}config.xml`)
   try {
-    const res = await fetch(`${url}config.xml`, header)
+    const res = await fetch2(`${url}config.xml`, header)
     if (res.ok) {
       let text = await res.text()
       // 为了兼容Firefox，需要截取掉XML头部：<?xml version='1.1' encoding='UTF-8'?>
