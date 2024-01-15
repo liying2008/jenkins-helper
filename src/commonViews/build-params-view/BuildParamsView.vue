@@ -4,9 +4,11 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { h } from 'vue'
 import type { DisplayedBuildParameter } from '~/libs/jenkins/build'
 
-defineProps<{
+interface Props {
   parameters: DisplayedBuildParameter[]
-}>()
+}
+
+defineProps<Props>()
 
 const headers: TableColumns<DisplayedBuildParameter> = [
   {

@@ -1,46 +1,27 @@
 <script lang="ts" setup>
+import type { Component } from 'vue'
 import { t } from '~/libs/extension'
 
-defineProps({
-  text: {
-    type: String,
-  },
-  positiveText: {
-    type: String,
-    required: false,
-    default: t('ok'),
-  },
-  negativeText: {
-    type: String,
-    required: false,
-    default: t('cancel'),
-  },
-  btnClass: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  btnTitle: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  btnStyle: {
-    type: Object,
-    default: () => ({}),
-  },
-  icon: {
-    type: Object,
-    required: true,
-  },
-  iconSize: {
-    type: String,
-    required: false,
-    default: '',
-  },
+interface Props {
+  text: string
+  positiveText?: string
+  negativeText?: string
+  btnClass?: string
+  btnTitle?: string
+  btnStyle?: Record<string, unknown>
+  icon: Component // Vue component type
+  iconSize?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  positiveText: t('ok'),
+  negativeText: t('cancel'),
+  btnClass: '',
+  btnTitle: '',
+  btnStyle: () => ({}),
+  iconSize: '',
 })
 
-// eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
   (e: 'positiveClick'): void
   (e: 'negativeClick'): void

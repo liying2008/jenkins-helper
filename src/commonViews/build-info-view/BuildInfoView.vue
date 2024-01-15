@@ -7,7 +7,7 @@ import { watch } from 'vue'
 import { t } from '~/libs/extension'
 import type { DisplayedBuildCause } from '~/libs/jenkins/build'
 
-const props = defineProps<{
+interface Props {
   buildUrl: string
   fullDisplayName: string
   builtOn: string
@@ -16,7 +16,9 @@ const props = defineProps<{
   buildTime: string
   causes: DisplayedBuildCause[]
   darkMode: boolean
-}>()
+}
+
+const props = defineProps<Props>()
 
 const strings = {
   buildStatus_: t('buildStatus_'),

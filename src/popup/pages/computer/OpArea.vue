@@ -8,17 +8,14 @@ import { ComputerStatus, openNodesManager } from './common'
 import { NodeService } from '~/background/node-service'
 import { t } from '~/libs/extension'
 
-const props = defineProps({
-  showOfflineNodes: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  disabled: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
+interface Props {
+  showOfflineNodes: boolean
+  disabled: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showOfflineNodes: true,
+  disabled: false,
 })
 
 const emit = defineEmits<{

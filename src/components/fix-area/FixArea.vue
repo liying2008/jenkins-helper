@@ -2,17 +2,14 @@
 import { useCssVar, useElementBounding } from '@vueuse/core'
 import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 
-const props = defineProps({
-  position: {
-    type: String,
-    required: false,
-    default: 'bottom',
-  },
-  container: {
-    type: String,
-    required: false,
-    default: 'body',
-  },
+interface Props {
+  position: string
+  container: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  position: 'bottom',
+  container: 'body',
 })
 
 const fixArea = ref<HTMLDivElement>()

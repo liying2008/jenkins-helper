@@ -5,10 +5,12 @@ import { NButton, NCheckbox, NIcon, NInput } from 'naive-ui'
 import { computed, h, ref, watch } from 'vue'
 import { QueryParam } from './models'
 
-const props = defineProps<{
+interface Props {
   url: string
   triggeredBySelf: boolean
-}>()
+}
+
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'urlChanged', value: string): void

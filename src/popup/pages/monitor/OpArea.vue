@@ -7,17 +7,14 @@ import CreationModal from './CreationModal.vue'
 import { Tools } from '~/libs/tools'
 import { t } from '~/libs/extension'
 
-const props = defineProps({
-  showDisabledJobs: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  disabled: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
+interface Props {
+  showDisabledJobs: boolean
+  disabled: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showDisabledJobs: true,
+  disabled: false,
 })
 
 const emit = defineEmits<{

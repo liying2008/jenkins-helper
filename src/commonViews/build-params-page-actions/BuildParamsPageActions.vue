@@ -5,12 +5,13 @@ import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { removeEnd } from '~/libs/common'
 
-const props = defineProps<{
+interface Props {
   buildUrl: string
   fullDisplayName: string
-}>()
+}
 
-// eslint-disable-next-line func-call-spacing
+const props = defineProps<Props>()
+
 const emit = defineEmits<{
   (e: 'prevBuild'): void
   (e: 'nextBuild'): void

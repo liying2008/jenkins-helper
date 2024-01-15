@@ -443,7 +443,7 @@ function saveOptions() {
       <div class="mt-40px" />
     </div>
     <n-el class="bottom-actions-area">
-      <fix-area
+      <FixArea
         position="bottom"
         container=".options-settings-wrapper"
         class="bottom-fix"
@@ -462,7 +462,7 @@ function saveOptions() {
           </template>
           {{ strings.saveOptions }}
         </n-button>
-      </fix-area>
+      </FixArea>
     </n-el>
   </div>
 </template>

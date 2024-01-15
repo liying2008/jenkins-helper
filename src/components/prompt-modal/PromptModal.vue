@@ -1,50 +1,29 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { type PropType, computed, ref, watch } from 'vue'
 import type { FormInst } from 'naive-ui'
+import type { FormRules } from 'naive-ui/es/form/src/interface'
 import { t } from '~/libs/extension'
 
-const props = defineProps({
-  show: {
-    type: Boolean,
-    required: true,
-  },
-  title: {
-    type: String,
-  },
-  positiveText: {
-    type: String,
-    required: false,
-    default: t('ok'),
-  },
-  negativeText: {
-    type: String,
-    required: false,
-    default: t('cancel'),
-  },
-  label: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  placeholder: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  inputType: {
-    type: String,
-    required: false,
-    default: 'text',
-  },
-  style: {
-    type: Object,
-    default: () => ({}),
-  },
-  rules: {
-    type: Object,
-    required: false,
-    default: () => ({}),
-  },
+interface Props {
+  show: boolean
+  title: string
+  positiveText?: string
+  negativeText?: string
+  label?: string
+  placeholder?: string
+  inputType?: string
+  style?: Record<string, unknown>
+  rules?: PropType<FormRules>
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  positiveText: t('ok'),
+  negativeText: t('cancel'),
+  label: '',
+  placeholder: '',
+  inputType: 'text',
+  style: () => ({}),
+  rules: () => ({}),
 })
 
 const emit = defineEmits<{
