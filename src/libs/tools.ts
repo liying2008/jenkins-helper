@@ -113,13 +113,13 @@ export class Tools {
         return {
           ok: false,
           url: baseUrl,
-          errMsg: 'NOT JSON',
+          errMsg: 'Not JSON',
         }
       } else if ((e as Error).name === 'AbortError') {
         return {
           ok: false,
           url: baseUrl,
-          errMsg: 'TIMEOUT',
+          errMsg: 'Timeout',
         }
       } else {
         return {

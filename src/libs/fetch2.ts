@@ -13,6 +13,7 @@ export async function fetch2(resource: string | URL | Request, options: Fetch2Op
       signal: controller.signal,
     })
   } catch (e) {
+    // console.log('fetch2:e', e)
     return Promise.reject(e)
   } finally {
     clearTimeout(id)

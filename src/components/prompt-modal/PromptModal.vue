@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type PropType, computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { FormInst } from 'naive-ui'
 import type { FormRules } from 'naive-ui/es/form/src/interface'
 import { t } from '~/libs/extension'
@@ -13,7 +13,7 @@ interface Props {
   placeholder?: string
   inputType?: string
   style?: Record<string, unknown>
-  rules?: PropType<FormRules>
+  rules?: FormRules
 }
 
 const props = withDefaults(defineProps<Props>(), {

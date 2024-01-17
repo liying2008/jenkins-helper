@@ -278,6 +278,9 @@
   "manageMonitoredNodes": {
     "message": "管理监控节点"
   },
+  "deleteMonitoring": {
+    "message": "移除监控"
+  },
   "refresh": {
     "message": "刷新"
   },

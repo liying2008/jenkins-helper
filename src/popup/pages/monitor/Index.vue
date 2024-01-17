@@ -27,6 +27,7 @@ const strings = {
   jobName: t('jobName'),
   lastBuildTime: t('lastBuildTime'),
   result: t('result'),
+  deleteMonitoring: t('deleteMonitoring'),
 }
 
 const showDisabledJobs = ref(true)
@@ -89,7 +90,7 @@ const headers: TableColumns<DisplayedJobDetail> = [
           round: true,
           bordered: false,
           color: {
-            color: `var(--jk-${getResultColor(row.color as string)})`,
+            color: `var(--jk-${getResultColor(row.color!)})`,
             textColor: '#FFFFFF',
           },
           class: ['monitor-table-result-chip', row.building ? 'building' : ''],
@@ -174,7 +175,7 @@ function onJobNameFilterChange(newVal: string) {
 
 function onShowDisabledJobsChange(newVal: boolean) {
   StorageService.savePartialOptions({ showDisabledJobs: newVal }).then(() => {
-    // 保存即可，当前页面的 storage change listner 会监听 showDisabledJobs 的变化，更新数据
+    // 保存即可，当前页面的 storage change listener 会监听 showDisabledJobs 的变化，更新数据
     showDisabledJobs.value = newVal
   })
 }
@@ -290,7 +291,7 @@ function removeJenkins(jenkinsUrl: string) {
               <PopconfirmDeleteBtn
                 :text="getDeletionConfirmMsg(decodeURIComponent(jenkinsUrl))"
                 btn-class="card-title-remove-btn"
-                btn-title="Remove monitoring for this task"
+                :btn-title="strings.deleteMonitoring"
                 :icon="CloseCircleOutline"
                 @positive-click="removeJenkins(jenkinsUrl)"
               />

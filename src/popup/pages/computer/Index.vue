@@ -30,6 +30,7 @@ const strings = {
   alarmThreshold: t('alarmThreshold'),
   actions: t('actions'),
   monitoringCancelled: t('monitoringCancelled'),
+  deleteMonitoring: t('deleteMonitoring'),
 }
 
 const showOfflineNodes = ref(true)
@@ -303,7 +304,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
               <PopconfirmDeleteBtn
                 :text="getDeletionConfirmMsg(decodeURIComponent(jenkinsUrl))"
                 btn-class="card-title-remove-btn"
-                btn-title="Remove monitoring for this task"
+                :btn-title="strings.deleteMonitoring"
                 :icon="CloseCircleOutline"
                 @positive-click="removeMonitor(jenkinsUrl)"
               />

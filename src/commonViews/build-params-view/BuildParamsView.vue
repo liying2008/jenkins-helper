@@ -31,7 +31,7 @@ const headers: TableColumns<DisplayedBuildParameter> = [
         },
         {
           default: () => {
-            if (row.value) {
+            if (row.value !== undefined) {
               return row.value
             } else {
               return row.hint
@@ -45,7 +45,7 @@ const headers: TableColumns<DisplayedBuildParameter> = [
 ]
 
 function rowProps(row: DisplayedBuildParameter) {
-  if (!row.value) {
+  if (row.value === undefined) {
     return {
       class: 'param-item hidden-param-item',
     }
@@ -81,6 +81,7 @@ function rowProps(row: DisplayedBuildParameter) {
       font-size: 12px;
       word-break: break-all;
       word-wrap: break-word;
+      white-space: pre-wrap;
     }
   }
 

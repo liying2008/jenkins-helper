@@ -278,6 +278,9 @@
   "manageMonitoredNodes": {
     "message": "Nodes Management"
   },
+  "deleteMonitoring": {
+    "message": "Delete monitoring"
+  },
   "refresh": {
     "message": "Refresh"
   },
