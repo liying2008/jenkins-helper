@@ -3,8 +3,8 @@ import { useCssVar, useElementBounding } from '@vueuse/core'
 import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 interface Props {
-  position: string
-  container: string
+  position?: string
+  container?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -58,7 +58,7 @@ onMounted(() => {
   z-index: 90;
   align-items: center;
   width: var(--fix-area-width);
-  text-align: center;
   vertical-align: middle;
+  text-align: center;
 }
 </style>

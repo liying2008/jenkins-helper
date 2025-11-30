@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useMessage, useNotification } from 'naive-ui'
 import { Briefcase, Leaf, Options as OptionsIcon } from '@vicons/ionicons5'
+import { useMessage, useNotification } from 'naive-ui'
 
 const message = useMessage()
 const notification = useNotification()

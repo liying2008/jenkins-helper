@@ -1,13 +1,18 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+/// <reference types="vitest/config" />
+import { resolve } from 'node:path'
 import { crx } from '@crxjs/vite-plugin'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import presetWind3 from '@unocss/preset-wind3'
+import vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite'
-import presetUno from '@unocss/preset-uno'
-import { isDev, r } from './scripts/utils'
-import { getManifest } from './src/manifest'
+import AutoImport from 'unplugin-auto-import/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
+import zip from 'vite-plugin-zip-pack'
+import { getManifest } from './manifest.config'
+import { name, version } from './package.json'
+
+const r = (...args: string[]) => resolve(__dirname, ...args)
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -19,7 +24,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      __DEV__: isDev,
+      __DEV__: !productionMode,
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
@@ -27,13 +32,9 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       crx({ manifest: getManifest(mode) }),
+      zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
       AutoImport({
         imports: [
-          {
-            'webextension-polyfill': [
-              ['*', 'browser'],
-            ],
-          },
           {
             'naive-ui': [
               'useDialog',
@@ -57,7 +58,7 @@ export default defineConfig(({ mode }) => {
       // https://github.com/unocss/unocss
       Unocss({
         presets: [
-          presetUno(),
+          presetWind3(),
         ],
       }),
     ],
@@ -71,6 +72,13 @@ export default defineConfig(({ mode }) => {
           jobStats: r('job-stats.html'),
           jenkinsTools: r('jenkins-tools.html'),
         },
+      },
+    },
+    server: {
+      cors: {
+        origin: [
+          /chrome-extension:\/\//,
+        ],
       },
     },
     test: {

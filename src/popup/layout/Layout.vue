@@ -1,14 +1,14 @@
 <script lang="ts" setup>
+import type { PopupTab } from '~/models/option'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import MonitorPage from '../pages/monitor/Index.vue'
-import ParamsPage from '../pages/params/Index.vue'
-import ComputerPage from '../pages/computer/Index.vue'
-import { StorageService } from '~/libs/storage'
-import type { PopupTab } from '~/models/option'
-import { Options } from '~/models/option'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import { t } from '~/libs/extension'
+import { StorageService } from '~/libs/storage'
+import { Options } from '~/models/option'
+import ComputerPage from '../pages/computer/Index.vue'
+import MonitorPage from '../pages/monitor/Index.vue'
+import ParamsPage from '../pages/params/Index.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -48,15 +48,15 @@ onMounted(() => {
 })
 
 function openOptions() {
-  if (browser.runtime.openOptionsPage) {
-    browser.runtime.openOptionsPage()
+  if (chrome.runtime.openOptionsPage) {
+    chrome.runtime.openOptionsPage()
   } else {
-    browser.tabs.create({ url: browser.runtime.getURL('options.html') })
+    chrome.tabs.create({ url: chrome.runtime.getURL('options.html') })
   }
 }
 
 function openJobList() {
-  browser.windows.create({
+  chrome.windows.create({
     url: 'job-stats.html',
     type: 'popup',
     width: 1200,
@@ -67,7 +67,7 @@ function openJobList() {
 }
 
 function openTools() {
-  browser.tabs.create({
+  chrome.tabs.create({
     url: 'jenkins-tools.html',
   }).then((tab) => {
     // console.log('tab', tab)
@@ -156,7 +156,7 @@ function openTools() {
     }
 
     .header-extra {
-      gap: 4px 4px !important;
+      gap: 4px !important;
     }
   }
 

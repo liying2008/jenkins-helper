@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { t } from '~/libs/extension'
 import Logo from '~/assets/img/logo.svg'
+import { t } from '~/libs/extension'
 
 const strings = {
   extName: t('extName'),

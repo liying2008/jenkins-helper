@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import FormData from './request-body/form-data.vue'
-import UrlEncodedForm from './request-body/urlencoded-form.vue'
 import JsonData from './request-body/json-data.vue'
+import UrlEncodedForm from './request-body/urlencoded-form.vue'
 import XmlData from './request-body/xml-data.vue'
 
 enum BodyType {

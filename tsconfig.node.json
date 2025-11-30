@@ -10,7 +10,6 @@
   "include": [
     "vite.config.ts",
     "package.json",
-    "./scripts/*.ts",
-    "./src/manifest.ts"
+    "manifest.config.ts"
   ]
 }

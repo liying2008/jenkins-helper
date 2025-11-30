@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NewspaperOutline } from '@vicons/ionicons5'
 import { nextTick, onMounted, ref } from 'vue'
-import { getMainPanelOffset } from '../libs/build-subpage'
 import BuildInfoModal from '~/contentScripts/views/components/BuildInfoModal.vue'
+import { getMainPanelOffset } from '../libs/build-subpage'
 
 const drawerVisible = ref(false)
 const wrapper = ref<HTMLDivElement>()

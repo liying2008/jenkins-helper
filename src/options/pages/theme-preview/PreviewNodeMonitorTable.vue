@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
-import { NA, NSwitch } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import type { NodeDetail } from '~/models/node'
+import { NA, NSwitch } from 'naive-ui'
+import { h, ref } from 'vue'
 import { t } from '~/libs/extension'
 
 const strings = {
@@ -106,7 +106,7 @@ const headers: TableColumns<NodeDetail> = [
 ]
 
 function getRowClass(item: NodeDetail) {
-  const classNames = []
+  const classNames: string[] = []
   if (item.offline) {
     classNames.push('offline-row')
   }

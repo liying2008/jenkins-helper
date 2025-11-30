@@ -1,5 +1,5 @@
-import type { Options } from './option'
 import type { Nodes } from './node'
+import type { Options } from './option'
 
 export interface SettingsFileData {
   name: string
@@ -9,6 +9,6 @@ export interface SettingsFileData {
 
 export interface SettingsContent {
   'jenkins-url': Array<string>
-  nodes?: Nodes
-  options: Options
+  'nodes'?: Nodes
+  'options': Options
 }

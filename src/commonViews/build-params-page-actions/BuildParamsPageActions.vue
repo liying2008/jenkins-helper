@@ -27,11 +27,11 @@ function downloadConsoleLog() {
   console.log('buildUrl', props.buildUrl)
   const downloadUrl = `${props.buildUrl}logText/progressiveText?start=0`
   const filename = `${props.fullDisplayName} Console Log.log`
-  if (browser && browser.downloads) {
+  if (browser && chrome.downloads) {
     // 使用 浏览器扩展 功能下载文件
     console.log('download file by browser')
     disableDownload.value = true
-    browser.downloads.download({
+    chrome.downloads.download({
       url: downloadUrl,
       filename,
       saveAs: true,
@@ -61,9 +61,9 @@ function goToConfigure() {
   const url = removeEnd(props.buildUrl, '/')
   const configureUrl = `${url.substring(0, url.lastIndexOf('/'))}/configure`
   // console.log(`url=${url}, configureUrl=${configureUrl}`)
-  if (browser && browser.tabs) {
+  if (browser && chrome.tabs) {
     // 使用 浏览器扩展 功能新建标签页
-    browser.tabs.create({ url: configureUrl })
+    chrome.tabs.create({ url: configureUrl })
   } else {
     // content-scripts 无法访问 browser 对象，使用 window.open 新建标签页
     window.open(configureUrl)
@@ -72,9 +72,9 @@ function goToConfigure() {
 
 function rebuild() {
   const rebuildUrl = `${props.buildUrl}rebuild`
-  if (browser && browser.tabs) {
+  if (browser && chrome.tabs) {
     // 使用 浏览器扩展 功能新建标签页
-    browser.tabs.create({ url: rebuildUrl })
+    chrome.tabs.create({ url: rebuildUrl })
   } else {
     // content-scripts 无法访问 browser 对象，使用 window.open 新建标签页
     window.open(rebuildUrl)

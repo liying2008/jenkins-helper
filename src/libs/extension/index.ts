@@ -1,4 +1,4 @@
-// t is alias for browser.i18n.getMessage
+// t is alias for chrome.i18n.getMessage
 export function t(messageName: string, substitutions?: string | string[] | undefined) {
-  return browser.i18n.getMessage(messageName, substitutions)
+  return chrome.i18n.getMessage(messageName, substitutions)
 }

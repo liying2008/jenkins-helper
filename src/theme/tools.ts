@@ -1,12 +1,12 @@
 import type { Theme } from './theme'
+import type { Options } from '~/models/option'
+import { StorageService } from '~/libs/storage'
 import { applyTheme } from './binding'
 import { coffeeTheme } from './theme_coffee'
 import { defaultTheme } from './theme_default'
 import { perillaTheme } from './theme_perilla'
 import { sapphireTheme } from './theme_sapphire'
 import { tealTheme } from './theme_teal'
-import type { Options } from '~/models/option'
-import { StorageService } from '~/libs/storage'
 
 // 当前支持的主题
 const supportThemes = new Map<string, Theme>()

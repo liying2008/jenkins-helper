@@ -1,10 +1,9 @@
-import type { Alarms } from 'webextension-polyfill'
-import { t } from '~/libs/extension'
 import type { StorageChangeWrapper } from '~/libs/storage'
-import { StorageService } from '~/libs/storage'
-import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
 import type { Options } from '~/models/option'
+import { t } from '~/libs/extension'
+import { StorageService } from '~/libs/storage'
+import { Tools } from '~/libs/tools'
 
 export class NodeService {
   private static instance?: NodeService
@@ -27,8 +26,8 @@ export class NodeService {
   private start() {
     StorageService.addStorageListener(this.storageChange)
     // 监听 Alarm
-    if (!browser.alarms.onAlarm.hasListener(this.onAlarm)) {
-      browser.alarms.onAlarm.addListener(this.onAlarm)
+    if (!chrome.alarms.onAlarm.hasListener(this.onAlarm)) {
+      chrome.alarms.onAlarm.addListener(this.onAlarm)
     }
 
     StorageService.getOptions().then((options: Options) => {
@@ -40,7 +39,7 @@ export class NodeService {
   private async refreshNodeStatus(refreshTime: string) {
     console.log('refreshNodeStatus::refresh time', refreshTime)
     try {
-      const alarm = await browser.alarms.get(NodeService.ALARM_NAME)
+      const alarm = await chrome.alarms.get(NodeService.ALARM_NAME)
       if (!alarm) {
         console.log('node-service::create alarm.')
         this.createAlarm(refreshTime)
@@ -48,11 +47,11 @@ export class NodeService {
         const isEqual = Tools.isAlarmEqual(alarm, {
           name: NodeService.ALARM_NAME,
           periodInMinutes: this.getPeriodInMinutes(refreshTime),
-        } as Alarms.Alarm)
+        } as chrome.alarms.Alarm)
         if (!isEqual) {
           console.log('node-service::clear alarm.')
           try {
-            await browser.alarms.clear(NodeService.ALARM_NAME)
+            await chrome.alarms.clear(NodeService.ALARM_NAME)
             this.createAlarm(refreshTime)
           } catch (e) {
             console.error(`clear alarm ${NodeService.ALARM_NAME} error:`, e)
@@ -84,12 +83,12 @@ export class NodeService {
 
   private createAlarm(refreshTime: string) {
     console.log('node-service::create alarm.')
-    browser.alarms.create(NodeService.ALARM_NAME, {
+    chrome.alarms.create(NodeService.ALARM_NAME, {
       periodInMinutes: this.getPeriodInMinutes(refreshTime),
     })
   }
 
-  private onAlarm = (alarm: Alarms.Alarm) => {
+  private onAlarm = (alarm: chrome.alarms.Alarm) => {
     // 使用箭头函数解决 this 指向问题
     if (alarm.name === NodeService.ALARM_NAME) {
       console.log('node-service::onAlarm:', alarm)
@@ -228,7 +227,7 @@ export class NodeService {
     if (message) {
       // 显示通知
       try {
-        const notificationId = await browser.notifications.create({
+        const notificationId = await chrome.notifications.create({
           type: 'basic',
           iconUrl: 'img/computer48.png',
           title: displayName,

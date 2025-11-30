@@ -1,6 +1,6 @@
-import rfdc from 'rfdc'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import type { CustomTheme, Theme } from './theme'
+import rfdc from 'rfdc'
 
 export interface BaseTheme {
   // 明亮配色
@@ -124,9 +124,7 @@ export function extend(newProps: Theme) {
       cloned[k1] = newProps[k1]
     } else if (k1 === 'light' || k1 === 'dark') {
       for (const k2 in newProps[k1]) {
-        // @ts-expect-error Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'AppTheme'.
         for (const k3 in newProps[k1][k2]) {
-          // @ts-expect-error Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'AppTheme'.
           cloned[k1][k2][k3] = newProps[k1][k2][k3]
         }
       }

@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import router from './router'
-import App from './Popup.vue'
-import '../styles'
 import { initialize } from '~/init'
 import { usePinia } from '~/plugins/pinia'
+import App from './Popup.vue'
+import router from './router'
+import '../styles'
 
 const app = createApp(App)
 usePinia(app)

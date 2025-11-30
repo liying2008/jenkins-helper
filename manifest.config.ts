@@ -1,5 +1,5 @@
 import { defineManifest } from '@crxjs/vite-plugin'
-import pkg from '../package.json'
+import pkg from './package.json'
 
 export function getManifest(mode: string) {
   const productionMode = mode === 'production'
@@ -15,7 +15,9 @@ export function getManifest(mode: string) {
     short_name: '__MSG_extShortName__',
     version: pkg.version,
     description: '__MSG_extDesc__',
-    author: 'LiYing',
+    author: {
+      email: 'liruoer2008@yeah.net',
+    },
     homepage_url: 'https://github.com/liying2008/jenkins-helper',
     // browser_specific_settings: { // NOTE: @crxjs does not yet support firefox
     //   gecko: {
@@ -29,7 +31,6 @@ export function getManifest(mode: string) {
       keyword: 'jk',
     },
     action: {
-      browser_style: false,
       default_icon: {
         19: `${envImgDir}/icon19.png`,
         38: `${envImgDir}/icon38.png`,

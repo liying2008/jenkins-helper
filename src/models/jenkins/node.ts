@@ -11,14 +11,14 @@ export interface JenkinsComputer {
 }
 
 export interface JenkinsMonitorData {
-  _class: string
+  '_class': string
   'hudson.node_monitors.ArchitectureMonitor': string
   'hudson.node_monitors.ClockMonitor': ClockMonitor
   'hudson.node_monitors.DiskSpaceMonitor': DiskSpaceMonitor
   'hudson.node_monitors.ResponseTimeMonitor': ResponseTimeMonitor
   'hudson.node_monitors.SwapSpaceMonitor': SwapSpaceMonitor
   'hudson.node_monitors.TemporarySpaceMonitor': TemporarySpaceMonitor
-  offline: false
+  'offline': false
 }
 
 export interface ClockMonitor {

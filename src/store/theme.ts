@@ -1,6 +1,6 @@
+import type { AppTheme } from '~/theme/theme'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { AppTheme } from '~/theme/theme'
 
 export const useThemeStore = defineStore('theme', () => {
   const theme = ref<AppTheme | undefined>(undefined)

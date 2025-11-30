@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
 import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
-import { StorageService } from '~/libs/storage'
+import { computed, ref, watch } from 'vue'
 import { t } from '~/libs/extension'
+import { StorageService } from '~/libs/storage'
 
 const props = defineProps<{
   show: boolean
@@ -51,7 +51,8 @@ const rules: FormRules = {
           // 不能为空
           return new Error(strings.urlCannotEmpty)
         } else {
-          const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+          // eslint-disable-next-line regexp/no-unused-capturing-group
+          const expression = /https?:\/\/(www\.)?[-\w@:%.+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-\w()@:%+.~#?&/=]*)/
           const regex = new RegExp(expression)
           if (!regex.test(value)) {
             // 需要是一个合法的URL

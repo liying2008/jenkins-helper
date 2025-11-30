@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
-import { NA, NSwitch, useDialog, useMessage } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { h, ref } from 'vue'
+import type { NodeDetail, Nodes } from '~/models/node'
 import { SearchSharp } from '@vicons/ionicons5'
 import { watchDebounced } from '@vueuse/core'
-import { StorageService } from '~/libs/storage'
-import { Tools } from '~/libs/tools'
-import type { NodeDetail, Nodes } from '~/models/node'
+import { NA, NSwitch, useDialog, useMessage } from 'naive-ui'
+import { h, ref } from 'vue'
 import { t } from '~/libs/extension'
 import { fetch2 } from '~/libs/fetch2'
+import { StorageService } from '~/libs/storage'
+import { Tools } from '~/libs/tools'
 
 const strings = {
   close: t('close'),
@@ -123,7 +123,8 @@ const rules: FormRules = {
           // 不能为空
           return new Error(strings.urlCannotEmpty)
         } else {
-          const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+          // eslint-disable-next-line regexp/no-unused-capturing-group
+          const expression = /https?:\/\/(www\.)?[-\w@:%.+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-\w()@:%+.~#?&/=]*)/
           const regex = new RegExp(expression)
           if (!regex.test(value)) {
             // 需要是一个合法的URL
@@ -160,7 +161,7 @@ watchDebounced(search, () => {
 }, { debounce: 100, maxWait: 200 })
 
 function getRowClass(item: NodeDetail) {
-  const classNames = []
+  const classNames: string[] = []
   if (item.offline) {
     classNames.push('offline-row')
   }

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import type { SettingsFileData } from '~/models/settings-file'
 import { CloudDownloadOutline, CloudUploadOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
+import { ref } from 'vue'
+import { t } from '~/libs/extension'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
-import type { SettingsFileData } from '~/models/settings-file'
 import { initTheme } from '~/theme'
-import { t } from '~/libs/extension'
 
 const strings = {
   close: t('close'),
@@ -40,7 +40,7 @@ function exportSettings() {
   disableExportBtn.value = true
   StorageService.get([StorageService.keyForJenkinsUrl, StorageService.keyForNodes, StorageService.keyForOptions]).then((result) => {
     // console.log('exportSettings', result)
-    browser.management.getSelf().then((extensionInfo) => {
+    chrome.management.getSelf().then((extensionInfo) => {
       // console.log('extensionInfo', extensionInfo)
       const fileContent = {
         name: settingsKeyName,

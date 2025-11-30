@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
 import type { FormInst } from 'naive-ui'
 import type { FormRules } from 'naive-ui/es/form/src/interface'
+import { computed, ref, watch } from 'vue'
 import { t } from '~/libs/extension'
 
 interface Props {

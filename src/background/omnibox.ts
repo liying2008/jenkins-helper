@@ -1,9 +1,9 @@
 import type { StorageChangeWrapper } from '~/libs/storage'
-import { StorageService } from '~/libs/storage'
-import type { Options } from '~/models/option'
-import { Tools } from '~/libs/tools'
 import type { Enc } from '~/models/common'
+import type { Options } from '~/models/option'
 import { t } from '~/libs/extension'
+import { StorageService } from '~/libs/storage'
+import { Tools } from '~/libs/tools'
 
 interface Job {
   /**
@@ -42,11 +42,11 @@ export class Omnibox {
     StorageService.addStorageListener(this.storageChange)
 
     // 设置默认建议
-    browser.omnibox.setDefaultSuggestion({
+    chrome.omnibox.setDefaultSuggestion({
       description: `%s - ${t('baiduSearch')}`,
     })
     // 当用户输入时触发
-    browser.omnibox.onInputChanged.addListener((text, suggest) => {
+    chrome.omnibox.onInputChanged.addListener((text, suggest) => {
       // console.log('text', text)
       if (!text) {
         return
@@ -57,7 +57,7 @@ export class Omnibox {
     })
 
     // 当用户接收关键字建议时触发
-    browser.omnibox.onInputEntered.addListener((text) => {
+    chrome.omnibox.onInputEntered.addListener((text) => {
       // console.log('inputEntered', text)
       if (!text) {
         return
@@ -86,8 +86,8 @@ export class Omnibox {
   }
 
   private navigate(url: string) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      return browser.tabs.update(tabs[0].id!, { url })
+    chrome.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      return chrome.tabs.update(tabs[0].id!, { url })
     })
   }
 

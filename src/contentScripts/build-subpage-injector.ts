@@ -1,17 +1,16 @@
-import { createApp } from 'vue'
-import type { Tabs } from 'webextension-polyfill'
-import App from './views/App.vue'
-import { BUILD_SUBPAGE_INJECTOR_DOM_ID } from './constants'
 import type { ContentResp } from '~/models/content-message'
-import { CMD_GET_CURRENT_TAB, ContentMessage } from '~/models/content-message'
+import { createApp } from 'vue'
 import { JenkinsBuild } from '~/libs/jenkins/build'
+import { CMD_GET_CURRENT_TAB, ContentMessage } from '~/models/content-message'
 import { applyThemeForContentScripts } from '~/theme'
 import { defaultTheme } from '~/theme/theme_default'
+import { BUILD_SUBPAGE_INJECTOR_DOM_ID } from './constants'
+import App from './views/App.vue'
 
 export function inject() {
   const message = new ContentMessage(CMD_GET_CURRENT_TAB)
 
-  browser.runtime.sendMessage(message).then((resp: ContentResp<Tabs.Tab>) => {
+  chrome.runtime.sendMessage(message).then((resp: ContentResp<chrome.tabs.Tab>) => {
     console.log('content-script::resp', resp)
     if (resp.status !== 'ok') {
       console.log('获取 content features 失败！')
@@ -41,7 +40,7 @@ export function inject() {
     // <link rel="stylesheet" href="chrome-extension://{id}/dist/contentScripts/style.css">
     const styleEl = document.createElement('link')
     styleEl.setAttribute('rel', 'stylesheet')
-    styleEl.setAttribute('href', browser.runtime.getURL('dist/contentScripts/style.css'))
+    styleEl.setAttribute('href', chrome.runtime.getURL('dist/contentScripts/style.css'))
     document.head.appendChild(styleEl)
 
     const app = createApp(App, {

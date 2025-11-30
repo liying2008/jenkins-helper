@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
-import { NotificationsOutline, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
+import { NotificationsOutline, RefreshSharp, SearchOutline } from '@vicons/ionicons5'
 import { watchDebounced } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
-import { ComputerStatus, openNodesManager } from './common'
+import { computed, ref, watch } from 'vue'
 import { NodeService } from '~/background/node-service'
 import { t } from '~/libs/extension'
+import { ComputerStatus, openNodesManager } from './common'
 
 interface Props {
   showOfflineNodes: boolean

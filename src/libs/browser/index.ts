@@ -4,7 +4,7 @@ export class BrowserUtils {
    * @returns current active tab
    */
   static async getCurrentTab() {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
     return tabs.length ? tabs[0] : null
   }
 

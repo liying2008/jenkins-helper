@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "vue.volar",
-    "vue.vscode-typescript-vue-plugin",
     "antfu.iconify",
     "dbaeumer.vscode-eslint",
     "stylelint.vscode-stylelint"

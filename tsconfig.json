@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "es2020",
     "jsx": "preserve",
-    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "lib": ["DOM", "ESNext", "DOM.Iterable"],
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "module": "ESNext",
@@ -14,17 +14,21 @@
     "resolveJsonModule": true,
     "types": [
       "vite/client",
+      "chrome",
       "naive-ui/volar"
     ],
     "allowImportingTsExtensions": true,
     /* Linting */
     "strict": true,
+    "strictNullChecks": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noEmit": true,
     "sourceMap": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },

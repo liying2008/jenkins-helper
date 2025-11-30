@@ -1,9 +1,8 @@
-import type { Alarms } from 'webextension-polyfill'
-import { addZeroForSingleDigit } from './common'
-import { StorageService } from '~/libs/storage'
-import type { Enc } from '~/models/common'
 import type { Fetch2Options } from '~/libs/fetch2'
+import type { Enc } from '~/models/common'
 import { fetch2 } from '~/libs/fetch2'
+import { StorageService } from '~/libs/storage'
+import { addZeroForSingleDigit } from './common'
 
 export class Tools {
   // 是否是 Chrome 浏览器
@@ -155,7 +154,7 @@ export class Tools {
     }
   }
 
-  static isAlarmEqual(oldAlarm: Alarms.Alarm, newAlarm: Alarms.Alarm) {
+  static isAlarmEqual(oldAlarm: chrome.alarms.Alarm, newAlarm: chrome.alarms.Alarm) {
     if (oldAlarm.name !== newAlarm.name) {
       return false
     }

@@ -1,19 +1,18 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
-import type { Tabs } from 'webextension-polyfill'
-import { Tools } from '~/libs/tools'
-import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
-import { JenkinsBuild } from '~/libs/jenkins/build'
+import { computed, ref } from 'vue'
+import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
+import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
+import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import { BrowserUtils } from '~/libs/browser'
 import { t } from '~/libs/extension'
-import { useThemeStore } from '~/store'
-import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
-import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
-import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
-import { DataStatus } from '~/models/common'
 import { fetch2 } from '~/libs/fetch2'
+import { JenkinsBuild } from '~/libs/jenkins/build'
+import { Tools } from '~/libs/tools'
+import { DataStatus } from '~/models/common'
+import { useThemeStore } from '~/store'
 
 const strings = {
   paramsList: t('paramsList'),
@@ -48,7 +47,7 @@ const darkMode = computed(() => {
 getParameters()
 
 function getParameters() {
-  BrowserUtils.getCurrentTab().then((tab: Tabs.Tab | null) => {
+  BrowserUtils.getCurrentTab().then((tab: chrome.tabs.Tab | null) => {
     // console.log(tab)
     // const title = tab.title
     if (!tab) {

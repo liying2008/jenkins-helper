@@ -1,5 +1,5 @@
 export function openNodesManager(jenkinsUrl: string) {
-  browser.windows.create({
+  chrome.windows.create({
     url: `computers-manager.html?jenkins=${jenkinsUrl}`,
     type: 'popup',
     width: 1000,

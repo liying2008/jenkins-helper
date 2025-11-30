@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import { lightTheme } from 'naive-ui'
+import { defaultTheme } from '~/theme/theme_default'
+import Main from './Main.vue'
 import '~/styles/naive-ui-overrides.scss'
 import '~/styles/common.scss'
-import { lightTheme } from 'naive-ui'
-import Main from './Main.vue'
-import { defaultTheme } from '~/theme/theme_default'
 </script>
 
 <template>

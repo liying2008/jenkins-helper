@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { darkTheme, lightTheme } from 'naive-ui'
-import Main from './Main.vue'
 import { useThemeStore } from '~/store'
+import Main from './Main.vue'
 
 const themeStore = useThemeStore()
 </script>

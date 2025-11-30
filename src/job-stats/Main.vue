@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { h, onMounted, ref, watch } from 'vue'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NCheckbox, NEl, NIcon, useNotification } from 'naive-ui'
-import { CheckmarkCircleOutline, CheckmarkCircleSharp, CloseCircleSharp, SettingsOutline } from '@vicons/ionicons5'
-import SettingsModal from './SettingsModal.vue'
 import type { StorageChangeWrapper } from '~/libs/storage'
+import type { JenkinsView } from '~/models/jenkins/view'
+import type { Options } from '~/models/option'
+import { CheckmarkCircleOutline, CheckmarkCircleSharp, CloseCircleSharp, SettingsOutline } from '@vicons/ionicons5'
+import { NA, NCheckbox, NEl, NIcon, useNotification } from 'naive-ui'
+import { h, onMounted, ref, watch } from 'vue'
+import { removeEnd } from '~/libs/common'
+import { t } from '~/libs/extension'
+import { fetch2 } from '~/libs/fetch2'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
-import type { Options } from '~/models/option'
-import { t } from '~/libs/extension'
-import { removeEnd } from '~/libs/common'
 import { DataStatus } from '~/models/common'
-import type { JenkinsView } from '~/models/jenkins/view'
-import { fetch2 } from '~/libs/fetch2'
+import SettingsModal from './SettingsModal.vue'
 
 class JobInfo {
   url: string = ''
@@ -250,7 +250,8 @@ function getJobStats() {
   jobUrlVisited.value = []
 
   const allProcesses = jenkinsUrls.value.map((url) => removeEnd(url.trim(), '/'))
-    .filter((url) => url !== '').map((url) => {
+    .filter((url) => url !== '')
+    .map((url) => {
       urls.value.push(url)
       console.log('processing url: ', url)
       return processSingleUrl(url)

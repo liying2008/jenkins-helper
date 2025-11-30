@@ -1,8 +1,8 @@
 import type { StashedParams } from '../models/param-type'
+import type { ContentResp } from '~/models/content-message'
+import { CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentMessage } from '~/models/content-message'
 import { addBtnForParamsPage, addBtnsForBuildPage } from './params-stash-recover-btn'
 import { addRecoverTipOnPage, addStashTipOnPage } from './params-stash-recover-tip'
-import { CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentMessage } from '~/models/content-message'
-import type { ContentResp } from '~/models/content-message'
 
 const PAGE_BUILD = 'build'
 const PAGE_PARAMETERS = 'parameters'
@@ -276,7 +276,8 @@ function getParametersPageParameters(table: HTMLElement) {
  */
 function saveParameters(stashedParams: StashedParams) {
   const message = new ContentMessage(CMD_STASH_PARAMS, stashedParams)
-  browser.runtime.sendMessage(message).then((resp: ContentResp) => {
+
+  chrome.runtime.sendMessage(message).then((resp: ContentResp) => {
     // console.log('saveParameters::resp', resp)
     if (resp.status === 'ok') {
       console.log('saved.')
@@ -292,17 +293,18 @@ function saveParameters(stashedParams: StashedParams) {
  */
 function recoverParameters(table: HTMLElement) {
   const message = new ContentMessage(CMD_RECOVER_PARAMS)
-  browser.runtime.sendMessage(message).then((resp: ContentResp) => {
+
+  chrome.runtime.sendMessage(message).then((resp: ContentResp) => {
     // console.log('recoverParameters::resp', resp)
     if (resp.status !== 'ok') {
       console.log('recoverParameters: 读取参数失败！')
-      alert(browser.i18n.getMessage('content_parametersReadFailed'))
+      alert(chrome.i18n.getMessage('content_parametersReadFailed'))
       return
     }
     const params = resp.data
     if (params === undefined || params === null || Object.keys(params).length < 1) {
       // 无暂存数据
-      alert(browser.i18n.getMessage('content_noStashedParams'))
+      alert(chrome.i18n.getMessage('content_noStashedParams'))
       return
     }
     const cannotRecovered: StashedParams = {}
@@ -375,10 +377,10 @@ function recoverParameters(table: HTMLElement) {
     console.log('cannotRecovered', cannotRecovered)
     if (Object.keys(cannotRecovered).length > 0) {
       // 有无法恢复的参数
-      console.log(browser.i18n.getMessage('content_failedToRecover'))
+      console.log(chrome.i18n.getMessage('content_failedToRecover'))
     } else {
       // 已恢复所有参数
-      console.log(browser.i18n.getMessage('content_recoverSuccess'))
+      console.log(chrome.i18n.getMessage('content_recoverSuccess'))
     }
   })
 }

@@ -1,11 +1,11 @@
 <!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
+import type { DisplayedBuildCause } from '~/libs/jenkins/build'
 import { ArrowForwardCircleSharp, CopyOutline, FlagSharp, FlashSharp, TimeSharp } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import { watch } from 'vue'
 import { t } from '~/libs/extension'
-import type { DisplayedBuildCause } from '~/libs/jenkins/build'
 
 interface Props {
   buildUrl: string
@@ -198,9 +198,9 @@ function copyBuiltOn() {
       }
 
       .display-name {
-        text-decoration-line: none;
         word-break: break-all;
-        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-decoration-line: none;
       }
 
       .build-tag {
@@ -210,11 +210,11 @@ function copyBuiltOn() {
       .building {
         animation-name: building;
         animation-duration: 1.4s;
-        animation-play-state: running;
         animation-timing-function: ease-out;
         animation-iteration-count: infinite;
         animation-direction: alternate;
         animation-fill-mode: none;
+        animation-play-state: running;
       }
 
       @keyframes building {

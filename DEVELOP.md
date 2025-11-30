@@ -3,22 +3,22 @@
 ## Environment requirements
 
 - Windows 10 (Linux or macOS might work too, not tested).
-- node v14.15.1 or higher.
-- yarn 1.22.10 or higher.
+- node v24.11.1 or higher.
+- pnpm 10.24.0 or higher.
 
 ## Install dependencies
 
-`yarn install`
+`pnpm install`
 
 ## Development and debugging
 
-`yarn serve`
+`pnpm dev`
 
 and the generators are stored in the `dist` directory.
 
 ## Package Release
 
-- for Chrome: `yarn build:chrome`
-- for Firefox: `yarn build:firefox`
+- for Chrome: `pnpm build`
+- for Firefox: `pnpm build:firefox`
 
-and manufactured products are stored in the `artifacts` directory.
+and manufactured products are stored in the `dist` directory.

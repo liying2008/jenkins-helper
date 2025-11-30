@@ -1,11 +1,10 @@
-import type { Alarms } from 'webextension-polyfill'
-import { Tools } from '~/libs/tools'
 import type { StorageChangeWrapper } from '~/libs/storage'
-import { StorageService } from '~/libs/storage'
-import type { JobRoot, JobSet, JobStatus } from '~/models/job'
-import type { NotificationShowing, Options } from '~/models/option'
 import type { JenkinsJob } from '~/models/jenkins/job'
 import type { JenkinsView } from '~/models/jenkins/view'
+import type { JobRoot, JobSet, JobStatus } from '~/models/job'
+import type { NotificationShowing, Options } from '~/models/option'
+import { StorageService } from '~/libs/storage'
+import { Tools } from '~/libs/tools'
 
 export class JobService {
   private static instance?: JobService
@@ -44,10 +43,10 @@ export class JobService {
     // 添加 storage change 监听
     StorageService.addStorageListener(this.storageChange)
     // 点击通知
-    browser.notifications.onClicked.addListener((notificationId) => {
+    chrome.notifications.onClicked.addListener((notificationId) => {
       // 打开构建页面
       if (JobService.notificationUrlMap.has(notificationId)) {
-        browser.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) }).then((tab) => {
+        chrome.tabs.create({ url: JobService.notificationUrlMap.get(notificationId) }).then((tab) => {
           console.log('open tab', tab)
         }).catch((err) => {
           console.error('open tab error', err)
@@ -55,8 +54,8 @@ export class JobService {
       }
     })
     // 监听 Alarm
-    if (!browser.alarms.onAlarm.hasListener(this.onAlarm)) {
-      browser.alarms.onAlarm.addListener(this.onAlarm)
+    if (!chrome.alarms.onAlarm.hasListener(this.onAlarm)) {
+      chrome.alarms.onAlarm.addListener(this.onAlarm)
     }
 
     StorageService.getOptions().then((options: Options) => {
@@ -68,7 +67,7 @@ export class JobService {
   private async refreshJobStatus(refreshTime: string) {
     console.log('refreshJobStatus::refresh time', refreshTime)
     try {
-      const alarm = await browser.alarms.get(JobService.ALARM_NAME)
+      const alarm = await chrome.alarms.get(JobService.ALARM_NAME)
       if (!alarm) {
         console.log('job-service::create alarm.')
         this.createAlarm(refreshTime)
@@ -76,11 +75,11 @@ export class JobService {
         const isEqual = Tools.isAlarmEqual(alarm, {
           name: JobService.ALARM_NAME,
           periodInMinutes: this.getPeriodInMinutes(refreshTime),
-        } as Alarms.Alarm)
+        } as chrome.alarms.Alarm)
         if (!isEqual) {
           console.log('job-service::clear alarm.')
           try {
-            await browser.alarms.clear(JobService.ALARM_NAME)
+            await chrome.alarms.clear(JobService.ALARM_NAME)
             this.createAlarm(refreshTime)
           } catch (e) {
             console.error(`clear alarm ${JobService.ALARM_NAME} error:`, e)
@@ -112,12 +111,12 @@ export class JobService {
 
   private createAlarm(refreshTime: string) {
     console.log('job-service::create alarm.')
-    browser.alarms.create(JobService.ALARM_NAME, {
+    chrome.alarms.create(JobService.ALARM_NAME, {
       periodInMinutes: this.getPeriodInMinutes(refreshTime),
     })
   }
 
-  private onAlarm = (alarm: Alarms.Alarm) => {
+  private onAlarm = (alarm: chrome.alarms.Alarm) => {
     // 使用箭头函数解决 this 指向问题
     if (alarm.name === JobService.ALARM_NAME) {
       console.log('job-service::onAlarm:', alarm)
@@ -363,20 +362,20 @@ export class JobService {
     const _successJobCount = this.successJobCount
 
     if (this.errorOnFetch) {
-      browser.action.setBadgeText({ text: 'ERR' })
-      browser.action.setBadgeBackgroundColor({ color: '#df2b38' })
+      chrome.action.setBadgeText({ text: 'ERR' })
+      chrome.action.setBadgeBackgroundColor({ color: '#df2b38' })
     } else {
       if (_failureJobCount === 0 && _unstableJobCount === 0 && _successJobCount === 0) {
-        browser.action.setBadgeText({ text: '' })
+        chrome.action.setBadgeText({ text: '' })
       } else {
         const count = _failureJobCount || _unstableJobCount || _successJobCount || 0
         const color = _failureJobCount ? '#c9302c' : _unstableJobCount ? '#f0ad4e' : '#5cb85c'
         if (count > 9999) {
-          browser.action.setBadgeText({ text: 'MUCH' })
+          chrome.action.setBadgeText({ text: 'MUCH' })
         } else {
-          browser.action.setBadgeText({ text: count.toString() })
+          chrome.action.setBadgeText({ text: count.toString() })
         }
-        browser.action.setBadgeBackgroundColor({ color })
+        chrome.action.setBadgeBackgroundColor({ color })
       }
     }
   }
@@ -417,7 +416,7 @@ export class JobService {
     }
 
     try {
-      const notificationId = await browser.notifications.create({
+      const notificationId = await chrome.notifications.create({
         type: 'basic',
         iconUrl: `img/${statusIcon}`,
         title: `${jobName} - ${result}`,

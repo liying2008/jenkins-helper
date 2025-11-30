@@ -1,8 +1,8 @@
 <!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { h } from 'vue'
 import type { DisplayedBuildParameter } from '~/libs/jenkins/build'
+import { h } from 'vue'
 
 interface Props {
   parameters: DisplayedBuildParameter[]
@@ -74,13 +74,13 @@ function rowProps(row: DisplayedBuildParameter) {
     .param-item-key {
       font-size: 12px;
       word-break: break-all;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .param-item-value {
       font-size: 12px;
       word-break: break-all;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       white-space: pre-wrap;
     }
   }

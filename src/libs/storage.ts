@@ -1,9 +1,9 @@
+import type { JenkinsUrlRoot } from '~/models/jenkins-url'
 /*
  * storage apis
  * https://developer.chrome.com/apps/storage#property-local
  */
 import type { JobRoot, JobSet } from '~/models/job'
-import type { JenkinsUrlRoot } from '~/models/jenkins-url'
 import type { Nodes } from '~/models/node'
 import { Options } from '~/models/option'
 
@@ -31,11 +31,11 @@ export class StorageService {
 
   static async saveJenkinsUrls(jenkinsUrls: string[]) {
     const jenkinsUrlRoot: JenkinsUrlRoot = { 'jenkins-url': JSON.parse(JSON.stringify(jenkinsUrls)) }
-    return browser.storage.local.set(jenkinsUrlRoot)
+    return chrome.storage.local.set(jenkinsUrlRoot as unknown as Record<string, unknown>)
   }
 
   static async getJenkinsUrls() {
-    const result = await browser.storage.local.get(StorageService.keyForJenkinsUrl)
+    const result = await chrome.storage.local.get(StorageService.keyForJenkinsUrl)
     return result[StorageService.keyForJenkinsUrl] as string[] || []
   }
 
@@ -51,7 +51,7 @@ export class StorageService {
 
   static async saveJobsStatus(data: JobRoot) {
     const finalData = { 'jenkins-job-data': data }
-    return browser.storage.local.set(finalData)
+    return chrome.storage.local.set(finalData)
   }
 
   private static createNewJenkinsObj(url: string): JobSet {
@@ -92,7 +92,7 @@ export class StorageService {
   }
 
   static async getJobsStatus(): Promise<JobRoot> {
-    const result = await browser.storage.local.get(StorageService.keyForJenkinsJobData)
+    const result = await chrome.storage.local.get(StorageService.keyForJenkinsJobData)
     return result[StorageService.keyForJenkinsJobData] as JobRoot || {}
   }
 
@@ -107,30 +107,31 @@ export class StorageService {
   }
 
   static async saveNodeStatus(nodesStatus: Nodes) {
-    return browser.storage.local.set({ nodes: JSON.parse(JSON.stringify(nodesStatus)) })
+    return chrome.storage.local.set({ nodes: JSON.parse(JSON.stringify(nodesStatus)) })
   }
 
   static async getNodeStatus(): Promise<Nodes> {
-    const result = await browser.storage.local.get('nodes')
+    const result = await chrome.storage.local.get('nodes')
+    // @ts-expect-error ignore type check
     return result.nodes || {}
   }
 
   static addStorageListener(listener: StorageChangeListener) {
-    if (!browser.storage.onChanged.hasListener(listener)) {
+    if (!chrome.storage.onChanged.hasListener(listener)) {
       // console.log('addStorageListener::listener', listener)
-      browser.storage.onChanged.addListener(listener)
+      chrome.storage.onChanged.addListener(listener)
     }
   }
 
   static removeStorageListener(listener: StorageChangeListener) {
-    if (browser.storage.onChanged.hasListener(listener)) {
+    if (chrome.storage.onChanged.hasListener(listener)) {
       // console.log('removeStorageListener::listener', listener)
-      browser.storage.onChanged.removeListener(listener)
+      chrome.storage.onChanged.removeListener(listener)
     }
   }
 
   static async getOptions(): Promise<Options> {
-    const result = await browser.storage.local.get(StorageService.keyForOptions)
+    const result = await chrome.storage.local.get(StorageService.keyForOptions)
     const partialOptions = result.options || {}
     return Options.normalize(partialOptions)
   }
@@ -139,8 +140,8 @@ export class StorageService {
     let reason: Error | undefined
 
     try {
-      // 更新存储到 browser.storage
-      await browser.storage.local.set({
+      // 更新存储到 chrome.storage
+      await chrome.storage.local.set({
         options,
       })
     } catch (e) {
@@ -164,11 +165,11 @@ export class StorageService {
   }
 
   static async set<T>(object: Record<string, T>) {
-    return browser.storage.local.set(object)
+    return chrome.storage.local.set(object)
   }
 
   static async get(keys: string[]) {
-    const result = await browser.storage.local.get(keys)
+    const result = await chrome.storage.local.get(keys)
     return result || {}
   }
 }

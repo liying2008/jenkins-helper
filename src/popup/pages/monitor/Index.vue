@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import { h, onMounted, ref, watch } from 'vue'
-import { CloseCircleOutline } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, NTag, useMessage } from 'naive-ui/es/components'
-import OpArea from './OpArea.vue'
-import type { DisplayedJobDetail, DisplayedJobRoot, JobRoot } from '~/models/job'
-import { getEmptyDisplayedJobSet } from '~/models/job'
-import type { Options } from '~/models/option'
-import jenkinsIcon from '~/assets/img/icon128.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
+import type { DisplayedJobDetail, DisplayedJobRoot, JobRoot } from '~/models/job'
+import type { Options } from '~/models/option'
+import { CloseCircleOutline } from '@vicons/ionicons5'
+import { NA, NTag, useMessage } from 'naive-ui/es/components'
+import { h, onMounted, ref, watch } from 'vue'
+import jenkinsIcon from '~/assets/img/icon128.png'
+import StyleTime from '~/components/style-time/StyleTime.vue'
+import { isNullOrEmptyRecord } from '~/libs/common'
+import { t } from '~/libs/extension'
 import { StorageService } from '~/libs/storage'
 import { Tools } from '~/libs/tools'
-import { t } from '~/libs/extension'
-import { isNullOrEmptyRecord } from '~/libs/common'
-import StyleTime from '~/components/style-time/StyleTime.vue'
+import { getEmptyDisplayedJobSet } from '~/models/job'
+import OpArea from './OpArea.vue'
 
 const strings = {
   noFilterValue: '-',
@@ -128,7 +128,7 @@ function getResultColor(jobColor: string) {
 }
 
 function getRowClass(item: DisplayedJobDetail) {
-  const classNames = []
+  const classNames: string[] = []
   if (!showDisabledJobs.value && item.color === 'disabled') {
     classNames.push('gone-row')
   } else if (item.color === 'disabled') {
@@ -383,9 +383,9 @@ function removeJenkins(jenkinsUrl: string) {
       }
 
       .monitor-table-job-name {
-        text-decoration-line: none;
         word-break: break-all;
-        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-decoration-line: none;
       }
 
       .monitor-table-build-time {
@@ -413,11 +413,11 @@ function removeJenkins(jenkinsUrl: string) {
       .building {
         animation-name: building;
         animation-duration: 1.4s;
-        animation-play-state: running;
         animation-timing-function: ease-out;
         animation-iteration-count: infinite;
         animation-direction: alternate;
         animation-fill-mode: none;
+        animation-play-state: running;
       }
 
       @keyframes building {

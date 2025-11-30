@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { onMounted, ref, toRaw } from 'vue'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { AddCircleSharp, RemoveCircleOutline, SaveOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
+import { onMounted, ref, toRaw } from 'vue'
+import { t } from '~/libs/extension'
 import { StorageService } from '~/libs/storage'
 import { JenkinsToken, Options } from '~/models/option'
 import { initTheme } from '~/theme'
-import { sapphireTheme } from '~/theme/theme_sapphire'
-import { perillaTheme } from '~/theme/theme_perilla'
 import { coffeeTheme } from '~/theme/theme_coffee'
 import { defaultTheme } from '~/theme/theme_default'
-import { t } from '~/libs/extension'
+import { perillaTheme } from '~/theme/theme_perilla'
+import { sapphireTheme } from '~/theme/theme_sapphire'
 import { tealTheme } from '~/theme/theme_teal'
 
 type SettingsOptions = Pick<Options, 'defaultTab' | 'jenkinsTokens' | 'omniboxJenkinsUrl' | 'refreshTime' | 'nodeRefreshTime' | 'showNotificationOption' | 'currentTheme' | 'enableDarkMode' | 'enableParamsStashAndRecover' | 'enableParamNamesColor' | 'paramNamesColor'>

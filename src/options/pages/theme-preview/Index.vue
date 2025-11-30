@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import PreviewComponentStatusColor from './PreviewComponentStatusColor.vue'
 import PreviewBasicInfo from './PreviewBasicInfo.vue'
+import PreviewComponentStatusColor from './PreviewComponentStatusColor.vue'
 import PreviewJobMonitorTable from './PreviewJobMonitorTable.vue'
 import PreviewNodeMonitorTable from './PreviewNodeMonitorTable.vue'
 </script>

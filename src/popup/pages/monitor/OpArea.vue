@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
-import { Add, SearchOutline } from '@vicons/ionicons5'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
+import { Add, SearchOutline } from '@vicons/ionicons5'
 import { watchDebounced } from '@vueuse/core'
-import CreationModal from './CreationModal.vue'
-import { Tools } from '~/libs/tools'
+import { computed, ref, watch } from 'vue'
 import { t } from '~/libs/extension'
+import { Tools } from '~/libs/tools'
+import CreationModal from './CreationModal.vue'
 
 interface Props {
-  showDisabledJobs: boolean
-  disabled: boolean
+  showDisabledJobs?: boolean
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {

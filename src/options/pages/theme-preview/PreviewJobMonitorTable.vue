@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
-import { NA, NTag } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-
-import { Tools } from '~/libs/tools'
 import type { DisplayedJobDetail } from '~/models/job'
+import { NA, NTag } from 'naive-ui'
+
+import { h, ref } from 'vue'
 import StyleTime from '~/components/style-time/StyleTime.vue'
 import { t } from '~/libs/extension'
+import { Tools } from '~/libs/tools'
 
 const strings = {
   jobName: t('jobName'),
@@ -198,7 +198,7 @@ function getResultColor(jobColor: string) {
 }
 
 function getRowClass(item: DisplayedJobDetail) {
-  const classNames = []
+  const classNames: string[] = []
   if (item.color === 'disabled') {
     classNames.push('disabled-row')
   }
@@ -239,9 +239,9 @@ function getRowClass(item: DisplayedJobDetail) {
   }
 
   .monitor-table-job-name {
-    text-decoration-line: none;
     word-break: break-all;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-decoration-line: none;
   }
 
   .monitor-table-build-time {
@@ -269,11 +269,11 @@ function getRowClass(item: DisplayedJobDetail) {
   .building {
     animation-name: building;
     animation-duration: 1.4s;
-    animation-play-state: running;
     animation-timing-function: ease-out;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-fill-mode: none;
+    animation-play-state: running;
   }
 
   @keyframes building {

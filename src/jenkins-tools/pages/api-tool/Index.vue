@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
-import PanelParams from './panel-params.vue'
-import PanelAuthorization from './panel-authorization.vue'
-import PanelHeaders from './panel-headers.vue'
-import PanelBody from './panel-body.vue'
 import type { Header } from './models'
+import { ref } from 'vue'
 import { AuthorizationEntity } from './models'
+import PanelAuthorization from './panel-authorization.vue'
+import PanelBody from './panel-body.vue'
+import PanelHeaders from './panel-headers.vue'
+import PanelParams from './panel-params.vue'
 
 const HTTP_METHOD_GET = 'GET'
 const HTTP_METHOD_POST = 'POST'

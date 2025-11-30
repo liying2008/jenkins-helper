@@ -1,10 +1,10 @@
-import { BrowserUtils } from '~/libs/browser'
 import type { StorageChangeWrapper } from '~/libs/storage'
-import { StorageService } from '~/libs/storage'
 import type { ContentFeatures } from '~/models/content-message'
+import { useLocalDataStore } from '~/composables/useLocalDataStore'
+import { BrowserUtils } from '~/libs/browser'
+import { StorageService } from '~/libs/storage'
 import { CMD_GET_CONTENT_FEATURES, CMD_GET_CURRENT_TAB, CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentResp } from '~/models/content-message'
 import { Options } from '~/models/option'
-import { useLocalDataStore } from '~/composables/useLocalDataStore'
 
 export class ContentService {
   private static instance?: ContentService
@@ -32,7 +32,7 @@ export class ContentService {
     })
 
     // 处理来自 content_scripts 的消息
-    browser.runtime.onMessage.addListener(async (message) => {
+    chrome.runtime.onMessage.addListener(async (message) => {
       // console.log('message', message)
       // NOTE: Returning a Promise is the preferred way to send a reply from an onMessage/onMessageExternal listener, as the sendResponse will be removed from the specs (See https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage) Error
 

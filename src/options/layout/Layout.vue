@@ -28,9 +28,9 @@ import Sidebar from '../components/Sidebar.vue'
   overflow: hidden;
 
   .main {
+    clear: both;
     width: 100%;
     height: 100%;
-    clear: both;
 
     .main-container {
       display: flex;

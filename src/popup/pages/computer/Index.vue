@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { h, onMounted, ref, watch } from 'vue'
-import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-import { NA, useMessage } from 'naive-ui'
-import OpArea from './OpArea.vue'
-import { ComputerStatus, openNodesManager } from './common'
-import computerIcon from '~/assets/img/computer48.png'
 import type { StorageChangeWrapper } from '~/libs/storage'
-import { StorageService } from '~/libs/storage'
 import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
+import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
+import { NA, useMessage } from 'naive-ui'
+import { h, onMounted, ref, watch } from 'vue'
+import computerIcon from '~/assets/img/computer48.png'
 import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
-import { t } from '~/libs/extension'
 import { isNullOrEmptyRecord } from '~/libs/common'
+import { t } from '~/libs/extension'
+import { StorageService } from '~/libs/storage'
+import { ComputerStatus, openNodesManager } from './common'
+import OpArea from './OpArea.vue'
 
 type NodeDetailWithJenkinsUrl = NodeDetail & { jenkinsUrl: string }
 
@@ -140,7 +140,7 @@ function queryMonitoredNodes() {
 }
 
 function getRowClass(item: NodeDetail) {
-  const classNames = []
+  const classNames: string[] = []
   if (item.offline) {
     classNames.push('disabled-row')
   }
@@ -390,9 +390,9 @@ function onShowOfflineNodesChange(newVal: boolean) {
       }
 
       .monitor-table-node-url {
-        text-decoration-line: none;
         word-break: break-all;
-        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-decoration-line: none;
       }
 
       .monitor-table-action-delete {

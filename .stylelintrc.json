@@ -9,7 +9,6 @@
       "files": ["*.vue", "**/*.vue", "*.scss", "**/*.scss", "*.css", "**/*.css"],
       "rules": {
         "color-hex-length": "long",
-        "max-empty-lines": 1,
         "block-no-empty": null,
         "selector-class-pattern": null,
         "no-empty-source": null,

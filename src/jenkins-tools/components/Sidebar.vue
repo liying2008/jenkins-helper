@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Component } from 'vue'
-import { h, ref } from 'vue'
-import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
+import type { Component } from 'vue'
 import { AirplaneOutline, PlanetOutline } from '@vicons/ionicons5'
+import { NIcon } from 'naive-ui'
+import { h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { t } from '~/libs/extension'
 

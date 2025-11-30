@@ -2,8 +2,8 @@ const stashBtnId = 'jenkins-helper-stash-parameters'
 const recoverBtnId = 'jenkins-helper-recover-parameters'
 
 const strings = {
-  stashParameters: browser.i18n.getMessage('content_stashParameters'),
-  recoverParameters: browser.i18n.getMessage('content_recoverParameters'),
+  stashParameters: chrome.i18n.getMessage('content_stashParameters'),
+  recoverParameters: chrome.i18n.getMessage('content_recoverParameters'),
 }
 
 function createStashBtnForBuildPage() {

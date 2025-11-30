@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
-import { Tools } from '~/libs/tools'
-import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
-import { JenkinsBuild } from '~/libs/jenkins/build'
-import { t } from '~/libs/extension'
+import { computed, ref, watch } from 'vue'
 import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
-import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
+import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
 import { getRoot } from '~/contentScripts/libs/app-dom'
+import { t } from '~/libs/extension'
 import { fetch2 } from '~/libs/fetch2'
+import { JenkinsBuild } from '~/libs/jenkins/build'
+import { Tools } from '~/libs/tools'
 
 const props = defineProps<{
   visible: boolean

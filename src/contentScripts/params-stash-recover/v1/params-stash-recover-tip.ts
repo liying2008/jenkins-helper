@@ -2,8 +2,8 @@ const stashTipId = 'jenkins-helper-stash-tip'
 const recoverTipId = 'jenkins-helper-recover-tip'
 
 const strings = {
-  stashTipOnJenkinsPage: browser.i18n.getMessage('content_stashTipOnJenkinsPage'),
-  recoverTipOnJenkinsPage: browser.i18n.getMessage('content_recoverTipOnJenkinsPage'),
+  stashTipOnJenkinsPage: chrome.i18n.getMessage('content_stashTipOnJenkinsPage'),
+  recoverTipOnJenkinsPage: chrome.i18n.getMessage('content_recoverTipOnJenkinsPage'),
 }
 
 export function addStashTipOnPage(container: HTMLElement | null) {
