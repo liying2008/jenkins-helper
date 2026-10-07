@@ -306,7 +306,7 @@ async function processSingleUrl(url: string) {
         const allProcesses = (data.jobs as JenkinsView[]).map((job) => getJobStatsByUrl(job.url))
         const result = await Promise.all(allProcesses)
         console.log('result', result)
-        if (result.find((item) => item === false) === undefined) {
+        if (!result.some((item) => item === false)) {
           // 所有Job配置都读取成功
           // no op
         } else {
@@ -697,9 +697,9 @@ function getParamsNode(rootNode: Element) {
     margin-top: 24px;
 
     .jobs-table-url {
-      text-decoration-line: none;
       word-break: break-all;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-decoration-line: none;
     }
 
     .pre-line {

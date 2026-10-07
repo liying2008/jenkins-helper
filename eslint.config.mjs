@@ -1,7 +1,21 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu(
-  { vue: true, typescript: true },
+  {
+    stylistic: {
+      indent: 2,
+      quotes: 'single',
+      braceStyle: '1tbs',
+    },
+
+    /** TypeScript and Vue are autodetected, you can also explicitly enable them: */
+    typescript: true,
+    vue: true,
+
+    /** Disable jsonc and yaml support */
+    jsonc: false,
+    yaml: false,
+  },
   {
     // Remember to specify the file glob here, otherwise it might cause the vue plugin to handle non-vue files
     files: ['**/*.vue'],
@@ -48,6 +62,7 @@ export default antfu(
       'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
       'ts/no-unused-vars': 'warn',
       'style/arrow-parens': ['error', 'always'],
+      'e18e/prefer-object-has-own': 'off',
     },
   },
 )

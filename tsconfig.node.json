@@ -5,7 +5,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true,
+    "outDir": "./node_modules/.tmp/node-build",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
   },
   "include": [
     "vite.config.ts",

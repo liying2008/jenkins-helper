@@ -4,6 +4,7 @@
     "jsx": "preserve",
     "lib": ["DOM", "ESNext", "DOM.Iterable"],
     "useDefineForClassFields": true,
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "module": "ESNext",
     /* Bundler mode */
@@ -14,6 +15,7 @@
     "resolveJsonModule": true,
     "types": [
       "vite/client",
+      "@crxjs/vite-plugin/client",
       "chrome",
       "naive-ui/volar"
     ],
@@ -30,8 +32,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
   },
   "references": [{ "path": "./tsconfig.node.json" }],
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }

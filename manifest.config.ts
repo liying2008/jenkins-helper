@@ -1,5 +1,5 @@
 import { defineManifest } from '@crxjs/vite-plugin'
-import pkg from './package.json'
+import pkg from './package.json' with { type: 'json' }
 
 export function getManifest(mode: string) {
   const productionMode = mode === 'production'
@@ -61,6 +61,7 @@ export function getManifest(mode: string) {
       'notifications',
       'tabs',
       'downloads',
+      'contentSettings',
     ],
     host_permissions: [
       'http://*/*',

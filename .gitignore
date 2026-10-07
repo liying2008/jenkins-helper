@@ -17,10 +17,6 @@ src/auto-imports.d.ts
 src/components.d.ts
 .eslintrc-auto-import.json
 *.tsbuildinfo
-vite.config.d.ts
-vite.config.js
-manifest.config.d.ts
-manifest.config.js
 
 # Log files
 npm-debug.log*

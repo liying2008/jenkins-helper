@@ -9,10 +9,10 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import zip from 'vite-plugin-zip-pack'
-import { getManifest } from './manifest.config'
-import { name, version } from './package.json'
+import { getManifest } from './manifest.config.ts'
+import pkg from './package.json' with { type: 'json' }
 
-const r = (...args: string[]) => resolve(__dirname, ...args)
+const r = (...args: string[]) => resolve(import.meta.dirname, ...args)
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       crx({ manifest: getManifest(mode) }),
-      zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
+      zip({ outDir: 'release', outFileName: `crx-${pkg.name}-${pkg.version}.zip` }),
       AutoImport({
         imports: [
           {

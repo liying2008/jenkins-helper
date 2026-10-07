@@ -14,8 +14,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showOfflineNodes: true,
-  disabled: false,
 })
 
 const emit = defineEmits<{
