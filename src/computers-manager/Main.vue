@@ -453,7 +453,7 @@ function onThresholdValueCancel() {
   padding: 20px 30px;
 
   .form-card {
-    .n-card__content {
+    .n-card-content {
       padding: 10px 16px;
       padding-bottom: 6px;
     }

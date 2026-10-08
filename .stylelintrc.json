@@ -13,7 +13,8 @@
         "selector-class-pattern": null,
         "no-empty-source": null,
         "custom-property-pattern": null,
-        "declaration-block-no-redundant-longhand-properties": null
+        "declaration-block-no-redundant-longhand-properties": null,
+        "property-no-deprecated": null
       }
     }
   ]

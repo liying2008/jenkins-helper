@@ -181,7 +181,7 @@ function copyBuiltOn() {
 .info-block {
   padding: 4px 10px;
 
-  :deep(.n-card__content) {
+  :deep(.n-card-content) {
     padding: 0;
   }
 

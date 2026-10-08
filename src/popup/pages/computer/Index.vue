@@ -341,7 +341,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
     .card {
       margin-bottom: 8px;
 
-      .n-card__content {
+      .n-card-content {
         padding: 0;
       }
 
