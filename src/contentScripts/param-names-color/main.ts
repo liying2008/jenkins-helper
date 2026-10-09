@@ -15,12 +15,12 @@ export function enable(tintingColor: string) {
   let table = isBuildPage() as HTMLElement | null
   if (table != null) {
     currentPage = PAGE_BUILD
-    tintParamNames(table, tintingColor)
+    tintParamNames(table, tintingColor, false)
   } else {
     table = isParametersPage() as HTMLElement | null
     if (table != null) {
       currentPage = PAGE_PARAMETERS
-      tintParamNames(table, tintingColor)
+      tintParamNames(table, tintingColor, true)
     }
   }
   return table !== null
@@ -30,32 +30,26 @@ export function enable(tintingColor: string) {
  * 当前页面是否是 Build 页面 或 Rebuild 页面
  */
 function isBuildPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/div[@class='parameters']
-  const selector = 'body#jenkins div#main-panel form div.parameters'
-  const element = document.querySelector(selector)
-  // console.log('isBuildPage', element)
-  return element
+  const element = document.querySelector('body#jenkins[data-model-type="hudson.model.ParametersDefinitionProperty"]')
+  if (!element) {
+    return null
+  }
+  return element.querySelector('div#main-panel')
 }
 
 /**
  * 当前页面是否是 参数 页面
  */
 function isParametersPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']/div[contains(@class,"pane-content")]
-  const selector = 'body#jenkins div#main-panel div.row div.pane-content'
-  const element = document.querySelector(selector)
-  // console.log('isParametersPage', element)
-  if (element == null) {
+  let element = document.querySelector('body#jenkins[data-model-type="hudson.model.ParametersAction"]')
+  if (!element) {
+    element = document.querySelector('')
+  }
+  if (!element) {
     return null
   }
 
-  const div = element.querySelector('div.tr')
-  if (div) {
-    // 新版本Jenkins页面
-    return element
-  }
-  // 老版本Jenkins页面，无需处理，直接返回 null
-  return null
+  return element.querySelector('div#main-panel')
 }
 
 /**
@@ -63,9 +57,24 @@ function isParametersPage() {
  * @param table 参数表格
  * @param tintingColor 颜色
  */
-function tintParamNames(table: HTMLElement, tintingColor: string) {
-  const paramNameElems = table.querySelectorAll('div.tr div.setting-name')
-  const boolParamNameElems = table.querySelectorAll('div.tr label.setting-checkbox')
+function tintParamNames(table: HTMLElement, tintingColor: string, isParametersPage: boolean) {
+  let paramNameElems = table.querySelectorAll('div.tr div.jenkins-form-label')
+  if (paramNameElems.length === 0) {
+    paramNameElems = table.querySelectorAll('div.tr div.setting-name')
+  }
+
+  let boolParamNameElems: NodeListOf<Element>
+  if (isParametersPage) {
+    boolParamNameElems = table.querySelectorAll('div div > span.jenkins-checkbox label')
+    if (boolParamNameElems.length === 0) {
+      boolParamNameElems = table.querySelectorAll('div.tr div > label.setting-checkbox')
+    }
+  } else {
+    boolParamNameElems = table.querySelectorAll('div.tr div[name="parameter"] > span.jenkins-checkbox label')
+    if (boolParamNameElems.length === 0) {
+      boolParamNameElems = table.querySelectorAll('div.tr div[name="parameter"] > label')
+    }
+  }
 
   const paramNameElemsArray = Array.from(paramNameElems)
   paramNameElemsArray.push(...Array.from(boolParamNameElems))

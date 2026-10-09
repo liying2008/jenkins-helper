@@ -1,5 +1,6 @@
 import type { Fetch2Options } from '~/libs/fetch2'
 import type { Enc } from '~/models/common'
+import type { JenkinsToken } from '~/models/option'
 import { fetch2 } from '~/libs/fetch2'
 import { StorageService } from '~/libs/storage'
 import { addZeroForSingleDigit } from './common'
@@ -38,7 +39,7 @@ export class Tools {
     const options = await StorageService.getOptions()
     const jenkinsTokens = options.jenkinsTokens
     // console.log('jenkinsTokens', jenkinsTokens);
-    let token
+    let token: JenkinsToken | null = null
     for (let i = 0; i < jenkinsTokens.length; i++) {
       const currentToken = jenkinsTokens[i]
       if (!currentToken.url || !currentToken.username || !currentToken.token) {
