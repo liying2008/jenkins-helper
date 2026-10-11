@@ -1,8 +1,7 @@
 import type { ContentFeatures, ContentResp } from '~/models/content-message'
 import { CMD_GET_CONTENT_FEATURES, ContentMessage } from '~/models/content-message'
 import { enableParamNamesColor } from './param-names-color'
-import { enableParamsStashAndRecoverV1 } from './params-stash-recover/v1'
-import { enableParamsStashAndRecoverV2 } from './params-stash-recover/v2'
+import { enableParamsStashAndRecover } from './params-stash-recover'
 
 export function inject() {
   const message = new ContentMessage(CMD_GET_CONTENT_FEATURES)
@@ -18,11 +17,7 @@ export function inject() {
 
     if (data.enableParamsStashAndRecover) {
       // 使能 参数暂存&恢复 功能
-      const ok = enableParamsStashAndRecoverV1()
-      // console.log('content-script::contentenableParamsStashAndRecoverV1:ok', ok)
-      if (!ok) {
-        enableParamsStashAndRecoverV2()
-      }
+      enableParamsStashAndRecover()
     }
 
     if (data.enableParamNamesColor) {

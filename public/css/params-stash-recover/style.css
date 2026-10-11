@@ -1,0 +1,113 @@
+/* ========== 外层容器：一排紧凑显示 ========== */
+.jk-button-container {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;                    /* 按钮之间紧凑间距 */
+    flex-wrap: nowrap;
+}
+
+/* ========== 按钮基础样式：明显的可点击特征 ========== */
+.jk-text-btn {
+    /* 布局 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3em;
+
+    /* 文字 */
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    line-height: 1;
+
+    /* 尺寸 - 紧凑 */
+    padding: 0.4rem 0.75rem;
+
+    /* 明显的可点击特征：浅色背景 + 边框 + 圆角 */
+    background-color: #ffffff;
+    border: 1px solid #c8d2dc;
+    border-radius: 6px;
+
+    /* 阴影 - 轻微立体感 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),
+                0 1px 1px rgba(0, 0, 0, 0.03);
+
+    /* 交互 */
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 悬停：颜色加深、边框更明显、阴影加深、轻微上浮 */
+.jk-text-btn:hover {
+    background-color: #f8fafc;
+    border-color: #a8b8c8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08),
+                0 1px 2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+}
+
+/* 键盘焦点：清晰可见 */
+.jk-text-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* 激活：按下时下沉 + 内阴影 */
+.jk-text-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== Stash 按钮 (蓝色调) ========== */
+.jk-text-btn.jk-stash {
+    color: #1e4f8a;
+    border-color: #b8cbe0;
+    background-color: #f5f9ff;
+}
+.jk-text-btn.jk-stash:hover {
+    color: #0a3157;
+    border-color: #8fb0d0;
+    background-color: #eaf3ff;
+}
+.jk-text-btn.jk-stash:active {
+    color: #06223b;
+    background-color: #e0ecfb;
+}
+
+/* ========== Recover 按钮 (青绿色调) ========== */
+.jk-text-btn.jk-recover {
+    color: #0d7a6b;
+    border-color: #b0d8d2;
+    background-color: #f2fbf9;
+}
+.jk-text-btn.jk-recover:hover {
+    color: #085c50;
+    border-color: #85c4ba;
+    background-color: #e5f7f4;
+}
+.jk-text-btn.jk-recover:active {
+    color: #044239;
+    background-color: #d9f0ec;
+}
+
+/* 图标微调 */
+.jk-text-btn .jk-icon {
+    font-size: 1em;
+    line-height: 1;
+    opacity: 0.9;
+}
+
+/* ========== 窄屏适配：字体和内边距略缩 ========== */
+@media (max-width: 400px) {
+    .jk-text-btn {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.55rem;
+    }
+    .jk-button-container {
+        gap: 4px;
+    }
+}

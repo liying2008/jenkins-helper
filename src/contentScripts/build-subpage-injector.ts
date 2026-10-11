@@ -36,13 +36,6 @@ export function inject() {
 
     document.body.appendChild(container)
 
-    // TODO: Check IT!!
-    // <link rel="stylesheet" href="chrome-extension://{id}/dist/contentScripts/style.css">
-    const styleEl = document.createElement('link')
-    styleEl.setAttribute('rel', 'stylesheet')
-    styleEl.setAttribute('href', chrome.runtime.getURL('dist/contentScripts/style.css'))
-    document.head.appendChild(styleEl)
-
     const app = createApp(App, {
       buildUrl,
     })

@@ -1,119 +1,99 @@
-import type { StashedParams } from '../models/param-type'
+import type { StashedParams } from './models/param-type'
 import type { ContentResp } from '~/models/content-message'
 import { CMD_RECOVER_PARAMS, CMD_STASH_PARAMS, ContentMessage } from '~/models/content-message'
-import { addBtnForParamsPage, addBtnsForBuildPage } from './params-stash-recover-btn'
+import { addBtns } from './params-stash-recover-btn'
 import { addRecoverTipOnPage, addStashTipOnPage } from './params-stash-recover-tip'
 
 const PAGE_BUILD = 'build'
 const PAGE_PARAMETERS = 'parameters'
+const PAGE_REBUILD = 'rebuild'
+
+type PageType = typeof PAGE_BUILD | typeof PAGE_PARAMETERS | typeof PAGE_REBUILD
 
 const GREEN_COLOR = '#c5f5c5'
 const RED_COLOR = '#ffb6b6'
 
 /**
- * 当前所在页面
- */
-let currentPage = PAGE_BUILD
-
-/**
  * 启用 参数暂存&恢复 功能
- *
- * @returns true: 使能成功，false: 使能失败
  */
 export function enable() {
-  let table = isBuildPage() as HTMLElement | null
-  if (table != null) {
-    currentPage = PAGE_BUILD
-    addStashAndRecoverButtons(table)
-  } else {
-    table = isParametersPage() as HTMLElement | null
-    if (table != null) {
-      currentPage = PAGE_PARAMETERS
-      addStashAndRecoverButtons(table)
-    }
+  let mainPanel = isBuildPage() as HTMLElement | null
+  if (mainPanel != null) {
+    addStashAndRecoverButtons(mainPanel, PAGE_BUILD)
+    return
   }
-  return table !== null
+  mainPanel = isParametersPage() as HTMLElement | null
+  if (mainPanel != null) {
+    addStashAndRecoverButtons(mainPanel, PAGE_PARAMETERS)
+    return
+  }
+  mainPanel = isRebuildPage() as HTMLElement | null
+  if (mainPanel != null) {
+    addStashAndRecoverButtons(mainPanel, PAGE_REBUILD)
+  }
 }
 
 /**
- * 当前页面是否是 Build 页面 或 Rebuild 页面
+ * 当前页面是否是 Build 页面
  */
 function isBuildPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']/form/div[@class='parameters']
-  const selector = 'body#jenkins div#main-panel form div.parameters'
-  const element = document.querySelector(selector)
-  // console.log('isBuildPage', element)
-  return element
+  const element = document.querySelector('body#jenkins[data-model-type="hudson.model.ParametersDefinitionProperty"]')
+  if (!element) {
+    return null
+  }
+  return element.querySelector('div#main-panel')
 }
 
 /**
  * 当前页面是否是 参数 页面
  */
 function isParametersPage() {
-  // XPATH: //body[@id='jenkins']//div[@id='main-panel']//div[@class='row']/div[contains(@class,"pane-content")]
-  const selector = 'body#jenkins div#main-panel div.row div.pane-content'
-  const element = document.querySelector(selector)
-  // console.log('isParametersPage', element)
-  if (element == null) {
+  const element = document.querySelector('body#jenkins[data-model-type="hudson.model.ParametersAction"]')
+  if (!element) {
     return null
   }
+  return element.querySelector('div#main-panel')
+}
 
-  const div = element.querySelector('div.tr')
-  if (div) {
-    // 新版本Jenkins页面
-    return element
+/**
+ * 当前页面是否是 Rebuild 页面（Rebuilder插件提供）
+ */
+function isRebuildPage() {
+  const element = document.querySelector('body#jenkins[data-model-type="com.sonyericsson.rebuild.RebuildAction"]')
+  if (!element) {
+    return null
   }
-  // 老版本Jenkins页面，无需处理，直接返回 null
-  return null
+  return element.querySelector('div#main-panel')
 }
 
 /**
  * 添加 暂存参数 和 恢复参数 的按钮
  */
-function addStashAndRecoverButtons(table: HTMLElement) {
-  if (currentPage === PAGE_BUILD) {
-    // 构建页面 或 Rebuild 页面
-    const tBodies = table.querySelectorAll('div.tr')
-    const size = tBodies.length
-    if (size === 0) {
-      return
-    }
-    console.log('currentPage', currentPage)
-    const lastTBody = tBodies[size - 1]
-    const btnTd = lastTBody.querySelector('div') as HTMLElement | null
-    if (!btnTd) {
-      return
-    }
-    // add two buttons
-    addBtnsForBuildPage(btnTd)
-    // bind onClick listeners
-    bindEvent(table)
-  } else if (currentPage === PAGE_PARAMETERS) {
-    // 参数页面
-    // add stash buttons
-    addBtnForParamsPage(table)
-    // bind onClick listeners
-    bindEvent(table)
-  }
+function addStashAndRecoverButtons(mainPanel: HTMLElement, pageType: PageType) {
+  console.log('[params-stash-recover] pageType is', pageType)
+  // add two buttons
+  addBtns(mainPanel)
+  // bind onClick listeners
+  bindEvent(mainPanel, pageType)
 }
 
 /**
  * 绑定事件
  */
-function bindEvent(table: HTMLElement) {
+function bindEvent(mainPanel: HTMLElement, pageType: PageType) {
   // 添加 暂存参数 的监听事件
-  const stashBtn = table.querySelector('#jenkins-helper-stash-parameters')
+  const stashBtn = mainPanel.querySelector('#jenkins-helper-stash-parameters')
   stashBtn?.addEventListener('click', () => {
     // 暂存的参数
     let stashedParams: StashedParams | null = null
     // 不能被暂存的参数
     let cannotStashed: string[] | null = null
-    if (currentPage === PAGE_BUILD) {
-      const params = getBuildPageParameters(table)
+    if (pageType === PAGE_BUILD) {
+      const params = getBuildPageParameters(mainPanel)
       stashedParams = params.stashedParams
       cannotStashed = params.cannotStashed
-    } else if (currentPage === PAGE_PARAMETERS) {
-      const params = getParametersPageParameters(table)
+    } else if (pageType === PAGE_PARAMETERS) {
+      const params = getParametersPageParameters(mainPanel)
       stashedParams = params.stashedParams
       cannotStashed = params.cannotStashed
     }
@@ -128,21 +108,21 @@ function bindEvent(table: HTMLElement) {
   })
 
   // 添加 恢复参数 的监听事件
-  const recoverBtn = table.querySelector('#jenkins-helper-recover-parameters')
+  const recoverBtn = mainPanel.querySelector('#jenkins-helper-recover-parameters')
   recoverBtn?.addEventListener('click', () => {
-    recoverParameters(table)
+    recoverParameters(mainPanel)
   })
 }
 
 /**
- * 从 Build页面 或 Rebuild页面 获取当前填写的参数
+ * 从 Build页面 获取当前填写的参数
  */
-function getBuildPageParameters(table: HTMLElement) {
+function getBuildPageParameters(mainPanel: HTMLElement) {
   // 暂存的参数
   const stashedParams: StashedParams = {}
   // 不能被暂存的参数
   const cannotStashed: string[] = []
-  const parameters = table.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
+  const parameters = mainPanel.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
   const size = parameters.length
   for (let i = 0; i < size; i++) {
     const parameter = parameters[i]
@@ -195,7 +175,7 @@ function getBuildPageParameters(table: HTMLElement) {
   } // end for
 
   // 显示说明文本
-  addStashTipOnPage(table.parentElement)
+  addStashTipOnPage(mainPanel)
   return {
     stashedParams,
     cannotStashed,
@@ -205,27 +185,30 @@ function getBuildPageParameters(table: HTMLElement) {
 /**
  * 从 参数页面 获取当前填写的参数
  */
-function getParametersPageParameters(table: HTMLElement) {
+function getParametersPageParameters(mainPanel: HTMLElement) {
   // 暂存的参数
   const stashedParams: StashedParams = {}
   // 不能被暂存的参数
   const cannotStashed: string[] = []
-  const settingMains = table.querySelectorAll('div.tr div.setting-main')
+  const settingMains = mainPanel.querySelectorAll('div.setting-main')
   const size = settingMains.length
 
   for (let i = 0; i < size; i++) {
     const settingMain = settingMains[i]
-    const settingName = settingMain.previousElementSibling
+    let formLabel = settingMain.parentElement?.querySelector('div.jenkins-form-label')
+    if (!formLabel) {
+      formLabel = settingMain.parentElement?.querySelector('div.setting-name')
+    }
 
-    if (!settingName || !settingName.classList.contains('setting-name')) {
+    if (!formLabel) {
       continue
     }
-    const pname = settingName.textContent!
-    // console.log('pname', pname)
+    const pname = formLabel.textContent!
+    console.log('pname', pname)
     const children = settingMain.children
     // console.log('children', children)
     if (children.length === 0) {
-      console.log('getParametersPageParameters0', `${pname} can not be stashed!`)
+      console.log('no children:', `${pname} can not be stashed!`)
       // 标记为红色
       settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
       cannotStashed.push(pname)
@@ -234,24 +217,46 @@ function getParametersPageParameters(table: HTMLElement) {
       const param = children[0] as HTMLInputElement
       const type = param.type
       const name = param.name
-      if (param.tagName !== 'INPUT' && param.tagName !== 'TEXTAREA') {
-        console.log('getParametersPageParameters1', `${pname} can not be stashed!`)
-        // 标记为红色
-        settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
-        cannotStashed.push(pname)
-        continue
-      } else if (param.type === 'password') {
-        console.log('getParametersPageParameters2', `${pname} can not be stashed!`)
+      let value: string | boolean = ''
+      if (param.tagName === 'INPUT' || param.tagName === 'TEXTAREA') {
+        if (param.type === 'password') {
+          console.log('param type is password:', `${pname} can not be stashed!`)
+          // 标记为红色
+          settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+          cannotStashed.push(pname)
+          continue
+        }
+        value = param.value
+        if (param.type === 'checkbox') {
+          value = param.checked
+        }
+      } else if (param.tagName === 'DIV') {
+        if (param.classList.contains('jenkins-quote')) {
+          const copyButton = param.querySelector('button.copy-button')
+          if (!copyButton) {
+            console.log('param no copy button:', `${pname} can not be stashed!`)
+            // 标记为红色
+            settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+            cannotStashed.push(pname)
+            continue
+          }
+          value = copyButton.getAttribute('text') || ''
+        } else {
+          console.log('unsupported div element:', `${pname} can not be stashed!`)
+          // 标记为红色
+          settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+          cannotStashed.push(pname)
+          continue
+        }
+      } else {
+        console.log('unsupported tagName:', `${pname} can not be stashed!`)
         // 标记为红色
         settingMain.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
         cannotStashed.push(pname)
         continue
       }
-      let value: string | boolean = param.value
-      if (param.type === 'checkbox') {
-        value = param.checked
-      }
-      console.log('param', `PNAME=${pname}, tagName=${param.tagName}, type=${type}, name=${name}, value=${value}`)
+
+      console.log('param:', `PNAME=${pname}, tagName=${param.tagName}, type=${type}, name=${name}, value=${value}`)
 
       // 标记为绿色
       settingMain.parentElement?.setAttribute('style', `background: ${GREEN_COLOR}`)
@@ -264,7 +269,7 @@ function getParametersPageParameters(table: HTMLElement) {
   } // end for
 
   // 显示说明文本
-  addStashTipOnPage(table.parentElement)
+  addStashTipOnPage(mainPanel)
   return {
     stashedParams,
     cannotStashed,
@@ -292,7 +297,7 @@ function saveParameters(stashedParams: StashedParams) {
 /**
  * 从上次暂存中恢复参数
  */
-function recoverParameters(table: HTMLElement) {
+function recoverParameters(mainPanel: HTMLElement) {
   const message = new ContentMessage(CMD_RECOVER_PARAMS)
 
   chrome.runtime.sendMessage(message).then((resp: ContentResp) => {
@@ -303,14 +308,14 @@ function recoverParameters(table: HTMLElement) {
       return
     }
     const params = resp.data
-    if (params === undefined || params === null || Object.keys(params).length < 1) {
+    if (!params || Object.keys(params).length < 1) {
       // 无暂存数据
       alert(chrome.i18n.getMessage('content_noStashedParams'))
       return
     }
     const cannotRecovered: StashedParams = {}
 
-    const parameters = table.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
+    const parameters = mainPanel.querySelectorAll('div.tr div.setting-main div[name="parameter"]')
     const size = parameters.length
 
     for (let i = 0; i < size; i++) {
@@ -374,7 +379,7 @@ function recoverParameters(table: HTMLElement) {
     } // end for
 
     // 显示说明文本
-    addRecoverTipOnPage(table.parentElement)
+    addRecoverTipOnPage(mainPanel)
     console.log('cannotRecovered', cannotRecovered)
     if (Object.keys(cannotRecovered).length > 0) {
       // 有无法恢复的参数
