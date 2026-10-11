@@ -8,7 +8,7 @@ export function inject() {
   const message = new ContentMessage(CMD_GET_CONTENT_FEATURES)
 
   chrome.runtime.sendMessage(message).then((resp: ContentResp<ContentFeatures>) => {
-  // console.log('content-script::resp', resp)
+    // console.log('content-script::resp', resp)
     if (resp.status !== 'ok') {
       console.log('获取 content features 失败！')
       return
@@ -17,7 +17,7 @@ export function inject() {
     const data = resp.data!
 
     if (data.enableParamsStashAndRecover) {
-    // 使能 参数暂存&恢复 功能
+      // 使能 参数暂存&恢复 功能
       const ok = enableParamsStashAndRecoverV1()
       // console.log('content-script::contentenableParamsStashAndRecoverV1:ok', ok)
       if (!ok) {
@@ -26,7 +26,7 @@ export function inject() {
     }
 
     if (data.enableParamNamesColor) {
-    // 使能 参数名称着色 功能
+      // 使能 参数名称着色 功能
       enableParamNamesColor(data.paramNamesColor)
     }
   })
