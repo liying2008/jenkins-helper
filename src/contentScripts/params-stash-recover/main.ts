@@ -10,8 +10,10 @@ const PAGE_REBUILD = 'rebuild'
 
 type PageType = typeof PAGE_BUILD | typeof PAGE_PARAMETERS | typeof PAGE_REBUILD
 
-const GREEN_COLOR = '#c5f5c5'
-const RED_COLOR = '#ffb6b6'
+const GREEN_COLOR = '#bcf5bc80'
+const RED_COLOR = '#ffb6b680'
+
+const UNSUPPORT_INPUT_TYPES = ['password', 'file', 'hidden', 'credentialType', 'text/javascript']
 
 /**
  * 启用 参数暂存&恢复 功能
@@ -128,6 +130,7 @@ function getBuildPageParameters(mainPanel: HTMLElement) {
     const parameter = parameters[i]
     const children = parameter.children
     if (children.length < 1) {
+      // 无 children
       continue
     } else if (children.length < 2) {
       const c0 = children[0] as HTMLInputElement
@@ -135,10 +138,11 @@ function getBuildPageParameters(mainPanel: HTMLElement) {
         continue
       }
       // <input name="name" type="hidden" value="PARAM1">
-      console.log('getBuildPageParameters', `${c0.value} can not be stashed!`)
+      console.log('no value input:', `${c0.value} can not be stashed!`)
       // 标记为红色
       parameter.parentElement?.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
       cannotStashed.push(c0.value)
+      continue
     } else {
       const c0 = children[0] as HTMLInputElement
       const c1 = children[1] as HTMLInputElement
@@ -148,20 +152,58 @@ function getBuildPageParameters(mainPanel: HTMLElement) {
       const pname = c0.value
       const type = c1.type
       const name = c1.name
-      let value: string | boolean = c1.value
-      console.log('param', `PNAME=${pname}, tagName=${c1.tagName}, type=${type}, name=${name}, value=${value}`)
-      console.log('param', `PNAME=${pname}, checked=${c1.checked}`)
 
-      if (type === 'password' || type === 'file' || type === 'hidden' || name === 'credentialType') {
+      if (UNSUPPORT_INPUT_TYPES.includes(type)) {
         // 无法暂存的参数类型
-        console.log('getBuildPageParameters', `${pname} can not be stashed!`)
+        console.log(`unsupported element type ${type}:`, `${pname} can not be stashed!`)
         // 标记为红色
         parameter.parentElement?.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
         cannotStashed.push(pname)
         continue
-      } else if (type === 'checkbox') {
+      }
+
+      let value: string | boolean = ''
+
+      const tagName = c1.tagName
+      if (tagName === 'SPAN') {
+        const c1Children = c1.children
+        if (c1Children.length < 1) {
+          // 无法暂存的参数类型
+          console.log(`no subchildren:`, `${pname} can not be stashed!`)
+          // 标记为红色
+          parameter.parentElement?.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+          cannotStashed.push(pname)
+          continue
+        }
+        const c10 = c1Children[0] as HTMLInputElement
+        if (c10.type === 'checkbox') {
+          // checkbox 特殊处理
+          value = c10.checked
+          console.log('param', `PNAME=${pname}, tagName=${c10.tagName}, type=${c10.type}, value=${value}`)
+        } else {
+          // 无法暂存的参数类型
+          console.log(`unsupported subchildren element type ${c10.type}:`, `${pname} can not be stashed!`)
+          // 标记为红色
+          parameter.parentElement?.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+          cannotStashed.push(pname)
+          continue
+        }
+      } else if (tagName === 'DIV') {
+        // 无法暂存的参数类型
+        console.log(`unsupported tag ${tagName}:`, `${pname} can not be stashed!`)
+        // 标记为红色
+        parameter.parentElement?.parentElement?.setAttribute('style', `background: ${RED_COLOR}`)
+        cannotStashed.push(pname)
+        continue
+      } else {
+        if (type === 'checkbox') {
         // checkbox 特殊处理
-        value = c1.checked
+          value = c1.checked
+          console.log('param', `PNAME=${pname}, tagName=${tagName}, type=${type}, value=${value}`)
+        } else {
+          value = c1.value
+          console.log('param', `PNAME=${pname}, tagName=${tagName}, type=${type}, value=${value}`)
+        }
       }
 
       stashedParams[pname] = {
@@ -204,7 +246,7 @@ function getParametersPageParameters(mainPanel: HTMLElement) {
       continue
     }
     const pname = formLabel.textContent!
-    console.log('pname', pname)
+    // console.log('pname', pname)
     const children = settingMain.children
     // console.log('children', children)
     if (children.length === 0) {
