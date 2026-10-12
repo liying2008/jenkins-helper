@@ -78,7 +78,7 @@ export function getManifest(mode: string) {
     web_accessible_resources: [
       {
         resources: [
-          'css/style.css',
+          'css/params-stash-recover/style.css',
           'img/computer48.png',
           'img/logo.png',
           'img/logo-gray.png',

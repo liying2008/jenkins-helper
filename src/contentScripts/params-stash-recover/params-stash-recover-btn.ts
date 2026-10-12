@@ -83,7 +83,7 @@ function createStashAndRecoverBtns() {
 
 export function addBtns(mainPanel: HTMLElement) {
   // 添加按钮的样式
-  // <link rel="stylesheet" href="chrome-extension://{id}/dist/contentScripts/style.css">
+  // <link rel="stylesheet" href="chrome-extension://{extensionId}/css/params-stash-recover/style.css" type="text/css">
   const styleEl = document.createElement('link')
   styleEl.setAttribute('rel', 'stylesheet')
   styleEl.setAttribute('href', chrome.runtime.getURL('css/params-stash-recover/style.css'))
