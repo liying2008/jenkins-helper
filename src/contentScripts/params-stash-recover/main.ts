@@ -98,6 +98,10 @@ function bindEvent(mainPanel: HTMLElement, pageType: PageType) {
       const params = getParametersPageParameters(mainPanel)
       stashedParams = params.stashedParams
       cannotStashed = params.cannotStashed
+    } else if (pageType === PAGE_REBUILD) {
+      const params = getBuildPageParameters(mainPanel)
+      stashedParams = params.stashedParams
+      cannotStashed = params.cannotStashed
     }
     if (!stashedParams) {
       console.log('获取参数失败')
@@ -117,7 +121,7 @@ function bindEvent(mainPanel: HTMLElement, pageType: PageType) {
 }
 
 /**
- * 从 Build页面 获取当前填写的参数
+ * 从 Build / Rebuild 页面 获取当前填写的参数
  */
 function getBuildPageParameters(mainPanel: HTMLElement) {
   // 暂存的参数
