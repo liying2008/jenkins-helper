@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NewspaperOutline } from '@vicons/ionicons5'
+import { FlowerOutline } from '@vicons/ionicons5'
 import { nextTick, onMounted, ref } from 'vue'
 import BuildInfoModal from '~/contentScripts/views/components/BuildInfoModal.vue'
 import { getMainPanelOffset } from '../libs/build-subpage'
@@ -11,7 +11,7 @@ onMounted(() => {
   const mainPanelOffset = getMainPanelOffset()
   console.log('mainPanelOffset', mainPanelOffset)
   nextTick(() => {
-    wrapper.value!.style.top = `${mainPanelOffset.top + 10}px`
+    wrapper.value!.style.top = `${mainPanelOffset.top + 40}px`
   })
 })
 function showBuildInfo() {
@@ -32,7 +32,7 @@ function showBuildInfo() {
       @click="showBuildInfo"
     >
       <template #icon>
-        <n-icon><NewspaperOutline /></n-icon>
+        <n-icon><FlowerOutline /></n-icon>
       </template>
     </n-button>
 
@@ -47,10 +47,10 @@ function showBuildInfo() {
 .wrapper {
   position: fixed;
   top: 0;
-  right: 20px;
+  right: 0;
   z-index: 200;
   display: flex;
-  margin: 20px;
+  margin: 10px;
   user-select: none;
 }
 </style>
