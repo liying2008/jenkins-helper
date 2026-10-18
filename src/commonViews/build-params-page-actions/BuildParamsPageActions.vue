@@ -1,6 +1,6 @@
 <!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
-import { ArrowBackSharp, ArrowForwardSharp, CloudDownloadSharp, RefreshCircleSharp, SettingsSharp } from '@vicons/ionicons5'
+import { ArrowBackSharp, ArrowForwardSharp, ChevronDownOutline, DownloadOutline, RefreshOutline, SettingsOutline } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { removeEnd } from '~/libs/common'
@@ -19,14 +19,28 @@ const emit = defineEmits<{
 
 const message = useMessage()
 
+const optionKeys = {
+  logWithTimestamps: 'log-with-timestamps',
+}
+
+const options = [
+  { label: 'Download the log with timestamps (Rely on the `Timestamper` plugin)', key: optionKeys.logWithTimestamps },
+]
+
 // 是否禁用下载按钮
 const disableDownload = ref(false)
 
 // 下载日志
-function downloadConsoleLog() {
+function downloadConsoleLog(withTimestamps?: boolean) {
   console.log('buildUrl', props.buildUrl)
-  const downloadUrl = `${props.buildUrl}logText/progressiveText?start=0`
-  const filename = `${props.fullDisplayName} Console Log.log`
+  let downloadUrl = `${props.buildUrl}logText/progressiveText?start=0`
+  let filename = `${props.fullDisplayName} Console Log.log`
+  if (withTimestamps) {
+    // 此功能依赖 Timestamper 插件
+    downloadUrl = `${props.buildUrl}timestamps?time=HH:mm:ss&appendLog`
+    filename = `${props.fullDisplayName} Console Log with timestamps.log`
+  }
+
   if (browser && chrome.downloads) {
     // 使用 浏览器扩展 功能下载文件
     console.log('download file by browser')
@@ -53,6 +67,12 @@ function downloadConsoleLog() {
     a.download = filename
     a.href = downloadUrl
     a.click()
+  }
+}
+
+function handleDownloadDropdownSelect(key: string | number) {
+  if (key === optionKeys.logWithTimestamps) {
+    downloadConsoleLog(true)
   }
 }
 
@@ -112,16 +132,36 @@ function rebuild() {
     <!-- 下载日志 -->
     <n-button
       type="default"
-      title="Download Console Log"
+      class="no-right-round-corner"
+      title="Download the console log"
       :disabled="disableDownload"
-      @click="downloadConsoleLog"
+      @click="downloadConsoleLog(false)"
     >
       <template #icon>
         <n-icon>
-          <CloudDownloadSharp />
+          <DownloadOutline />
         </n-icon>
       </template>
     </n-button>
+    <n-dropdown
+      trigger="hover"
+      :options="options"
+      :disabled="disableDownload"
+      @select="handleDownloadDropdownSelect"
+    >
+      <n-button
+        type="default"
+        class="no-left-round-corner no-border-left thin-btn"
+        :disabled="disableDownload"
+      >
+        <template #icon>
+          <n-icon>
+            <ChevronDownOutline />
+          </n-icon>
+        </template>
+      </n-button>
+    </n-dropdown>
+
     <!-- 打开Job配置页面 -->
     <n-button
       type="default"
@@ -131,7 +171,7 @@ function rebuild() {
     >
       <template #icon>
         <n-icon>
-          <SettingsSharp />
+          <SettingsOutline />
         </n-icon>
       </template>
     </n-button>
@@ -139,12 +179,12 @@ function rebuild() {
     <n-button
       type="default"
       class="rebuild-btn"
-      title="Rebuild"
+      title="Rebuild (Rely on the `Rebuilder` plugin)"
       @click="rebuild"
     >
       <template #icon>
         <n-icon size="20">
-          <RefreshCircleSharp />
+          <RefreshOutline />
         </n-icon>
       </template>
     </n-button>
@@ -157,6 +197,25 @@ function rebuild() {
 
   .spacing {
     flex: 1;
+  }
+
+  .no-right-round-corner {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .no-left-round-corner {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .no-border-left {
+    border-left: hidden;
+  }
+
+  .thin-btn {
+    min-width: 0;
+    padding: 0 4px;
   }
 
   .go-to-configure-btn {

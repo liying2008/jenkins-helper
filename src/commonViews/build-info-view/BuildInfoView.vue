@@ -186,6 +186,7 @@ function copyBuiltOn() {
       <n-gi
         cols="12"
         class="info-col"
+        style="color: var(--jk-aborted)"
       >
         <n-icon
           size="16"
