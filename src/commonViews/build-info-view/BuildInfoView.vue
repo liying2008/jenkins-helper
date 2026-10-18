@@ -1,7 +1,8 @@
 <!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import type { DisplayedBuildCause } from '~/libs/jenkins/build'
-import { ArrowForwardCircleSharp, CopyOutline, FlagSharp, FlashSharp, TimeSharp } from '@vicons/ionicons5'
+import type { InterruptionCause } from '~/models/jenkins/build'
+import { ArrowForwardCircleSharp, CopyOutline, FlagSharp, HammerSharp, StopSharp, TimeSharp } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import { watch } from 'vue'
@@ -15,6 +16,7 @@ interface Props {
   buildResult: string
   buildTime: string
   causes: DisplayedBuildCause[]
+  interruptionCauses: InterruptionCause[]
   darkMode: boolean
 }
 
@@ -156,7 +158,7 @@ function copyBuiltOn() {
           size="16"
           title="Build Cause"
         >
-          <FlashSharp />
+          <HammerSharp />
         </n-icon>
         <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
         <n-button
@@ -172,6 +174,26 @@ function copyBuiltOn() {
             <ArrowForwardCircleSharp />
           </n-icon>
         </n-button>
+      </n-gi>
+    </n-grid>
+    <!-- Interruption Causes -->
+    <n-grid
+      v-for="(cause, index) in interruptionCauses"
+      :key="index"
+      :cols="1"
+      class="info-row"
+    >
+      <n-gi
+        cols="12"
+        class="info-col"
+      >
+        <n-icon
+          size="16"
+          title="Interruption Cause"
+        >
+          <StopSharp />
+        </n-icon>
+        <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
       </n-gi>
     </n-grid>
   </n-card>

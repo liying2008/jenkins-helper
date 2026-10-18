@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
+import type { InterruptionCause } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { computed, ref, watch } from 'vue'
@@ -50,6 +51,7 @@ const buildTime = ref('')
 const builtOn = ref('')
 const causes = ref<DisplayedBuildCause[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
+const interruptionCauses = ref<InterruptionCause[]>([])
 
 const editableVisible = computed({
   get() {
@@ -81,7 +83,8 @@ function getParameters() {
 
 function getParametersByUrl(_url: string) {
   status.value = 1
-  const jsonUrl = `${_url}/api/json`
+  const encodeParam = encodeURI('*,actions[*,causes[*],parameters[*],environment[*],envMap[*]]')
+  const jsonUrl = `${_url}/api/json?tree=${encodeParam}`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
     fetch2(jsonUrl, header).then((res) => {
@@ -104,6 +107,7 @@ function getParametersByUrl(_url: string) {
       // console.log('actions', actions)
       parameters.value = JenkinsBuild.getBuildParametersFromActions(actions)
       causes.value = JenkinsBuild.getBuildCausesFromActions(actions, data.url, data.fullDisplayName)
+      interruptionCauses.value = JenkinsBuild.getInterruptionCausesFromActions(actions)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
@@ -148,7 +152,7 @@ function nextBuild() {
       class="modal-card"
       title="构建参数"
       :bordered="false"
-      size="huge"
+      size="medium"
       role="dialog"
       closable
       preset="card"
@@ -165,6 +169,7 @@ function nextBuild() {
           :build-result="result"
           :build-time="buildTime"
           :causes="causes"
+          :interruption-causes="interruptionCauses"
           :dark-mode="false"
         />
 

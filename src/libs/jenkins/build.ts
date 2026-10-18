@@ -1,6 +1,6 @@
-import type { Action, BuildCause, BuildParameter, CauseAction, InjectedEnvVars, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
+import type { Action, BuildCause, BuildParameter, CauseAction, InjectedEnvVars, InterruptionAction, InterruptionCause, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { t } from '~/libs/extension'
-import { CAUSE_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
+import { CAUSE_ACTION_CLASS, INTERRUPTION_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
 
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
 
@@ -70,79 +70,87 @@ export class JenkinsBuild {
   static getBuildParametersFromActions(actions: Action[]): DisplayedBuildParameter[] {
     // console.log('actions', actions)
     const parameters: DisplayedBuildParameter[] = []
-    actions.forEach((action) => {
-      if (action._class === PARAMETERS_ACTION_CLASS) {
-        const _parameters = (action as ParametersAction).parameters
-        _parameters.forEach((parameter) => {
-          const _class = parameter._class
-          const param = {
-            _class: parameter._class,
-            hint: '',
-            name: parameter.name,
-            value: parameter.value,
-          }
-          // 额外处理几个特殊类型的参数
-          if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
-            // 密码参数
-            param.hint = `<${strings.passwordParameter}>`
-          } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
-            // 凭据参数
-            param.hint = `<${strings.credentialsParameter}>`
-          } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
-            // 文件参数
-            param.hint = `<${strings.fileParameter}>`
-          } else if (_class === 'hudson.model.RunParameterValue') {
-            // 运行时参数
-            param.value = `${parameter.jobName} #${parameter.number}`
-          }
-          parameters.push(param)
-        })
+    const action = actions.find((action) => action._class === PARAMETERS_ACTION_CLASS)
+    if (!action) {
+      return parameters
+    }
+    const _parameters = (action as ParametersAction).parameters
+    _parameters.forEach((parameter) => {
+      const _class = parameter._class
+      const param = {
+        _class: parameter._class,
+        hint: '',
+        name: parameter.name,
+        value: parameter.value,
       }
+      // 额外处理几个特殊类型的参数
+      if (_class === 'hudson.model.PasswordParameterValue' && param.value === undefined) {
+        // 密码参数
+        param.hint = `<${strings.passwordParameter}>`
+      } else if (_class === 'com.cloudbees.plugins.credentials.CredentialsParameterValue' && param.value === undefined) {
+        // 凭据参数
+        param.hint = `<${strings.credentialsParameter}>`
+      } else if (_class === 'hudson.model.FileParameterValue' && param.value === undefined) {
+        // 文件参数
+        param.hint = `<${strings.fileParameter}>`
+      } else if (_class === 'hudson.model.RunParameterValue') {
+        // 运行时参数
+        param.value = `${parameter.jobName} #${parameter.number}`
+      }
+      parameters.push(param)
     })
-
     return parameters
   }
 
   static getBuildCausesFromActions(actions: Action[], url: string, fullDisplayName: string): DisplayedBuildCause[] {
     // console.log('actions', actions)
     const causes: DisplayedBuildCause[] = []
-    actions.forEach((action) => {
-      if (action._class === CAUSE_ACTION_CLASS) {
-        const _causes = (action as CauseAction).causes
-        _causes.forEach((cause) => {
-          const shortDescription = cause.shortDescription
-          let fullUpstreamUrl = ''
-          if (cause.upstreamUrl && cause.upstreamBuild) {
-            const rootUrl = JenkinsBuild.getJenkinsRootUrl(url, fullDisplayName)
-            if (rootUrl) {
-              fullUpstreamUrl = `${rootUrl}/${cause.upstreamUrl}${cause.upstreamBuild}/`
-            }
-          }
-          causes.push({
-            _class: cause._class,
-            shortDescription,
-            fullUpstreamUrl,
-          })
-        })
+    const action = actions.find((action) => action._class === CAUSE_ACTION_CLASS)
+    if (!action) {
+      return causes
+    }
+    const _causes = (action as CauseAction).causes
+    _causes.forEach((cause) => {
+      const shortDescription = cause.shortDescription
+      let fullUpstreamUrl = ''
+      if (cause.upstreamUrl && cause.upstreamBuild) {
+        const rootUrl = JenkinsBuild.getJenkinsRootUrl(url, fullDisplayName)
+        if (rootUrl) {
+          fullUpstreamUrl = `${rootUrl}/${cause.upstreamUrl}${cause.upstreamBuild}/`
+        }
       }
+      causes.push({
+        _class: cause._class,
+        shortDescription,
+        fullUpstreamUrl,
+      })
     })
     return causes
+  }
+
+  static getInterruptionCausesFromActions(actions: Action[]): InterruptionCause[] {
+    // console.log('actions', actions)
+    const action = actions.find((action) => action._class === INTERRUPTION_ACTION_CLASS)
+    if (!action) {
+      return []
+    }
+    return (action as InterruptionAction).causes
   }
 
   static getBuildEnvVarsFromActions(actions: Action[]): DisplayedBuildEnvVar[] {
     // console.log('actions', actions)
     const envVars: DisplayedBuildEnvVar[] = []
-    actions.forEach((action) => {
-      if (action._class === WORKFLOW_ENV_ACTION_CLASS) {
-        const _environment = (action as WorkflowEnvAction).environment
-        for (const name in _environment) {
-          envVars.push({
-            name,
-            value: _environment[name],
-          })
-        }
-      }
-    })
+    const action = actions.find((action) => action._class === WORKFLOW_ENV_ACTION_CLASS)
+    if (!action) {
+      return envVars
+    }
+    const _environment = (action as WorkflowEnvAction).environment
+    for (const name in _environment) {
+      envVars.push({
+        name,
+        value: _environment[name],
+      })
+    }
     return envVars
   }
 

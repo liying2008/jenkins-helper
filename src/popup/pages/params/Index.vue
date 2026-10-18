@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
+import type { InterruptionCause } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { computed, ref } from 'vue'
@@ -38,6 +39,7 @@ const buildTime = ref('')
 const builtOn = ref('')
 const causes = ref<DisplayedBuildCause[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
+const interruptionCauses = ref<InterruptionCause[]>([])
 
 const darkMode = computed(() => {
   return themeStore.darkMode
@@ -66,7 +68,8 @@ function getParameters() {
 
 function getParametersByUrl(_url: string) {
   status.value = DataStatus.Loading
-  const jsonUrl = `${_url}/api/json`
+  const encodeParam = encodeURI('*,actions[*,causes[*],parameters[*],environment[*],envMap[*]]')
+  const jsonUrl = `${_url}/api/json?tree=${encodeParam}`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
     fetch2(jsonUrl, header).then((res) => {
@@ -89,6 +92,7 @@ function getParametersByUrl(_url: string) {
       // console.log('actions', actions)
       parameters.value = JenkinsBuild.getBuildParametersFromActions(actions)
       causes.value = JenkinsBuild.getBuildCausesFromActions(actions, data.url, data.fullDisplayName)
+      interruptionCauses.value = JenkinsBuild.getInterruptionCausesFromActions(actions)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
@@ -138,6 +142,7 @@ function nextBuild() {
       :build-result="result"
       :build-time="buildTime"
       :causes="causes"
+      :interruption-causes="interruptionCauses"
       :dark-mode="darkMode"
     />
 

@@ -27,6 +27,13 @@ export class CauseAction {
   causes: BuildCause[] = []
 }
 
+export const INTERRUPTION_ACTION_CLASS = 'jenkins.model.InterruptedBuildAction'
+
+export class InterruptionAction {
+  _class: string = ''
+  causes: InterruptionCause[] = []
+}
+
 export const BADGE_ACTION_CLASS = 'com.jenkinsci.plugins.badge.action.BadgeAction'
 
 export class BadgeAction {
@@ -54,6 +61,11 @@ export class BuildCause {
   upstreamUrl?: string = undefined
   upstreamProject?: string = undefined
   upstreamBuild?: number = undefined
+}
+
+export class InterruptionCause {
+  _class: string = ''
+  shortDescription: string = ''
 }
 
 export class BuildParameter {
