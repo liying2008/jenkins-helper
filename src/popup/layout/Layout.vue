@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import type { PopupTab } from '~/models/option'
-import { onMounted, ref } from 'vue'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import jenkinsIcon from '~/assets/img/icon128.png'
 import { t } from '~/libs/extension'
 import { StorageService } from '~/libs/storage'
 import { Options } from '~/models/option'
-import ComputerPage from '../pages/computer/Index.vue'
-import MonitorPage from '../pages/monitor/Index.vue'
-import ParamsPage from '../pages/params/Index.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -28,6 +25,18 @@ const defaultOptionsValue = Options.default()
 const defaultTab = defaultOptionsValue.defaultTab
 const activeTab = ref(defaultTab)
 const allowTabs: PopupTab[] = ['monitor', 'params', 'computer']
+
+const MonitorPage = defineAsyncComponent(() =>
+  import('../pages/monitor/Index.vue'),
+)
+
+const ParamsPage = defineAsyncComponent(() =>
+  import('../pages/params/Index.vue'),
+)
+
+const ComputerPage = defineAsyncComponent(() =>
+  import('../pages/computer/Index.vue'),
+)
 
 function initData() {
   StorageService.getOptions().then((option: Options) => {
