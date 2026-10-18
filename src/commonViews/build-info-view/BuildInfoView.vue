@@ -11,7 +11,7 @@ import { t } from '~/libs/extension'
 interface Props {
   buildUrl: string
   fullDisplayName: string
-  builtOn: string
+  builtOn?: string
   building: boolean
   buildResult: string
   buildTime: string
