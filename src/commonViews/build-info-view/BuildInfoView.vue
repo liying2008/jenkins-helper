@@ -13,7 +13,7 @@ interface Props {
   fullDisplayName: string
   builtOn?: string
   building: boolean
-  buildResult: string
+  buildResult: string | null
   buildTime: string
   causes: DisplayedBuildCause[]
   interruptionCauses: InterruptionCause[]
@@ -38,7 +38,7 @@ watch(clipboard.copied, (value) => {
   }
 })
 
-function getResultColor(label: string) {
+function getResultColor(label: string | null) {
   switch (label) {
     case 'SUCCESS': return 'success'
     case 'FAILURE': return 'error'

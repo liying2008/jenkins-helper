@@ -1,6 +1,5 @@
-import type { Action, BuildCause, BuildParameter, CauseAction, InjectedEnvVars, InterruptionAction, InterruptionCause, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
+import type { BuildCause, BuildParameter, CauseAction, InjectedEnvVars, InterruptionAction, InterruptionCause, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { t } from '~/libs/extension'
-import { CAUSE_ACTION_CLASS, INTERRUPTION_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
 
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
 
@@ -17,7 +16,7 @@ const strings = {
   credentialsParameter: t('credentialsParameter'),
 }
 
-export class JenkinsBuild {
+export class JenkinsBuildUtils {
   static getJenkinsRootUrl(url: string, fullDisplayName: string): string {
     if (url[url.length - 1] === '/') {
       url = url.substring(0, url.length - 1)
@@ -67,14 +66,13 @@ export class JenkinsBuild {
     return buildUrl
   }
 
-  static getBuildParametersFromActions(actions: Action[]): DisplayedBuildParameter[] {
-    // console.log('actions', actions)
-    const parameters: DisplayedBuildParameter[] = []
-    const action = actions.find((action) => action._class === PARAMETERS_ACTION_CLASS)
+  static getBuildParametersFromActions(action: ParametersAction | null): DisplayedBuildParameter[] {
+    // console.log('action', action)
     if (!action) {
-      return parameters
+      return []
     }
-    const _parameters = (action as ParametersAction).parameters
+    const parameters: DisplayedBuildParameter[] = []
+    const _parameters = action.parameters
     _parameters.forEach((parameter) => {
       const _class = parameter._class
       const param = {
@@ -102,19 +100,18 @@ export class JenkinsBuild {
     return parameters
   }
 
-  static getBuildCausesFromActions(actions: Action[], url: string, fullDisplayName: string): DisplayedBuildCause[] {
-    // console.log('actions', actions)
-    const causes: DisplayedBuildCause[] = []
-    const action = actions.find((action) => action._class === CAUSE_ACTION_CLASS)
+  static getBuildCausesFromActions(action: CauseAction | null, url: string, fullDisplayName: string): DisplayedBuildCause[] {
+    // console.log('action', action)
     if (!action) {
-      return causes
+      return []
     }
-    const _causes = (action as CauseAction).causes
+    const causes: DisplayedBuildCause[] = []
+    const _causes = action.causes
     _causes.forEach((cause) => {
       const shortDescription = cause.shortDescription
       let fullUpstreamUrl = ''
       if (cause.upstreamUrl && cause.upstreamBuild) {
-        const rootUrl = JenkinsBuild.getJenkinsRootUrl(url, fullDisplayName)
+        const rootUrl = JenkinsBuildUtils.getJenkinsRootUrl(url, fullDisplayName)
         if (rootUrl) {
           fullUpstreamUrl = `${rootUrl}/${cause.upstreamUrl}${cause.upstreamBuild}/`
         }
@@ -128,23 +125,21 @@ export class JenkinsBuild {
     return causes
   }
 
-  static getInterruptionCausesFromActions(actions: Action[]): InterruptionCause[] {
-    // console.log('actions', actions)
-    const action = actions.find((action) => action._class === INTERRUPTION_ACTION_CLASS)
+  static getInterruptionCausesFromActions(action: InterruptionAction | null): InterruptionCause[] {
+    // console.log('action', action)
     if (!action) {
       return []
     }
-    return (action as InterruptionAction).causes
+    return action.causes
   }
 
-  static getBuildEnvVarsFromActions(actions: Action[]): DisplayedBuildEnvVar[] {
-    // console.log('actions', actions)
-    const envVars: DisplayedBuildEnvVar[] = []
-    const action = actions.find((action) => action._class === WORKFLOW_ENV_ACTION_CLASS)
+  static getBuildEnvVarsFromActions(action: WorkflowEnvAction | null): DisplayedBuildEnvVar[] {
+    // console.log('action', action)
     if (!action) {
-      return envVars
+      return []
     }
-    const _environment = (action as WorkflowEnvAction).environment
+    const envVars: DisplayedBuildEnvVar[] = []
+    const _environment = action.environment
     for (const name in _environment) {
       envVars.push({
         name,

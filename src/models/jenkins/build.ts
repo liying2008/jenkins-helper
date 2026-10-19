@@ -1,7 +1,10 @@
 export class JenkinsBuild {
   _class: string = ''
   url: string = ''
+  fullDisplayName: string = ''
   number: number = 0
+  building: boolean = false
+  builtOn?: string = undefined
   result: string | null = null
   timestamp: number = 0
   actions: Action[] = []

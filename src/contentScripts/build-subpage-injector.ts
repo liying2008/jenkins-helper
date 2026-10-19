@@ -1,6 +1,6 @@
 import type { ContentResp } from '~/models/content-message'
 import { createApp } from 'vue'
-import { JenkinsBuild } from '~/libs/jenkins/build'
+import { JenkinsBuildUtils } from '~/libs/jenkins/build'
 import { CMD_GET_CURRENT_TAB, ContentMessage } from '~/models/content-message'
 import { applyThemeForContentScripts } from '~/theme'
 import { defaultTheme } from '~/theme/theme_default'
@@ -22,7 +22,7 @@ export function inject() {
       return
     }
 
-    const buildUrl = JenkinsBuild.getBuildUrlIfExist(url)
+    const buildUrl = JenkinsBuildUtils.getBuildUrlIfExist(url)
     if (!buildUrl) {
       return
     }

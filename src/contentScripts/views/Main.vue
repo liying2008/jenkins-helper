@@ -47,7 +47,7 @@ function showBuildInfo() {
 .wrapper {
   position: fixed;
   top: 0;
-  right: 0;
+  right: 10px;
   z-index: 200;
   display: flex;
   margin: 10px;

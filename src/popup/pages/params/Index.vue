@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
-import type { InterruptionCause } from '~/models/jenkins/build'
+import type { BadgeAction, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { computed, ref } from 'vue'
@@ -10,9 +10,10 @@ import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue
 import { BrowserUtils } from '~/libs/browser'
 import { t } from '~/libs/extension'
 import { fetch2 } from '~/libs/fetch2'
-import { JenkinsBuild } from '~/libs/jenkins/build'
+import { JenkinsBuildUtils } from '~/libs/jenkins/build'
 import { Tools } from '~/libs/tools'
 import { DataStatus } from '~/models/common'
+import { BADGE_ACTION_CLASS, CAUSE_ACTION_CLASS, HTML_BADGE_ACTION_CLASS, INTERRUPTION_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
 import { useThemeStore } from '~/store'
 
 const strings = {
@@ -34,7 +35,7 @@ const number = ref(0)
 const fullDisplayName = ref('')
 const url = ref('')
 const building = ref(false)
-const result = ref('')
+const result = ref<string | null>(null)
 const buildTime = ref('')
 const builtOn = ref<string | undefined>(undefined)
 const causes = ref<DisplayedBuildCause[]>([])
@@ -56,7 +57,7 @@ function getParameters() {
       console.log('tab is null!')
       return
     }
-    const buildUrl = JenkinsBuild.getBuildUrlIfExist(tab.url!)
+    const buildUrl = JenkinsBuildUtils.getBuildUrlIfExist(tab.url!)
     console.log('buildUrl', buildUrl)
     if (!buildUrl) {
       // 不是 Jenkins 构建页面或子页面，不做任何处理
@@ -78,7 +79,7 @@ function getParametersByUrl(_url: string) {
       } else {
         return Promise.reject(res)
       }
-    }).then((data) => {
+    }).then((data: JenkinsBuild) => {
       status.value = DataStatus.Loaded
       preStatus.value = DataStatus.Loaded
       number.value = data.number
@@ -90,9 +91,31 @@ function getParametersByUrl(_url: string) {
       builtOn.value = data.builtOn
       const actions = data.actions
       // console.log('actions', actions)
-      parameters.value = JenkinsBuild.getBuildParametersFromActions(actions)
-      causes.value = JenkinsBuild.getBuildCausesFromActions(actions, data.url, data.fullDisplayName)
-      interruptionCauses.value = JenkinsBuild.getInterruptionCausesFromActions(actions)
+      let causeAction: CauseAction | null = null
+      let interruptedBuildAction: InterruptionCause | null = null
+      let parametersAction: ParametersAction | null = null
+      let envAction: WorkflowEnvAction | null = null
+      let badgeActions: BadgeAction[] = []
+      let htmlBadgeActions: HtmlBadgeAction[] = []
+      actions.forEach((action) => {
+        console.log('action', action)
+        if (action._class === CAUSE_ACTION_CLASS) {
+          causeAction = action as CauseAction
+        } else if (action._class === INTERRUPTION_ACTION_CLASS) {
+          interruptedBuildAction = action as InterruptionCause
+        } else if (action._class === PARAMETERS_ACTION_CLASS) {
+          parametersAction = action as ParametersAction
+        } else if (action._class === WORKFLOW_ENV_ACTION_CLASS) {
+          envAction = action as WorkflowEnvAction
+        } else if (action._class === BADGE_ACTION_CLASS) {
+          badgeActions.push(action as BadgeAction)
+        } else if (action._class === HTML_BADGE_ACTION_CLASS) {
+          htmlBadgeActions.push(action as HtmlBadgeAction)
+        }
+      })
+      parameters.value = JenkinsBuildUtils.getBuildParametersFromActions(parametersAction)
+      causes.value = JenkinsBuildUtils.getBuildCausesFromActions(causeAction, data.url, data.fullDisplayName)
+      interruptionCauses.value = JenkinsBuildUtils.getInterruptionCausesFromActions(interruptedBuildAction)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
