@@ -3,8 +3,6 @@ import { t } from '~/libs/extension'
 
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
 
-export type DisplayedBuildCause = BuildCause & { fullUpstreamUrl: string }
-
 export class DisplayedBuildEnvVar {
   name: string = ''
   value: string = ''
@@ -17,26 +15,6 @@ const strings = {
 }
 
 export class JenkinsBuildUtils {
-  static getJenkinsRootUrl(url: string, fullDisplayName: string): string {
-    if (url[url.length - 1] === '/') {
-      url = url.substring(0, url.length - 1)
-    }
-    fullDisplayName = encodeURIComponent(fullDisplayName)
-    // %20%C2%BB%20: »
-    // %20%23: #
-    let path = fullDisplayName.replace('%20%C2%BB%20', '/job/').replace('%20%23', '/')
-    path = `/job/${path}`
-    const index = url.lastIndexOf(path)
-    if (index > 0) {
-      const rootUrl = url.substring(0, index)
-      console.log('rootUrl', rootUrl)
-      return rootUrl
-    } else {
-      console.log('error: url:', url, 'fullDisplayName', fullDisplayName, 'path:', path)
-      return ''
-    }
-  }
-
   static getBuildUrlIfExist(currentUrl: string): string | null {
     const urlRegExp = /^https*:\/\/.+\/job\/[^/]+\/\d+/
     const urlRegExpPipeline = /^(https*:\/\/.+\/)blue\/organizations\/jenkins\/.+\/detail\/([^/]+\/\d+)\//
@@ -100,29 +78,12 @@ export class JenkinsBuildUtils {
     return parameters
   }
 
-  static getBuildCausesFromActions(action: CauseAction | null, url: string, fullDisplayName: string): DisplayedBuildCause[] {
+  static getBuildCausesFromActions(action: CauseAction | null): BuildCause[] {
     // console.log('action', action)
     if (!action) {
       return []
     }
-    const causes: DisplayedBuildCause[] = []
-    const _causes = action.causes
-    _causes.forEach((cause) => {
-      const shortDescription = cause.shortDescription
-      let fullUpstreamUrl = ''
-      if (cause.upstreamUrl && cause.upstreamBuild) {
-        const rootUrl = JenkinsBuildUtils.getJenkinsRootUrl(url, fullDisplayName)
-        if (rootUrl) {
-          fullUpstreamUrl = `${rootUrl}/${cause.upstreamUrl}${cause.upstreamBuild}/`
-        }
-      }
-      causes.push({
-        _class: cause._class,
-        shortDescription,
-        fullUpstreamUrl,
-      })
-    })
-    return causes
+    return action.causes
   }
 
   static getInterruptionCausesFromActions(action: InterruptionAction | null): InterruptionCause[] {

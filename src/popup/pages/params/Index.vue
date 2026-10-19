@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { DisplayedBuildCause, DisplayedBuildParameter } from '~/libs/jenkins/build'
-import type { BadgeAction, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
+import type { DisplayedBuildParameter } from '~/libs/jenkins/build'
+import type { BadgeAction, BuildCause, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { computed, ref } from 'vue'
@@ -38,7 +38,7 @@ const building = ref(false)
 const result = ref<string | null>(null)
 const buildTime = ref('')
 const builtOn = ref<string | undefined>(undefined)
-const causes = ref<DisplayedBuildCause[]>([])
+const causes = ref<BuildCause[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
 const interruptionCauses = ref<InterruptionCause[]>([])
 
@@ -114,7 +114,7 @@ function getParametersByUrl(_url: string) {
         }
       })
       parameters.value = JenkinsBuildUtils.getBuildParametersFromActions(parametersAction)
-      causes.value = JenkinsBuildUtils.getBuildCausesFromActions(causeAction, data.url, data.fullDisplayName)
+      causes.value = JenkinsBuildUtils.getBuildCausesFromActions(causeAction)
       interruptionCauses.value = JenkinsBuildUtils.getInterruptionCausesFromActions(interruptedBuildAction)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
