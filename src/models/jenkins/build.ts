@@ -39,12 +39,11 @@ export class InterruptionAction {
 
 export const BADGE_ACTION_CLASS = 'com.jenkinsci.plugins.badge.action.BadgeAction'
 
+// 依赖插件 Badge
 export class BadgeAction {
   _class: string = ''
-  background?: string = undefined
-  border?: string = undefined
-  borderColor?: string = undefined
-  color?: string = undefined
+  icon?: string = undefined
+  iconPath?: string = undefined
   link?: string = undefined
   text?: string = undefined
 }

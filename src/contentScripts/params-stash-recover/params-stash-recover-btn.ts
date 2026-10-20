@@ -18,13 +18,13 @@ function createStashAndRecoverBtns() {
    <div class="jk-button-container" role="group" aria-label="Stash And Recover">
         <!-- 按钮 1: Stash Parameters (蓝色调) -->
         <button class="jk-text-btn jk-stash" type="button" id="jenkins-helper-stash-parameters">
-            <span class="jk-icon">📥</span>
+            <span class="jk-icon">💾</span>
             Stash Parameters
         </button>
 
         <!-- 按钮 2: Recover Parameters (青绿色调) -->
         <button class="jk-text-btn jk-recover" type="button" id="jenkins-helper-recover-parameters">
-            <span class="jk-icon">🔄</span>
+            <span class="jk-icon">↩️</span>
             Recover Parameters
         </button>
     </div>
@@ -44,7 +44,7 @@ function createStashAndRecoverBtns() {
   // 图标（使用 span 包裹，便于单独控制样式）
   const stashIcon = document.createElement('span')
   stashIcon.className = 'jk-icon'
-  stashIcon.textContent = '📥'
+  stashIcon.textContent = '💾'
 
   // 按钮文字（使用 textNode 避免额外标签，也可用 span）
   const stashText = document.createTextNode(strings.stashParameters)
@@ -63,7 +63,7 @@ function createStashAndRecoverBtns() {
   // 图标
   const recoverIcon = document.createElement('span')
   recoverIcon.className = 'jk-icon'
-  recoverIcon.textContent = '🔄'
+  recoverIcon.textContent = '↩️'
 
   // 按钮文字
   const recoverText = document.createTextNode(strings.recoverParameters)

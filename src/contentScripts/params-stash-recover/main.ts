@@ -10,8 +10,8 @@ const PAGE_REBUILD = 'rebuild'
 
 type PageType = typeof PAGE_BUILD | typeof PAGE_PARAMETERS | typeof PAGE_REBUILD
 
-const GREEN_COLOR = '#bcf5bc80'
-const RED_COLOR = '#ffb6b680'
+const GREEN_COLOR = '#23a52359'
+const RED_COLOR = '#d5606059'
 
 const UNSUPPORT_INPUT_TYPES = ['password', 'file', 'hidden', 'credentialType', 'text/javascript']
 

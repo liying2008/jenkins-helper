@@ -230,6 +230,9 @@
   "copied": {
     "message": "已复制"
   },
+  "badges": {
+    "message": "标记"
+  },
   "paramsList": {
     "message": "参数列表"
   },

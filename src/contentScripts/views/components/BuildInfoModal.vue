@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { DisplayedBuildParameter } from '~/libs/jenkins/build'
+import type { DisplayedBadge, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import type { BadgeAction, BuildCause, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { computed, ref, watch } from 'vue'
+import BuildBadgeView from '~/commonViews/build-badge-view/BuildBadgeView.vue'
 import BuildInfoView from '~/commonViews/build-info-view/BuildInfoView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
 import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 }>()
 
 const strings = {
+  badges: t('badges'),
   paramsList: t('paramsList'),
   noData: t('noData'),
   noPrevBuild: t('noPrevBuild'),
@@ -47,6 +49,7 @@ const result = ref<string | null>(null)
 const buildTime = ref('')
 const builtOn = ref<string | undefined>(undefined)
 const causes = ref<BuildCause[]>([])
+const badges = ref<DisplayedBadge[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
 const interruptionCauses = ref<InterruptionCause[]>([])
 
@@ -106,8 +109,8 @@ function getParametersByUrl(_url: string) {
       let interruptedBuildAction: InterruptionCause | null = null
       let parametersAction: ParametersAction | null = null
       let envAction: WorkflowEnvAction | null = null
-      let badgeActions: BadgeAction[] = []
-      let htmlBadgeActions: HtmlBadgeAction[] = []
+      const badgeActions: BadgeAction[] = []
+      const htmlBadgeActions: HtmlBadgeAction[] = []
       actions.forEach((action) => {
         console.log('action', action)
         if (action._class === CAUSE_ACTION_CLASS) {
@@ -124,9 +127,10 @@ function getParametersByUrl(_url: string) {
           htmlBadgeActions.push(action as HtmlBadgeAction)
         }
       })
-      parameters.value = JenkinsBuildUtils.getBuildParametersFromActions(parametersAction)
-      causes.value = JenkinsBuildUtils.getBuildCausesFromActions(causeAction)
-      interruptionCauses.value = JenkinsBuildUtils.getInterruptionCausesFromActions(interruptedBuildAction)
+      parameters.value = JenkinsBuildUtils.getBuildParametersFromAction(parametersAction)
+      causes.value = JenkinsBuildUtils.getBuildCausesFromAction(causeAction)
+      badges.value = JenkinsBuildUtils.getBadgesFromActions(badgeActions, htmlBadgeActions)
+      interruptionCauses.value = JenkinsBuildUtils.getInterruptionCausesFromAction(interruptedBuildAction)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
@@ -192,6 +196,23 @@ function nextBuild() {
           :dark-mode="false"
         />
 
+        <!-- Badges -->
+        <div
+          v-show="status === DataStatus.Loaded && badges.length > 0"
+          class="badges-area"
+        >
+          <div
+            style="font-weight: bold;"
+            title="Rely on the `Badge` plugin"
+          >
+            {{ strings.badges }}
+          </div>
+          <BuildBadgeView
+            class="badges-view"
+            :badges="badges"
+          />
+        </div>
+
         <!-- 参数列表 -->
         <div
           v-show="status === DataStatus.Loaded && parameters.length > 0"
@@ -243,8 +264,16 @@ function nextBuild() {
   .params-wrapper {
     font-size: 12px;
 
+    .badges-area {
+      margin-top: 16px;
+
+      .badges-view {
+        margin-top: 6px;
+      }
+    }
+
     .params-area {
-      margin-top: 10px;
+      margin-top: 16px;
 
       .parameters-table {
         margin-top: 6px;

@@ -1,4 +1,4 @@
-import type { BuildCause, BuildParameter, CauseAction, InjectedEnvVars, InterruptionAction, InterruptionCause, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
+import type { BadgeAction, BuildCause, BuildParameter, CauseAction, HtmlBadgeAction, InjectedEnvVars, InterruptionAction, InterruptionCause, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { t } from '~/libs/extension'
 
 export type DisplayedBuildParameter = BuildParameter & { hint: string }
@@ -6,6 +6,14 @@ export type DisplayedBuildParameter = BuildParameter & { hint: string }
 export class DisplayedBuildEnvVar {
   name: string = ''
   value: string = ''
+}
+
+export type DisplayedBadgeType = 'info' | 'warning' | 'error' | 'html'
+export class DisplayedBadge {
+  type: DisplayedBadgeType = 'info'
+  text: string = ''
+  link: string = ''
+  html: string = ''
 }
 
 const strings = {
@@ -44,7 +52,7 @@ export class JenkinsBuildUtils {
     return buildUrl
   }
 
-  static getBuildParametersFromActions(action: ParametersAction | null): DisplayedBuildParameter[] {
+  static getBuildParametersFromAction(action: ParametersAction | null): DisplayedBuildParameter[] {
     // console.log('action', action)
     if (!action) {
       return []
@@ -78,7 +86,7 @@ export class JenkinsBuildUtils {
     return parameters
   }
 
-  static getBuildCausesFromActions(action: CauseAction | null): BuildCause[] {
+  static getBuildCausesFromAction(action: CauseAction | null): BuildCause[] {
     // console.log('action', action)
     if (!action) {
       return []
@@ -86,7 +94,7 @@ export class JenkinsBuildUtils {
     return action.causes
   }
 
-  static getInterruptionCausesFromActions(action: InterruptionAction | null): InterruptionCause[] {
+  static getInterruptionCausesFromAction(action: InterruptionAction | null): InterruptionCause[] {
     // console.log('action', action)
     if (!action) {
       return []
@@ -94,7 +102,39 @@ export class JenkinsBuildUtils {
     return action.causes
   }
 
-  static getBuildEnvVarsFromActions(action: WorkflowEnvAction | null): DisplayedBuildEnvVar[] {
+  static getBadgesFromActions(actions: BadgeAction[], htmlActions: HtmlBadgeAction[]) {
+    const displayedBadges: DisplayedBadge[] = []
+    actions.forEach((action) => {
+      const iconPath = action.iconPath || ''
+      const icon = action.icon || ''
+      let badgeType: DisplayedBadgeType = 'info'
+      if (icon.includes('remove') || iconPath.includes('error')) {
+        badgeType = 'error'
+      } else if (icon.includes('warning') || iconPath.includes('warning')) {
+        badgeType = 'warning'
+      }
+      const badge: DisplayedBadge = {
+        type: badgeType,
+        text: action.text || '',
+        link: action.link || '',
+        html: '',
+      }
+      displayedBadges.push(badge)
+    })
+
+    htmlActions.forEach((action) => {
+      const badge: DisplayedBadge = {
+        type: 'html',
+        text: '',
+        link: '',
+        html: action.html || '',
+      }
+      displayedBadges.push(badge)
+    })
+    return displayedBadges
+  }
+
+  static getBuildEnvVarsFromAction(action: WorkflowEnvAction | null): DisplayedBuildEnvVar[] {
     // console.log('action', action)
     if (!action) {
       return []

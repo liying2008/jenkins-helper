@@ -230,6 +230,9 @@
   "copied": {
     "message": "Copied"
   },
+  "badges": {
+    "message": "Badges"
+  },
   "paramsList": {
     "message": "Parameters"
   },
