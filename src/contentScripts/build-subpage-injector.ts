@@ -37,7 +37,7 @@ export function inject() {
     document.body.appendChild(container)
 
     const app = createApp(App, {
-      buildUrl,
+      'build-url': buildUrl,
     })
 
     applyThemeForContentScripts(defaultTheme)
