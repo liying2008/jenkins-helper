@@ -236,6 +236,15 @@
   "paramsList": {
     "message": "参数列表"
   },
+  "envVarsList": {
+    "message": "环境变量列表"
+  },
+  "name": {
+    "message": "名称"
+  },
+  "value": {
+    "message": "值"
+  },
   "noData": {
     "message": "无数据"
   },

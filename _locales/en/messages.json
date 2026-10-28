@@ -236,6 +236,15 @@
   "paramsList": {
     "message": "Parameters"
   },
+  "envVarsList": {
+    "message": "Environment Variables"
+  },
+  "name": {
+    "message": "Name"
+  },
+  "value": {
+    "message": "Value"
+  },
   "noData": {
     "message": "No data."
   },

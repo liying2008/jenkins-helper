@@ -3,6 +3,7 @@
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import type { DisplayedBuildParameter } from '~/libs/jenkins/build'
 import { h } from 'vue'
+import { t } from '~/libs/extension'
 
 interface Props {
   parameters: DisplayedBuildParameter[]
@@ -10,16 +11,21 @@ interface Props {
 
 defineProps<Props>()
 
+const strings = {
+  name: t('name'),
+  value: t('value'),
+}
+
 const headers: TableColumns<DisplayedBuildParameter> = [
   {
-    title: 'Name',
+    title: strings.name,
     align: 'left',
     key: 'name',
     sorter: 'default',
     className: 'param-item-key',
   },
   {
-    title: 'Value',
+    title: strings.value,
     align: 'left',
     key: 'value',
     sorter: 'default',

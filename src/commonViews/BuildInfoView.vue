@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { DisplayedBadge, DisplayedBuildParameter } from '~/libs/jenkins/build'
+import type { DisplayedBadge, DisplayedBuildEnvVar, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import type { BadgeAction, BuildCause, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
 import { useDialog } from 'naive-ui'
 import { ref, watch } from 'vue'
-import BuildBadgeView from '~/commonViews/build-badge-view/BuildBadgeView.vue'
+import BuildBadgesView from '~/commonViews/build-badges-view/BuildBadgesView.vue'
 import BuildGeneralInfoView from '~/commonViews/build-general-info-view/BuildGeneralInfoView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
 import BuildParamsView from '~/commonViews/build-params-view/BuildParamsView.vue'
@@ -14,6 +14,7 @@ import { JenkinsBuildUtils } from '~/libs/jenkins/build'
 import { Tools } from '~/libs/tools'
 import { DataStatus } from '~/models/common'
 import { BADGE_ACTION_CLASS, CAUSE_ACTION_CLASS, HTML_BADGE_ACTION_CLASS, INTERRUPTION_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
+import BuildEnvVarsView from './build-envvars-view/BuildEnvVarsView.vue'
 
 const props = defineProps<{
   buildUrl: string
@@ -23,6 +24,7 @@ const props = defineProps<{
 const strings = {
   badges: t('badges'),
   paramsList: t('paramsList'),
+  envVarsList: t('envVarsList'),
   noData: t('noData'),
   noPrevBuild: t('noPrevBuild'),
   fetching: t('fetching'),
@@ -46,6 +48,7 @@ const causes = ref<BuildCause[]>([])
 const badges = ref<DisplayedBadge[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
 const interruptionCauses = ref<InterruptionCause[]>([])
+const envVars = ref<DisplayedBuildEnvVar[]>([])
 
 watch(() => props.buildUrl, (newVal) => {
   if (newVal) {
@@ -105,6 +108,7 @@ function getParametersByUrl(_url: string) {
       causes.value = JenkinsBuildUtils.getBuildCausesFromAction(causeAction)
       badges.value = JenkinsBuildUtils.getBadgesFromActions(badgeActions, htmlBadgeActions)
       interruptionCauses.value = JenkinsBuildUtils.getInterruptionCausesFromAction(interruptedBuildAction)
+      envVars.value = JenkinsBuildUtils.getBuildEnvVarsFromAction(envAction)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
       status.value = preStatus.value
@@ -169,7 +173,7 @@ function nextBuild() {
       >
         {{ strings.badges }}
       </div>
-      <BuildBadgeView
+      <BuildBadgesView
         class="badges-view"
         :badges="badges"
       />
@@ -186,6 +190,20 @@ function nextBuild() {
       <BuildParamsView
         class="parameters-table"
         :parameters="parameters"
+      />
+    </div>
+
+    <!-- 环境变量列表 -->
+    <div
+      v-show="status === DataStatus.Loaded && envVars.length > 0"
+      class="params-area"
+    >
+      <div style="font-weight: bold;">
+        {{ strings.envVarsList }}
+      </div>
+      <BuildEnvVarsView
+        class="parameters-table"
+        :env-vars="envVars"
       />
     </div>
 
