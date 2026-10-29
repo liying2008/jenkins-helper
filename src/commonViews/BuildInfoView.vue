@@ -60,7 +60,7 @@ watch(() => props.buildUrl, (newVal) => {
 
 function getParametersByUrl(_url: string) {
   status.value = DataStatus.Loading
-  const encodeParam = encodeURI('*,actions[*,causes[*],parameters[*],environment[*],envMap[*]]')
+  const encodeParam = encodeURI('*,actions[*,causes[*],parameters[*],environment[*]]')
   const jsonUrl = `${_url}/api/json?tree=${encodeParam}`
   // console.log("jsonUrl", jsonUrl);
   Tools.getFetchOption(jsonUrl).then((header) => {
@@ -149,74 +149,78 @@ function nextBuild() {
 
 <template>
   <div class="params-wrapper">
-    <BuildGeneralInfoView
-      v-show="status === DataStatus.Loaded"
-      :build-url="url"
-      :full-display-name="fullDisplayName"
-      :built-on="builtOn"
-      :building="building"
-      :build-result="result"
-      :build-time="buildTime"
-      :causes="causes"
-      :interruption-causes="interruptionCauses"
-      :dark-mode="darkMode"
-    />
+    <!-- Data Loaded -->
+    <div v-show="status === DataStatus.Loaded">
+      <!-- General Info -->
+      <BuildGeneralInfoView
+        :build-url="url"
+        :full-display-name="fullDisplayName"
+        :built-on="builtOn"
+        :building="building"
+        :build-result="result"
+        :build-time="buildTime"
+        :causes="causes"
+        :interruption-causes="interruptionCauses"
+        :dark-mode="darkMode"
+      />
 
-    <!-- Badges -->
-    <div
-      v-show="status === DataStatus.Loaded && badges.length > 0"
-      class="badges-area"
-    >
+      <!-- Badges -->
       <div
-        style="font-weight: bold;"
-        title="Rely on the `Badge` plugin"
+        v-show="badges.length > 0"
+        class="badges-area"
       >
-        {{ strings.badges }}
+        <div
+          style="font-weight: bold;"
+          title="Rely on the `Badge` plugin"
+        >
+          {{ strings.badges }}
+        </div>
+        <BuildBadgesView
+          class="badges-view"
+          :badges="badges"
+        />
       </div>
-      <BuildBadgesView
-        class="badges-view"
-        :badges="badges"
+
+      <!-- 参数列表 -->
+      <div
+        v-show="parameters.length > 0"
+        class="params-area"
+      >
+        <div style="font-weight: bold;">
+          {{ strings.paramsList }}
+        </div>
+        <BuildParamsView
+          class="parameters-table"
+          :parameters="parameters"
+        />
+      </div>
+
+      <!-- 环境变量列表 -->
+      <div
+        v-show="envVars.length > 0"
+        class="params-area"
+      >
+        <div
+          style="font-weight: bold;"
+          title="Rely on the `Pipeline: Groovy` plugin"
+        >
+          {{ strings.envVarsList }}
+        </div>
+        <BuildEnvVarsView
+          class="parameters-table"
+          :env-vars="envVars"
+        />
+      </div>
+
+      <!-- Prev/Next Button & 快捷按钮 -->
+      <BuildParamsPageActions
+        :build-url="url"
+        :full-display-name="fullDisplayName"
+        class="actions-area"
+        @prev-build="prevBuild"
+        @next-build="nextBuild"
       />
     </div>
-
-    <!-- 参数列表 -->
-    <div
-      v-show="status === DataStatus.Loaded && parameters.length > 0"
-      class="params-area"
-    >
-      <div style="font-weight: bold;">
-        {{ strings.paramsList }}
-      </div>
-      <BuildParamsView
-        class="parameters-table"
-        :parameters="parameters"
-      />
-    </div>
-
-    <!-- 环境变量列表 -->
-    <div
-      v-show="status === DataStatus.Loaded && envVars.length > 0"
-      class="params-area"
-    >
-      <div style="font-weight: bold;">
-        {{ strings.envVarsList }}
-      </div>
-      <BuildEnvVarsView
-        class="parameters-table"
-        :env-vars="envVars"
-      />
-    </div>
-
-    <!-- Prev/Next Button & 快捷按钮 -->
-    <div style="margin-top: 16px;"></div>
-    <BuildParamsPageActions
-      v-show="status === DataStatus.Loaded"
-      :build-url="url"
-      :full-display-name="fullDisplayName"
-      @prev-build="prevBuild"
-      @next-build="nextBuild"
-    />
-
     <!-- No Data -->
     <div v-show="status === DataStatus.NoData">
       <n-empty :description="strings.noData ">
@@ -253,6 +257,10 @@ function nextBuild() {
     .parameters-table {
       margin-top: 6px;
     }
+  }
+
+  .actions-area {
+    margin-top: 16px;
   }
 }
 </style>
