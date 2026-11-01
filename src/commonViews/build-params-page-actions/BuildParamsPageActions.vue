@@ -4,10 +4,13 @@ import { ArrowBackSharp, ArrowForwardSharp, ChevronDownOutline, DownloadOutline,
 import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { removeEnd } from '~/libs/common'
+import { DataStatus } from '~/models/common'
 
 interface Props {
   buildUrl: string
   fullDisplayName: string
+  buildNumber: number
+  dataStatus: DataStatus
 }
 
 const props = defineProps<Props>()
@@ -108,7 +111,8 @@ function rebuild() {
       <n-button
         type="default"
         round
-        title="Previous Build"
+        :title="`Previous Build (#${buildNumber - 1})\nShortcut key: ←`"
+        :disabled="buildNumber <= 1"
         :retain-focus-on-click="false"
         @click="emit('prevBuild')"
       >
@@ -119,7 +123,7 @@ function rebuild() {
       <n-button
         type="default"
         round
-        title="Next Build"
+        :title="`Next Build (#${buildNumber + 1})\nShortcut key: →`"
         :retain-focus-on-click="false"
         @click="emit('nextBuild')"
       >
@@ -134,7 +138,7 @@ function rebuild() {
       type="default"
       class="no-right-round-corner"
       title="Download the console log"
-      :disabled="disableDownload"
+      :disabled="disableDownload || dataStatus !== DataStatus.Loaded"
       @click="downloadConsoleLog(false)"
     >
       <template #icon>
@@ -146,13 +150,13 @@ function rebuild() {
     <n-dropdown
       trigger="hover"
       :options="options"
-      :disabled="disableDownload"
+      :disabled="disableDownload || dataStatus !== DataStatus.Loaded"
       @select="handleDownloadDropdownSelect"
     >
       <n-button
         type="default"
         class="no-left-round-corner no-border-left thin-btn"
-        :disabled="disableDownload"
+        :disabled="disableDownload || dataStatus !== DataStatus.Loaded"
       >
         <template #icon>
           <n-icon>
@@ -164,6 +168,7 @@ function rebuild() {
 
     <!-- 打开Job配置页面 -->
     <n-button
+      :disabled="dataStatus !== DataStatus.Loaded"
       type="default"
       class="go-to-configure-btn"
       title="Configure"
@@ -177,6 +182,7 @@ function rebuild() {
     </n-button>
     <!-- 打开 Rebuild 页面 -->
     <n-button
+      :disabled="dataStatus !== DataStatus.Loaded"
       type="default"
       class="rebuild-btn"
       title="Rebuild (Rely on the `Rebuilder` plugin)"

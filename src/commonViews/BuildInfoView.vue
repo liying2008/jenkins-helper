@@ -2,8 +2,7 @@
 import type { DisplayedBadge, DisplayedBuildEnvVar, DisplayedBuildParameter } from '~/libs/jenkins/build'
 import type { BadgeAction, BuildCause, CauseAction, HtmlBadgeAction, InterruptionCause, JenkinsBuild, ParametersAction, WorkflowEnvAction } from '~/models/jenkins/build'
 import { Reload } from '@vicons/ionicons5'
-import { useDialog } from 'naive-ui'
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import BuildBadgesView from '~/commonViews/build-badges-view/BuildBadgesView.vue'
 import BuildGeneralInfoView from '~/commonViews/build-general-info-view/BuildGeneralInfoView.vue'
 import BuildParamsPageActions from '~/commonViews/build-params-page-actions/BuildParamsPageActions.vue'
@@ -32,11 +31,7 @@ const strings = {
   ok: t('ok'),
 }
 
-const dialog = useDialog()
-
-const status = ref<DataStatus>(DataStatus.NoData)
-// 之前的状态（上一次的状态）
-const preStatus = ref<DataStatus>(DataStatus.NoData)
+const status = ref(DataStatus.NoData)
 const number = ref(0)
 const fullDisplayName = ref('')
 const url = ref('')
@@ -72,7 +67,6 @@ function getParametersByUrl(_url: string) {
       }
     }).then((data: JenkinsBuild) => {
       status.value = DataStatus.Loaded
-      preStatus.value = DataStatus.Loaded
       number.value = data.number
       fullDisplayName.value = data.fullDisplayName
       url.value = data.url // jenkins 设置的 jenkins 网站 url
@@ -111,12 +105,7 @@ function getParametersByUrl(_url: string) {
       envVars.value = JenkinsBuildUtils.getBuildEnvVarsFromAction(envAction)
     }).catch((e: Error) => {
       console.log('获取参数失败', e)
-      status.value = preStatus.value
-      dialog.info({
-        title: strings.warmTip,
-        content: strings.noData,
-        positiveText: strings.ok,
-      })
+      status.value = DataStatus.NoData
     })
   })
 }
@@ -124,27 +113,52 @@ function getParametersByUrl(_url: string) {
 // 显示前一次构建信息
 function prevBuild() {
   // url: http://127.0.0.1:8080/jenkins/job/Test1/21/
+  number.value -= 1
   let _url = url.value.substring(0, url.value.length - 1)
   _url = _url.substring(0, _url.lastIndexOf('/'))
-  if (number.value > 1) {
-    _url = `${_url}/${number.value - 1}`
+  if (number.value > 0) {
+    _url = `${_url}/${number.value}`
     getParametersByUrl(_url)
   } else {
-    dialog.info({
-      title: strings.warmTip,
-      content: strings.noPrevBuild,
-      positiveText: strings.ok,
-    })
+    status.value = DataStatus.NoData
   }
 }
 
 // 显示后一次构建信息
 function nextBuild() {
+  number.value += 1
   let _url = url.value.substring(0, url.value.length - 1)
   _url = _url.substring(0, _url.lastIndexOf('/'))
-  _url = `${_url}/${number.value + 1}`
+  _url = `${_url}/${number.value}`
   getParametersByUrl(_url)
 }
+
+// 左/右方向键切换前一次/后一次构建
+function handleKeydown(e: KeyboardEvent) {
+  // 避免在输入框等可编辑元素中拦截方向键
+  const target = e.target as HTMLElement
+  if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+    return
+  }
+  if (e.key === 'ArrowLeft') {
+    if (number.value <= 1) {
+      return
+    }
+    e.preventDefault()
+    prevBuild()
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault()
+    nextBuild()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
@@ -211,24 +225,21 @@ function nextBuild() {
           :env-vars="envVars"
         />
       </div>
-
-      <!-- Prev/Next Button & 快捷按钮 -->
-      <BuildParamsPageActions
-        :build-url="url"
-        :full-display-name="fullDisplayName"
-        class="actions-area"
-        @prev-build="prevBuild"
-        @next-build="nextBuild"
-      />
     </div>
     <!-- No Data -->
     <div v-show="status === DataStatus.NoData">
-      <n-empty :description="strings.noData ">
+      <n-empty
+        :description="strings.noData"
+        style="margin: 26px 0;"
+      >
       </n-empty>
     </div>
     <!-- Fetching -->
     <div v-show="status === DataStatus.Loading">
-      <n-empty :description="strings.fetching">
+      <n-empty
+        :description="strings.fetching"
+        style="margin: 26px 0;"
+      >
         <template #icon>
           <n-icon>
             <Reload class="jk-is-loading" />
@@ -236,6 +247,16 @@ function nextBuild() {
         </template>
       </n-empty>
     </div>
+    <!-- Prev/Next Button & 快捷按钮 -->
+    <BuildParamsPageActions
+      :build-url="url"
+      :full-display-name="fullDisplayName"
+      :build-number="number"
+      :data-status="status"
+      class="actions-area"
+      @prev-build="prevBuild"
+      @next-build="nextBuild"
+    />
   </div>
 </template>
 
