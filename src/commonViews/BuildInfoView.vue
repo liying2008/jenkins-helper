@@ -177,54 +177,62 @@ onUnmounted(() => {
         :interruption-causes="interruptionCauses"
         :dark-mode="darkMode"
       />
-
-      <!-- Badges -->
-      <div
-        v-show="badges.length > 0"
-        class="badges-area"
+      <n-collapse
+        class="collapse-area"
+        :default-expanded-names="['badges', 'parameters', 'envVars']"
       >
-        <div
-          style="font-weight: bold;"
-          title="Rely on the `Badge` plugin"
+        <!-- Badges -->
+        <n-collapse-item
+          v-show="badges.length > 0"
+          name="badges"
         >
-          {{ strings.badges }}
-        </div>
-        <BuildBadgesView
-          class="badges-view"
-          :badges="badges"
-        />
-      </div>
-
-      <!-- 参数列表 -->
-      <div
-        v-show="parameters.length > 0"
-        class="params-area"
-      >
-        <div style="font-weight: bold;">
-          {{ strings.paramsList }}
-        </div>
-        <BuildParamsView
-          class="parameters-table"
-          :parameters="parameters"
-        />
-      </div>
-
-      <!-- 环境变量列表 -->
-      <div
-        v-show="envVars.length > 0"
-        class="params-area"
-      >
-        <div
-          style="font-weight: bold;"
-          title="Rely on the `Pipeline: Groovy` plugin"
+          <template #header>
+            <div
+              style="font-weight: bold;"
+              title="Rely on the `Badge` plugin"
+            >
+              {{ strings.badges }}
+            </div>
+          </template>
+          <BuildBadgesView
+            class="badges-view"
+            :badges="badges"
+          />
+        </n-collapse-item>
+        <!-- 参数列表 -->
+        <n-collapse-item
+          v-show="parameters.length > 0"
+          name="parameters"
         >
-          {{ strings.envVarsList }}
-        </div>
-        <BuildEnvVarsView
-          class="parameters-table"
-          :env-vars="envVars"
-        />
-      </div>
+          <template #header>
+            <div style="font-weight: bold;">
+              {{ strings.paramsList }}
+            </div>
+          </template>
+          <BuildParamsView
+            class="parameters-table"
+            :parameters="parameters"
+          />
+        </n-collapse-item>
+        <!-- 环境变量列表 -->
+        <n-collapse-item
+          v-show="envVars.length > 0"
+          name="envVars"
+        >
+          <template #header>
+            <div
+              style="font-weight: bold;"
+              title="Rely on the `Pipeline: Groovy` plugin"
+            >
+              {{ strings.envVarsList }}
+            </div>
+          </template>
+          <BuildEnvVarsView
+            class="parameters-table"
+            :env-vars="envVars"
+          />
+        </n-collapse-item>
+      </n-collapse>
     </div>
     <!-- No Data -->
     <div v-show="status === DataStatus.NoData">
@@ -264,24 +272,20 @@ onUnmounted(() => {
 .params-wrapper {
   font-size: 12px;
 
-  .badges-area {
-    margin-top: 16px;
-
-    .badges-view {
-      margin-top: 6px;
+  .collapse-area {
+    .n-collapse-item {
+        margin: 10px 0 0;
+        border-top: none;
     }
-  }
 
-  .params-area {
-    margin-top: 16px;
-
-    .parameters-table {
-      margin-top: 6px;
+    .n-collapse-item__header {
+        padding: 10px 0 0;
+        font-size: 13px;
     }
   }
 
   .actions-area {
-    margin-top: 16px;
+    margin-top: 20px;
   }
 }
 </style>
