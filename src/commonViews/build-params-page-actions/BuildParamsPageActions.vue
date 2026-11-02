@@ -106,7 +106,10 @@ function rebuild() {
 </script>
 
 <template>
-  <div class="action-wrapper">
+  <div
+    v-if="dataStatus !== DataStatus.Init"
+    class="action-wrapper"
+  >
     <n-button-group>
       <n-button
         type="default"

@@ -150,6 +150,13 @@ export class JenkinsBuildUtils {
     return envVars
   }
 
+  /**
+   * 解析 Environment Injector 插件提供的环境变量API响应数据。
+   * MARK: 本项目暂未使用
+   *
+   * @param injectedEnvVars 注入的环境变量，Environment Injector 插件提供。API 访问地址：${buildUrl}/injectedEnvVars/api/json
+   * @returns Parsed env vars
+   */
   static getBuildEnvVarsFromInjectedEnvVars(injectedEnvVars: InjectedEnvVars): DisplayedBuildEnvVar[] {
     // console.log('injectedEnvVars', injectedEnvVars)
     const envVars: DisplayedBuildEnvVar[] = []

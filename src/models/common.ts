@@ -13,7 +13,9 @@ export interface Enc<T = any> {
  * 数据加载状态
  */
 export enum DataStatus {
-  /** 无数据/初始值 */
+  /** 初始化状态 */
+  Init,
+  /** 无数据 */
   NoData,
   /** 加载中 */
   Loading,

@@ -31,7 +31,7 @@ const strings = {
   ok: t('ok'),
 }
 
-const status = ref(DataStatus.NoData)
+const status = ref(DataStatus.Init)
 const number = ref(0)
 const fullDisplayName = ref('')
 const url = ref('')
@@ -233,6 +233,14 @@ onUnmounted(() => {
           />
         </n-collapse-item>
       </n-collapse>
+    </div>
+    <!-- Init -->
+    <div v-show="status === DataStatus.Init">
+      <n-empty
+        :description="strings.noData"
+        style="margin: 26px 0;"
+      >
+      </n-empty>
     </div>
     <!-- No Data -->
     <div v-show="status === DataStatus.NoData">
