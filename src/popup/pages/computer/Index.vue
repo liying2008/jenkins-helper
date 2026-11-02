@@ -5,7 +5,7 @@ import type { MonitoredNodes, NodeDetail, Nodes } from '~/models/node'
 import { CloseCircleOutline, CloseCircleSharp } from '@vicons/ionicons5'
 import { NA, useMessage } from 'naive-ui'
 import { h, onMounted, ref, watch } from 'vue'
-import computerIcon from '~/assets/img/computer48.png'
+import computerIcon from '~/assets/svg/computer.svg?raw'
 import PopconfirmDeleteBtn from '~/components/popconfirm-delete-btn/PopconfirmDeleteBtn.vue'
 import { isNullOrEmptyRecord } from '~/libs/common'
 import { t } from '~/libs/extension'
@@ -266,11 +266,12 @@ function onShowOfflineNodesChange(newVal: boolean) {
         class="card"
       >
         <div class="card-title">
-          <img
+          <span
             class="img-rounded"
-            alt="Computer"
-            :src="computerIcon"
-          >
+            role="img"
+            aria-label="Computer"
+            v-html="computerIcon"
+          ></span>
           <div class="ml-12px card-title-node flex-1">
             <a
               :title="decodeURIComponent(jenkinsUrl)"
@@ -281,7 +282,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
             >
               {{ decodeURIComponent(jenkinsUrl) }}
             </a>
-            <br style="height: 8px;">
+            <br>
             <a
               class="card-title-node-sub jk-a-link-color"
               @click="openNodesManager(jenkinsUrl)"
@@ -293,9 +294,9 @@ function onShowOfflineNodesChange(newVal: boolean) {
             <div v-show="jenkinsNodes.status !== 'ok'">
               <n-tag
                 type="error"
+                size="small"
                 round
                 :title="jenkinsNodes.error || ''"
-                class="card-title-err-tag"
               >
                 <span>ERROR</span>
               </n-tag>
@@ -347,11 +348,19 @@ function onShowOfflineNodesChange(newVal: boolean) {
 
       .card-title {
         display: flex;
+        align-items: center;
         padding: 12px;
 
         .img-rounded {
-          width: 48px;
-          height: 48px;
+          display: inline-block;
+          width: 42px;
+          height: 42px;
+
+          svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
         }
 
         .card-title-node {
@@ -360,7 +369,7 @@ function onShowOfflineNodesChange(newVal: boolean) {
           white-space: nowrap;
 
           .card-title-node-url {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
             color: var(--jk-title);
             text-decoration: none;
@@ -371,15 +380,10 @@ function onShowOfflineNodesChange(newVal: boolean) {
           }
 
           .card-title-node-sub {
-            font-size: 14px;
+            font-size: 12px;
             text-decoration: none;
             cursor: pointer;
           }
-        }
-
-        .card-title-err-tag {
-          height: 26px;
-          font-size: 12px;
         }
 
         .card-title-remove-btn {

@@ -40,6 +40,7 @@ const ComputerPage = defineAsyncComponent(() =>
 
 function initData() {
   StorageService.getOptions().then((option: Options) => {
+    // console.log('popup::initData', option)
     // 设置默认激活页面
     if (option.defaultTab && allowTabs.includes(option.defaultTab)) {
       activeTab.value = option.defaultTab
@@ -128,8 +129,8 @@ function openTools() {
       </template>
     </n-page-header>
     <n-tabs
+      v-model:value="activeTab"
       class="tabs"
-      :default-value="activeTab"
       animated
       type="segment"
     >

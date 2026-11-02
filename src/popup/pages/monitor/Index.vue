@@ -6,7 +6,7 @@ import type { Options } from '~/models/option'
 import { CloseCircleOutline } from '@vicons/ionicons5'
 import { NA, NTag, useMessage } from 'naive-ui/es/components'
 import { h, onMounted, ref, watch } from 'vue'
-import jenkinsIcon from '~/assets/img/icon128.png'
+import folderIcon from '~/assets/svg/folder.svg?raw'
 import StyleTime from '~/components/style-time/StyleTime.vue'
 import { isNullOrEmptyRecord } from '~/libs/common'
 import { t } from '~/libs/extension'
@@ -242,11 +242,12 @@ function removeJenkins(jenkinsUrl: string) {
         class="card"
       >
         <div class="card-title">
-          <img
+          <span
             class="img-rounded"
-            alt="Jenkins"
-            :src="jenkinsIcon"
-          >
+            role="img"
+            aria-label="Folder"
+            v-html="folderIcon"
+          ></span>
           <div class="ml-12px card-title-job flex-1">
             <span
               :title="decodeURIComponent(jenkins.name)"
@@ -254,7 +255,7 @@ function removeJenkins(jenkinsUrl: string) {
             >
               {{ decodeURIComponent(jenkins.name) }}
             </span>
-            <br style="height: 8px;">
+            <br>
             <a
               class="card-title-job-url jk-a-link-color"
               target="_blank"
@@ -270,9 +271,9 @@ function removeJenkins(jenkinsUrl: string) {
             <div v-if="jenkins.status === 'error'">
               <n-tag
                 type="error"
+                size="small"
                 round
                 :title="jenkins.error"
-                class="card-title-right-tag"
               >
                 <span>ERROR</span>
               </n-tag>
@@ -347,11 +348,19 @@ function removeJenkins(jenkinsUrl: string) {
 
       .card-title {
         display: flex;
+        align-items: center;
         padding: 12px;
 
         .img-rounded {
-          width: 48px;
-          height: 48px;
+          display: inline-block;
+          width: 42px;
+          height: 42px;
+
+          svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
         }
 
         .card-title-job {
@@ -360,19 +369,14 @@ function removeJenkins(jenkinsUrl: string) {
           white-space: nowrap;
 
           .card-title-job-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
           }
 
           .card-title-job-url {
-            font-size: 14px;
+            font-size: 12px;
             text-decoration: none;
           }
-        }
-
-        .card-title-right-tag {
-          height: 26px;
-          font-size: 12px;
         }
 
         .card-title-remove-btn {

@@ -124,6 +124,7 @@ function refreshNodesInfo() {
     <!-- 管理监控节点按钮 -->
     <div>
       <n-button
+        secondary
         circle
         size="small"
         type="primary"
@@ -136,6 +137,7 @@ function refreshNodesInfo() {
         </template>
       </n-button>
       <n-button
+        secondary
         circle
         size="small"
         type="primary"

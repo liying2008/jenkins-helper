@@ -110,6 +110,7 @@ function initResultFilter() {
     <!-- 创建新的监控任务 -->
     <div>
       <n-button
+        secondary
         circle
         size="small"
         type="primary"
