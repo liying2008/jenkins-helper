@@ -166,7 +166,7 @@ function openTools() {
     }
 
     .header-extra {
-      gap: 4px !important;
+      gap: 4px !important; /* 覆盖内联样式 */
     }
   }
 

@@ -276,19 +276,19 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .params-wrapper {
   font-size: 12px;
 
   .collapse-area {
     .n-collapse-item {
-        margin: 10px 0 0;
-        border-top: none;
-    }
+        margin: 10px 0 0 !important;
+        border-top: none !important;
 
-    .n-collapse-item__header {
-        padding: 10px 0 0;
-        font-size: 13px;
+        :deep(.n-collapse-item__header) {
+            padding: 10px 0 0 !important;
+            font-size: 13px !important;
+        }
     }
   }
 

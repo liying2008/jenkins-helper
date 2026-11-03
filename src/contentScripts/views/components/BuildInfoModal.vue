@@ -33,7 +33,10 @@ watch(editableVisible, (newVal: boolean) => {
 </script>
 
 <template>
-  <n-modal v-model:show="editableVisible">
+  <n-modal
+    v-model:show="editableVisible"
+    class="build-info-modal"
+  >
     <n-card
       class="modal-card"
       title="构建参数"
@@ -56,5 +59,10 @@ watch(editableVisible, (newVal: boolean) => {
 <style scoped lang="scss">
 .modal-card {
   max-width: min(800px, 60%);
+  max-height: 80vh;
+
+  :deep(.n-card-content) {
+    overflow-y: auto;
+  }
 }
 </style>
