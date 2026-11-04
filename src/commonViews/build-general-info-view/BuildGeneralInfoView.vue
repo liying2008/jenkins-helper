@@ -1,10 +1,10 @@
 <!-- Popup 和 ContentScripts 共用组件，不要依赖 unocss、store、router 和 不支持的API -->
 <script setup lang="ts">
 import type { BuildCause, InterruptionCause } from '~/models/jenkins/build'
-import { CopyOutline, FlagSharp, HammerSharp, StopSharp, TimeSharp } from '@vicons/ionicons5'
+import { CopyOutline, FlagSharp, HammerSharp, LaptopSharp, StopSharp, TimeSharp } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { t } from '~/libs/extension'
 
 interface Props {
@@ -13,7 +13,8 @@ interface Props {
   builtOn?: string
   building: boolean
   buildResult: string | null
-  buildTime: string
+  timestamp: number
+  duration: number
   causes: BuildCause[]
   interruptionCauses: InterruptionCause[]
   darkMode: boolean
@@ -22,14 +23,61 @@ interface Props {
 const props = defineProps<Props>()
 
 const strings = {
-  buildStatus_: t('buildStatus_'),
-  runLabel_: t('runLabel_'),
   copied: t('copied'),
   building: 'BUILDING',
 }
 
 const message = useMessage()
 const clipboard = useClipboard({ source: props.builtOn })
+
+const startTime = computed(() => {
+  return new Date(props.timestamp).toLocaleString()
+})
+
+const durationStr = computed(() => {
+  return formatDuration(props.duration)
+})
+
+const endTime = computed(() => {
+  // 构建尚未结束（duration 为 0）时不计算结束时间
+  if (props.building || props.duration <= 0) {
+    return ''
+  }
+  return new Date(props.timestamp + props.duration).toLocaleString()
+})
+
+const timeDisplay = computed(() => {
+  if (!endTime.value) {
+    return startTime.value
+  }
+  return `${startTime.value} —— ${endTime.value}`
+})
+
+// 将毫秒转换为人类易读的时间字符串，如 1d 2h 3m 4s
+function formatDuration(ms: number): string {
+  if (!ms || ms <= 0) {
+    return '0s'
+  }
+  const totalSeconds = Math.floor(ms / 1000)
+  const days = Math.floor(totalSeconds / 86400)
+  const hours = Math.floor((totalSeconds % 86400) / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+  const parts: string[] = []
+  if (days > 0) {
+    parts.push(`${days}d`)
+  }
+  if (hours > 0) {
+    parts.push(`${hours}h`)
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes}m`)
+  }
+  if (seconds > 0 || parts.length === 0) {
+    parts.push(`${seconds}s`)
+  }
+  return parts.join(' ')
+}
 
 watch(clipboard.copied, (value) => {
   if (value) {
@@ -61,8 +109,7 @@ function copyBuiltOn() {
   <n-card class="info-block">
     <!-- Display name & 构建状态 -->
     <n-grid
-      x-gap="12"
-      :cols="2"
+      :cols="1"
       class="info-row"
     >
       <n-gi class="info-col">
@@ -78,57 +125,69 @@ function copyBuiltOn() {
           style="margin-left: 8px;"
           class="display-name jk-a-link-color"
         >{{ fullDisplayName }}</a>
-      </n-gi>
-      <n-gi class="info-col">
-        {{ strings.buildStatus_ }}
-        <!-- 构建中 -->
-        <n-tag
-          v-if="building"
-          :color="{ color: darkMode ? 'var(--jk-infoColorPressed)' : 'var(--jk-infoColor)', textColor: 'white' }"
-          class="build-tag building"
-          size="small"
-          round
-          strong
-          :bordered="false"
-        >
-          {{ strings.building }}
-        </n-tag>
-        <!-- 构建已完成 -->
-        <n-tag
-          v-else
-          :color="{ color: `var(--jk-${getResultColor(buildResult)})`, textColor: 'white' }"
-          size="small"
-          round
-          strong
-          :bordered="false"
-          class="build-tag"
-        >
-          {{ buildResult }}
-        </n-tag>
+        <div style="margin-left: 4px;">
+          <!-- 构建中 -->
+          <n-tag
+            v-if="building"
+            :color="{ color: darkMode ? 'var(--jk-infoColorPressed)' : 'var(--jk-infoColor)', textColor: 'white' }"
+            class="build-tag building"
+            size="small"
+            round
+            strong
+            :bordered="false"
+          >
+            {{ strings.building }}
+          </n-tag>
+          <!-- 构建已完成 -->
+          <n-tag
+            v-else
+            :color="{ color: `var(--jk-${getResultColor(buildResult)})`, textColor: 'white' }"
+            size="small"
+            round
+            strong
+            :bordered="false"
+            class="build-tag"
+          >
+            {{ buildResult }}
+          </n-tag>
+        </div>
       </n-gi>
     </n-grid>
-    <!-- 构建时间 & 执行节点 -->
+    <!-- 构建时间 -->
     <n-grid
-      x-gap="12"
-      :cols="2"
+      :cols="1"
       class="info-row"
     >
       <n-gi class="info-col">
         <n-icon
           size="16"
-          title="Build Timestamp"
+          title="Build Time"
         >
           <TimeSharp />
         </n-icon>
-        <span style="margin-left: 8px;">{{ buildTime }}</span>
+        <span class="build-time">{{ timeDisplay }}</span>
+        <span
+          v-if="endTime"
+          class="build-duration"
+        >({{ durationStr }})</span>
       </n-gi>
-      <n-gi
-        v-show="builtOn"
-        class="info-col"
-      >
-        {{ strings.runLabel_ }}<span>{{ builtOn }}</span>
+    </n-grid>
+    <!-- 执行节点 -->
+    <n-grid
+      v-if="builtOn"
+      :cols="1"
+      class="info-row"
+    >
+      <n-gi class="info-col">
+        <n-icon
+          size="16"
+          title="Built On"
+        >
+          <LaptopSharp />
+        </n-icon>
+        <span>{{ builtOn }}</span>
         <n-button
-          v-show="builtOn"
+          v-if="builtOn"
           text
           class="copy-icon-btn"
           title="Copy"
@@ -199,6 +258,7 @@ function copyBuiltOn() {
     margin: 6px 0;
 
     .info-col {
+      display: flex;
       align-items: center;
       font-size: 12px;
 
@@ -243,6 +303,16 @@ function copyBuiltOn() {
         .copy-built-on-icon {
           font-size: 14px;
         }
+      }
+
+      .build-time {
+        margin-left: 8px;
+        word-break: break-all;
+      }
+
+      .build-duration {
+        margin-left: 8px;
+        color: var(--jk-subtitle);
       }
 
       .go-icon-btn {

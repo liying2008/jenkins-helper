@@ -221,12 +221,6 @@
   "tools": {
     "message": "Tools"
   },
-  "buildStatus_": {
-    "message": "Result:"
-  },
-  "runLabel_": {
-    "message": "BuiltOn："
-  },
   "copied": {
     "message": "Copied"
   },

@@ -7,6 +7,7 @@ export class JenkinsBuild {
   builtOn?: string = undefined
   result: string | null = null
   timestamp: number = 0
+  duration: number = 0
   actions: Action[] = []
 
   static empty() {

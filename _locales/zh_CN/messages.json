@@ -221,12 +221,6 @@
   "tools": {
     "message": "工具"
   },
-  "buildStatus_": {
-    "message": "构建状态："
-  },
-  "runLabel_": {
-    "message": "运行节点："
-  },
   "copied": {
     "message": "已复制"
   },
