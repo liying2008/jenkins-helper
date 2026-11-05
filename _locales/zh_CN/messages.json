@@ -224,6 +224,9 @@
   "copied": {
     "message": "已复制"
   },
+  "copyFailed": {
+    "message": "复制失败，请手动复制"
+  },
   "badges": {
     "message": "标记"
   },

@@ -224,6 +224,9 @@
   "copied": {
     "message": "Copied"
   },
+  "copyFailed": {
+    "message": "Copy failed, please copy manually"
+  },
   "badges": {
     "message": "Badges"
   },

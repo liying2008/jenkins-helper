@@ -2,9 +2,8 @@
 <script setup lang="ts">
 import type { BuildCause, InterruptionCause } from '~/models/jenkins/build'
 import { CopyOutline, FlagSharp, HammerSharp, LaptopSharp, StopSharp, TimeSharp } from '@vicons/ionicons5'
-import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
-import { computed, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { t } from '~/libs/extension'
 
 interface Props {
@@ -24,11 +23,13 @@ const props = defineProps<Props>()
 
 const strings = {
   copied: t('copied'),
+  copyFailed: t('copyFailed'),
   building: 'BUILDING',
 }
 
 const message = useMessage()
-const clipboard = useClipboard({ source: props.builtOn })
+
+const wrapperRef = ref<HTMLElement | null>(null)
 
 const startTime = computed(() => {
   return new Date(props.timestamp).toLocaleString()
@@ -79,12 +80,6 @@ function formatDuration(ms: number): string {
   return parts.join(' ')
 }
 
-watch(clipboard.copied, (value) => {
-  if (value) {
-    message.success(strings.copied)
-  }
-})
-
 function getResultColor(label: string | null) {
   switch (label) {
     case 'SUCCESS': return 'success'
@@ -95,154 +90,218 @@ function getResultColor(label: string | null) {
   }
 }
 
+// 用临时 textarea + execCommand 兜底，兼容 http 页面与 Content Script 环境
+function legacyCopy(text: string): boolean {
+  console.log('legacyCopy', text)
+  const activeElement = document.activeElement as HTMLElement | null
+  const selection = document.getSelection()
+  const ranges: Range[] = []
+  if (selection) {
+    for (let i = 0; i < selection.rangeCount; i++) {
+      ranges.push(selection.getRangeAt(i))
+    }
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '-9999px'
+  textarea.style.opacity = '0'
+  if (!wrapperRef.value) {
+    return false
+  }
+  // 备注：此处如果使用 document.body.appendChild(textarea)，则 content scripts 环境下复制无效（不报错，但是也没复制成功）
+  wrapperRef.value.appendChild(textarea)
+
+  let succeeded = false
+  try {
+    textarea.select()
+    textarea.setSelectionRange(0, text.length)
+    succeeded = document.execCommand('copy')
+  } catch {
+    succeeded = false
+  } finally {
+    textarea.remove()
+    // 恢复宿主页面原有的焦点与选区
+    activeElement?.focus()
+    if (selection && ranges.length > 0) {
+      selection.removeAllRanges()
+      ranges.forEach((range) => selection.addRange(range))
+    }
+  }
+  return succeeded
+}
+
+// 优先使用 writeText（比 ClipboardItem 兼容性更好），失败则回退到 execCommand
+async function copyText(text: string): Promise<boolean> {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch {
+      // 非安全上下文、权限被拒或页面未聚焦时，回退到兼容性更好的方式
+      return legacyCopy(text)
+    }
+  }
+  return legacyCopy(text)
+}
+
 // 复制运行节点
-function copyBuiltOn() {
-  if (!clipboard.isSupported) {
-    message.error('Your browser does not support clipboard')
+async function copyBuiltOn() {
+  const text = props.builtOn?.trim()
+  if (!text) {
     return
   }
-  clipboard.copy()
+  const succeeded = await copyText(text)
+  if (succeeded) {
+    message.success(strings.copied)
+  } else {
+    message.error(strings.copyFailed)
+  }
 }
 </script>
 
 <template>
-  <n-card class="info-block">
-    <!-- Display name & 构建状态 -->
-    <n-grid
-      :cols="1"
-      class="info-row"
-    >
-      <n-gi class="info-col">
-        <n-icon
-          title="Full DisplayName"
-          size="16"
-        >
-          <FlagSharp />
-        </n-icon>
-        <a
-          :href="buildUrl"
-          target="_blank"
-          style="margin-left: 8px;"
-          class="display-name jk-a-link-color"
-        >{{ fullDisplayName }}</a>
-        <div style="margin-left: 4px;">
-          <!-- 构建中 -->
-          <n-tag
-            v-if="building"
-            :color="{ color: darkMode ? 'var(--jk-infoColorPressed)' : 'var(--jk-infoColor)', textColor: 'white' }"
-            class="build-tag building"
-            size="small"
-            round
-            strong
-            :bordered="false"
-          >
-            {{ strings.building }}
-          </n-tag>
-          <!-- 构建已完成 -->
-          <n-tag
-            v-else
-            :color="{ color: `var(--jk-${getResultColor(buildResult)})`, textColor: 'white' }"
-            size="small"
-            round
-            strong
-            :bordered="false"
-            class="build-tag"
-          >
-            {{ buildResult }}
-          </n-tag>
-        </div>
-      </n-gi>
-    </n-grid>
-    <!-- 构建时间 -->
-    <n-grid
-      :cols="1"
-      class="info-row"
-    >
-      <n-gi class="info-col">
-        <n-icon
-          size="16"
-          title="Build Time"
-        >
-          <TimeSharp />
-        </n-icon>
-        <span class="build-time">{{ timeDisplay }}</span>
-        <span
-          v-if="endTime"
-          class="build-duration"
-        >({{ durationStr }})</span>
-      </n-gi>
-    </n-grid>
-    <!-- 执行节点 -->
-    <n-grid
-      v-if="builtOn"
-      :cols="1"
-      class="info-row"
-    >
-      <n-gi class="info-col">
-        <n-icon
-          size="16"
-          title="Built On"
-        >
-          <LaptopSharp />
-        </n-icon>
-        <span>{{ builtOn }}</span>
-        <n-button
-          v-if="builtOn"
-          text
-          class="copy-icon-btn"
-          title="Copy"
-          @click="copyBuiltOn"
-        >
-          <template #icon>
-            <n-icon size="16px">
-              <CopyOutline class="copy-built-on-icon" />
-            </n-icon>
-          </template>
-        </n-button>
-      </n-gi>
-    </n-grid>
-    <!-- Build Causes -->
-    <n-grid
-      v-for="(cause, index) in causes"
-      :key="index"
-      :cols="1"
-      class="info-row"
-    >
-      <n-gi
-        cols="12"
-        class="info-col"
+  <div ref="wrapperRef">
+    <n-card class="info-block">
+      <!-- Display name & 构建状态 -->
+      <n-grid
+        :cols="1"
+        class="info-row"
       >
-        <n-icon
-          size="16"
-          title="Build Cause"
-        >
-          <HammerSharp />
-        </n-icon>
-        <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
-      </n-gi>
-    </n-grid>
-    <!-- Interruption Causes -->
-    <n-grid
-      v-for="(cause, index) in interruptionCauses"
-      :key="index"
-      :cols="1"
-      class="info-row"
-    >
-      <n-gi
-        cols="12"
-        class="info-col"
-        style="color: var(--jk-aborted)"
+        <n-gi class="info-col">
+          <n-icon
+            title="Full DisplayName"
+            size="16"
+          >
+            <FlagSharp />
+          </n-icon>
+          <a
+            :href="buildUrl"
+            target="_blank"
+            class="icon-gap display-name jk-a-link-color"
+          >{{ fullDisplayName }}</a>
+          <div style="margin-left: 8px;">
+            <!-- 构建中 -->
+            <n-tag
+              v-if="building"
+              :color="{ color: darkMode ? 'var(--jk-infoColorPressed)' : 'var(--jk-infoColor)', textColor: 'white' }"
+              class="build-tag building"
+              size="small"
+              round
+              strong
+              :bordered="false"
+            >
+              {{ strings.building }}
+            </n-tag>
+            <!-- 构建已完成 -->
+            <n-tag
+              v-else
+              :color="{ color: `var(--jk-${getResultColor(buildResult)})`, textColor: 'white' }"
+              size="small"
+              round
+              strong
+              :bordered="false"
+              class="build-tag"
+            >
+              {{ buildResult }}
+            </n-tag>
+          </div>
+        </n-gi>
+      </n-grid>
+      <!-- 构建时间 -->
+      <n-grid
+        :cols="1"
+        class="info-row"
       >
-        <n-icon
-          size="16"
-          title="Interruption Cause"
+        <n-gi class="info-col">
+          <n-icon
+            size="16"
+            title="Build Time"
+          >
+            <TimeSharp />
+          </n-icon>
+          <span class="icon-gap build-time">{{ timeDisplay }}</span>
+          <span
+            v-if="endTime"
+            class="build-duration"
+          >({{ durationStr }})</span>
+        </n-gi>
+      </n-grid>
+      <!-- 执行节点 -->
+      <n-grid
+        v-if="builtOn"
+        :cols="1"
+        class="info-row"
+      >
+        <n-gi class="info-col">
+          <n-icon
+            size="16"
+            title="Built On"
+          >
+            <LaptopSharp />
+          </n-icon>
+          <span class="icon-gap">{{ builtOn }}</span>
+          <n-button
+            v-if="builtOn"
+            text
+            class="copy-icon-btn"
+            title="Copy"
+            @click="copyBuiltOn"
+          >
+            <template #icon>
+              <n-icon size="16px">
+                <CopyOutline class="copy-built-on-icon" />
+              </n-icon>
+            </template>
+          </n-button>
+        </n-gi>
+      </n-grid>
+      <!-- Build Causes -->
+      <n-grid
+        v-for="(cause, index) in causes"
+        :key="index"
+        :cols="1"
+        class="info-row"
+      >
+        <n-gi
+          cols="12"
+          class="info-col"
         >
-          <StopSharp />
-        </n-icon>
-        <span style="margin-left: 8px;">{{ cause.shortDescription }}</span>
-      </n-gi>
-    </n-grid>
-  </n-card>
+          <n-icon
+            size="16"
+            title="Build Cause"
+          >
+            <HammerSharp />
+          </n-icon>
+          <span class="icon-gap">{{ cause.shortDescription }}</span>
+        </n-gi>
+      </n-grid>
+      <!-- Interruption Causes -->
+      <n-grid
+        v-for="(cause, index) in interruptionCauses"
+        :key="index"
+        :cols="1"
+        class="info-row"
+      >
+        <n-gi
+          cols="12"
+          class="info-col"
+          style="color: var(--jk-aborted)"
+        >
+          <n-icon
+            size="16"
+            title="Interruption Cause"
+          >
+            <StopSharp />
+          </n-icon>
+          <span class="icon-gap">{{ cause.shortDescription }}</span>
+        </n-gi>
+      </n-grid>
+    </n-card>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -264,6 +323,10 @@ function copyBuiltOn() {
 
       .n-icon {
         vertical-align: middle;
+      }
+
+      .icon-gap {
+        margin-left: 8px;
       }
 
       .display-name {
@@ -306,7 +369,6 @@ function copyBuiltOn() {
       }
 
       .build-time {
-        margin-left: 8px;
         word-break: break-all;
       }
 
