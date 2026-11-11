@@ -230,6 +230,9 @@
   "badges": {
     "message": "标记"
   },
+  "description": {
+    "message": "描述"
+  },
   "paramsList": {
     "message": "参数列表"
   },

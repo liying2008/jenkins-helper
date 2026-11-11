@@ -5,6 +5,7 @@ export class JenkinsBuild {
   number: number = 0
   building: boolean = false
   builtOn?: string = undefined
+  description: string | null = null
   result: string | null = null
   timestamp: number = 0
   duration: number = 0

@@ -230,6 +230,9 @@
   "badges": {
     "message": "Badges"
   },
+  "description": {
+    "message": "Description"
+  },
   "paramsList": {
     "message": "Parameters"
   },

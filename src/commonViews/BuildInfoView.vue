@@ -13,6 +13,7 @@ import { JenkinsBuildUtils } from '~/libs/jenkins/build'
 import { Tools } from '~/libs/tools'
 import { DataStatus } from '~/models/common'
 import { BADGE_ACTION_CLASS, CAUSE_ACTION_CLASS, HTML_BADGE_ACTION_CLASS, INTERRUPTION_ACTION_CLASS, PARAMETERS_ACTION_CLASS, WORKFLOW_ENV_ACTION_CLASS } from '~/models/jenkins/build'
+import BuildDescriptionView from './build-description-view/BuildDescriptionView.vue'
 import BuildEnvVarsView from './build-envvars-view/BuildEnvVarsView.vue'
 
 const props = defineProps<{
@@ -22,6 +23,7 @@ const props = defineProps<{
 
 const strings = {
   badges: t('badges'),
+  description: t('description'),
   paramsList: t('paramsList'),
   envVarsList: t('envVarsList'),
   noData: t('noData'),
@@ -40,6 +42,7 @@ const result = ref<string | null>(null)
 const duration = ref(0) // 构建时长，单位：ms
 const timestamp = ref(0) // 开始构建时间（毫秒级时间戳）
 const builtOn = ref<string | undefined>(undefined)
+const description = ref<string | null>(null)
 const causes = ref<BuildCause[]>([])
 const badges = ref<DisplayedBadge[]>([])
 const parameters = ref<DisplayedBuildParameter[]>([])
@@ -76,6 +79,7 @@ function getParametersByUrl(_url: string) {
       timestamp.value = data.timestamp || 0
       duration.value = data.duration || 0
       builtOn.value = data.builtOn
+      description.value = data.description
       const actions = data.actions
       // console.log('actions', actions)
       let causeAction: CauseAction | null = null
@@ -182,7 +186,7 @@ onUnmounted(() => {
       />
       <n-collapse
         class="collapse-area"
-        :default-expanded-names="['badges', 'parameters', 'envVars']"
+        :default-expanded-names="['badges', 'description', 'parameters', 'envVars']"
       >
         <!-- Badges -->
         <n-collapse-item
@@ -200,6 +204,21 @@ onUnmounted(() => {
           <BuildBadgesView
             class="badges-view"
             :badges="badges"
+          />
+        </n-collapse-item>
+        <!-- 描述 -->
+        <n-collapse-item
+          v-show="description"
+          name="description"
+        >
+          <template #header>
+            <div style="font-weight: bold;">
+              {{ strings.description }}
+            </div>
+          </template>
+          <BuildDescriptionView
+            class="description-view"
+            :description="description"
           />
         </n-collapse-item>
         <!-- 参数列表 -->
