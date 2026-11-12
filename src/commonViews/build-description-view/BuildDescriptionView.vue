@@ -30,7 +30,10 @@ const isHtml = computed(() => {
 </script>
 
 <template>
-  <n-card class="description-block">
+  <n-card
+    size="small"
+    class="description-block"
+  >
     <div
       v-if="props.description"
       class="description-content"
@@ -50,7 +53,7 @@ const isHtml = computed(() => {
 
 <style lang="scss" scoped>
 .description-block {
-  padding: 4px 10px;
+  padding: 10px;
 
   :deep(.n-card-content) {
     padding: 0 !important;

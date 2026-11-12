@@ -165,7 +165,10 @@ async function copyBuiltOn() {
 
 <template>
   <div ref="wrapperRef">
-    <n-card class="info-block">
+    <n-card
+      size="small"
+      class="info-block"
+    >
       <!-- Display name & 构建状态 -->
       <n-grid
         :cols="1"

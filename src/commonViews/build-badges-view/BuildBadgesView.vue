@@ -26,6 +26,7 @@ const props = defineProps<Props>()
           v-if="badge.link"
           :href="badge.link"
           target="_blank"
+          style="color: unset;"
         >{{ badge.text }}</a>
         <span v-else>{{ badge.text }}</span>
       </div>
