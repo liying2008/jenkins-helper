@@ -1,1 +1,3 @@
-pnpm test
+. .husky/common.sh
+
+CI=true yarn test
